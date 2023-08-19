@@ -10,9 +10,8 @@ import React, { useEffect, useState } from 'react';
 
 
 const Navigation = () => {
-    const [slide, setslide] = useState<boolean>(true);
+    const [slide, setslide] = useState<boolean>();
     useEffect(() => {
-
         const temp = async () => {
             const checkSlide = await AsyncStorage.getItem('checkSlide');
             setslide(checkSlide === null ? false : true);
