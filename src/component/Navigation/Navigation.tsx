@@ -19,9 +19,9 @@ const Navigation = () => {
         temp();
     }, [])
     if (!slide) {
-        return <SlideNavigation />;
+        return <SlideNavigation/>;
     } else {
-        return <LoginNavigation />
+        return <LoginNavigation/>
     }
 }
 

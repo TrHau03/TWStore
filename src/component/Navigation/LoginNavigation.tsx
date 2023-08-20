@@ -10,14 +10,13 @@ const RootStack = createStackNavigator();
 
 
 const LoginNavigation = () => {
-    
-    return <NavigationContainer>
-        <RootStack.Navigator initialRouteName='LoginScreen' screenOptions={({ route }) => configStack(route)}>
-            {RootStackScreenLogin().map((item: any) => {
-                return <RootStack.Screen key={item.id} name={item.name} component={item.component} options={item.options} />
-            })}
-        </RootStack.Navigator>
-    </NavigationContainer>
+    console.log('check');
+
+    return <RootStack.Navigator initialRouteName='LoginScreen' screenOptions={({ route }) => configStack(route)}>
+        {RootStackScreenLogin().map((item: any) => {
+            return <RootStack.Screen key={item.id} name={item.name} component={item.component} options={item.options} />
+        })}
+    </RootStack.Navigator>
 }
 
 
