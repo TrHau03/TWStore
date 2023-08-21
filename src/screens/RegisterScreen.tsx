@@ -1,14 +1,17 @@
-import { Image, StyleSheet, Text, View, Button, Pressable } from 'react-native'
-import Icon from 'react-native-vector-icons/Ionicons';
 import React, { useEffect, useState } from 'react'
+import { Image, StyleSheet, Text, View, Button, Pressable } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Checkbox, InputItem } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList, RootStackScreenEnum } from '../component/Root/RootStack';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
+
+
+import { RootStackParamList, RootStackScreenEnum } from '../component/Root/RootStack';
 
 
 
@@ -27,7 +30,7 @@ const RegisterScreen = (props: any) => {
     const [password, setPassword] = useState<string>('');
     const [passwordAgain, setPasswordAgain] = useState<string>('');
     return (
-        <ScrollView>
+        <KeyboardAwareScrollView enableOnAndroid={true}>
             <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
                 <View style={styles.header}>
                     <Image style={{ width: 130, height: 130 }} source={require('../asset/image/logoTW.png')} />
@@ -103,7 +106,7 @@ const RegisterScreen = (props: any) => {
                     </Pressable>
                 </View>
             </View>
-        </ScrollView>
+        </KeyboardAwareScrollView>
     )
 }
 

@@ -1,4 +1,5 @@
 import LoginSreen from "../../screens/LoginSreen";
+import OfferScreen from "../../screens/OfferScreen";
 import RegisterScreen from "../../screens/RegisterScreen";
 import SlideScreen from "../../screens/SlideScreen";
 import VerificationScreen from "../../screens/VerificationScreen";
@@ -8,19 +9,22 @@ export enum RootStackScreenEnum {
     SlideScreen = 'SlideScreen',
     LoginSreen = 'LoginSreen',
     RegisterScreen = 'RegisterScreen',
-    VerificationScreen = 'VerificationScreen'
+    VerificationScreen = 'VerificationScreen',
+    OfferScreen = 'OfferScreen'
 }
 export type RootStackParamList = {
     SlideScreen: undefined,
     LoginSreen: undefined,
     RegisterScreen: undefined,
-    VerificationScreen: undefined
+    VerificationScreen: undefined,
+    OfferScreen: undefined
 }
 export const RootStackScreenLogin = () => {
     const Screen: any = [
         { id: uid(), name: RootStackScreenEnum.LoginSreen, component: LoginSreen, options: {} },
         { id: uid(), name: RootStackScreenEnum.RegisterScreen, component: RegisterScreen, options: {} },
         { id: uid(), name: RootStackScreenEnum.VerificationScreen, component: VerificationScreen, options: {} },
+        { id: uid(), name: RootStackScreenEnum.OfferScreen, component: OfferScreen, options: {} },
     ]
     return Screen;
 }
