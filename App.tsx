@@ -63,7 +63,9 @@ function App(): JSX.Element {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
   return (
+    <SafeAreaView>
       <Home/>
+    </SafeAreaView>
   );
 }
 
