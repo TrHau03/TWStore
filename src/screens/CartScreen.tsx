@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, ListRenderItemInfo, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, ListRenderItemInfo, TouchableOpacity } from 'react-native'
+import { FlatList } from 'react-native-gesture-handler'
+import React, { useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { InputItem, Stepper } from '@ant-design/react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -47,14 +48,17 @@ const RenderItem = ({ item }: { item: Product }) => {
 const CartScreen = () => {
     const [cupon, setCupon] = useState<string>('');
     return (
-        <KeyboardAwareScrollView style={{ paddingHorizontal: 16 }} scrollEnabled={false}>
+        <View style={{ paddingHorizontal: 16 }}  >
             <View style={{ marginTop: 17 }}>
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
             <View style={styles.line}></View>
-            <FlatList style={{ maxHeight: '25%', marginTop: '11%' }} showsVerticalScrollIndicator={false}
+            <FlatList style={{ maxHeight: '40%', marginTop: '11%' }}
+                showsVerticalScrollIndicator={false}
                 renderItem={(object) => <RenderItem item={object.item} />}
                 data={data}
+                onContentSizeChange={() => {
+                }}
                 keyExtractor={(item: Product) => item.id.toString()}
             />
             <View style={{ borderWidth: 1, borderColor: '#9098B1', borderRadius: 5, marginTop: 25 }}>
@@ -91,13 +95,14 @@ const CartScreen = () => {
                 </View>
             </View>
             <View>
+
                 <TouchableOpacity >
                     <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnCheckOut} >
-                        <Text style={styles.textCheckOut}>Login</Text>
+                        <Text style={styles.textCheckOut}>Check Out</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
-        </KeyboardAwareScrollView >
+        </View >
     )
 }
 
@@ -110,13 +115,13 @@ const styles = StyleSheet.create({
         height: 55,
         borderRadius: 5,
         marginTop: 34
-      },
+    },
     textCheckOut: {
         color: 'white',
         fontSize: 24,
         fontFamily: 'Poppins',
         fontWeight: '700',
-      },
+    },
     textBottomTotalRight: {
         color: '#40BFFF',
         fontSize: 14,
@@ -151,7 +156,7 @@ const styles = StyleSheet.create({
     bottomTotalPrice: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 10,
+        paddingTop: 5,
         borderTopWidth: 0.5,
         borderColor: '#9098B1',
         alignItems: 'center',

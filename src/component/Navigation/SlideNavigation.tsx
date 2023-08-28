@@ -1,8 +1,5 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackScreenLogin, RootStackScreenSlide, configStack } from '../Root/RootStack';
-import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack';
-import SlideScreen from '../../screens/SlideScreen';
 
 const RootStack = createStackNavigator();
 
