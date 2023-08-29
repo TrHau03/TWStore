@@ -157,6 +157,7 @@ const HomeScreen = () => {
                 <FlatList
                     data={data}
                     horizontal
+                    nestedScrollEnabled={true}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.name}
                 />
@@ -178,6 +179,7 @@ const HomeScreen = () => {
                 <FlatList
                     data={data2}
                     horizontal
+                    nestedScrollEnabled={true}
                     renderItem={renderItem2}
                     keyExtractor={(item) => item.id}
                 />
@@ -194,6 +196,7 @@ const HomeScreen = () => {
 
             <View style={styles.listflastsale}>
                 <FlatList
+                    nestedScrollEnabled={true}
                     data={data2}
                     horizontal
                     renderItem={renderItem2}

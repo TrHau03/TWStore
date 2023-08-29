@@ -26,7 +26,7 @@ const CreditCardScreen = ({ navigation }: ScreenProps) => {
       <Header title='Credit Card Or Debit' navigation={navigation} />
       <View>
         {data.map((item: Card) =>
-          <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.itemCardBank} >
+          <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.itemCardBank} key={item.id}>
             <View>
               <Image source={require('../asset/image/visaIcon.png')} />
             </View>

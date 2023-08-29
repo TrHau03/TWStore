@@ -70,7 +70,7 @@ const LoginSreen = (props: any) => {
           <Text style={styles.checkBox}>Forgot Password?</Text>
         </View>
         <View>
-          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnum.PaymentScreen)}>
+          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnum.HomeScreen)}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
               <Text style={styles.textLogin}>Login</Text>
             </LinearGradient>
