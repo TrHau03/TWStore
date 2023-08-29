@@ -10,6 +10,8 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import StarRating from 'react-native-star-rating';
 import { AirbnbRating } from 'react-native-ratings';
+import Header from '../component/Header/Header';
+import { ScrollView } from 'react-native-gesture-handler';
 interface Product {
   id: number;
   img: any;
@@ -56,7 +58,8 @@ const renderItem = ({item}: any): React.JSX.Element => {
 const Favorite = () => {
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
+      <Header/>
       <FlatList
         data={DataProduct}
         renderItem={renderItem}
@@ -64,7 +67,7 @@ const Favorite = () => {
         numColumns={2}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </ScrollView>
   );
 };
 
@@ -139,7 +142,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   containerItemPD: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     width: 185,
     height: 300,
     backgroundColor: '#FFFFFF',

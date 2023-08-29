@@ -17,6 +17,18 @@ const Filter = ({navigation}: any) => {
   const handleSliderChange = (values: any) => {
     setSliderValues(values);
   };
+
+  const [sliderValue, setSliderValue] = useState(0);
+
+  const handleTextInputChange = (text:any) => {
+    const parsedValue = parseFloat(text);
+    if (!isNaN(parsedValue)) {
+      setSliderValue(parsedValue);
+      console.log(sliderValue);
+      
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <TouchableOpacity
@@ -39,11 +51,13 @@ const Filter = ({navigation}: any) => {
           </Text>
           <View style={styles.input}>
             <View style={styles.minPrice}>
-              <TextInput placeholder="MinPrice" />
+              <TextInput 
+           
+                />
             </View>
 
             <View style={styles.maxPrice}>
-              <TextInput placeholder="MaxPrice" />
+              <TextInput/>
             </View>
           </View>
         </View>
@@ -74,29 +88,28 @@ const Filter = ({navigation}: any) => {
           </View>
         </View>
 
-        <View style={styles.Condition}>
-          <Text style={styles.txtCondition}>Condition</Text>
-          <View style={styles.group}>
-            <View style={styles.btnNew}>
+        <View style={styles.BuyingFormat}>
+          <View style={styles.Format}>
+            <Text  style={styles.txtBuyingFormat}>Condition</Text>
+          </View>
+          <View style={styles.groupBtn}>
+            <View style={styles.btnAll}>
               <TouchableOpacity>
-                <Text>New</Text>
+                <Text>News</Text>
               </TouchableOpacity>
             </View>
-
-            <View  style={styles.btnNew}>
+            <View style={styles.btnAll}>
               <TouchableOpacity>
                 <Text>Used</Text>
               </TouchableOpacity>
             </View>
-
-            <View  style={styles.btnNew}>
+            <View style={styles.btnAll}>
               <TouchableOpacity>
                 <Text>Not Specified</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
-
         <View style={styles.BuyingFormat}>
           <View style={styles.Format}>
             <Text  style={styles.txtBuyingFormat}>Buying Format</Text>
@@ -243,8 +256,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
     padding: 15,
     marginLeft: 15,
-    backgroundColor: 'aqua',
+    backgroundColor: 'transparent',
     borderRadius: 5,
+    borderWidth: 0.3
 
   },
   groupBtn: {
@@ -267,11 +281,11 @@ const styles = StyleSheet.create({
   },
   btnNew:{
     padding: 15,
-    borderWidth: 1,
+    borderWidth: 0.3,
     borderColor: '#EBF0FF',
     marginLeft: 15,
     justifyContent: 'center',
-    backgroundColor: 'aqua',
+    backgroundColor: 'transparent',
     alignItems: 'center',
     borderRadius: 5,
     marginTop: 10
@@ -297,13 +311,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   maxPrice: {
-    borderWidth: 1,
+    borderWidth: 0.3,
     height: 50,
     width: '40%',
     marginRight: 20,
   },
   minPrice: {
-    borderWidth: 1,
+    borderWidth: 0.3,
     height: 50,
     width: '40%',
     marginLeft: 20,

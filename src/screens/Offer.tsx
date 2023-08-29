@@ -1,7 +1,8 @@
-import {FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import {ROUTES} from '../constants';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Header from '../component/Header/Header';
 
 interface Offer {
   id: number;
@@ -36,12 +37,10 @@ const renderItem = ({item}: any): React.JSX.Element => {
   };
 const Offer = ({navigation}: any) => {
   return (
-    <View
+    <ScrollView
         style={styles.container}
     >
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Icon name="chevron-back" size={25} />
-      </TouchableOpacity>
+      <Header/>
       <FlatList
         data={DataOffer}
         renderItem={renderItem}
@@ -49,7 +48,7 @@ const Offer = ({navigation}: any) => {
         numColumns={1}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </ScrollView>
   );
 };
 

@@ -1,6 +1,7 @@
-import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Header from '../component/Header/Header';
 interface ShortBy {
   id: number;
   name: string;
@@ -25,20 +26,15 @@ const ShortBy = ({navigation}: any) => {
   };
   
   return (
-    <View style={styles.container}>
-      <TouchableOpacity 
-        style={styles.iconBack}
-       onPress={() => navigation.goBack()}
-       >
-        <Icon name="chevron-back" size={25} />
-      </TouchableOpacity>
+    <ScrollView style={styles.container}>
+      <Header/>
       <View style={styles.content}>
         <FlatList 
           data={DataShortBy} 
           renderItem={renderItem} 
         />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Header from '../component/Header/Header';
 
 interface Product_Notifi {
   id: number;
@@ -85,9 +86,7 @@ const Activity = ({navigation}: any) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <Icon name="chevron-back" size={25} />
-      </TouchableOpacity>
+      <Header/>
       <View style={styles.content}>
         <View style={styles.groupText}>
           <Text style={styles.txtProduct}>Product</Text>
@@ -123,7 +122,7 @@ const Activity = ({navigation}: any) => {
 
 
         <View style={styles.groupActivity}>
-          <Text style={styles.txtProduct}>Product</Text>
+          <Text style={styles.txtProduct}>Activity</Text>
           <TouchableOpacity
             style={styles.btnSeeMore}
             onPress={() => {

@@ -7,20 +7,48 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {ROUTES} from '../constants';
 import {AirbnbRating} from 'react-native-ratings';
+import SelectDropdown from 'react-native-select-dropdown';
+import Icon from 'react-native-vector-icons/Ionicons';
+
 interface Product {
   id: number;
   img: any;
   name: string;
   price: number;
+  category: string;
 }
+interface ArrayProduct {
+  category: string;
+}
+const dataArray: ArrayProduct[] = [
+  {category: 'All'},
+  {category: 'Man Shoes'},
+  {category: 'Women Shoes'},
+];
+
 const Categori_Detail = ({navigation}: any) => {
   const [click, setClick] = useState<boolean>(false);
+  const [filter, setFilter] = useState<string>('All');
+  const [dataFilter, setdataFilter] = useState<any>([]);
+
+  useEffect(() => {
+    console.log('render');
+    if (filter == 'All') {
+      setdataFilter(DataProduct)
+    } else {
+      setdataFilter(
+        DataProduct.filter(product => {
+          return product.category == filter;
+        }),
+      );
+    }
+    console.log(dataFilter);
+  }, [filter]);
 
   const renderItem = ({item}: any): React.JSX.Element => {
-
     const {id, img, name, price} = item;
 
     return (
@@ -83,33 +111,57 @@ const Categori_Detail = ({navigation}: any) => {
           <View>
             <Text
               style={{
-                fontSize: 20,
-                color: 'black',
-                marginTop: 10,
+                color: '#223263',
+                fontSize: 18,
+                fontFamily: 'Poppins',
+                fontWeight: '700',
+                lineHeight: 21.6,
+                letterSpacing: 0.5,
+                marginTop: 15,
                 marginLeft: 10,
               }}>
-              162 result
+                {dataFilter.length} result
             </Text>
           </View>
 
           <View>
-            <Text
-              style={{
-                fontSize: 20,
-                color: 'black',
-                marginTop: 10,
-                marginRight: 10,
-              }}>
-              
-              fdshgkj
+            <Text style={{}}>
+              <SelectDropdown
+                data={dataArray}
+                onSelect={(selectedItem, index) => {
+                  console.log(selectedItem, index);
 
+                  setFilter(selectedItem.category);
+                }}
+                defaultButtonText={filter}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                  return selectedItem.category;
+                }}
+                rowTextForSelection={(item, index) => {
+                  return item.category;
+                }}
+                buttonStyle={styles.dropdown1BtnStyle}
+                buttonTextStyle={styles.dropdown1BtnTxtStyle}
+                renderDropdownIcon={isOpened => {
+                  return (
+                    <Icon
+                      name={isOpened ? 'chevron-up' : 'chevron-down'}
+                      color={'#444'}
+                      size={18}
+                    />
+                  );
+                }}
+                dropdownIconPosition={'right'}
+                dropdownStyle={styles.dropdown1DropdownStyle}
+                rowStyle={styles.dropdown1RowStyle}
+                rowTextStyle={styles.dropdown1RowTxtStyle}
+              />
             </Text>
           </View>
-          
         </View>
         <FlatList
           style={{marginTop: 10}}
-          data={DataProduct}
+          data={dataFilter}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           numColumns={2}
@@ -123,6 +175,32 @@ const Categori_Detail = ({navigation}: any) => {
 export default Categori_Detail;
 
 const styles = StyleSheet.create({
+  dropdown1BtnStyle: {
+    borderColor: '#444',
+    width: 100,
+    backgroundColor: 'transparent',
+  },
+  dropdown1BtnTxtStyle: {
+    color: '#223263',
+    fontSize: 18,
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    lineHeight: 21.6,
+    letterSpacing: 0.5,
+    textAlign: 'left',
+  },
+  dropdown1DropdownStyle: {borderRadius: 5, backgroundColor: '#E6E6E6'},
+  dropdown1RowStyle: {borderBottomColor: '#C5C5C5'},
+  dropdown1RowTxtStyle: {
+    color: '#223263',
+    fontSize: 18,
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    lineHeight: 21.6,
+    letterSpacing: 0.5,
+    textAlign: 'left',
+  },
+
   product_Item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -192,7 +270,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   containerItemPD: {
-    borderWidth: 1,
+    borderWidth: 0.5,
     width: 180,
     height: 300,
     backgroundColor: '#FFFFFF',
@@ -247,42 +325,47 @@ const styles = StyleSheet.create({
   },
 });
 
-  
 const DataProduct: Product[] = [
   {
     id: 1,
     img: require('../asset/image/imgProduct.png'),
     name: 'Nike Air Max 270 React ENG',
     price: 29999,
+    category: 'Man Shoes',
   },
   {
     id: 2,
     img: require('../asset/image/imgProduct3.png'),
     name: 'Nike Air Max 270 React ENG',
     price: 2999,
+    category: 'Women Shoes',
   },
   {
     id: 3,
     img: require('../asset/image/imgProduct1.png'),
     name: 'Nike Air Max 270 React ENG',
     price: 2998,
+    category: 'Man Shoes',
   },
   {
     id: 4,
     img: require('../asset/image/imgProduct2.png'),
     name: 'Nike Air Max 270 React ENG',
     price: 2997,
+    category: 'Women Shoes',
   },
   {
     id: 5,
     img: require('../asset/image/imgProduct3.png'),
     name: 'Nike Air Max 270 React ENG',
     price: 2995,
+    category: 'Man Shoes',
   },
   {
     id: 6,
     img: require('../asset/image/imgProduct2.png'),
     name: 'Nike Air Max 270 React ENG',
     price: 2996,
+    category: 'Women Shoes',
   },
 ];
