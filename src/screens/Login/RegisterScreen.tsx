@@ -9,14 +9,14 @@ import { TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
-
-
-import { RootStackParamList, RootStackScreenEnum } from '../component/Root/RootStack';
-
+import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 
 
 
-type navigationProps = NativeStackNavigationProp<RootStackParamList, RootStackScreenEnum>
+
+
+
+type navigationProps = NativeStackNavigationProp<RootStackParamListLogin, RootStackScreenEnumLogin>
 const RegisterScreen = (props: any) => {
     const navigation = useNavigation<navigationProps>();
     useEffect(() => {
@@ -33,7 +33,7 @@ const RegisterScreen = (props: any) => {
         <KeyboardAwareScrollView enableOnAndroid={true}>
             <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
                 <View style={styles.header}>
-                    <Image style={{ width: 130, height: 130 }} source={require('../asset/image/logoTW.png')} />
+                    <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
                     <Text style={styles.textHeader}>The Wonder</Text>
                 </View>
                 <View>
@@ -93,7 +93,7 @@ const RegisterScreen = (props: any) => {
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnum.VerificationScreen)}>
+                    <TouchableOpacity >
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
                             <Text style={styles.textLogin}>Register</Text>
                         </LinearGradient>
@@ -101,7 +101,7 @@ const RegisterScreen = (props: any) => {
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
                     <Text style={styles.textDontAcc}>Already a member? </Text>
-                    <Pressable onPress={() => navigation.navigate(RootStackScreenEnum.LoginSreen)}>
+                    <Pressable>
                         <Text style={styles.textRegister}>Log In</Text>
                     </Pressable>
                 </View>

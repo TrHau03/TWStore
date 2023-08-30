@@ -6,8 +6,8 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import SlideScreen from './src/screens/SlideScreen';
-import SplashSreen from './src/screens/SplashSreen';
+import SlideScreen from './src/screens/Login/SlideScreen';
+import SplashSreen from './src/screens/Login/SplashSreen';
 import LoginNavigation from './src/component/Navigation/LoginNavigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Navigation from './src/component/Navigation/Navigation';

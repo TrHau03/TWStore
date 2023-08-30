@@ -2,12 +2,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { RootStackParamList, RootStackScreenEnum } from '../Root/RootStack'
 
 
 interface Header {
     title?: string,
-    navigation?: StackNavigationProp<RootStackParamList, RootStackScreenEnum>
+    navigation?: any,
 }
 
 

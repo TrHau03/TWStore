@@ -93,7 +93,7 @@ const OfferScreen = () => {
           <Text style={styles.textUpto}>Sale 50% Off</Text>
         </View> : <></>}
       <View>
-        <Image source={require('../asset/image/PromotionImage.png')} style={{ width: '100%', borderRadius: 5, marginTop: 10 }} />
+        <Image source={require('../../asset/image/PromotionImage.png')} style={{ width: '100%', borderRadius: 5, marginTop: 10 }} />
       </View>
       <FlatList
         style={{ height: '50%', width: '100%', marginTop: 10 }}

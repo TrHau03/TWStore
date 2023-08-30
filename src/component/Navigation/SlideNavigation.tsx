@@ -1,7 +1,8 @@
-import { RootStackScreenLogin, RootStackScreenSlide, configStack } from '../Root/RootStack';
 import { createStackNavigator } from '@react-navigation/stack';
+import { RootStack } from './Props';
+import { RootStackScreenSlide } from '../Root/RootStackLogin';
+import { configStack } from '../Root/RootStack';
 
-const RootStack = createStackNavigator();
 
 
 

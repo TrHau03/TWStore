@@ -1,13 +1,11 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import Header from '../component/Header/Header'
+import Header from '../../component/Header/Header'
 import { PatternFormat } from 'react-number-format'
 import LinearGradient from 'react-native-linear-gradient'
-import ButtonBottom from '../component/Button/Button'
+import ButtonBottom from '../../component/Button/Button'
 
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList, RootStackScreenEnum } from '../component/Root/RootStack'
-import { ScreenProps } from '../component/Navigation/Props'
+import { PropsAccount } from '../../component/Navigation/Props'
 
 
 interface Card {
@@ -20,7 +18,7 @@ interface Card {
 
 
 
-const CreditCardScreen = ({ navigation }: ScreenProps) => {
+const CreditCardScreen = ({ navigation }: PropsAccount) => {
   return (
     <View style={{ paddingHorizontal: 16, paddingTop: 25, height: '100%' }}>
       <Header title='Credit Card Or Debit' navigation={navigation} />
@@ -28,7 +26,7 @@ const CreditCardScreen = ({ navigation }: ScreenProps) => {
         {data.map((item: Card) =>
           <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.itemCardBank} key={item.id}>
             <View>
-              <Image source={require('../asset/image/visaIcon.png')} />
+              <Image source={require('../../asset/image/visaIcon.png')} />
             </View>
             <View>
               <PatternFormat displayType='text' value={item.numberCard} format="#### #### #### ####" renderText={(numberCard) => <Text style={styles.numberCard}>{numberCard}</Text>} />

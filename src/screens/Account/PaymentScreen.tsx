@@ -1,9 +1,8 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
-import Header from '../component/Header/Header'
+import Header from '../../component/Header/Header'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { RootStackParamList, RootStackScreenEnum } from '../component/Root/RootStack'
 
 interface Item {
     id: number,

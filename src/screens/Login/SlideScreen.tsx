@@ -5,12 +5,12 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
-import { RootStackParamList, RootStackScreenEnum } from '../component/Root/RootStack';
-import LoginNavigation from '../component/Navigation/LoginNavigation';
+import LoginNavigation from '../../component/Navigation/LoginNavigation';
+import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 
 
 
-type navigationProps = StackNavigationProp<RootStackParamList, RootStackScreenEnum.SlideScreen>
+type navigationProps = StackNavigationProp<RootStackParamListLogin, RootStackScreenEnumLogin>
 
 const SlideScreen = (props: any) => {
     const navigation = useNavigation<navigationProps>();
@@ -21,7 +21,7 @@ const SlideScreen = (props: any) => {
         (!loadLoginScreen) ?
             <View style={{ padding: 20, width: '100%', height: '100%' }}>
                 <View style={{ marginTop: '40%' }}>
-                    <Image style={styles.imageSlide1} source={step === 1 ? require('../asset/image/IconSlide1.png') : step === 2 ? require('../asset/image/IconSlide2.png') : require('../asset/image/IconSlide3.png')} />
+                    <Image style={styles.imageSlide1} source={step === 1 ? require('../../asset/image/IconSlide1.png') : step === 2 ? require('../../asset/image/IconSlide2.png') : require('../../asset/image/IconSlide3.png')} />
                 </View>
                 <View style={{ marginTop: 96 }}>
                     <Text style={styles.textTitle}>{step === 1 ? 'Explore the world easily' : step === 2 ? 'Reach the unknown spot' : 'Make connects with explora'}</Text>
@@ -29,7 +29,7 @@ const SlideScreen = (props: any) => {
                 </View>
                 <View style={{ marginTop: 80 }}>
                     <TouchableOpacity style={styles.nextBTN} onPress={() => { step < 3 ? setStep(step + 1) : setloadLoginScreen(true) }}>
-                        <Image source={require('../asset/image//NextButton.png')} />
+                        <Image source={require('../../asset/image/NextButton.png')} />
                     </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: 'row', }}>

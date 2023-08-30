@@ -18,7 +18,7 @@ const VerificationScreen = () => {
         <KeyboardAwareScrollView>
             <View style={{ paddingHorizontal: 20, alignItems: 'center' }}>
                 <View style={{ marginTop: 100 }}>
-                    <Image source={require('../asset/image/Verification.png')} />
+                    <Image source={require('../../asset/image/Verification.png')} />
                     <Text style={styles.textOTP}>OTP Verification</Text>
                 </View>
                 {(!verify) ?

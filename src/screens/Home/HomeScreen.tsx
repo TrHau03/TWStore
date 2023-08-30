@@ -1,17 +1,58 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
+import { ROUTES } from '../../component/constants';
 
-const images = [
-    'https://thietke6d.com/wp-content/uploads/2021/03/Mau-banner-quang-cao-dep-1.png',
-    'https://intphcm.com/data/upload/banner-thoi-trang-tuoi.jpg',
-    'https://dojeannam.com/wp-content/uploads/2017/09/BANNER-KHAI-TRUONG-DOJEANNAM.jpg',
-    'https://intphcm.com/data/upload/banner-thoi-trang.jpg'
-]
 
+
+const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
+    <View style={styles.item}>
+        <View style={styles.bodericon}>
+            {/* <Image style={styles.Icon} source={item.icon} /> */}
+            <Icon name={item.icon} size={26} />
+        </View>
+        <Text style={styles.textname}>{item.name}</Text>
+    </View>
+);
+
+const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } }) => {
+    return (
+        < View style={styles.itemsale} >
+            <Image style={styles.imageproduct} source={{ uri: item.image }} />
+            <Text style={styles.nameproduct}>{item.name}</Text>
+
+            <Text style={styles.price}>$299,43</Text>
+            <View style={styles.stylesaleoff}>
+                <Text style={styles.strikethrough}>$534,33</Text>
+                <Text style={styles.saleoff}>24% Off</Text>
+            </View>
+        </View >
+    )
+}
+
+const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } }) => {
+    return (
+        <View style={styles.itemsale2}>
+            <Image style={styles.imageproduct} source={{ uri: item.image }} />
+            <Text style={styles.nameproduct}>{item.name}</Text>
+            {/* <Image style={styles.imga} source={require('../asset/img/a.png')} /> */}
+            <Text style={styles.price}>$299,43</Text>
+            <View style={styles.stylesaleoff}>
+                <Text style={styles.strikethrough}>$534,33</Text>
+                <Text style={styles.saleoff}>24% Off</Text>
+            </View>
+        </View>
+    )
+
+}
+type NavigationProps = StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>
 const HomeScreen = () => {
-
+    const navigation = useNavigation<NavigationProps>();
     const [imgActive, setimgActive] = useState(0);
+    const [click, setClick] = useState<boolean>(false);
 
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
@@ -22,87 +63,33 @@ const HomeScreen = () => {
         }
     }
 
-    const data = [
-        { id: '1', name: 'Man Shirt', icon: 'shirt-sharp' },
-        { id: '2', name: 'Dress', icon: 'shirt-sharp' },
-        { id: '3', name: 'Man Work', icon: 'shirt-sharp' },
-        { id: '4', name: 'Woman Bag', icon: 'shirt-sharp' },
-        { id: '5', name: 'Man Shoes', icon: 'shirt-sharp' },
-    ];
 
-    const data2 = [
-        { id: '1', name: 'FS - Nike Air Max 270 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-        { id: '2', name: 'FE - QUILTED MAXI CROS...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-        { id: '3', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-        { id: '4', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-        { id: '5', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-        { id: '6', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-    ];
 
-    const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
-        <View style={styles.item}>
-            <View style={styles.bodericon}>
-                {/* <Image style={styles.Icon} source={item.icon} /> */}
-                <Icon name={item.icon} size={26} />
-            </View>
-            <Text style={styles.textname}>{item.name}</Text>
-        </View>
-    );
 
-    const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } }) => {
-        console.log(item.image);
-        return (
-            < View style={styles.itemsale} >
-                <Image style={styles.imageproduct} source={{ uri: item.image }} />
-                <Text style={styles.nameproduct}>{item.name}</Text>
-
-                <Text style={styles.price}>$299,43</Text>
-                <View style={styles.stylesaleoff}>
-                    <Text style={styles.strikethrough}>$534,33</Text>
-                    <Text style={styles.saleoff}>24% Off</Text>
-                </View>
-            </View >
-        )
-    }
-
-    const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } }) => {
-        return (
-            <View style={styles.itemsale2}>
-                <Image style={styles.imageproduct} source={{ uri: item.image }} />
-                <Text style={styles.nameproduct}>{item.name}</Text>
-                {/* <Image style={styles.imga} source={require('../asset/img/a.png')} /> */}
-                <Text style={styles.price}>$299,43</Text>
-                <View style={styles.stylesaleoff}>
-                    <Text style={styles.strikethrough}>$534,33</Text>
-                    <Text style={styles.saleoff}>24% Off</Text>
-                </View>
-            </View>
-        )
-
-    }
 
     return (
-        <ScrollView horizontal={false}>
+        <ScrollView horizontal={false} style={{ paddingHorizontal: 20, paddingTop: 15 }} >
             <View style={styles.top}>
-
-                <View>
-                    {/* <Image style={styles.search} source={require('../asset/img/Search.png')} /> */}
-                    <Icon name='search' style={styles.search} size={22} />
+                <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
+                >
+                    <Icon name='search' size={22} />
                     <TextInput
-                        style={styles.textinputsecrch}
-                        placeholder="Search Here" >
-                    </TextInput>
+                        placeholder="Search here"
+                        style={styles.TextSearch}
+                        onFocus={() => setClick(true)}
+                        onBlur={() => setClick(false)}
+
+                    />
                 </View>
 
-                <Pressable style={styles.pressable}>
-                    {/* <Image style={styles.favorite} source={require('../asset/img/Favorite.png')} /> */}
-                    <Icon name='shirt-sharp' size={24} />
-                </Pressable>
-
-                <Pressable style={styles.pressable}>
-                    <Icon name='notifications-outline' size={24} />
-                    {/* <Image style={styles.notification} source={require('../asset/img/Notification.png')} /> */}
-                </Pressable>
+                <View style={styles.headerRight}>
+                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
+                        <Icon name="heart-outline" size={25} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
+                        <Icon name="notifications-outline" size={25} />
+                    </TouchableOpacity>
+                </View>
 
             </View>
 
@@ -118,12 +105,13 @@ const HomeScreen = () => {
                 >
                     {
                         images.map((e, index) =>
-                            <Image
-                                key={e}
-                                resizeMode='stretch'
-                                style={styles.slide}
-                                source={{ uri: e }}
-                            />
+                            <Pressable onPress={() => navigation.navigate(e.nameScreen as never)} key={e.nameScreen}>
+                                <Image
+                                    resizeMode='stretch'
+                                    style={styles.slide}
+                                    source={{ uri: e.image }}
+                                />
+                            </Pressable>
                         )
                     }
                 </ScrollView>
@@ -132,7 +120,7 @@ const HomeScreen = () => {
                     {
                         images.map((e, index) =>
                             <Text
-                                key={e}
+                                key={e.nameScreen}
                                 style={imgActive == index ? styles.dotactive : styles.dot}
                             >●</Text>
                         )
@@ -204,11 +192,11 @@ const HomeScreen = () => {
                 />
             </View>
 
-            <Image style={styles.imgrecomended} source={require('../asset/image/recomendedProduct.png')} />
 
             <View style={styles.listgrid}>
+                <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
                 <FlatList
-                    style={{ height: 550 }}
+                    style={{ height: 550, marginTop: 10 }}
                     nestedScrollEnabled={true}
                     showsVerticalScrollIndicator={false}
                     data={data2}
@@ -226,20 +214,12 @@ export default HomeScreen
 
 const styles = StyleSheet.create({
     top: {
-        margin: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
     },
 
-    textinputsecrch: {
-        width: 263,
-        height: 46,
-        borderRadius: 6,
-        borderWidth: 1,
-        borderColor: '#D9E2FF',
-        paddingLeft: 45,
-    },
+
 
     favorite: {
         width: 24,
@@ -255,23 +235,34 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
     },
-
-    search: {
-        width: 24,
-        height: 24,
-        position: 'absolute',
-        top: 11,
-        left: 10,
+    headerRight: {
+        paddingLeft: 10,
+        gap: 15,
+        flexDirection: 'row',
+        height: '100%',
+        alignItems: 'center',
     },
-
+    TextSearch: {
+        justifyContent: 'center',
+        marginLeft: 10
+    },
+    headerLeft: {
+        borderWidth: 1,
+        padding: 5,
+        borderRadius: 5,
+        borderColor: '#EBF0FF',
+        alignItems: 'center',
+        flexDirection: 'row',
+        width: '80%',
+        height: '85%'
+    },
     topslide: {
-        marginLeft: 20,
-        marginRight: 20
+        width: '100%',
     },
 
     slide: {
         height: 205,
-        width: 354,
+        width: 400,
         borderRadius: 6,
     },
 
@@ -296,7 +287,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        margin: 20,
+        marginVertical: 20,
     },
 
     textcategory: {
@@ -307,7 +298,6 @@ const styles = StyleSheet.create({
 
     listcategory: {
         height: 100,
-        marginLeft: 20,
     },
 
     item: {
@@ -338,8 +328,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginLeft: 20,
-        marginRight: 20,
     },
 
     textflashsale: {
@@ -356,7 +344,6 @@ const styles = StyleSheet.create({
 
     listflastsale: {
         height: 240,
-        marginLeft: 20,
         marginTop: 15,
     },
 
@@ -371,9 +358,9 @@ const styles = StyleSheet.create({
     },
 
     imageproduct: {
-        marginLeft: 15,
+        alignSelf: 'center',
         width: 72,
-        height: 72
+        height: 72,
     },
 
     nameproduct: {
@@ -412,14 +399,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginLeft: 20,
-        marginRight: 20,
         marginTop: 10
     },
 
     imgrecomended: {
+        width: '100%',
+        borderRadius: 5,
         marginTop: 10,
-        marginLeft: 20,
     },
 
     imga: {
@@ -431,8 +417,6 @@ const styles = StyleSheet.create({
     },
 
     listgrid: {
-        marginLeft: 20,
-        marginRight: 20,
     },
 
     itemsale2: {
@@ -441,8 +425,46 @@ const styles = StyleSheet.create({
         marginRight: 9,
         borderWidth: 1,
         borderRadius: 6,
-        borderColor: '#EBF0FF',
+        borderColor: 'black',
         justifyContent: 'space-around',
+        marginLeft: 5,
+        marginBottom: 5,
+
+
     }
 
 })
+const images = [
+    {
+        image: 'https://thietke6d.com/wp-content/uploads/2021/03/Mau-banner-quang-cao-dep-1.png',
+        nameScreen: 'OfferScreen'
+    },
+    {
+        image: 'https://intphcm.com/data/upload/banner-thoi-trang-tuoi.jpg',
+        nameScreen: 'CartScreen'
+    },
+    {
+        image: 'https://dojeannam.com/wp-content/uploads/2017/09/BANNER-KHAI-TRUONG-DOJEANNAM.jpg',
+        nameScreen: 'PaymentScreen'
+    },
+    {
+        image: 'https://intphcm.com/data/upload/banner-thoi-trang.jpg',
+        nameScreen: 'BankTransferScreen'
+    },
+]
+const data = [
+    { id: '1', name: 'Man Shirt', icon: 'shirt-sharp' },
+    { id: '2', name: 'Dress', icon: 'shirt-sharp' },
+    { id: '3', name: 'Man Work', icon: 'shirt-sharp' },
+    { id: '4', name: 'Woman Bag', icon: 'shirt-sharp' },
+    { id: '5', name: 'Man Shoes', icon: 'shirt-sharp' },
+];
+
+const data2 = [
+    { id: '1', name: 'FS - Nike Air Max 270 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
+    { id: '2', name: 'FE - QUILTED MAXI CROS...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
+    { id: '3', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
+    { id: '4', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
+    { id: '5', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
+    { id: '6', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
+];

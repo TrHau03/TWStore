@@ -1,16 +1,15 @@
 
-import { RootStackScreenLogin, RootStackScreenSlide, configStack } from '../Root/RootStack';
-import SlideScreen from '../../screens/SlideScreen';
-import { View } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginNavigation from './LoginNavigation';
 import SlideNavigation from './SlideNavigation';
 import React, { useEffect, useState } from 'react';
+import BottomTab from '../BottomNavigation/BottomTabNavigator';
 
 
 
 const Navigation = () => {
     const [slide, setslide] = useState<boolean>();
+    const [isLogin, setIsLogin] = useState<boolean>(true);
     useEffect(() => {
         const temp = async () => {
             const checkSlide = await AsyncStorage.getItem('checkSlide');
@@ -19,9 +18,9 @@ const Navigation = () => {
         temp();
     }, [])
     if (!slide) {
-        return <SlideNavigation/>;
+        return <SlideNavigation />;
     } else {
-        return <LoginNavigation/>
+        return isLogin ? <BottomTab /> : <LoginNavigation />
     }
 }
 
