@@ -26,6 +26,19 @@ type CustomRatingBarProps = {
 
 
 export default function Productdetail() {
+  // Định nghĩa kiểu dữ liệu cho đánh giá (Review)
+  interface Review {
+    id: number;
+    stars: number;
+    user: {
+      name: string;
+      image: string;
+    };
+    date: string;
+    time: string;
+    comment: string;
+    commentImage: string[] | null;
+  }
   //đánh giá sản phẩm
   const [defaultRating, setDefaultRating] = useState(4);
   const [maxRating] = useState([1, 2, 3, 4, 5]);
@@ -52,6 +65,24 @@ export default function Productdetail() {
     }
   };
 
+  const [selectedStar, setSelectedStar] = useState<number | null>(null);
+
+  const filteredReviews = selectedStar
+    ? reviewsData.filter((review) => review.stars === selectedStar)
+    : reviewsData;
+
+  const reviewCount = filteredReviews.length;
+  const sortReviewsByDateTime = (reviews: Review[]) => {
+    return reviews.sort((a: Review, b: Review) => {
+      const dateTimeA = new Date(
+        `${a.date} ${a.time}`
+      ).getTime();
+      const dateTimeB = new Date(
+        `${b.date} ${b.time}`
+      ).getTime();
+      return dateTimeA - dateTimeB;
+    });
+  };
 
 
   const CustomRatingBar: React.FC<CustomRatingBarProps> = ({ numberOfRatings }) => (
@@ -81,167 +112,297 @@ export default function Productdetail() {
   //next screen
   const navigation = useNavigation();
 
-
+  const handleAddTocart = () => {
+    console.log('nhấn được rồi nè !')
+  };
 
 
 
   return (
-    <ScrollView>
-      <View style={styles.header}>
-        <Image style={styles.icon} source={require('../asset/image/back.png')} />
-        <Text style={styles.name}>Nike Air Max 270 Rea...</Text>
-        <Image style={styles.icon} source={require('../asset/image/search.png')} />
-        <Image style={styles.icon} source={require('../asset/image/list.png')} />
-      </View>
-      <View>
-        <View style={styles.slideshowcontainer}>
-          <ScrollView
-            horizontal
-            pagingEnabled
-            contentContainerStyle={styles.contentContainer}
-            showsHorizontalScrollIndicator={false}
-            onScroll={handleScroll}
-          >
-            {slideshow.map((product, index) => (
-              <View key={product.id} style={styles.slide}>
-                <Image source={product.img} style={styles.image} />
-                <Text style={styles.imageText}>{product.mau}</Text>
-              </View>
-            ))}
-          </ScrollView>
-          <View style={styles.pagination}>
-            {slideshow.map((_, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.dot,
-                  index === currentPage && styles.activeDot, // Apply activeDot style for the current page
-                ]}
+    <View style={{ height: '100%' }}>
+
+      <ScrollView>
+        <View style={styles.header}>
+          <Image style={styles.icon} source={require('../asset/image/back.png')} />
+          <Text style={styles.name}>Nike Air Max 270 Rea...</Text>
+          <Image style={styles.icon} source={require('../asset/image/search.png')} />
+          <Image style={styles.icon} source={require('../asset/image/list.png')} />
+        </View>
+        <View>
+          <View style={styles.slideshowcontainer}>
+            <ScrollView
+              horizontal
+              pagingEnabled
+              contentContainerStyle={styles.contentContainer}
+              showsHorizontalScrollIndicator={false}
+              onScroll={handleScroll}
+            >
+              {slideshow.map((product, index) => (
+                <View key={product.id} style={styles.slide}>
+                  <Image source={product.img} style={styles.image} />
+                  <Text style={styles.imageText}>{product.mau}</Text>
+                </View>
+              ))}
+            </ScrollView>
+            <View style={styles.pagination}>
+              {slideshow.map((_, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.dot,
+                    index === currentPage && styles.activeDot, // Apply activeDot style for the current page
+                  ]}
+                />
+              ))}
+            </View>
+          </View>
+          <View style={styles.nameproduct}>
+            <Text style={styles.product}>Nike Air Zoom Pegasus 36 Miami</Text>
+            <TouchableOpacity onPress={handleImagePress}>
+              <Image
+                source={imageSource}
+                style={{ width: 45, height: 40, justifyContent: 'center', alignItems: 'center', marginLeft: 20 }}
               />
-            ))}
-          </View>
-        </View>
-        <View style={styles.nameproduct}>
-          <Text style={styles.product}>Nike Air Zoom Pegasus 36 Miami</Text>
-          <TouchableOpacity onPress={handleImagePress}>
-            <Image
-              source={imageSource}
-              style={{ width: 45, height: 40, justifyContent: 'center', alignItems: 'center', marginLeft: 20 }}
-            />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.marginlefft}>
-          <View>
-            <CustomRatingBar numberOfRatings={10} />
-          </View>
-          <Text style={styles.price}>$299,43</Text>
-          <Text style={styles.textsize}>Select Size</Text>
-          <View style={styles.sizeContainer}>
-            <ScrollView
-              horizontal
-              contentContainerStyle={styles.sizeScrollViewContent}
-              showsHorizontalScrollIndicator={false}
-            >
-              {sortedSizes.map((size, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.sizeCircle,
-                    { borderColor: selectedSize === size ? '#1C1C1C' : '#EBF0FF' },
-                  ]}
-                  onPress={() => setSelectedSize(size)}
-                >
-                  <Text
-                    style={[
-                      styles.sizeText,
-                      { color: selectedSize === size ? '#223263' : '#223263' },
-                    ]}
-                  >
-                    {size}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-
-          <Text style={styles.textsize}>Select Color</Text>
-          <View style={styles.colorContainer}>
-            <ScrollView
-              horizontal
-              contentContainerStyle={styles.colorScrollViewContent}
-              showsHorizontalScrollIndicator={false}
-            >
-              {availableColors.map((color, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={[
-                    styles.colorCircle,
-                    { backgroundColor: color },
-                  ]}
-                  onPress={() => setSelectedColor(color)}
-                >
-                  {selectedColor === color && <View style={styles.selectedColorDot}></View>}
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-          <Text style={styles.textsize}>Specification</Text>
-          <View>
-            <Text style={styles.comment}>Style:</Text>
-            <Text style={styles.comment2}>The Nike Air Max 270 React ENG combines a full-length React foam midsole with a 270 Max Air unit for unrivaled comfort and a striking visual experience.</Text>
-          </View>
-          <View style={{ flexDirection: 'row', width: windowWidth }}>
-            <Text style={styles.textsize}>Review Product</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Productreviews' as never)}>
-              <Text style={styles.textsize2}>See More</Text>
             </TouchableOpacity>
-
           </View>
-          <CustomRatingBar numberOfRatings={10} />
-
-          <View>
-            <Text style={styles.textsize}>You Might Also Like</Text>
-            <View style={styles.productList}>
+          <View style={styles.marginlefft}>
+            <View>
+              <CustomRatingBar numberOfRatings={10} />
+            </View>
+            <Text style={styles.price}>$299,43</Text>
+            <Text style={styles.textsize}>Select Size</Text>
+            <View style={styles.sizeContainer}>
               <ScrollView
                 horizontal
                 contentContainerStyle={styles.sizeScrollViewContent}
                 showsHorizontalScrollIndicator={false}
               >
-                {products.map((product) => (
-                  <TouchableOpacity key={product.id} style={styles.productItem}>
-                    <Image source={product.image} style={styles.productImage} />
-                    <Text style={styles.productName}>{product.name}</Text>
-                    <Text style={styles.productPrice}>${product.price}</Text>
-                    <View style={styles.sale}>
-                      <Text style={styles.productOldPrice}>${product.oldPrice}</Text>
-                      <Text style={styles.textsale}> 24% Off</Text>
-                    </View>
+                {sortedSizes.map((size, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.sizeCircle,
+                      { borderColor: selectedSize === size ? '#1C1C1C' : '#EBF0FF' },
+                    ]}
+                    onPress={() => setSelectedSize(size)}
+                  >
+                    <Text
+                      style={[
+                        styles.sizeText,
+                        { color: selectedSize === size ? '#223263' : '#223263' },
+                      ]}
+                    >
+                      {size}
+                    </Text>
                   </TouchableOpacity>
-
                 ))}
               </ScrollView>
             </View>
+
+            <Text style={styles.textsize}>Select Color</Text>
+            <View style={styles.colorContainer}>
+              <ScrollView
+                horizontal
+                contentContainerStyle={styles.colorScrollViewContent}
+                showsHorizontalScrollIndicator={false}
+              >
+                {availableColors.map((color, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[
+                      styles.colorCircle,
+                      { backgroundColor: color },
+                    ]}
+                    onPress={() => setSelectedColor(color)}
+                  >
+                    {selectedColor === color && <View style={styles.selectedColorDot}></View>}
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+            <Text style={styles.textsize}>Specification</Text>
+            <View>
+              <Text style={styles.comment}>Style:</Text>
+              <Text style={styles.comment2}>The Nike Air Max 270 React ENG combines a full-length React foam midsole with a 270 Max Air unit for unrivaled comfort and a striking visual experience.</Text>
+            </View>
+            <View style={{ flexDirection: 'row', width: windowWidth }}>
+              <Text style={styles.textsize}>Review Product</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Productreviews' as never)}>
+                <Text style={styles.textsize2}>See More</Text>
+              </TouchableOpacity>
+
+            </View>
+            <CustomRatingBar numberOfRatings={10} />
+            <View style={{ height: 'auto', alignItems: 'center' }}>
+              {filteredReviews.map((review) => (
+                <View key={review.id} style={styles.reviewContainer}>
+                  <View style={styles.reviewHeader}>
+                    <Image source={{ uri: review.user.image }} style={styles.userImage} />
+                    <View style={styles.userInfo}>
+                      <Text style={styles.userName}>{review.user.name}</Text>
+                      <View style={styles.starRating}>
+                        <Text style={styles.reviewStars}>{'⭐'.repeat(review.stars)}</Text>
+                      </View>
+                    </View>
+                  </View>
+                  {review.comment && <Text style={styles.reviewComment}>{review.comment}</Text>}
+                  {review.commentImage && (
+                    <View style={styles.commentImagesContainer}>
+                      {Array.isArray(review.commentImage) && review.commentImage.map((imageURL, index) => (
+                        <Image
+                          key={index}
+                          source={{ uri: imageURL }}
+                          style={styles.CommentImage}
+                        />
+                      ))}
+                    </View>
+                  )}
+                  <View style={styles.reviewFooter}>
+                    <Text style={styles.reviewDateTime}>{`${review.date} at ${review.time}`}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+
+            <View>
+              <Text style={styles.textsize}>You Might Also Like</Text>
+              <View style={styles.productList}>
+                <ScrollView
+                  horizontal
+                  contentContainerStyle={styles.sizeScrollViewContent}
+                  showsHorizontalScrollIndicator={false}
+                >
+                  {products.map((product) => (
+                    <TouchableOpacity key={product.id} style={styles.productItem}>
+                      <Image source={product.image} style={styles.productImage} />
+                      <Text style={styles.productName}>{product.name}</Text>
+                      <Text style={styles.productPrice}>${product.price}</Text>
+                      <View style={styles.sale}>
+                        <Text style={styles.productOldPrice}>${product.oldPrice}</Text>
+                        <Text style={styles.textsale}> 24% Off</Text>
+                      </View>
+                    </TouchableOpacity>
+
+                  ))}
+                </ScrollView>
+              </View>
+            </View>
           </View>
         </View>
-        <TouchableOpacity style={styles.stickyContainer}>
-          <View >
-            <LinearGradient colors={['#46CAF3', '#68B1D9']} style={styles.bottomButton}>
-              <Text style={styles.bottomButtonText}>Add to cart</Text>
-            </LinearGradient>
-          </View>
+      </ScrollView>
+      <View style={styles.addtocartButtonContainer}>
+        <TouchableOpacity
+          style={styles.addtocartButton}
+          onPress={() => handleAddTocart()}
+        >
+          <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
+            <Text style={styles.addtocartButtonText}>Add to cart</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
+
   );
 }
 
 const styles = StyleSheet.create({
+  CommentImage: {
+    width: '20%',
+    height: 80,
+    resizeMode: 'cover',
+    borderRadius: 20,
+    marginBottom: 20,
+    margin: 10,
+  },
+  commentImagesContainer: {
+    flexDirection: 'row',
+  },
+  reviewStars: {
+    fontSize: 15,
+  },
+  reviewContainer: {
+    marginLeft: -20,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#EAEAEA',
+    width: '96%',
+    height: 'auto',
+    backgroundColor: 'white',
+    marginBottom: 16,
+  },
+  reviewHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+    marginTop: 10,
+  },
+  userImage: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 10,
+  },
+  userInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: '700',
+    fontFamily: 'poppins',
+    color: '#223263',
+    lineHeight: 21,
+  },
+  starRating: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reviewContent: {
+    marginBottom: 5,
+  },
+  reviewComment: {
+    marginTop: 10,
+    marginBottom: 15,
+    fontStyle: 'italic',
+    textAlign: 'justify',
+    fontSize: 17,
+    margin: 5,
+  },
+  reviewFooter: {
+    marginBottom: 10,
+  },
+  reviewDateTime: {
+    color: '#888',
+  },
+
+  addtocartButtonContainer: {
+    position: 'absolute',
+    bottom: 10,
+    alignSelf: 'center',
+    width: windowWidth - 20,
+  },
+  addtocartButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  addtocartButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 20,
+    fontFamily: "poppins",
+    fontWeight: '800',
+    height: 60,
+    lineHeight: 60,
+  },
+
+
+
+
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    height: 100,
+    height: 80,
     backgroundColor: 'white',
   },
   icon: {
@@ -393,6 +554,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   productList: {
+    marginBottom: 60,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
@@ -571,5 +733,20 @@ const slideshow = [
     id: '7',
     img: require('../asset/image/xanhbien.png'),
     mau: 'xanhbien',
+  },
+];
+
+const reviewsData = [
+  {
+    id: 1,
+    stars: 5,
+    user: {
+      name: 'James Lawson',
+      image: 'https://bom.so/BIMgHb', // User's profile image URL
+    },
+    date: '2023-08-24',
+    time: '14:30',
+    comment: 'air max are always very comfortable fit, clean and just perfect in every way. just the box was too small and scrunched the sneakers up a little bit, not sure if the box was always this small but the 90s are and will always be one of my favorites.',
+    commentImage: ['https://bom.so/BIMgHb'], // Comment image URL (optional)
   },
 ];
