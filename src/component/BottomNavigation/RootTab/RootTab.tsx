@@ -16,6 +16,7 @@ import ExploreNavigation from '../../Navigation/ExploreNavigation';
 import CartNavigation from '../../Navigation/CartNavigation';
 import OfferNavigation from '../../Navigation/OfferNavigation';
 import AccountNavigation from '../../Navigation/AccountNavigation';
+import { Badge } from '@ant-design/react-native';
 
 export enum RootTabScreenENum {
     StackHome = 'Home',
@@ -60,7 +61,12 @@ export const configTab = (route: any) => {
             } else if (route.name === ROUTES.ACCOUNT) {
                 iconName = focused ? 'person' : 'person-outline';
             }
-            return <Icon name={iconName} size={22} color={color} />;
+            return route.name === ROUTES.CART ?
+                <Badge dot>
+                    <Icon name={iconName} size={22} color={color} />
+                </Badge> :
+                <Icon name={iconName} size={22} color={color} />
+
         },
         headerShown: false,
         tabBarShowLabel: false,

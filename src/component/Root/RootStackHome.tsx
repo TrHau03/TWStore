@@ -27,8 +27,8 @@ export type RootStackParamListHome = {
 
 export const RootStackScreenHome = () => {
     const Screen: any = [
-        { id: uid(), name: RootStackScreenEnumHome.HomeScreen, component: HomeScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumHome.FavoriteScreen, component: FavoriteScreen, options: {} },
+        { id: uid(), name: RootStackScreenEnumHome.HomeScreen, component: HomeScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumHome.NotificationScreen, component: NotificationScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumHome.ActivityScreen, component: ActivityScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumHome.OfferNorifiScreen, component: OfferNorifiScreen, options: {} },

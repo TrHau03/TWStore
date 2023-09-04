@@ -7,11 +7,9 @@ interface Style {
 }
 const ButtonBottom = ({style, title} : Style) => {
     return (
-        <TouchableOpacity>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={[styles.button, style]} >
                 <Text style={styles.textButton}>{title}</Text>
             </LinearGradient>
-        </TouchableOpacity>
     )
 }
 

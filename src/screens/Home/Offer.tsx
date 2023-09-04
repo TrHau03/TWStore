@@ -38,19 +38,19 @@ const renderItem = ({ item }: any): React.JSX.Element => {
 };
 const OfferNorifiScreen = ({ navigation }: PropsHome) => {
   return (
-    <ScrollView
+    <View
       style={styles.container}
     >
       <Header title='Offer' navigation={navigation} />
       <FlatList
-        style={{ paddingBottom: 85}}
+        style={{ marginBottom: 45}}
         data={DataOffer}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         numColumns={1}
         showsVerticalScrollIndicator={false}
       />
-    </ScrollView>
+    </View>
   );
 };
 

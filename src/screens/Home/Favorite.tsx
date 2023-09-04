@@ -53,17 +53,18 @@ const renderItem = ({ item }: any): React.JSX.Element => {
 const FavoriteScreen = ({ navigation }: PropsHome) => {
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container} >
       <Header title='Favorite' navigation={navigation} />
       <FlatList
-      style={{marginTop: 20,paddingBottom: 80}}
+        nestedScrollEnabled={true}
+        style={{ marginTop: 20, marginBottom: 80 }}
         data={DataProduct}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         numColumns={2}
         showsVerticalScrollIndicator={false}
       />
-    </ScrollView>
+    </View>
   );
 };
 

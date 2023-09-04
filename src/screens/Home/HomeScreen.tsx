@@ -1,11 +1,9 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
-import { ROUTES } from '../../component/constants';
-
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -51,8 +49,17 @@ const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } 
 type NavigationProps = StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>
 const HomeScreen = () => {
     const navigation = useNavigation<NavigationProps>();
+
     const [imgActive, setimgActive] = useState(0);
+
     const [click, setClick] = useState<boolean>(false);
+
+    const [enableFlatlist, setEnableFlatlist] = useState<boolean>(false);
+
+    console.log('render');
+    
+
+
 
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
@@ -62,13 +69,18 @@ const HomeScreen = () => {
             }
         }
     }
-
-
-
-
-
+    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: any) => {
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+    }
     return (
-        <ScrollView horizontal={false} style={{ paddingHorizontal: 20, paddingTop: 15 }} >
+        <ScrollView horizontal={false} style={{ paddingHorizontal: 20, paddingTop: 15 } } scrollEnabled={!enableFlatlist}
+            onScroll={({ nativeEvent }) => {
+                if (isCloseToBottom(nativeEvent)) {
+                    setEnableFlatlist(true);
+                }else{
+                    setEnableFlatlist(false);
+                }
+            }}>
             <View style={styles.top}>
                 <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
                 >
@@ -196,8 +208,9 @@ const HomeScreen = () => {
             <View style={styles.listgrid}>
                 <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
                 <FlatList
-                    style={{ height: 550, marginTop: 10 }}
+                    style={{ height: 490, marginTop: 10, marginBottom: 70 }}
                     nestedScrollEnabled={true}
+                    scrollEnabled={enableFlatlist}
                     showsVerticalScrollIndicator={false}
                     data={data2}
                     renderItem={renderItem3}

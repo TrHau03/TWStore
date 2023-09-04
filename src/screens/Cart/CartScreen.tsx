@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { InputItem, Stepper } from '@ant-design/react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import LinearGradient from 'react-native-linear-gradient';
-import { ScreenProps } from '../../component/Navigation/Props'
+import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 interface Product {
     id: number;
@@ -47,7 +47,7 @@ const RenderItem = ({ item }: { item: Product }) => {
 }
 
 
-const CartScreen = ({navigation} : ScreenProps) => {
+const CartScreen = ({ navigation }: PropsCart) => {
     const [cupon, setCupon] = useState<string>('');
     return (
         <View style={{ paddingHorizontal: 16 }}  >
@@ -96,8 +96,8 @@ const CartScreen = ({navigation} : ScreenProps) => {
                     <Text style={styles.textBottomTotalRight}>$598.86</Text>
                 </View>
             </View>
-            <View style ={{marginTop: 50}}>
-                    <ButtonBottom  title='Check Out'/>
+            <View style={{ marginTop: 20 }}>
+                <ButtonBottom title='Check Out' />
             </View>
         </View >
     )
