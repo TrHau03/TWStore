@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -57,7 +58,7 @@ const HomeScreen = () => {
     const [enableFlatlist, setEnableFlatlist] = useState<boolean>(false);
 
     console.log('render');
-    
+
 
 
 
@@ -73,153 +74,155 @@ const HomeScreen = () => {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
     }
     return (
-        <ScrollView horizontal={false} style={{ paddingHorizontal: 20, paddingTop: 15 } } scrollEnabled={!enableFlatlist}
-            onScroll={({ nativeEvent }) => {
-                if (isCloseToBottom(nativeEvent)) {
-                    setEnableFlatlist(true);
-                }else{
-                    setEnableFlatlist(false);
-                }
-            }}>
-            <View style={styles.top}>
-                <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
-                >
-                    <Icon name='search' size={22} />
-                    <TextInput
-                        placeholder="Search here"
-                        style={styles.TextSearch}
-                        onFocus={() => setClick(true)}
-                        onBlur={() => setClick(false)}
+        <SafeAreaView>
+            <ScrollView horizontal={false} style={{ paddingHorizontal: 20, paddingTop: 15 }} scrollEnabled={!enableFlatlist}
+                onScroll={({ nativeEvent }) => {
+                    if (isCloseToBottom(nativeEvent)) {
+                        setEnableFlatlist(true);
+                    } else {
+                        setEnableFlatlist(false);
+                    }
+                }}>
+                <View style={styles.top}>
+                    <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
+                    >
+                        <Icon name='search' size={22} />
+                        <TextInput
+                            placeholder="Search here"
+                            style={styles.TextSearch}
+                            onFocus={() => setClick(true)}
+                            onBlur={() => setClick(false)}
 
+                        />
+                    </View>
+
+                    <View style={styles.headerRight}>
+                        <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
+                            <Icon name="heart-outline" size={25} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
+                            <Icon name="notifications-outline" size={25} />
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
+
+                <View style={styles.topslide}>
+
+                    <ScrollView
+                        nestedScrollEnabled={true}
+                        onScroll={({ nativeEvent }) => onChange(nativeEvent)}
+                        showsHorizontalScrollIndicator={false}
+                        pagingEnabled
+                        horizontal
+                        style={styles.slide}
+                    >
+                        {
+                            images.map((e, index) =>
+                                <Pressable onPress={() => navigation.navigate(e.nameScreen as never)} key={e.nameScreen}>
+                                    <Image
+                                        resizeMode='stretch'
+                                        style={styles.slide}
+                                        source={{ uri: e.image }}
+                                    />
+                                </Pressable>
+                            )
+                        }
+                    </ScrollView>
+
+                    <View style={styles.warpdot}>
+                        {
+                            images.map((e, index) =>
+                                <Text
+                                    key={e.nameScreen}
+                                    style={imgActive == index ? styles.dotactive : styles.dot}
+                                >●</Text>
+                            )
+                        }
+                    </View>
+
+                </View>
+
+                <View style={styles.category}>
+
+                    <Text style={styles.textcategory}>Category</Text>
+
+                    <Pressable>
+                        <Text style={styles.textcategory}>
+                            More Category
+                        </Text>
+                    </Pressable>
+
+                </View>
+
+                <View style={styles.listcategory}>
+                    <FlatList
+                        data={data}
+                        horizontal
+                        nestedScrollEnabled={true}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item.name}
                     />
                 </View>
 
-                <View style={styles.headerRight}>
-                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
-                        <Icon name="heart-outline" size={25} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
-                        <Icon name="notifications-outline" size={25} />
-                    </TouchableOpacity>
+                <View style={styles.flashsale}>
+
+                    <Text style={styles.textflashsale}>Flash Sale</Text>
+
+                    <Pressable>
+                        <Text style={styles.textflashsale2}>
+                            See More
+                        </Text>
+                    </Pressable>
+
                 </View>
 
-            </View>
-
-            <View style={styles.topslide}>
-
-                <ScrollView
-                    nestedScrollEnabled={true}
-                    onScroll={({ nativeEvent }) => onChange(nativeEvent)}
-                    showsHorizontalScrollIndicator={false}
-                    pagingEnabled
-                    horizontal
-                    style={styles.slide}
-                >
-                    {
-                        images.map((e, index) =>
-                            <Pressable onPress={() => navigation.navigate(e.nameScreen as never)} key={e.nameScreen}>
-                                <Image
-                                    resizeMode='stretch'
-                                    style={styles.slide}
-                                    source={{ uri: e.image }}
-                                />
-                            </Pressable>
-                        )
-                    }
-                </ScrollView>
-
-                <View style={styles.warpdot}>
-                    {
-                        images.map((e, index) =>
-                            <Text
-                                key={e.nameScreen}
-                                style={imgActive == index ? styles.dotactive : styles.dot}
-                            >●</Text>
-                        )
-                    }
+                <View style={styles.listflastsale}>
+                    <FlatList
+                        data={data2}
+                        horizontal
+                        nestedScrollEnabled={true}
+                        renderItem={renderItem2}
+                        keyExtractor={(item) => item.id}
+                    />
                 </View>
 
-            </View>
+                <View style={styles.megasale}>
+                    <Text style={styles.textflashsale}>Mega Sale</Text>
+                    <Pressable>
+                        <Text style={styles.textflashsale2}>
+                            See More
+                        </Text>
+                    </Pressable>
+                </View>
 
-            <View style={styles.category}>
-
-                <Text style={styles.textcategory}>Category</Text>
-
-                <Pressable>
-                    <Text style={styles.textcategory}>
-                        More Category
-                    </Text>
-                </Pressable>
-
-            </View>
-
-            <View style={styles.listcategory}>
-                <FlatList
-                    data={data}
-                    horizontal
-                    nestedScrollEnabled={true}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.name}
-                />
-            </View>
-
-            <View style={styles.flashsale}>
-
-                <Text style={styles.textflashsale}>Flash Sale</Text>
-
-                <Pressable>
-                    <Text style={styles.textflashsale2}>
-                        See More
-                    </Text>
-                </Pressable>
-
-            </View>
-
-            <View style={styles.listflastsale}>
-                <FlatList
-                    data={data2}
-                    horizontal
-                    nestedScrollEnabled={true}
-                    renderItem={renderItem2}
-                    keyExtractor={(item) => item.id}
-                />
-            </View>
-
-            <View style={styles.megasale}>
-                <Text style={styles.textflashsale}>Mega Sale</Text>
-                <Pressable>
-                    <Text style={styles.textflashsale2}>
-                        See More
-                    </Text>
-                </Pressable>
-            </View>
-
-            <View style={styles.listflastsale}>
-                <FlatList
-                    nestedScrollEnabled={true}
-                    data={data2}
-                    horizontal
-                    renderItem={renderItem2}
-                    keyExtractor={(item) => item.id}
-                />
-            </View>
+                <View style={styles.listflastsale}>
+                    <FlatList
+                        nestedScrollEnabled={true}
+                        data={data2}
+                        horizontal
+                        renderItem={renderItem2}
+                        keyExtractor={(item) => item.id}
+                    />
+                </View>
 
 
-            <View style={styles.listgrid}>
-                <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
-                <FlatList
-                    style={{ height: 490, marginTop: 10, marginBottom: 70 }}
-                    nestedScrollEnabled={true}
-                    scrollEnabled={enableFlatlist}
-                    showsVerticalScrollIndicator={false}
-                    data={data2}
-                    renderItem={renderItem3}
-                    keyExtractor={(item) => item.id}
-                    numColumns={2}
-                    columnWrapperStyle={styles.columnWrapper}
-                />
-            </View>
-        </ScrollView>
+                <View style={styles.listgrid}>
+                    <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
+                    <FlatList
+                        style={{ height: 490, marginTop: 10, marginBottom: 70 }}
+                        nestedScrollEnabled={true}
+                        scrollEnabled={enableFlatlist}
+                        showsVerticalScrollIndicator={false}
+                        data={data2}
+                        renderItem={renderItem3}
+                        keyExtractor={(item) => item.id}
+                        numColumns={2}
+                        columnWrapperStyle={styles.columnWrapper}
+                    />
+                </View>
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 

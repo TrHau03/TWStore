@@ -21,13 +21,12 @@ const Birthday = () => {
 
                 <View style={styles.input}>
                     <Text style={styles.txtInput}>{`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}</Text>
-                    <Pressable onPress={() => setOpen(true)}>
+                    <Pressable onPress={() => setOpen(true)} style={{ paddingRight: 10 }}>
                         <Icon name='calendar' size={30} color={'#434343'} />
                     </Pressable>
                 </View>
 
                 <DatePicker
-                    style={{}}
                     modal
                     mode='date'
                     open={open}

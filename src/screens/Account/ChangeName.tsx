@@ -1,38 +1,33 @@
 import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient'
+import Header from '../../component/Header/Header'
+import ButtonBottom from '../../component/Button/Button'
 
 const ChangeName = () => {
     return (
         <View style={styles.container}>
-            <View style={styles.title}>
-                <Pressable>
-                    <Image source={require('../../asset/image/icon_back.png')} />
-                </Pressable>
-                <Text style={styles.txtTitle}>Name</Text>
-            </View>
-
+            <Header hideBack title='Name' />
             <View style={styles.line}></View>
 
-            <View style={styles.Name}>
-                <Text style={styles.txtName}>First Name</Text>
-                <View style={styles.input}>
-                    <TextInput style={styles.txtInput} placeholder="Maximus" />
+            <View style={styles.content}>
+                <View style={styles.Name}>
+                    <Text style={styles.txtName}>First Name</Text>
+                    <View style={styles.input}>
+                        <TextInput style={styles.txtInput} placeholder="Maximus" />
+                    </View>
+                </View>
+
+                <View style={styles.Name}>
+                    <Text style={styles.txtName}>Last Name</Text>
+                    <View style={styles.input}>
+                        <TextInput style={styles.txtInput} placeholder="Gold" />
+                    </View>
                 </View>
             </View>
-
-            <View style={styles.Name}>
-                <Text style={styles.txtName}>Last Name</Text>
-                <View style={styles.input}>
-                    <TextInput style={styles.txtInput} placeholder="Gold" />
-                </View>
+            <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
+                <ButtonBottom title='Save' />
             </View>
-
-            <LinearGradient colors={['#46CAF3', '#46CAF3', '#68B1D9']} style={styles.btnSave}>
-                <Pressable>
-                    <Text style={styles.txtSave}>Save</Text>
-                </Pressable>
-            </LinearGradient>
         </View>
     )
 }
@@ -40,6 +35,7 @@ const ChangeName = () => {
 export default ChangeName
 
 const styles = StyleSheet.create({
+    content: {},
     txtSave: {
         color: 'white',
         fontSize: 14,
@@ -64,19 +60,23 @@ const styles = StyleSheet.create({
     },
 
     input: {
+        width: '100%',
+        height: 50,
+        backgroundColor: "#FFFFFF",
+        flexDirection: 'row',
+        paddingLeft: 10,
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: "#9098B1",
+        borderRadius: 5,
     },
 
     txtInput: {
-        borderWidth: 1,
         backgroundColor: "#FFFFFF",
-        borderColor: "#9098B1",
-        borderRadius: 5,
         width: '100%',
-        height: 50,
-        paddingLeft: 14,
+        paddingLeft: 10,
         color: '#9098B1',
-        fontSize: 12,
+        fontSize: 14,
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 21.60,
@@ -85,42 +85,36 @@ const styles = StyleSheet.create({
 
     txtName: {
         color: '#223263',
-        fontSize: 14,
+        fontSize: 18,
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 21,
         letterSpacing: 0.50,
         paddingBottom: 10,
+        alignSelf: "flex-start"
+
     },
 
     Name: {
-        padding: 10,
+        alignItems: 'center',
+        marginTop: 20,
+        width: '90%',
     },
 
     line: {
-        height: 1,
-        backgroundColor: '#EBF0FF',
-        width: '100%',
-        marginTop: 30,
-    },
-
-    txtTitle: {
-        color: '#223263',
-        fontSize: 16,
-        fontFamily: 'Poppins',
-        fontWeight: '700',
-        lineHeight: 24,
-        letterSpacing: 0.08,
-        paddingLeft: 10,
-    },
-    title: {
-        flexDirection: 'row',
-        paddingLeft: 20,
+        height: 0.5,
+        backgroundColor: '#ADA8A8',
+        width: '120%',
+        marginTop: 20,
+        position: 'relative',
+        right: 20
     },
 
     container: {
+        height: '80%',
         width: '100%',
-        height: '100%',
+        alignItems: 'center',
+        paddingHorizontal: 20,
         paddingTop: 20,
     }
 })

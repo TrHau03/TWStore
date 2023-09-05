@@ -1,19 +1,19 @@
 import { Image, StyleSheet, Text, View, Pressable, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Account from './Account'
+import * as Animatable from 'react-native-animatable';
 import Header from '../../component/Header/Header'
 import { PropsAccount } from '../../component/Navigation/Props'
 import { uid } from 'uid'
 import Icon from 'react-native-vector-icons/Ionicons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import ChangePass from './ChangePass'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Modal, Provider, Toast } from '@ant-design/react-native'
-import LinearGradient from 'react-native-linear-gradient'
+import { Modal, Provider } from '@ant-design/react-native'
 import ButtonBottom from '../../component/Button/Button'
 import Birthday from './Birthday'
 import Email from './Email'
 import Phone from './Phone'
 import Gender from './Gender'
+import ChangeName from './ChangeName';
 
 const user = {
     id: uid(5),
@@ -46,14 +46,16 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                                 (nameModal == 'ChangeEmail') ?
                                     <Email /> :
                                     (nameModal == 'ChangePhone') ?
-                                        <Phone /> : <ChangePass />
-
+                                        <Phone /> :
+                                        (nameModal == 'ChangePassword') ?
+                                            <ChangePass /> :
+                                            <ChangeName />
                     }
-                    <View style={{ paddingHorizontal: 20, position: 'relative' }}>
-                        <Pressable onPress={() => setModalVisible(false)}>
+                    <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative' }}>
+                        <Pressable onPress={() => { setModalVisible(false) }}>
                             <ButtonBottom title='Cancel' />
                         </Pressable>
-                    </View>
+                    </Animatable.View>
                 </View>
             </Modal>
             <View style={styles.container}>
@@ -65,7 +67,12 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                 <View style={styles.profile}>
                     <Image style={styles.img} source={require('../../asset/image/z3963074144022_6001e9ff55a6b122baa9d5bbe1fa2996.jpg')} />
                     <View style={styles.name}>
-                        <Text style={styles.txtName}>{user.name}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                            <Text style={styles.txtName}>{user.name}</Text>
+                            <Pressable onPress={() => {setModalVisible(true), setNameModal('ChangeName')} }>
+                                <MaterialCommunityIcons name='account-edit-outline' size={20} />
+                            </Pressable>
+                        </View>
                         <Text style={styles.txtUsername}>{user.userName}</Text>
                     </View>
                 </View>

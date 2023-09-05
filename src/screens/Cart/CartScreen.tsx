@@ -1,5 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable, ListRenderItemInfo, TouchableOpacity } from 'react-native'
-import { FlatList } from 'react-native-gesture-handler'
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList,  } from 'react-native'
 import React, { useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { InputItem, Stepper } from '@ant-design/react-native'
@@ -7,6 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import LinearGradient from 'react-native-linear-gradient';
 import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
+import { SafeAreaView } from 'react-native-safe-area-context'
 interface Product {
     id: number;
     name: string;
@@ -50,7 +50,7 @@ const RenderItem = ({ item }: { item: Product }) => {
 const CartScreen = ({ navigation }: PropsCart) => {
     const [cupon, setCupon] = useState<string>('');
     return (
-        <View style={{ paddingHorizontal: 16 }}  >
+        <SafeAreaView style={{ paddingHorizontal: 16 }}  >
             <View style={{ marginTop: 17 }}>
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
@@ -99,7 +99,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
             <View style={{ marginTop: 20 }}>
                 <ButtonBottom title='Check Out' />
             </View>
-        </View >
+        </SafeAreaView >
     )
 }
 

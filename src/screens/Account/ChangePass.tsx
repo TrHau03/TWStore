@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
 
     txtInput: {
         color: '#9098B1',
-        fontSize: 16,
+        fontSize: 14,
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 21.60,

@@ -7,7 +7,6 @@ import ButtonBottom from '../../component/Button/Button'
 
 
 
-
 const Gender = () => {
 
     const gender = [
