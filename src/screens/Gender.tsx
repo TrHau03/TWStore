@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, Pressable, Image, TextInput } from 'react-nativ
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { SelectList } from 'react-native-dropdown-select-list'
-
+import Header from '../component/Header/Header'
 
 
 
@@ -18,12 +18,7 @@ const Gender = () => {
 
     return (
         <View style={styles.container}>
-            <View style={styles.title}>
-                <Pressable>
-                    <Image source={require('../asset/image/icon_back.png')} />
-                </Pressable>
-                <Text style={styles.txtTitle}>Gender</Text>
-            </View>
+            <Header/>
 
             <View style={styles.line}></View>
 
@@ -37,9 +32,6 @@ const Gender = () => {
                     defaultOption={{key: 1,value: 'Male'}}
                     boxStyles={{borderRadius:5}}
                 /> 
-
-                
-
             </View>
 
 

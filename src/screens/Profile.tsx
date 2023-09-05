@@ -1,16 +1,11 @@
 import { Image, StyleSheet, Text, View, Pressable } from 'react-native'
-import React from 'react'
-import Account from './Account'
+import React from 'react';
+import Header from '../component/Header/Header';
 
 const Profile = () => {
     return (
         <View style={styles.container}>
-            <View style={styles.title}>
-                <Pressable>
-                    <Image source={require('../asset/image/icon_back.png')} />
-                </Pressable>
-                <Text style={styles.txtTitle}>Account</Text>
-            </View>
+            <Header/>
 
             <View style={styles.line}></View>
 
@@ -188,3 +183,4 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     }
 })
+

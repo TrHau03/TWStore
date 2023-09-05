@@ -1,10 +1,11 @@
 import React from 'react';
 import { View } from 'react-native';
-import ChangePass from './src/screens/ChangePass';
+import Order_Detail from './src/screens/Order_Detail';
 function App(): JSX.Element {
   return (
     <View>
-      <ChangePass/>
+      <Order_Detail/>
+
     </View>
   );
 }

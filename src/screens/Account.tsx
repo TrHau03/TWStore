@@ -1,5 +1,12 @@
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import Icon from 'react-native-vector-icons/Ionicons';
+
+interface Account {
+  id: number;
+  icon: string;
+  name: string;
+}
 
 const Account = () => {
   return (
@@ -8,25 +15,14 @@ const Account = () => {
 
       <View style={styles.line}></View>
 
-      <Pressable style={styles.button}>
-        <Image source={require('../asset/image/Profile_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Profile</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Image source={require('../asset/image/Oder_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Oder</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Image source={require('../asset/image/Address_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Address</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Image source={require('../asset/image/Payment_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Payment</Text>
-      </Pressable>
+      <View>
+        {Data.map((item) =>
+        <Pressable key={item.id} style={styles.button}>
+          <Icon name={item.icon} size={25} color={'#525252'}/>
+          <Text style={styles.txtbtn}>{item.name}</Text>
+        </Pressable>
+        )}
+      </View>
     </View>
   )
 }
@@ -72,3 +68,26 @@ const styles = StyleSheet.create({
         paddingTop: 20,
       }
 })
+
+const Data: Account[] = [
+  {
+    id: 1,
+    icon: 'person',
+    name: 'Profile'
+  },
+  {
+      id: 2,
+      icon: 'bag',
+      name: 'Order'
+    },
+    {
+      id: 3,
+      icon: 'location',
+      name: 'Address'
+    },
+    {
+      id: 4,
+      icon: 'logo-paypal',
+      name: 'Payment'
+    },
+];
