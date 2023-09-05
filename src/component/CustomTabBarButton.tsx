@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
-import {COLORS} from '../constants';
+import {COLORS} from '../component/constants';
 import Svg, {Path} from 'react-native-svg';
 
 const CustomTabBarButton = (props:any) => {
