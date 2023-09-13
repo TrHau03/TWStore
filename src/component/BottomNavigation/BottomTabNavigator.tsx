@@ -19,14 +19,4 @@ const BottomTab = () => {
 
 export default BottomTab;
 
-const styles = StyleSheet.create({
-  tabBarStyle: {
-    position: 'absolute',
-    borderTopWidth: 0,
 
-    right: 10,
-    left: 10,
-    height: 55,
-    borderRadius: 20
-  }
-});

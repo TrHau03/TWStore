@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList,  } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Dimensions, } from 'react-native'
 import React, { useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { InputItem, Stepper } from '@ant-design/react-native'
@@ -19,6 +19,7 @@ interface Product {
     type: string;
 }
 
+const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 
 const RenderItem = ({ item }: { item: Product }) => {
     const [numberCount, setNumberCount] = useState<number>(1);
@@ -55,7 +56,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
             <View style={styles.line}></View>
-            <FlatList style={{ maxHeight: '40%', marginTop: '11%' }}
+            <FlatList style={{ maxHeight: HEIGHT * 0.35, marginTop: '11%' }}
                 showsVerticalScrollIndicator={false}
                 renderItem={(object) => <RenderItem item={object.item} />}
                 data={data}
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
     },
     itemCart: {
         height: 110,
-        width: '100%',
+        width: WIDTH*0.92,
         backgroundColor: '#E5E5E5',
         borderRadius: 10,
         alignItems: 'center',
@@ -250,7 +251,7 @@ const styles = StyleSheet.create({
     },
     line: {
         position: 'absolute',
-        width: '120%',
+        width: WIDTH,
         height: 1,
         backgroundColor: '#E5E5E5',
         marginTop: 60,
