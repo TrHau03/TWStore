@@ -1,16 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Image, TextInput, TouchableOpacity, ScrollView, Alert, Dimensions, KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, TextInput, TouchableOpacity, ScrollView } from 'react-native'
+import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient';
 import ImagePicker from 'react-native-image-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 const windowWidth = Dimensions.get('window').width;
 
+
+    // chọn hình ảnh 
+    var options = {
+        storageOptions:{
+            skipBackup:true,
+            path:'images',
+        }
+    };
+
+
+
 const Addcomment = () => {
     const [selectedImages, setSelectedImages] = useState([]);
-    const [text, onChangeText] = useState('');
+    const [text, onChangeText] = React.useState('');
+
+    const handleAddComment = () => {
+        console.log('nhấn được rồi nè !')
+    };
     const [defaultRating, setDefaultRating] = useState(5);
-    const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
+    const [maxRating] = useState([1, 2, 3, 4, 5]);
     const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
     const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
 
@@ -42,71 +57,65 @@ const Addcomment = () => {
         )
     }
 
-    const handleAddImgComment = () => {
-        let options = {
-            storageOption: {
-                path: 'image',
-            },
-        };
-        launchImageLibrary(options, response => {
-            setselectImage(response.assets[0].uri);
-        });
-    }
 
 
-return (
-    <View style={{ marginBottom: 70 }}>
-        <View style={styles.header}>
-            <Image style={styles.icon} source={require('../asset/image/back.png')} />
-            <Text style={styles.name}>Write Review</Text>
-        </View>
-        <ScrollView >
-            <View style={styles.bodycontainer}>
-                <Text style={styles.textstyles}>Please write Overall level of satisfaction with your shipping / Delivery Service</Text>
-                <View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 10 }}>
-                    <CustomRatingbar />
-                    <Text style={[styles.textstyles, { lineHeight: 40, marginLeft: 20 }]}>{defaultRating + '/' + maxRating.length}</Text>
-                </View>
 
-                <Text style={[styles.textstyles, { marginTop: 20 }]}>Write Your Review</Text>
 
-                <TextInput
-                    style={styles.input}
-                    onChangeText={onChangeText}
-                    value={text}
-                    placeholder="Let us know what you think about our products"
-                    multiline
-                />
-                <Text style={[styles.textstyles, { marginTop: 20 }]} >Add Photo</Text>
+    return (
+        <View>
+            <View style={styles.header}>
+                <Image style={styles.icon} source={require('../asset/image/back.png')} />
+                <Text style={styles.name}>Write Review</Text>
+            </View>
+            <ScrollView style={{ height: '100%' }}>
+                <View style={styles.bodycontainer}>
+                    <Text style={styles.textstyles}>Please write Overall level of satisfaction with your shipping / Delivery Service</Text>
+                    <View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 10 }}>
+                        <CustomRatingbar />
+                        <Text style={[styles.textstyles, { lineHeight: 40, marginLeft: 20 }]}>{defaultRating + '/' + maxRating.length}</Text>
+                    </View>
 
-                <ScrollView
-                    horizontal
-                    contentContainerStyle={styles.sizeScrollViewContent}
-                    showsHorizontalScrollIndicator={false}
-                >
-                    <View style={styles.addimgButton}>
-                        <TouchableOpacity onPress={() => handleAddImgComment()}>
+                    <Text style={[styles.textstyles, { marginTop: 20 }]}>Write Your Review</Text>
+
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={onChangeText}
+                        value={text}
+                        placeholder="Let us know what you think about our products"
+                        multiline
+                    />
+                    <Text style={[styles.textstyles, { marginTop: 20 }]} >Add Photo</Text>
+
+                    <ScrollView
+                        horizontal
+                        contentContainerStyle={styles.sizeScrollViewContent}
+                        showsHorizontalScrollIndicator={false}
+                    >
+                            <View style={styles.addimgButton}>
+                                <TouchableOpacity >
+                                    <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
+                                        <Text style={styles.textimgstyle}>+</Text>
+                                    </LinearGradient>
+                                </TouchableOpacity>
+                            </View>
+                            
+                    </ScrollView>
+                    <View style={styles.addCommentButtonContainer}>
+                        <TouchableOpacity
+                            style={styles.addCommentButton}
+                            onPress={() => handleAddComment()}
+                        >
                             <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
-                                <Text style={styles.textimgstyle}>+</Text>
+                                <Text style={styles.addCommentButtonText}>Write Review</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>
+                </View>
 
-                </ScrollView>
-            </View>
-            <View style={styles.addCommentButtonContainer}>
-                <TouchableOpacity
-                    style={styles.addCommentButton}
-                    onPress={() => handleAddImgComment()}
-                >
-                    <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
-                        <Text style={styles.addCommentButtonText}>Write Review</Text>
-                    </LinearGradient>
-                </TouchableOpacity>
-            </View>
-        </ScrollView>
-    </View>
-)
+            </ScrollView>
+
+        </View>
+    )
 }
 
 export default Addcomment
@@ -118,7 +127,7 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 10,
         margin: 10,
-        marginLeft: 1,
+        marginLeft:1,
     },
     sizeScrollViewContent: {
         flexDirection: 'row',
@@ -131,7 +140,7 @@ const styles = StyleSheet.create({
         margin: 10,
         borderColor: 'black',
         borderWidth: 1,
-        marginLeft: 1,
+        marginLeft:1,
     },
     addPhotoButton: {
         paddingHorizontal: 20,
@@ -164,11 +173,14 @@ const styles = StyleSheet.create({
         fontSize: 90,
         color: 'white'
     },
+
+
+
+
     addCommentButtonContainer: {
         alignSelf: 'center',
         width: windowWidth - 20,
         borderRadius: 20,
-        bottom: 10,
     },
     addCommentButton: {
         paddingHorizontal: 20,

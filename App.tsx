@@ -25,7 +25,7 @@ function App(): JSX.Element {
     </NavigationContainer>
   );
 }
- 
+
 const styles = StyleSheet.create({});
 
 export default App;
