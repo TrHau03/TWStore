@@ -29,7 +29,7 @@ const TimeCountDown = () => {
         }, 1000);
     }, []);
     return (
-        <View>
+        <View style={{backgroundColor: 'white'}}>
             {!hideCountDown ?
                 <View style={{ flexDirection: 'row', gap: 5, marginTop: 10, marginBottom: 10 }}>
                     <View style={styles.timeCountDown}>

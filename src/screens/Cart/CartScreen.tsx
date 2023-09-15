@@ -20,7 +20,6 @@ interface Product {
 }
 
 const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
-
 const RenderItem = ({ item }: { item: Product }) => {
     const [numberCount, setNumberCount] = useState<number>(1);
     return (
@@ -50,13 +49,16 @@ const RenderItem = ({ item }: { item: Product }) => {
 
 const CartScreen = ({ navigation }: PropsCart) => {
     const [cupon, setCupon] = useState<string>('');
+
+    const generalPrice = data.reduce((previousValue, currentValue) => previousValue + currentValue.price , 0)
+
     return (
         <SafeAreaView style={{ paddingHorizontal: 16 }}  >
             <View style={{ marginTop: 17 }}>
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
             <View style={styles.line}></View>
-            <FlatList style={{ maxHeight: HEIGHT * 0.35, marginTop: '11%' }}
+            <FlatList style={{ maxHeight: HEIGHT * 0.40, marginTop: '11%' }}
                 showsVerticalScrollIndicator={false}
                 renderItem={(object) => <RenderItem item={object.item} />}
                 data={data}
@@ -81,20 +83,16 @@ const CartScreen = ({ navigation }: PropsCart) => {
             </View>
             <View style={styles.itemTotalPrice}>
                 <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Items (3)</Text>
-                    <Text style={styles.textHeaderTotalRight}>$598.86</Text>
+                    <Text style={styles.textHeaderTotalLeft}>Items ({data.length})</Text>
+                    <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
                 </View>
                 <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Items (3)</Text>
-                    <Text style={styles.textHeaderTotalRight}>$598.86</Text>
-                </View>
-                <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Items (3)</Text>
-                    <Text style={styles.textHeaderTotalRight}>$598.86</Text>
+                    <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
+                    <Text style={styles.textHeaderTotalRight}>$0.0</Text>
                 </View>
                 <View style={styles.bottomTotalPrice}>
-                    <Text style={styles.textBottomTotalLeft}>Items (3)</Text>
-                    <Text style={styles.textBottomTotalRight}>$598.86</Text>
+                    <Text style={styles.textBottomTotalLeft}>Total Price</Text>
+                    <Text style={styles.textBottomTotalRight}>${generalPrice}</Text>
                 </View>
             </View>
             <View style={{ marginTop: 20 }}>
@@ -154,7 +152,7 @@ const styles = StyleSheet.create({
     bottomTotalPrice: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: 5,
+        paddingTop: 10,
         borderTopWidth: 0.5,
         borderColor: '#9098B1',
         alignItems: 'center',
@@ -241,7 +239,7 @@ const styles = StyleSheet.create({
     },
     itemCart: {
         height: 110,
-        width: WIDTH*0.92,
+        width: WIDTH * 0.92,
         backgroundColor: '#E5E5E5',
         borderRadius: 10,
         alignItems: 'center',

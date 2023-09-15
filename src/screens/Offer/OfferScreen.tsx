@@ -18,30 +18,6 @@ interface Product {
 
 const RenderItem = ({ item }: { item: Product }) => {
   return (
-    // <View style={styles.containerItemPD}>
-    //   {/* <View style={styles.content}>
-    //     <View style={styles.ImgContainerPD}>
-    //       <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.img }} />
-    //     </View>
-    //     <View style={styles.in4PD}>
-    //       <View style={styles.in4Text}>
-    //         <Text style={styles.NamePD}>{item.name}</Text>
-    //         <View style={styles.star}>
-    //           <AirbnbRating count={5} size={15} showRating={false} />
-    //         </View>
-    //         <Text style={styles.PricePD}>{item.price}</Text>
-    //       </View>
-    //       <View style={styles.sale}>
-    //         <Text style={styles.txtOldPrice}>5000</Text>
-    //         <Text style={styles.txtSale}>24% Off</Text>
-    //         <TouchableOpacity style={styles.imgIc}>
-    //           <Icon name="trash-outline" size={25} />
-    //         </TouchableOpacity>
-    //       </View>
-    //     </View>
-    //   </View> */}
-
-    // </View>
     <View style={styles.containerItemPD} >
       <View>
         <Image style={{ width: '100%', height: 120, borderRadius: 5 }} source={{ uri: item.img }} />
@@ -117,7 +93,7 @@ const OfferScreen = () => {
   }
 
   return (
-    <View style={{ paddingHorizontal: 17, paddingTop: 20 }}>
+    <View style={{ paddingHorizontal: 17, paddingTop: 20, backgroundColor: 'white' }}>
       <View style={{ flexDirection: 'row', marginBottom: 10 }}>
         <Animated.View style={[styles.header, { transform: [{ translateX: translateAnimHeader }] }]}>
           <Icon name='chevron-back-outline' size={25} />
@@ -127,14 +103,14 @@ const OfferScreen = () => {
           animationNone();
         }}
           ref={refInput}
-          style={{ backgroundColor: 'red', alignSelf: 'center', paddingVertical: 0, position: 'absolute', width: '70%', height: 35, marginLeft: 40, transform: [{ scaleX: animTextInput }], opacity: animTextInput }}
+          style={{alignSelf: 'center',fontSize: 17, borderBottomWidth: 0.5, paddingVertical: 0, position: 'absolute', width: '80%', height: 35, marginLeft: 40, transform: [{ scaleX: animTextInput }], opacity: animTextInput }}
           placeholder='Search' />
         <PressableAnimated style={{ position: 'absolute', right: 0, transform: [{ translateX: translateAnimSearch }] }} onPress={() => { animationFlex(); refInput?.current?.focus(); }} >
           <Icon name='search-outline' size={25} />
         </PressableAnimated>
       </View>
 
-      <ScrollView style={{ marginBottom: 92 }} showsVerticalScrollIndicator={false} stickyHeaderIndices={[1]}>
+      <ScrollView style={{ marginBottom: 92, marginTop: 10 }} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
         <TimeCountDown />
         <View>
           <Image source={require('../../asset/image/PromotionImage.png')} style={{ width: '100%', borderRadius: 5, marginBottom: 5, opacity: 1 }} />
