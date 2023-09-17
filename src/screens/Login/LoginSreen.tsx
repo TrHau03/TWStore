@@ -12,13 +12,19 @@ import { useNavigation } from '@react-navigation/native';
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
+import AxiosInstance from '../../Axios/Axios';
+
+interface Login {
+  email: string;
+  password: string;
+}
 
 
+const LoginScreen = (props: any) => {
+  const {navigation} = props
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
-
-type navigationProps = NativeStackNavigationProp<RootStackParamListLogin, RootStackScreenEnumLogin>
-const LoginSreen = (props: any) => {
-  const navigation = useNavigation<navigationProps>();
   useEffect(() => {
     const setData = async () => {
       await AsyncStorage.setItem('checkSlide', 'true');
@@ -26,8 +32,18 @@ const LoginSreen = (props: any) => {
     setData();
   }, [])
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+
+  const login = async (user: Login) => {
+    try {
+      const result = await AxiosInstance().post('/users/LoginUser', { email: user.email, password: user.password });
+      console.log(result.data);
+      
+      return result;
+    } catch (error) {
+      console.log('getNews Error: ', error);
+    }
+    return [];
+  }
   return (
     <KeyboardAwareScrollView>
       <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
@@ -70,7 +86,7 @@ const LoginSreen = (props: any) => {
           <Text style={styles.checkBox}>Forgot Password?</Text>
         </View>
         <View>
-          <TouchableOpacity >
+          <TouchableOpacity onPress={() => login({ email, password })}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
               <Text style={styles.textLogin}>Login</Text>
             </LinearGradient>
@@ -93,7 +109,7 @@ const LoginSreen = (props: any) => {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 17 }}>
           <Text style={styles.textDontAcc}>Don’t have a account? </Text>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate('RegisterScreen')}>
             <Text style={styles.textRegister}>Register</Text>
           </Pressable>
         </View>
@@ -102,7 +118,7 @@ const LoginSreen = (props: any) => {
   )
 }
 
-export default LoginSreen
+export default LoginScreen
 
 const styles = StyleSheet.create({
   textRegister: {
