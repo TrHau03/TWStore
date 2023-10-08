@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -80,16 +81,13 @@ const HomeScreen = () => {
                 scaleX: animatedValue.interpolate({
                     inputRange: [0, 50],
                     outputRange: [1, 0],
-                    extrapolate:'clamp'
+                    extrapolate: 'clamp'
                 })
             }
         ]
     }
-    const animatedBanner = {
-
-    }
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
             <View style={styles.top}>
                 <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
                 >
@@ -113,7 +111,7 @@ const HomeScreen = () => {
                 </View>
 
             </View>
-            <ScrollView horizontal={false} style={{ paddingHorizontal: 20 }} scrollEnabled={true} stickyHeaderIndices={[7]} onScroll={(e) => {
+            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[7]} onScroll={(e) => {
                 const offsetY = e.nativeEvent.contentOffset.y;
                 animatedValue.setValue(offsetY)
             }} scrollEventThrottle={16}>
@@ -220,7 +218,7 @@ const HomeScreen = () => {
                 </View>
                 <FlatList
                     scrollEnabled={false}
-                    style={{ marginBottom: 120, marginTop: 10, marginLeft: 5 }}
+                    style={{ width: WIDTH, marginBottom: 120, marginTop: 10 }}
                     showsVerticalScrollIndicator={false}
                     data={data2}
                     renderItem={renderItem3}
@@ -238,12 +236,9 @@ export default HomeScreen
 const styles = StyleSheet.create({
     top: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 20,
+        marginBottom: 5,
     },
-
-
 
     favorite: {
         width: 24,
@@ -263,18 +258,18 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         gap: 15,
         flexDirection: 'row',
-        height: '100%',
         alignItems: 'center',
     },
     TextSearch: {
         justifyContent: 'center',
-        marginLeft: 10
+        marginLeft: 10,
+        paddingVertical: 0
     },
     headerLeft: {
         borderWidth: 1,
         padding: 5,
         borderRadius: 5,
-        borderColor: '#EBF0FF',
+        borderColor: '#e1dede',
         alignItems: 'center',
         flexDirection: 'row',
         width: '80%',
@@ -285,8 +280,8 @@ const styles = StyleSheet.create({
     },
 
     slide: {
-        height: 205,
-        width: 400,
+        height: WIDTH * 0.5,
+        width: WIDTH,
         borderRadius: 6,
     },
 
@@ -367,8 +362,9 @@ const styles = StyleSheet.create({
     },
 
     listflastsale: {
-        height: 240,
-        marginTop: 15,
+        height: WIDTH * 0.7,
+        marginTop: 5,
+        marginBottom: 5
     },
 
     itemsale: {
@@ -444,7 +440,7 @@ const styles = StyleSheet.create({
 
     itemsale2: {
         height: 240,
-        width: 165,
+        width: WIDTH * 0.42,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: 'black',

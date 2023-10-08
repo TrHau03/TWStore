@@ -5,6 +5,7 @@ import ButtonBottom from '../../component/Button/Button'
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
+import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 
 const Birthday = () => {
     const [date, setDate] = useState(new Date());
@@ -112,10 +113,10 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        height: '80%',
-        width: '100%',
+        height: HEIGHT * 0.8,
+        width: WIDTH,
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingTop: 20,
+        paddingHorizontal: PADDING_HORIZONTAL,
+        paddingTop: PADDING_TOP,
     }
 })

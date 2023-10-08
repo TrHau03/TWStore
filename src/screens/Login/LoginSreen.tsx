@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, Button, Pressable, ScrollView } from 'react-native'
+import { Image, StyleSheet, Text, View, Button, Pressable, ScrollView, useWindowDimensions } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import React, { useEffect, useState } from 'react'
@@ -13,6 +13,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 import AxiosInstance from '../../Axios/Axios';
+import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 
 interface Login {
   email: string;
@@ -21,7 +22,8 @@ interface Login {
 
 
 const LoginScreen = (props: any) => {
-  const {navigation} = props
+  console.log(WIDTH, HEIGHT);
+  const { navigation } = props
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -37,7 +39,7 @@ const LoginScreen = (props: any) => {
     try {
       const result = await AxiosInstance().post('/users/LoginUser', { email: user.email, password: user.password });
       console.log(result.data);
-      
+
       return result;
     } catch (error) {
       console.log('getNews Error: ', error);
@@ -46,7 +48,7 @@ const LoginScreen = (props: any) => {
   }
   return (
     <KeyboardAwareScrollView>
-      <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
+      <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, width: WIDTH, backgroundColor: BG_COLOR }}>
         <View style={styles.header}>
           <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
           <Text style={styles.textHeader}>The Wonder</Text>
@@ -81,9 +83,11 @@ const LoginScreen = (props: any) => {
             </InputItem>
           </View>
         </View>
-        <View style={{ flexDirection: 'row', gap: 80, marginTop: 17 }}>
+        <View style={{ flexDirection: 'row', marginTop: 17 }}>
           <Checkbox style={{ width: 150 }}><Text style={styles.checkBox}>Remember me</Text></Checkbox>
-          <Text style={styles.checkBox}>Forgot Password?</Text>
+          <TouchableOpacity style={{ position: 'absolute', right: 0 }}>
+            <Text style={styles.checkBox}>Forgot Password?</Text>
+          </TouchableOpacity>
         </View>
         <View>
           <TouchableOpacity onPress={() => login({ email, password })}>
@@ -202,7 +206,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   input: {
-    marginTop: 60
+    marginTop: HEIGHT / 13
   },
   textWelcome: {
     color: '#223263',

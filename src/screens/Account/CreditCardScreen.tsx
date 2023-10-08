@@ -6,6 +6,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
 
 import { PropsAccount } from '../../component/Navigation/Props'
+import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility'
 
 
 interface Card {
@@ -20,7 +21,7 @@ interface Card {
 
 const CreditCardScreen = ({ navigation }: PropsAccount) => {
   return (
-    <View style={{ paddingHorizontal: 16, paddingTop: 25, height: '100%' }}>
+    <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, height: HEIGHT }}>
       <Header title='Credit Card Or Debit' navigation={navigation} />
       <View>
         {data.map((item: Card) =>

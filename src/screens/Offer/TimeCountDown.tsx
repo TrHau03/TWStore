@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { BG_COLOR } from '../../utilities/utility';
 
 const TimeCountDown = () => {
     const deadlineDay = 10;
@@ -26,10 +27,11 @@ const TimeCountDown = () => {
                 clearInterval(setTimeCountDown);
                 sethideCountDown(true);
             }
+            return () => clearInterval(setTimeCountDown);
         }, 1000);
     }, []);
     return (
-        <View style={{backgroundColor: 'white'}}>
+        <View style={{backgroundColor: BG_COLOR}}>
             {!hideCountDown ?
                 <View style={{ flexDirection: 'row', gap: 5, marginTop: 10, marginBottom: 10 }}>
                     <View style={styles.timeCountDown}>

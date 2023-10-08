@@ -17,6 +17,7 @@ import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { configTab } from '../../component/BottomNavigation/RootTab/RootTab';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 interface Product {
   id: number;
   img: any;
@@ -36,7 +37,7 @@ const renderItem = ({ item }: any): React.JSX.Element => {
         </View>
         <View style={styles.in4PD}>
           <View style={styles.in4Text}>
-            <Text style={styles.NamePD}>{name}</Text>
+            <Text style={styles.NamePD} >{name}</Text>
             <View style={styles.star}>
               <AirbnbRating count={5} size={15} showRating={false} />
             </View>
@@ -105,7 +106,7 @@ const FavoriteScreen = ({ navigation }: PropsHome) => {
             style={[animationSearh, { borderColor: 'black', borderWidth: 0.5, width: '70%', flexDirection: 'row', alignItems: 'center', paddingVertical: 2, paddingHorizontal: 5, borderRadius: 5 }]}
           >
             <Icon name='search' size={20} />
-            <TextInput style={{ paddingVertical: 0, width: '70%' }} />
+            <TextInput placeholder='Search' style={{ paddingVertical: 0, width: '70%' }} />
           </Animated.View>
         </View>
         <FlatList
@@ -143,13 +144,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   container: {
-    paddingHorizontal: 10,
-    paddingTop: 20
+    paddingHorizontal: PADDING_HORIZONTAL,
+    paddingTop: PADDING_TOP,
+    backgroundColor: BG_COLOR
   },
   imgIc: {
     width: '20%',
     marginLeft: 10,
-    justifyContent: 'center',
   },
   txtSale: {
     color: 'red',
@@ -169,12 +170,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   star: {
-    width: '65%',
+    width: '70%',
     marginTop: 5,
   },
 
   content: {
-    padding: 15
+    padding: 5,
   },
   NamePD: {
     fontSize: 16,
@@ -212,8 +213,8 @@ const styles = StyleSheet.create({
   },
   containerItemPD: {
     borderWidth: 0.5,
-    width: '48%',
-    height: 300,
+    width: WIDTH * 0.44,
+    height: 280,
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
     shadowColor: '#C4C4C4',

@@ -1,4 +1,4 @@
-import {FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
@@ -9,29 +9,29 @@ interface ShortBy {
 
 
 
-const ShortByScreen = ({navigation}: any) => {
+const ShortByScreen = ({ navigation }: any) => {
 
-  
-  const renderItem = ({item}: any): React.JSX.Element => {
-    const {id, name} = item;
-  
-    return <TouchableOpacity 
+
+  const renderItem = ({ item }: any): React.JSX.Element => {
+    const { id, name } = item;
+
+    return <TouchableOpacity
       style={styles.containerItemPD}
 
     >
-        <Text style={styles.namePD}>
+      <Text style={styles.namePD}>
         {name}
-        </Text>
+      </Text>
     </TouchableOpacity>;
   };
-  
+
   return (
     <ScrollView style={styles.container}>
-      <Header/>
+      <Header />
       <View style={styles.content}>
-        <FlatList 
-          data={DataShortBy} 
-          renderItem={renderItem} 
+        <FlatList
+          data={DataShortBy}
+          renderItem={renderItem}
         />
       </View>
     </ScrollView>
@@ -41,11 +41,11 @@ const ShortByScreen = ({navigation}: any) => {
 export default ShortByScreen;
 
 const styles = StyleSheet.create({
-  namePD:{
+  namePD: {
     fontWeight: 'bold',
     fontSize: 20
   },
-  containerItemPD:{
+  containerItemPD: {
     width: '100%',
     height: 50
   },
@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     height: '90%',
     marginTop: 10,
   },
-  iconBack:{
-    width:'100%',
+  iconBack: {
+    width: '100%',
     height: '5%'
   },
   container: {

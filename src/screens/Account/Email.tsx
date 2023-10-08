@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
 import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { HEIGHT, WIDTH } from '../../utilities/utility'
 
 const Email = () => {
     return (
@@ -130,7 +131,8 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        height: '80%',
+        height: HEIGHT * 0.8,
+        width: WIDTH,
         alignItems: 'center',
         paddingHorizontal: 20,
         paddingTop: 20,

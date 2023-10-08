@@ -14,6 +14,7 @@ import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
+import { PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 
 
 interface Category {
@@ -21,7 +22,7 @@ interface Category {
   img: any;
   name: string;
 }
-type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>,StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
+type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
 const ExploreScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
   const [click, setClick] = useState<boolean>(false);
@@ -139,7 +140,8 @@ const styles = StyleSheet.create({
 
   TextSearch: {
     justifyContent: 'center',
-    marginLeft: 20
+    marginLeft: 10,
+    paddingVertical: 0
   },
   imageSearch: {
     width: 20,
@@ -149,7 +151,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     gap: 15,
     flexDirection: 'row',
-    height: '100%',
     alignItems: 'center',
   },
 
@@ -157,23 +158,21 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 5,
     borderRadius: 5,
-    borderColor: '#EBF0FF',
+    borderColor: '#e1dede',
     alignItems: 'center',
     flexDirection: 'row',
     width: '80%',
-    height: '100%'
+    height: '85%'
   },
   group: {
-    flexDirection: 'row',
-    width: '100%',
-    height: 50,
-
+        alignItems: 'center',
+        flexDirection: 'row',
   },
   container: {
-    paddingTop: 10,
     flex: 1,
-    paddingHorizontal: 15,
-    backgroundColor: '#fff'
+    paddingTop: PADDING_TOP,
+    paddingHorizontal: PADDING_HORIZONTAL,
+    backgroundColor: '#FFFFFF'
   }
 });
 

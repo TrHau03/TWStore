@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
 interface Product {
     id: number;
     name: string;
@@ -19,7 +20,6 @@ interface Product {
     type: string;
 }
 
-const { width: WIDTH, height: HEIGHT } = Dimensions.get('window')
 const RenderItem = ({ item }: { item: Product }) => {
     const [numberCount, setNumberCount] = useState<number>(1);
     return (
@@ -27,9 +27,9 @@ const RenderItem = ({ item }: { item: Product }) => {
             <View>
                 <Image source={{ uri: item.image }} style={{ width: 72, height: 72 }} />
             </View>
-            <View style={{ flexDirection: 'column', height: '100%' }}>
+            <View style={{ flexDirection: 'column', height: '100%',gap: 10 }}>
                 <View style={styles.topItem}>
-                    <Text style={styles.textTitleItem}>{item.name}</Text>
+                    <Text style={styles.textTitleItem}>{item.name.length < 10 ? item.name : item.name.substring(0, 10) + "..."}</Text>
                     <Icon name='heart' size={25} color={'#FB7181'} />
                     <Icon name='trash-outline' size={25} />
                 </View>
@@ -50,10 +50,10 @@ const RenderItem = ({ item }: { item: Product }) => {
 const CartScreen = ({ navigation }: PropsCart) => {
     const [cupon, setCupon] = useState<string>('');
 
-    const generalPrice = data.reduce((previousValue, currentValue) => previousValue + currentValue.price , 0)
+    const generalPrice = data.reduce((previousValue, currentValue) => previousValue + currentValue.price, 0)
 
     return (
-        <SafeAreaView style={{ paddingHorizontal: 16 }}  >
+        <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR }}  >
             <View style={{ marginTop: 17 }}>
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
@@ -189,10 +189,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.50,
     },
     topItem: {
-        height: '50%',
         flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
         paddingLeft: 20
     },
     bottomItem: {
@@ -239,7 +236,6 @@ const styles = StyleSheet.create({
     },
     itemCart: {
         height: 110,
-        width: WIDTH * 0.92,
         backgroundColor: '#E5E5E5',
         borderRadius: 10,
         alignItems: 'center',

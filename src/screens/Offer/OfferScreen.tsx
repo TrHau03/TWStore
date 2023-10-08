@@ -2,6 +2,7 @@ import { Animated, FlatList, Image, TextInput, ScrollView, StyleSheet, Text, Key
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import TimeCountDown from './TimeCountDown';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 
 
 
@@ -93,7 +94,7 @@ const OfferScreen = () => {
   }
 
   return (
-    <View style={{ paddingHorizontal: 17, paddingTop: 20, backgroundColor: 'white' }}>
+    <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
       <View style={{ flexDirection: 'row', marginBottom: 10 }}>
         <Animated.View style={[styles.header, { transform: [{ translateX: translateAnimHeader }] }]}>
           <Icon name='chevron-back-outline' size={25} />
@@ -103,7 +104,7 @@ const OfferScreen = () => {
           animationNone();
         }}
           ref={refInput}
-          style={{alignSelf: 'center',fontSize: 17, borderBottomWidth: 0.5, paddingVertical: 0, position: 'absolute', width: '80%', height: 35, marginLeft: 40, transform: [{ scaleX: animTextInput }], opacity: animTextInput }}
+          style={{ alignSelf: 'center', fontSize: 17, borderBottomWidth: 0.5, paddingVertical: 0, position: 'absolute', width: '80%', height: 35, marginLeft: 40, transform: [{ scaleX: animTextInput }], opacity: animTextInput }}
           placeholder='Search' />
         <PressableAnimated style={{ position: 'absolute', right: 0, transform: [{ translateX: translateAnimSearch }] }} onPress={() => { animationFlex(); refInput?.current?.focus(); }} >
           <Icon name='search-outline' size={25} />
@@ -145,8 +146,9 @@ const styles = StyleSheet.create({
   txtSale: {
     color: 'red',
     fontSize: 17,
-    marginLeft: 20,
     fontWeight: 'bold',
+    position: 'absolute',
+    right: 0,
   },
   txtOldPrice: {
     textDecorationLine: 'line-through', // Gạch ngang văn bản
@@ -156,7 +158,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   sale: {
-    width: '80%',
     flexDirection: 'row',
     alignItems: 'center'
   },
@@ -204,7 +205,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginBottom: 5,
     height: 250,
-    width: '47%',
+    width: WIDTH * 0.43,
     padding: 10,
     borderWidth: 0.5,
     borderColor: '#c2c2c2',

@@ -2,6 +2,7 @@ import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'reac
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { PropsAccount } from '../../component/Navigation/Props'
+import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 
 const AccountScreen = ({ navigation }: any) => {
   return (
@@ -78,10 +79,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.08,
   },
   container: {
-    width: '100%',
-    height: '100%',
-    paddingTop: 20,
-    paddingHorizontal: 20
+    width: WIDTH,
+    height: HEIGHT,
+    paddingTop: PADDING_TOP,
+    paddingHorizontal: PADDING_HORIZONTAL
   }
 })
 

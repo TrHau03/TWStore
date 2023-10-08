@@ -3,6 +3,7 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Header from '../../component/Header/Header'
 import { StackNavigationProp } from '@react-navigation/stack'
+import { PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility'
 
 interface Item {
     id: number,
@@ -17,7 +18,7 @@ type ScreenProps = {
 
 const PaymentScreen = ({navigation} : ScreenProps) => {
     return (
-        <View style={{ paddingHorizontal: 16, marginTop: 25 }}>
+        <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP }}>
             <Header title={'Payment'} navigation={navigation}/>
             <View>
                 {data.map((item: Item) => {

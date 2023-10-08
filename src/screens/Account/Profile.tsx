@@ -14,6 +14,7 @@ import Email from './Email'
 import Phone from './Phone'
 import Gender from './Gender'
 import ChangeName from './ChangeName';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 
 const user = {
     id: uid(5),
@@ -69,7 +70,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                     <View style={styles.name}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
                             <Text style={styles.txtName}>{user.name}</Text>
-                            <Pressable onPress={() => {setModalVisible(true), setNameModal('ChangeName')} }>
+                            <Pressable onPress={() => { setModalVisible(true), setNameModal('ChangeName') }}>
                                 <MaterialCommunityIcons name='account-edit-outline' size={20} />
                             </Pressable>
                         </View>
@@ -287,9 +288,8 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        width: '100%',
-        height: '100%',
-        paddingTop: 20,
-        paddingHorizontal: 20
+        paddingTop: PADDING_TOP,
+        paddingHorizontal: PADDING_HORIZONTAL,
+        backgroundColor: BG_COLOR
     }
 })
