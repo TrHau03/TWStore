@@ -58,7 +58,7 @@ const OfferScreen = () => {
       }),
       // Will change fadeAnim value to 1 in 5 seconds
       Animated.timing(translateAnimSearch, {
-        toValue: -320,
+        toValue: -295,
         duration: 500,
         useNativeDriver: true,
       }),
@@ -111,7 +111,7 @@ const OfferScreen = () => {
         </PressableAnimated>
       </View>
 
-      <ScrollView style={{ marginBottom: 92, marginTop: 10 }} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
+      <ScrollView style={{ marginBottom: 35, marginTop: 10 }} showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]}>
         <TimeCountDown />
         <View>
           <Image source={require('../../asset/image/PromotionImage.png')} style={{ width: '100%', borderRadius: 5, marginBottom: 5, opacity: 1 }} />

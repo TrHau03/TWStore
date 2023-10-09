@@ -1,18 +1,18 @@
 
 import { configStack } from '../Root/RootStack';
 import { RootStackScreenAccount } from '../Root/RootStackAccount';
-import { RootStack } from './Props';
+import { Stack } from './Props';
 
 
 
 
 const AccountNavigation = () => {
 
-    return <RootStack.Navigator initialRouteName='LoginScreen' screenOptions={({ route }) => configStack(route)}>
+    return <Stack.Navigator initialRouteName='LoginScreen' screenOptions={({ route }) => configStack(route)}>
         {RootStackScreenAccount().map((item: any) => {
-            return <RootStack.Screen key={item.id} name={item.name} component={item.component} options={item.options} />
+            return <Stack.Screen key={item.id} name={item.name} component={item.component} options={item.options} />
         })}
-    </RootStack.Navigator>
+    </Stack.Navigator>
 }
 
 

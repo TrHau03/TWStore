@@ -24,4 +24,4 @@ export type PropsAccount = {
 }
 
 
-export const RootStack = createNativeStackNavigator();
+export const Stack = createNativeStackNavigator();

@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 
 
-import { COLORS, ROUTES } from '../../constants';
+import { COLORS } from '../../../utilities';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { RootStackParamListExplore } from '../../Root/RootStackExplore';
 import { RootStackParamListHome } from '../../Root/RootStackHome';
@@ -50,36 +50,22 @@ export const configTab = (route: any) => {
     return {
         tabBarIcon: ({ color, focused }: any) => {
             let iconName: any;
-            if (route.name === ROUTES.HOME) {
+            if (route.name === RootTabScreenENum.StackHome) {
                 iconName = focused ? 'home-sharp' : 'home-outline';
-            } else if (route.name === ROUTES.EXPLORE) {
+            } else if (route.name === RootTabScreenENum.StackExplore) {
                 iconName = focused ? 'search-sharp' : 'search-outline';
-            } else if (route.name === ROUTES.CART) {
+            } else if (route.name === RootTabScreenENum.StackCart) {
                 iconName = focused ? 'cart' : 'cart-outline';
-            } else if (route.name === ROUTES.OFFER) {
+            } else if (route.name === RootTabScreenENum.StackOffer) {
                 iconName = focused ? 'ticket' : 'ticket-outline';
-            } else if (route.name === ROUTES.ACCOUNT) {
+            } else if (route.name === RootTabScreenENum.StackAccount) {
                 iconName = focused ? 'person' : 'person-outline';
             }
-            return route.name === ROUTES.CART ?
+            return route.name === RootTabScreenENum.StackCart ?
                 <Badge dot>
-                    <Icon name={iconName} size={22} color={color} />
+                    <Icon name={iconName} size={26} color={color} />
                 </Badge> :
-                <Icon name={iconName} size={22} color={color} />
-
+                <Icon name={iconName} size={26} color={color} />
         },
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarInactiveTintColor: COLORS.dark,
-        tabBarStyle: styles.tabBarStyle,
-        tabBarActiveTintColor: COLORS.primary,
     }
 }
-const styles = StyleSheet.create({
-    tabBarStyle: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        height: 55,
-    }
-});

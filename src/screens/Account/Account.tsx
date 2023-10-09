@@ -1,35 +1,28 @@
 import { Image, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { PropsAccount } from '../../component/Navigation/Props'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
+import { Avatar, Banner, Button, Card, Checkbox, Chip, Dialog, Divider, Menu, Portal, Searchbar, Surface, useTheme } from 'react-native-paper'
+
 
 const AccountScreen = ({ navigation }: any) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,]}>
       <Text style={styles.title}>Account</Text>
-
       <View style={styles.line}></View>
+      {/* <Portal>
+        <Dialog visible={visible} onDismiss={hineDialog}>
+          <Dialog.Title>Alert</Dialog.Title>
+          <Dialog.Content>
+            <Text>This is simple dialog</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hineDialog}>Done</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal> */}
 
-      {/* <Pressable style={styles.button}>
-        <Image source={require('../../asset/image/Profile_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Profile</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Image source={require('../../asset/image/Oder_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Oder</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Image source={require('../../asset/image/Address_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Address</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Image source={require('../../asset/image/Payment_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Payment</Text>
-      </Pressable> */}
       <View>
         {data.map((item) =>
           <TouchableOpacity style={styles.button} key={item.id} onPress={() => navigation?.navigate(item.screen)}>

@@ -1,6 +1,7 @@
 
 import { uid } from 'uid';
 import OfferScreen from '../../screens/Offer/OfferScreen';
+import { FadeOfferScreen } from '../BottomNavigation/AniScreenBottomTab';
 
 
 
@@ -19,7 +20,7 @@ export type RootStackParamListOffer = {
 
 export const RootStackScreenOffer = () => {
     const Screen: any = [
-        { id: uid(), name: RootStackScreenEnumOffer.OfferScreen, component: OfferScreen, options: {} },
+        { id: uid(), name: RootStackScreenEnumOffer.OfferScreen, component: FadeOfferScreen, options: {} },
 
 
     ]

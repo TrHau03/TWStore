@@ -9,12 +9,12 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'
-import { CompositeNavigationProp, CompositeScreenProps, useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp, CompositeScreenProps, NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
-import { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import { MaterialBottomTabScreenProps } from '@react-navigation/material-bottom-tabs';
 
 
 interface Category {
@@ -22,9 +22,9 @@ interface Category {
   img: any;
   name: string;
 }
-type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
+type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
 const ExploreScreen = () => {
-  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const navigation = useNavigation<BottomNavigationProp>();
   const [click, setClick] = useState<boolean>(false);
 
 
@@ -165,8 +165,8 @@ const styles = StyleSheet.create({
     height: '85%'
   },
   group: {
-        alignItems: 'center',
-        flexDirection: 'row',
+    alignItems: 'center',
+    flexDirection: 'row',
   },
   container: {
     flex: 1,

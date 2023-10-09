@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity, Animated } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
+import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -49,8 +51,10 @@ const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } 
 
 }
 type NavigationProps = StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>
+type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListExplore>>;
 const HomeScreen = () => {
     const navigation = useNavigation<NavigationProps>();
+    const navigationOtherTab = useNavigation<BottomNavigationProp>();
 
     const [imgActive, setimgActive] = useState(0);
 
@@ -155,7 +159,7 @@ const HomeScreen = () => {
 
                     <Text style={styles.textcategory}>Category</Text>
 
-                    <Pressable>
+                    <Pressable onPress={() => navigationOtherTab.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
                         <Text style={styles.textcategory}>
                             More Category
                         </Text>
@@ -218,7 +222,7 @@ const HomeScreen = () => {
                 </View>
                 <FlatList
                     scrollEnabled={false}
-                    style={{ width: WIDTH, marginBottom: 120, marginTop: 10 }}
+                    style={{ width: WIDTH, marginBottom: 45, marginTop: 10 }}
                     showsVerticalScrollIndicator={false}
                     data={data2}
                     renderItem={renderItem3}
@@ -445,7 +449,6 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         borderColor: 'black',
         justifyContent: 'space-around',
-        marginLeft: 5,
         marginBottom: 5,
 
 

@@ -1,7 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { StackNavigationProp } from '@react-navigation/stack'
 import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 

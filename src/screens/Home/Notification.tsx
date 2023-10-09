@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { ROUTES } from '../../component/constants';
+import { ROUTES } from '../../utilities';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome';

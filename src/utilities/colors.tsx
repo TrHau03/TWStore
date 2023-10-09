@@ -1,5 +1,5 @@
-export default{
-    gradientForm : '#A376F1',
+export default {
+    gradientForm: '#A376F1',
     primary: '#7D5FFF',
     white: '#FFFFFF',
     dark: '#444',

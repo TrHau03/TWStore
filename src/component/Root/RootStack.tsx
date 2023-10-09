@@ -1,16 +1,9 @@
-// import { uid } from 'uid';
-import { StackNavigationOptions } from '@react-navigation/stack';
-import { fromLeft } from 'react-navigation-transitions';
-import { AnimationConfig } from '../constants/animationConfig';
+import { getHeaderTitle } from "@react-navigation/elements";
 
 
-export const configStack: any = () => {
+export const configStack: any = (props: any) => {
     return {
         headerShown: false,
-        transitionSpec: {
-            open: AnimationConfig,
-            close: AnimationConfig,
-        },
-        animation: 'slide_from_right'
+        animation: 'slide_from_right',
     }
 }

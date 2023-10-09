@@ -1,6 +1,6 @@
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import { ROUTES } from '../../component/constants';
+import { ROUTES } from '../../utilities';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';

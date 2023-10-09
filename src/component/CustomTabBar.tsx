@@ -1,7 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 import {BottomTabBar} from '@react-navigation/bottom-tabs';
-import {COLORS} from '../component/constants';
+import {COLORS} from '../utilities';
 
 const CustomTabBar = (props:any) => {
   return (

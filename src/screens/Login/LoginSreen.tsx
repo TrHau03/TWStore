@@ -113,7 +113,7 @@ const LoginScreen = (props: any) => {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 17 }}>
           <Text style={styles.textDontAcc}>Don’t have a account? </Text>
-          <Pressable onPress={() => navigation.navigate('RegisterScreen')}>
+          <Pressable onPress={() => navigation.navigate(RootStackScreenEnumLogin.RegisterScreen)}>
             <Text style={styles.textRegister}>Register</Text>
           </Pressable>
         </View>

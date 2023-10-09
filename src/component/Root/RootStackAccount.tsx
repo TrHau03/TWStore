@@ -8,9 +8,10 @@ import PaypalScreen from '../../screens/Account/PaypalScreen';
 import BankTransferScreen from '../../screens/Account/BankTransferScreen';
 import AccountScreen from '../../screens/Account/Account';
 import ProfileScreen from '../../screens/Account/Profile';
+import { FadeAccountScreen } from '../BottomNavigation/AniScreenBottomTab';
 
 
-export enum RootStackScreenEnumAccount{
+export enum RootStackScreenEnumAccount {
     AccountScreen = 'AccountScreen',
     ProfileScreen = 'ProfileScreen',
     PaymentScreen = 'PaymentScreen',
@@ -31,13 +32,13 @@ export type RootStackParamListAccount = {
 
 export const RootStackScreenAccount = () => {
     const Screen: any = [
-        { id: uid(), name: RootStackScreenEnumAccount.AccountScreen, component: AccountScreen, options: {} },
+        { id: uid(), name: RootStackScreenEnumAccount.AccountScreen, component: FadeAccountScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumAccount.ProfileScreen, component: ProfileScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumAccount.PaymentScreen, component: PaymentScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumAccount.CreditCardScreen, component: CreditCardScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumAccount.PaypalScreen, component: PaypalScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumAccount.BankTransferScreen, component: BankTransferScreen, options: {} },
-        
+
 
     ]
     return Screen;

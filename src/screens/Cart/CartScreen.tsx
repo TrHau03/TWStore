@@ -95,7 +95,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                     <Text style={styles.textBottomTotalRight}>${generalPrice}</Text>
                 </View>
             </View>
-            <View style={{ marginTop: 20 }}>
+            <View style={{ marginTop: 15 }}>
                 <ButtonBottom title='Check Out' />
             </View>
         </SafeAreaView >

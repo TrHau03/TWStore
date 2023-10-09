@@ -20,7 +20,7 @@ const SlideScreen = (props: any) => {
 
     return (
         (!loadLoginScreen) ?
-            <View style={{ paddingTop: PADDING_TOP, paddingHorizontal: PADDING_HORIZONTAL, width: '100%', height: '100%', backgroundColor: BG_COLOR }}>
+            <View style={{paddingHorizontal: PADDING_HORIZONTAL, width: '100%', height: '100%', backgroundColor: BG_COLOR }}>
                 <View style={{ marginTop: '40%' }}>
                     <Image style={styles.imageSlide1} source={step === 1 ? require('../../asset/image/IconSlide1.png') : step === 2 ? require('../../asset/image/IconSlide2.png') : require('../../asset/image/IconSlide3.png')} />
                 </View>
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         fontWeight: '300',
     },
     textTitle: {
-        width: '80%',
+        width: '85%',
         color: '#252525',
         fontSize: 40,
         fontFamily: 'Montserrat',
