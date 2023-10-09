@@ -4,28 +4,27 @@
  *
  * @format
  */
-import * as React from 'react';
-import { StyleSheet, View } from 'react-native'; // Import necessary components
-import { NavigationContainer } from '@react-navigation/native'; // Import NavigationContainer
-import { createNativeStackNavigator } from '@react-navigation/native-stack'; // Import Stack Navigator
-import Productreviews from './src/screens/Productreviews'; // Import Productreview component
-import Productdetail from './src/screens/Productdetail';
-import Addcomment from './src/screens/Addcomment';
+
+import React, { useEffect, useState } from 'react';
+import SlideScreen from './src/screens/Login/SlideScreen';
+import SplashSreen from './src/screens/Login/SplashSreen';
+import LoginNavigation from './src/component/Navigation/LoginNavigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Navigation from './src/component/Navigation/Navigation';
+import { NavigationContainer } from '@react-navigation/native';
 
 
-const Stack = createNativeStackNavigator(); // Create a Stack Navigator
+
 
 function App(): JSX.Element {
+  const [isLoadding, setIsLoadding] = useState<boolean>(true);
+  setTimeout(() => {
+    setIsLoadding(false);
+  }, 1000);
   return (
-
-    <NavigationContainer>
-      {/* <Productdetail /> */}
-      {/* <Productreviews/> */}
-      <Addcomment/>
-    </NavigationContainer>
+    (isLoadding) ? <SplashSreen /> : <NavigationContainer><Navigation/></NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({});
 
 export default App;

@@ -2,20 +2,27 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { StackNavigationProp } from '@react-navigation/stack'
-import { RootStackParamList, RootStackScreenEnum } from '../Root/RootStack'
+import { NavigationProp, ParamListBase } from '@react-navigation/native'
 
 
 interface Header {
     title?: string,
-    navigation?: StackNavigationProp<RootStackParamList, RootStackScreenEnum>
+    hideBack?: boolean,
+    navigation?: NavigationProp<ParamListBase>,
 }
 
 
-const Header = ({ title, navigation }: Header) => {
+const Header = ({ title, navigation, hideBack = false }: Header) => {
     return (
         <View style={{ flexDirection: 'row', gap: 10 }}>
-            <TouchableOpacity onPress={() => navigation?.goBack()}><Icon name='chevron-back-outline' size={25} color={'#9098B1'} /></TouchableOpacity>
-            <Text style={styles.textTitlePage}>{title}</Text>
+            {!hideBack ?
+                <TouchableOpacity onPress={() => navigation?.goBack()}>
+                    <Icon name='chevron-back-outline' size={25} color={'#9098B1'} />
+                </TouchableOpacity>
+                :
+                <></>
+            }
+            <Text style={!hideBack ? styles.textTitlePage : [styles.textTitlePage, {marginLeft: 10}]}>{title}</Text>
         </View>
     )
 }

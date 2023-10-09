@@ -1,18 +1,19 @@
 import { StyleProp, StyleSheet, Text, TextStyle, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import LinearGradient from 'react-native-linear-gradient'
+import * as Animatable from 'react-native-animatable';
+
 interface Style {
     style?: StyleProp<TextStyle> | undefined,
     title?: string
 }
-const ButtonBottom = ({style, title} : Style) => {
-    console.log(style);
+const ButtonBottom = ({ style, title }: Style) => {
     return (
-        <TouchableOpacity>
+        <Animatable.View animation='bounceIn'>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={[styles.button, style]} >
                 <Text style={styles.textButton}>{title}</Text>
             </LinearGradient>
-        </TouchableOpacity>
+        </Animatable.View>
     )
 }
 
