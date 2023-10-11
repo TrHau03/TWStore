@@ -14,7 +14,6 @@ import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
-import { MaterialBottomTabScreenProps } from '@react-navigation/material-bottom-tabs';
 
 
 interface Category {
