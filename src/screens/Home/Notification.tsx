@@ -1,11 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/Ionicons'
-import { ROUTES } from '../../utilities';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
-import {  BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 const NotificationScreen = ({ navigation }: PropsHome) => {
 
 
@@ -101,6 +99,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: PADDING_HORIZONTAL,
     paddingTop: PADDING_TOP,
-    backgroundColor: BG_COLOR, 
+    backgroundColor: BG_COLOR,
   }
 })

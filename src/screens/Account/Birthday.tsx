@@ -42,7 +42,7 @@ const Birthday = () => {
                 />
             </View>
 
-            <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
+            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
             </View>
         </View>

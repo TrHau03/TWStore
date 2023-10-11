@@ -73,15 +73,7 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
 
 
   //Hàm để ẩn hiện thêm danh sách thông báo product
-  const loadMoreActivity = () => {
-    if (!checkActivity) {
-      console.log('Check');
-      setVisibleActivity(true); // Tăng số sản phẩm hiển thị khi người dùng muốn xem thêm
-    } else {
-      console.log('UnCheck');
-      setVisibleActivity(false); // Giảm số sản phẩm hiển thị
-    }
-  };
+
   //Hàm đưa trỏ chuột lên đầu danh sách
   const scrollToTopActivity = () => {
     flatListRefActivity.current?.scrollToOffset({ offset: 0 });
@@ -108,8 +100,8 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
         <View
           style={
             checkClick
-              ? [styles.groupProduct, { height: '40%' }]
-              : [styles.groupProduct, { height: '30%' }]
+              ? [styles.groupProduct, { height: '45%' }]
+              : [styles.groupProduct, { height: '35%' }]
           }>
           <FlatList
             ref={flatListRefProduct}
@@ -130,7 +122,6 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
             style={styles.btnSeeMore}
             onPress={() => {
               setcheckActivity(!checkActivity),
-                loadMoreActivity(),
                 scrollToTopActivity();
             }}>
             {checkActivity ? (
@@ -148,7 +139,7 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
           }>
           <FlatList
             ref={flatListRefActivity}
-            scrollEnabled={visibleActivity}
+            scrollEnabled={checkActivity}
             data={DataActivity_Notifi} // Hiển thị chỉ số sản phẩm cần
             renderItem={renderItem}
             keyExtractor={item => item.id.toString()}

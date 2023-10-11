@@ -52,7 +52,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                                             <ChangePass /> :
                                             <ChangeName />
                     }
-                    <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative' }}>
+                    <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
                             <ButtonBottom title='Cancel' />
                         </Pressable>

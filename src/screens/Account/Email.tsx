@@ -22,7 +22,7 @@ const Email = () => {
                 <Text style={styles.verifi}>We Will Send verification to your New Email</Text>
             </View>
 
-            <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
+            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Change Email' />
             </View>
         </View>

@@ -39,12 +39,13 @@ const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } 
     return (
         <View style={styles.itemsale2}>
             <Image style={styles.imageproduct} source={{ uri: item.image }} />
-            <Text style={styles.nameproduct}>{item.name}</Text>
-            {/* <Image style={styles.imga} source={require('../asset/img/a.png')} /> */}
-            <Text style={styles.price}>$299,43</Text>
-            <View style={styles.stylesaleoff}>
-                <Text style={styles.strikethrough}>$534,33</Text>
-                <Text style={styles.saleoff}>24% Off</Text>
+            <View style={{ marginTop: 20, rowGap: 15 }}>
+                <Text style={styles.nameproduct}>{item.name}</Text>
+                <Text style={styles.price}>$299,43</Text>
+                <View style={styles.stylesaleoff}>
+                    <Text style={styles.strikethrough}>$534,33</Text>
+                    <Text style={styles.saleoff}>24% Off</Text>
+                </View>
             </View>
         </View>
     )
@@ -74,31 +75,16 @@ const HomeScreen = () => {
             }
         }
     }
-    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: any) => {
-        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
-    }
-    const TextInputAni = Animated.createAnimatedComponent(TextInput);
-    const animatedValue = useRef(new Animated.Value(0)).current;
-    const animatedSearch = {
-        transform: [
-            {
-                scaleX: animatedValue.interpolate({
-                    inputRange: [0, 50],
-                    outputRange: [1, 0],
-                    extrapolate: 'clamp'
-                })
-            }
-        ]
-    }
+
     return (
         <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
             <View style={styles.top}>
                 <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
                 >
                     <Icon name='search' size={22} />
-                    <TextInputAni
+                    <TextInput
                         placeholder="Search here"
-                        style={[styles.TextSearch, animatedSearch]}
+                        style={[styles.TextSearch]}
                         onFocus={() => setClick(true)}
                         onBlur={() => setClick(false)}
 
@@ -116,8 +102,6 @@ const HomeScreen = () => {
 
             </View>
             <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[7]} onScroll={(e) => {
-                const offsetY = e.nativeEvent.contentOffset.y;
-                animatedValue.setValue(offsetY)
             }} scrollEventThrottle={16}>
                 <View style={styles.topslide}>
 
@@ -222,13 +206,14 @@ const HomeScreen = () => {
                 </View>
                 <FlatList
                     scrollEnabled={false}
-                    style={{ width: WIDTH, marginBottom: 45, marginTop: 10 }}
+                    contentContainerStyle={{ alignItems: 'center' }}
+                    style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
                     showsVerticalScrollIndicator={false}
                     data={data2}
                     renderItem={renderItem3}
                     keyExtractor={(item) => item.id}
                     numColumns={2}
-                    columnWrapperStyle={styles.columnWrapper}
+                    columnWrapperStyle={{ columnGap: 10 }}
                 />
             </ScrollView>
         </SafeAreaView>
@@ -397,7 +382,7 @@ const styles = StyleSheet.create({
 
     price: {
         fontWeight: 'bold',
-        fontSize: 13,
+        fontSize: 15,
         color: '#4464C4',
         marginLeft: 15
     },
@@ -408,14 +393,14 @@ const styles = StyleSheet.create({
 
     strikethrough: {
         textDecorationLine: 'line-through',
-        fontSize: 10,
+        fontSize: 15,
         marginRight: 12,
         marginLeft: 15
     },
 
     saleoff: {
         fontWeight: 'bold',
-        fontSize: 10,
+        fontSize: 13,
         color: '#FB7181'
     },
 
@@ -435,23 +420,18 @@ const styles = StyleSheet.create({
         marginLeft: 15
     },
 
-    columnWrapper: {
-        justifyContent: 'flex-start',
-    },
 
     listgrid: {
     },
 
     itemsale2: {
+        paddingVertical: 10,
         height: 240,
-        width: WIDTH * 0.42,
+        width: WIDTH / 2.5,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: 'black',
-        justifyContent: 'space-around',
         marginBottom: 5,
-
-
     }
 
 })
