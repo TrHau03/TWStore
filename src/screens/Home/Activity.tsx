@@ -47,41 +47,18 @@ const renderItem = ({ item }: any): React.JSX.Element => {
 };
 
 const ActivityScreen = ({ navigation }: PropsHome) => {
-  const [visibleProducts, setVisibleProducts] = useState<boolean>(false); // Số sản phẩm hiển thị ban đầu
-  const [checkClick, setcheckClick] = useState<boolean>(false);
-
-  const [visibleActivity, setVisibleActivity] = useState<boolean>(false); // Số sản phẩm hiển thị ban đầu
+  const [checkProduct, setcheckProduct] = useState<boolean>(false);
   const [checkActivity, setcheckActivity] = useState<boolean>(false);
 
   const flatListRefProduct = useRef<FlatList>(null);
   const flatListRefActivity = useRef<FlatList>(null);
 
-  //Hàm để ẩn hiện thêm danh sách thông báo product
-  /* const loadMoreProducts = () => {
-     if (!checkClick) {
-       console.log('Check');
-       setVisibleProducts(true); // Tăng số sản phẩm hiển thị khi người dùng muốn xem thêm
-     } else {
-       console.log('UnCheck');
-       setVisibleProducts(false); // Giảm số sản phẩm hiển thị
-     }
-   };*/
+
   //Hàm đưa trỏ chuột lên đầu danh sách
   const scrollToTopProduct = () => {
     flatListRefProduct.current?.scrollToOffset({ offset: 0 });
   };
 
-
-  //Hàm để ẩn hiện thêm danh sách thông báo product
-  const loadMoreActivity = () => {
-    if (!checkActivity) {
-      console.log('Check');
-      setVisibleActivity(true); // Tăng số sản phẩm hiển thị khi người dùng muốn xem thêm
-    } else {
-      console.log('UnCheck');
-      setVisibleActivity(false); // Giảm số sản phẩm hiển thị
-    }
-  };
   //Hàm đưa trỏ chuột lên đầu danh sách
   const scrollToTopActivity = () => {
     flatListRefActivity.current?.scrollToOffset({ offset: 0 });
@@ -96,9 +73,9 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
           <TouchableOpacity
             style={styles.btnSeeMore}
             onPress={() => {
-              setcheckClick(!checkClick), checkClick ? scrollToTopProduct() : null;
+              setcheckProduct(!checkProduct), checkProduct ? scrollToTopProduct() : null;
             }}>
-            {checkClick ? (
+            {checkProduct ? (
               <Text style={styles.txtSeeMore}>Ẩn</Text>
             ) : (
               <Text style={styles.txtSeeMore}>See More</Text>
@@ -107,13 +84,13 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
         </View>
         <View
           style={
-            checkClick
+            checkProduct
               ? [styles.groupProduct, { height: '40%' }]
               : [styles.groupProduct, { height: '30%' }]
           }>
           <FlatList
             ref={flatListRefProduct}
-            scrollEnabled={checkClick}
+            scrollEnabled={checkProduct}
             data={DataProduct_Notifi} // Hiển thị chỉ số sản phẩm cần
             renderItem={renderItem}
             keyExtractor={item => item.id.toString()}
@@ -129,9 +106,7 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
           <TouchableOpacity
             style={styles.btnSeeMore}
             onPress={() => {
-              setcheckActivity(!checkActivity),
-                loadMoreActivity(),
-                scrollToTopActivity();
+              setcheckActivity(!checkActivity), checkActivity ? scrollToTopActivity() : null;
             }}>
             {checkActivity ? (
               <Text style={styles.txtSeeMore}>Ẩn</Text>
@@ -142,13 +117,13 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
         </View>
         <View
           style={
-            visibleActivity
+            checkActivity
               ? [styles.groupActivity, { height: '45%' }]
               : [styles.groupActivity, { height: '40%' }]
           }>
           <FlatList
             ref={flatListRefActivity}
-            scrollEnabled={visibleActivity}
+            scrollEnabled={checkActivity}
             data={DataActivity_Notifi} // Hiển thị chỉ số sản phẩm cần
             renderItem={renderItem}
             keyExtractor={item => item.id.toString()}
