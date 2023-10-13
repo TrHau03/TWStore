@@ -9,11 +9,11 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'
-import { CompositeNavigationProp, CompositeScreenProps, NavigationProp, useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
-import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
-import { PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootTabParamList } from '../../component/BottomNavigation/RootTab/RootTab';
+import { PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 
 
 interface Category {
@@ -138,9 +138,10 @@ const styles = StyleSheet.create({
 
 
   TextSearch: {
+    width: WIDTH / 2,
     justifyContent: 'center',
     marginLeft: 10,
-    paddingVertical: 0
+    paddingVertical: 0,
   },
   imageSearch: {
     width: 20,

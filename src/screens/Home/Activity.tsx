@@ -9,10 +9,8 @@ import {
   View,
 } from 'react-native';
 import React, { useRef, useState } from 'react';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
-import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 
 interface Product_Notifi {

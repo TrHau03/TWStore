@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 import { BG_COLOR } from '../../utilities/utility';
 
 const TimeCountDown = () => {
-    const deadlineDay = 10;
-    const [hideCountDown, sethideCountDown] = useState<boolean>(false);
+    const deadlineDay = 1.5;
+    const [hideCountDown, setHideCountDown] = useState<boolean>(false);
     const [day, setDay] = useState<number>(21);
     const [hour, setHour] = useState<number>(12);
     const [minute, setMinute] = useState<number>(21);
@@ -25,13 +25,13 @@ const TimeCountDown = () => {
             setSeconds(seconds);
             if (distance <= 0) {
                 clearInterval(setTimeCountDown);
-                sethideCountDown(true);
+                setHideCountDown(true);
             }
             return () => clearInterval(setTimeCountDown);
         }, 1000);
     }, []);
     return (
-        <View style={{backgroundColor: BG_COLOR}}>
+        <View style={{ backgroundColor: BG_COLOR }}>
             {!hideCountDown ?
                 <View style={{ flexDirection: 'row', gap: 5, marginTop: 10, marginBottom: 10 }}>
                     <View style={styles.timeCountDown}>
@@ -43,7 +43,7 @@ const TimeCountDown = () => {
                     <View style={styles.timeCountDown}><Text style={styles.textTimeCountDown}>{(minute < 10) ? '0' + minute : minute}</Text></View>
                     <Text style={styles.spaceViewTimeCountDown}>:</Text>
                     <View style={styles.timeCountDown}><Text style={styles.textTimeCountDown}>{(seconds < 10) ? '0' + seconds : seconds}</Text></View>
-                    <Text style={styles.textUpto}>Sale 50% Off</Text>
+                    <Text style={styles.textUpto}>Sale 50% </Text>
                 </View> : <></>}
         </View>
     )

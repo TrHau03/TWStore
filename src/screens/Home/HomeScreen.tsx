@@ -59,7 +59,9 @@ const HomeScreen = () => {
 
     const [imgActive, setimgActive] = useState(0);
 
-    const [click, setClick] = useState<boolean>(false);
+    const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
+
+    const [textInputSearch, setTextInputSearch] = useState<string>('');
 
 
     console.log('render');
@@ -79,16 +81,24 @@ const HomeScreen = () => {
     return (
         <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
             <View style={styles.top}>
-                <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
+                <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
                 >
                     <Icon name='search' size={22} />
                     <TextInput
                         placeholder="Search here"
                         style={[styles.TextSearch]}
-                        onFocus={() => setClick(true)}
-                        onBlur={() => setClick(false)}
-
+                        onFocus={() => setTextInputStatus(true)}
+                        onBlur={() => setTextInputStatus(false)}
+                        onChangeText={setTextInputSearch}
+                        value={textInputSearch}
                     />
+                    {(textInputStatus) ?
+                        <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
+                            onPress={() => setTextInputSearch('')}
+                        >
+                            <Icon name='close' size={14} />
+                        </Pressable>
+                        : null}
                 </View>
 
                 <View style={styles.headerRight}>
@@ -250,9 +260,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     TextSearch: {
+        width: WIDTH / 2,
         justifyContent: 'center',
         marginLeft: 10,
-        paddingVertical: 0
+        paddingVertical: 0,
     },
     headerLeft: {
         borderWidth: 1,
