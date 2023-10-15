@@ -80,8 +80,13 @@ const ChanceImage = () => {
     };
 
     const handleImage = (value: string) => {
-        dispatch(setImage(value));
+        if (!value) {
+            Alert.alert('Thông báo', 'Vui lòng chọn ảnh trước khi lưu.');
+        } else {
+            dispatch(setImage(value));
+        }
     }
+    
 
     return (
         <View style={styles.container}>
