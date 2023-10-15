@@ -1,10 +1,6 @@
 import { StyleProp, StyleSheet, TextStyle } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-
-
-
-import { COLORS } from '../../../utilities';
 import { NavigatorScreenParams } from '@react-navigation/native';
 import { RootStackParamListExplore } from '../../Root/RootStackExplore';
 import { RootStackParamListHome } from '../../Root/RootStackHome';

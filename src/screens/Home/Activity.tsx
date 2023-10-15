@@ -66,6 +66,8 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
     <View style={styles.container}>
       <Header title='Activity' navigation={navigation} />
       <View style={styles.content}>
+       {checkActivity ? 
+        <View >
         <View style={styles.groupText}>
           <Text style={styles.txtProduct}>Product</Text>
           <TouchableOpacity
@@ -96,7 +98,7 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
             showsVerticalScrollIndicator={false}
           />
         </View>
-
+      </View> : <></>}
 
 
         <View style={styles.groupText}>
