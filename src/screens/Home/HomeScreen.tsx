@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
+import { listBanners, listRecommendeds } from '../../redux/silces/HomeSelector';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -32,16 +34,16 @@ const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } 
     )
 }
 
-const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } }) => {
+const renderItem3 = ({ item }: { item: {id: number, image: string, name: string, price: number, strikeThrough: number, saleOff: number } }) => {
     return (
         <View style={styles.itemsale2}>
             <Image style={styles.imageproduct} source={{ uri: item.image }} />
             <Text style={styles.nameproduct}>{item.name}</Text>
             {/* <Image style={styles.imga} source={require('../asset/img/a.png')} /> */}
-            <Text style={styles.price}>$299,43</Text>
+            <Text style={styles.price}>${item.price}</Text>
             <View style={styles.stylesaleoff}>
-                <Text style={styles.strikethrough}>$534,33</Text>
-                <Text style={styles.saleoff}>24% Off</Text>
+                <Text style={styles.strikethrough}>${item.strikeThrough}</Text>
+                <Text style={styles.saleoff}>{item.saleOff}% Off</Text>
             </View>
         </View>
     )
@@ -51,11 +53,15 @@ type NavigationProps = StackNavigationProp<RootStackParamListHome, RootStackScre
 const HomeScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
-    const [imgActive, setimgActive] = useState(0);
+    const [imgActive, setimgActive] = useState<Number>(0);
 
     const [click, setClick] = useState<boolean>(false);
 
-
+    const banner = useSelector(listBanners);
+    const recommenProduct = useSelector(listRecommendeds);
+    console.log(recommenProduct);
+    
+    
     console.log('render');
 
 
@@ -128,7 +134,7 @@ const HomeScreen = () => {
                         style={styles.slide}
                     >
                         {
-                            images.map((e, index) =>
+                            banner.map((e: any) =>
                                 <Pressable onPress={() => navigation.navigate(e.nameScreen as never)} key={e.nameScreen}>
                                     <Image
                                         resizeMode='stretch'
@@ -142,7 +148,7 @@ const HomeScreen = () => {
 
                     <View style={styles.warpdot}>
                         {
-                            images.map((e, index) =>
+                            banner.map((e:any, index:Number) =>
                                 <Text
                                     key={e.nameScreen}
                                     style={imgActive == index ? styles.dotactive : styles.dot}
@@ -222,9 +228,9 @@ const HomeScreen = () => {
                     scrollEnabled={false}
                     style={{ marginBottom: 120, marginTop: 10, marginLeft: 5 }}
                     showsVerticalScrollIndicator={false}
-                    data={data2}
+                    data={recommenProduct}
                     renderItem={renderItem3}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.id.toString()}
                     numColumns={2}
                     columnWrapperStyle={styles.columnWrapper}
                 />
@@ -456,24 +462,7 @@ const styles = StyleSheet.create({
     }
 
 })
-const images = [
-    {
-        image: 'https://thietke6d.com/wp-content/uploads/2021/03/Mau-banner-quang-cao-dep-1.png',
-        nameScreen: 'OfferScreen'
-    },
-    {
-        image: 'https://intphcm.com/data/upload/banner-thoi-trang-tuoi.jpg',
-        nameScreen: 'CartScreen'
-    },
-    {
-        image: 'https://dojeannam.com/wp-content/uploads/2017/09/BANNER-KHAI-TRUONG-DOJEANNAM.jpg',
-        nameScreen: 'PaymentScreen'
-    },
-    {
-        image: 'https://intphcm.com/data/upload/banner-thoi-trang.jpg',
-        nameScreen: 'BankTransferScreen'
-    },
-]
+
 const data = [
     { id: '1', name: 'Man Shirt', icon: 'shirt-sharp' },
     { id: '2', name: 'Dress', icon: 'shirt-sharp' },
@@ -483,7 +472,7 @@ const data = [
 ];
 
 const data2 = [
-    { id: '1', name: 'FS - Nike Air Max 270 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
+    { id: '1', name: 'FS - Nike Air Max 270 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000'},
     { id: '2', name: 'FE - QUILTED MAXI CROS...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
     { id: '3', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
     { id: '4', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },

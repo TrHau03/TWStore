@@ -12,6 +12,8 @@ import LoginNavigation from './src/component/Navigation/LoginNavigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Navigation from './src/component/Navigation/Navigation';
 import { NavigationContainer } from '@react-navigation/native';
+import { Provider } from 'react-redux';
+import store from './src/redux/store';
 
 
 
@@ -22,7 +24,9 @@ function App(): JSX.Element {
     setIsLoadding(false);
   }, 1000);
   return (
-    (isLoadding) ? <SplashSreen /> : <NavigationContainer><Navigation/></NavigationContainer>
+    <Provider store={store}>
+      {(isLoadding) ? <SplashSreen /> : <NavigationContainer><Navigation/></NavigationContainer>}
+    </Provider>
   );
 }
 

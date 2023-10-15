@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from '../../component/Button/Button'
+import Item from '@ant-design/react-native/lib/list/ListItem';
 
 
 interface Product {
@@ -13,121 +14,95 @@ interface Product {
 }
 
 interface Shipping_Detail {
-  id: number;
-  date: string;
-  name: string;
-  phone: string;
-  address: string;
+  id: number,
+  date: string,
+  name: string,
+  phone: string,
+  address: string,
 }
 
 interface Payment_Detail {
-  id: number;
-  quantity: number;
-  price_item: string;
-  price_ship: string;
-  price_charges: string;
-  price: string;
+  id: number,
+  quantity: number,
+  price_item: string,
+  price_ship: string,
+  price_charges: string,
+  price: string,
 }
 
-const renderItem2 = ({ item }: any): React.JSX.Element => {
-  const { id, quantity, price_item, price_ship, price_charges, price } = item;
 
-  return <View style={styles.boxShipping}>
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-      <Text style={styles.txtLeft}>Items ({item.quantity})</Text>
-      <Text style={styles.txtRight}>${item.price_item}</Text>
-    </View>
-
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-      <Text style={styles.txtLeft}>Shipping</Text>
-      <Text style={styles.txtRight}>${item.price_ship}</Text>
-    </View>
-
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-      <Text style={styles.txtLeft}>Import charges</Text>
-      <Text style={styles.txtRight}>${item.price_charges}</Text>
-    </View>
-
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-      <Text style={styles.txtPrice_Product}>Total Price</Text>
-      <Text style={styles.txtPrice_Product}>${item.price}</Text>
-    </View>
-  </View>
-};
-
-const renderItem1 = ({ item }: any): React.JSX.Element => {
-  const { id, date, name, phone, address } = item;
-
-  return <View style={styles.boxShipping}>
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-      <Text style={styles.txtLeft}>Date Shipping</Text>
-      <Text style={styles.txtRight}>{item.date}</Text>
-    </View>
-
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-      <Text style={styles.txtLeft}>Shipping</Text>
-      <Text style={styles.txtRight}>{item.name}</Text>
-    </View>
-
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-      <Text style={styles.txtLeft}>No. Ressi</Text>
-      <Text style={styles.txtRight}>{item.phone}</Text>
-    </View>
-
-    <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-      <Text style={styles.txtLeft}>Address</Text>
-      <Text style={styles.txtRight}>{item.address}</Text>
-    </View>
-  </View>
-};
-
-
-
-const Order_Detail = () => {
-
-  const renderItem = ({ item }: any): React.JSX.Element => {
-    const { id, image, name, price } = item;
-
-    return <View style={styles.boxProduct}>
-      <Image style={styles.product_Image} source={{ uri: item.image }} />
-
-      <View style={{ justifyContent: 'space-between', width: '60%' }}>
-        <Text style={styles.txtName_Product}>{item.name}</Text>
-        <Text style={styles.txtPrice_Product}>{item.price}</Text>
-      </View>
-      <Icon name='heart-outline' size={25} style={styles.icon_Heart} color={'#525252'} />
-    </View>
-  };
+const Order_Detail = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}>
-          
+
         <Header title='Order Detail' />
         <View style={styles.line}></View>
         <View style={{ paddingHorizontal: 20, }}>
           <Text style={styles.txtTitle}>Product</Text>
-          <FlatList
-            data={Data}
-            renderItem={renderItem}
-            showsVerticalScrollIndicator={false}
-          />
+
+          {Data.map((item) =>
+            <View key={item.id} style={styles.boxProduct}>
+              <Image style={styles.product_Image} source={{ uri: item.image }} />
+
+              <View style={{ justifyContent: 'space-between', width: '60%' }}>
+                <Text style={styles.txtName_Product}>{item.name}</Text>
+                <Text style={styles.txtPrice_Product}>{item.price}</Text>
+              </View>
+              <Icon name='heart-outline' size={25} style={styles.icon_Heart} color={'#525252'} />
+            </View>
+          )}
+
 
           <Text style={styles.txtTitle}>Shipping Details</Text>
 
-          <FlatList
-            data={Data1}
-            renderItem={renderItem1}
-            showsVerticalScrollIndicator={false}
-          />
+          {Data1.map((item) =>
+            <View key={item.id} style={styles.boxShipping}>
+
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                <Text style={styles.txtLeft}>Date Shipping</Text>
+                <Text style={styles.txtRight}>{item.date}</Text>
+              </View><View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                <Text style={styles.txtLeft}>Shipping</Text>
+                <Text style={styles.txtRight}>{item.name}</Text>
+              </View><View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                <Text style={styles.txtLeft}>No. Ressi</Text>
+                <Text style={styles.txtRight}>{item.phone}</Text>
+              </View><View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                <Text style={styles.txtLeft}>Address</Text>
+                <Text style={styles.txtRight}>{item.address}</Text>
+              </View>
+
+            </View>
+          )}
 
           <Text style={styles.txtTitle}>Payment Details</Text>
-          <FlatList
-            data={Data2}
-            renderItem={renderItem2}
-            showsVerticalScrollIndicator={false}
-          />
+          {Data2.map((item) =>
+          <View key={item.id} style={styles.boxShipping}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtLeft}>Items ({item.quantity})</Text>
+                  <Text style={styles.txtRight}>${item.price_item}</Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtLeft}>Shipping</Text>
+                  <Text style={styles.txtRight}>${item.price_ship}</Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtLeft}>Import charges</Text>
+                  <Text style={styles.txtRight}>${item.price_charges}</Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtPrice_Product}>Total Price</Text>
+                  <Text style={styles.txtPrice_Product}>${item.price}</Text>
+                </View>  
+          </View>
+          )}
+
 
           <Button style={{ marginVertical: 20 }} title='Notifi Me' />
         </View>
