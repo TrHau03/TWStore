@@ -66,71 +66,72 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
     <View style={styles.container}>
       <Header title='Activity' navigation={navigation} />
       <View style={styles.content}>
-       {checkActivity ? 
-        <View >
-        <View style={styles.groupText}>
-          <Text style={styles.txtProduct}>Product</Text>
-          <TouchableOpacity
-            style={styles.btnSeeMore}
-            onPress={() => {
-              setcheckProduct(!checkProduct), checkProduct ? scrollToTopProduct() : null;
-            }}>
-            {checkProduct ? (
-              <Text style={styles.txtSeeMore}>Ẩn</Text>
-            ) : (
-              <Text style={styles.txtSeeMore}>See More</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-        <View
-          style={
-            checkProduct
-              ? [styles.groupProduct, { height: '40%' }]
-              : [styles.groupProduct, { height: '30%' }]
-          }>
-          <FlatList
-            ref={flatListRefProduct}
-            scrollEnabled={checkProduct}
-            data={DataProduct_Notifi} // Hiển thị chỉ số sản phẩm cần
-            renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
-            numColumns={1}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      </View> : <></>}
+        {!checkActivity ?
+          <View >
+            <View style={styles.groupText}>
+              <Text style={styles.txtProduct}>Product</Text>
+              <TouchableOpacity
+                style={styles.btnSeeMore}
+                onPress={() => {
+                  setcheckProduct(!checkProduct), checkProduct ? scrollToTopProduct() : null;
+                }}>
+                {checkProduct ? (
+                  <Text style={styles.txtSeeMore}>Ẩn</Text>
+                ) : (
+                  <Text style={styles.txtSeeMore}>See More</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+
+            <FlatList
+              style={
+                checkProduct
+                  ? [styles.groupProduct, { height: 'auto', marginBottom: 80}]
+                  : [styles.groupProduct, { height: '40%' }]
+              }
+              ref={flatListRefProduct}
+              scrollEnabled={checkProduct}
+              data={DataProduct_Notifi} // Hiển thị chỉ số sản phẩm cần
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              numColumns={1}
+              showsVerticalScrollIndicator={false}
+            />
+          </View> : <></>}
 
 
-        <View style={styles.groupText}>
-          <Text style={styles.txtProduct}>Activity</Text>
-          <TouchableOpacity
-            style={styles.btnSeeMore}
-            onPress={() => {
-              setcheckActivity(!checkActivity), checkActivity ? scrollToTopActivity() : null;
-            }}>
-            {checkActivity ? (
-              <Text style={styles.txtSeeMore}>Ẩn</Text>
-            ) : (
-              <Text style={styles.txtSeeMore}>See More</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-        <View
-          style={
-            checkActivity
-              ? [styles.groupActivity, { height: '45%' }]
-              : [styles.groupActivity, { height: '40%' }]
-          }>
-          <FlatList
-            ref={flatListRefActivity}
-            scrollEnabled={checkActivity}
-            data={DataActivity_Notifi} // Hiển thị chỉ số sản phẩm cần
-            renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
-            numColumns={1}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
+        {!checkProduct ?
+          <View>
+            <View style={styles.groupText}>
+              <Text style={styles.txtProduct}>Activity</Text>
+              <TouchableOpacity
+                style={styles.btnSeeMore}
+                onPress={() => {
+                  setcheckActivity(!checkActivity), checkActivity ? scrollToTopActivity() : null;
+                }}>
+                {checkActivity ? (
+                  <Text style={styles.txtSeeMore}>Ẩn</Text>
+                ) : (
+                  <Text style={styles.txtSeeMore}>See More</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+
+            <FlatList
+              style={
+                checkActivity
+                  ? [styles.groupActivity, { height: 'auto', marginBottom: 80 }]
+                  : [styles.groupActivity, { height: '40%' }]
+              }
+              ref={flatListRefActivity}
+              scrollEnabled={checkActivity}
+              data={DataActivity_Notifi} // Hiển thị chỉ số sản phẩm cần
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              numColumns={1}
+              showsVerticalScrollIndicator={false}
+            />
+          </View> : <></>}
       </View>
     </View>
   );
@@ -140,8 +141,6 @@ export default ActivityScreen;
 
 const styles = StyleSheet.create({
   groupActivity: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
 
   time: {
