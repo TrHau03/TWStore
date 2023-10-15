@@ -14,20 +14,52 @@ import Email from './Email'
 import Phone from './Phone'
 import Gender from './Gender'
 import ChangeName from './ChangeName';
+import ChanceImage from './ChanceImage';
+
+import { useSelector } from 'react-redux';
 
 const user = {
     id: uid(5),
     name: 'Le Trung Hau',
     userName: '@Haule',
-    gender: 'Mate',
-    birthDay: '10-12-2003',
+    gender: 'Male',
+    birthdate: '10-12-2003',
     email: 'hault2003@gmail.com',
-    phone: '0345625243'
+    phone: '0345625243',
+    image: 'https://scontent.xx.fbcdn.net/v/t39.30808-6/329926999_619168540016905_551067399906215730_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=5f2048&_nc_ohc=YZfjgM7zgEYAX8ersXn&_nc_ht=scontent.fhan3-5.fna&oh=00_AfBP2sdERBsjf-12y7HvPJBZFnwCnNdbmTLkXd8Bhbx6QA&oe=652CCA4B&_nc_fr=fhan3c05',
+    password: '123abc'
 }
 
 const ProfileScreen = ({ navigation }: PropsAccount) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [nameModal, setNameModal] = useState<string>('');
+
+    //redux
+    const selectedGender = useSelector((state: any) => state.profileReducer.gender ? state.profileReducer.gender : '');
+    const selectedBirthdate = useSelector((state: any) => state.profileReducer.birthdate ? state.profileReducer.birthdate : '');
+    const selectedEmail = useSelector((state: any) => state.profileReducer.email ? state.profileReducer.email : '');
+    const selectedPhone = useSelector((state: any) => state.profileReducer.phone ? state.profileReducer.phone : '');
+    const selectedImage = useSelector((state: any) => state.profileReducer.image ? state.profileReducer.image : '');
+    const selectedName = useSelector((state: any) => state.profileReducer.name ? state.profileReducer.name : '');
+    
+    const renderModalContent = () => {
+        switch (nameModal) {
+            case 'ChangeGender':
+                return <Gender />;
+            case 'ChangeBirthDay':
+                return <Birthday />;
+            case 'ChangeEmail':
+                return <Email />;
+            case 'ChangePhone':
+                return <Phone />;
+            case 'ChangePassword':
+                return <ChangePass />;
+            case 'ChangeImage':
+                return <ChanceImage />;
+            default:
+                return <ChangeName />;
+        }
+    }
 
     return (
         <Provider>
@@ -38,19 +70,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                 onRequestClose={() => true}
             >
                 <View style={{ height: '100%' }}>
-                    {
-                        (nameModal == 'ChangeGender') ?
-                            <Gender /> :
-                            (nameModal == 'ChangeBirthDay') ?
-                                <Birthday /> :
-                                (nameModal == 'ChangeEmail') ?
-                                    <Email /> :
-                                    (nameModal == 'ChangePhone') ?
-                                        <Phone /> :
-                                        (nameModal == 'ChangePassword') ?
-                                            <ChangePass /> :
-                                            <ChangeName />
-                    }
+                    {renderModalContent()}
                     <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative' }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
                             <ButtonBottom title='Cancel' />
@@ -59,76 +79,70 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                 </View>
             </Modal>
             <View style={styles.container}>
-                <View>
-                    <Header title='Profile' navigation={navigation} />
-                </View>
+                <Header title='Profile' navigation={navigation} />
                 <View style={styles.line}></View>
-
                 <View style={styles.profile}>
-                    <Image style={styles.img} source={require('../../asset/image/z3963074144022_6001e9ff55a6b122baa9d5bbe1fa2996.jpg')} />
+                    <Pressable onPress={() => { setModalVisible(true); setNameModal('ChangeImage') }}>
+                        <Image style={styles.img} source={{ uri: selectedImage }} />
+                    </Pressable>
                     <View style={styles.name}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                            <Text style={styles.txtName}>{user.name}</Text>
-                            <Pressable onPress={() => {setModalVisible(true), setNameModal('ChangeName')} }>
+                            <Text style={styles.txtName}>{selectedName}</Text>
+                            <Pressable onPress={() => { setModalVisible(true), setNameModal('ChangeName') }}>
                                 <MaterialCommunityIcons name='account-edit-outline' size={20} />
                             </Pressable>
                         </View>
                         <Text style={styles.txtUsername}>{user.userName}</Text>
                     </View>
                 </View>
-
                 <View style={styles.Content}>
                     <View style={styles.Content_left}>
                         <Icon name='male-female' size={30} color={'#444444'} />
                         <Text style={styles.txtContent}>Gender</Text>
                     </View>
                     <View style={styles.Content_right}>
-                        <Text style={styles.txtHint}>{user.gender}</Text>
+                        <Text style={styles.txtHint}>{selectedGender}</Text>
                         <Pressable onPress={() => { setModalVisible(true); setNameModal('ChangeGender') }}>
                             <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />
                         </Pressable>
                     </View>
                 </View>
-
                 <View style={styles.Content}>
                     <View style={styles.Content_left}>
                         <Icon name='calendar-sharp' size={30} color={'#444444'} />
                         <Text style={styles.txtContent}>Birthday</Text>
                     </View>
                     <View style={styles.Content_right}>
-                        <Text style={styles.txtHint}>{user.birthDay}</Text>
+                        <Text style={styles.txtHint}>{selectedBirthdate}</Text>
                         <Pressable onPress={() => { setModalVisible(true); setNameModal('ChangeBirthDay') }}>
                             <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />
                         </Pressable>
                     </View>
                 </View>
-
                 <View style={styles.Content}>
                     <View style={styles.Content_left}>
                         <Icon name='mail-unread' size={30} color={'#444444'} />
                         <Text style={styles.txtContent}>Email</Text>
                     </View>
                     <View style={styles.Content_right}>
-                        <Text style={styles.txtHint}>{user.email}</Text>
+                        <Text style={styles.txtHint}>{selectedEmail}</Text>
                         <Pressable onPress={() => { setModalVisible(true); setNameModal('ChangeEmail') }}>
                             <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />
                         </Pressable>
                     </View>
                 </View>
-
                 <View style={styles.Content}>
                     <View style={styles.Content_left}>
                         <Icon name='phone-portrait' size={30} color={'#444444'} />
                         <Text style={styles.txtContent}>Phone Number</Text>
                     </View>
                     <View style={styles.Content_right}>
-                        <Text style={styles.txtHint}>{user.phone}</Text>
+                        <Text style={styles.txtHint}>{selectedPhone}</Text>
                         <Pressable onPress={() => { setModalVisible(true); setNameModal('ChangePhone') }}>
                             <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />
                         </Pressable>
                     </View>
                 </View>
-
                 <View style={styles.Content}>
                     <View style={styles.Content_left}>
                         <Icon name='keypad' size={30} color={'#444444'} />
@@ -141,9 +155,8 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                         </Pressable>
                     </View>
                 </View>
-            </View >
+            </View>
         </Provider>
-
     )
 }
 

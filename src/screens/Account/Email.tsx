@@ -1,11 +1,41 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, Alert, } from 'react-native'
+import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
 import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useSelector, useDispatch } from 'react-redux';
+import { setEmail } from '../../redux/silces/ProfileSilces';
 
+
+function isValidEmail(email: string) {
+    //format email
+    const regEx = /[a-zA-Z0-9._%+-]+@[a-z0-9._]+\.[a-z]{2,8}(.[a-z{2,8}])?/g
+
+    return regEx.test(email);
+  }
+
+  
 const Email = () => {
+
+    const [selected, setSelected] = useState('');
+
+    //redux
+    const dispatch = useDispatch();
+
+    const handleEmail = (value: string) => {
+        console.log('emailinput',value);
+        
+        if (isValidEmail(value)) {
+            // Nếu địa chỉ email đúng định dạng, thì dispatch action để cập nhật email
+            dispatch(setEmail(value));
+          } else {
+            // Nếu địa chỉ email không hợp lệ, hiển thị thông báo lỗi
+            Alert.alert('Lỗi', 'Địa chỉ email không hợp lệ. Vui lòng kiểm tra lại.');
+          }
+    };
+
+
     return (
         <View style={styles.container}>
             <Header hideBack title='Email' />
@@ -16,13 +46,19 @@ const Email = () => {
                 <Text style={styles.txtEmail}>Change Email</Text>
                 <View style={styles.input}>
                     <Icon name='mail' size={30} />
-                    <TextInput style={styles.txtInput} keyboardType='email-address' placeholder="leducminh@gmail.com" />
+                    <TextInput style={styles.txtInput} 
+                    keyboardType='email-address' 
+                    placeholder="leducminh@gmail.com" 
+                    value={selected} 
+                    onChangeText={text => setSelected(text)}/>
                 </View>
                 <Text style={styles.verifi}>We Will Send verification to your New Email</Text>
             </View>
 
             <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
+                <Pressable onPress={() => handleEmail(selected)}>
                 <ButtonBottom title='Change Email' />
+                </Pressable>
             </View>
         </View>
     )

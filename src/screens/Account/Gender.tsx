@@ -1,33 +1,33 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput } from 'react-native'
-import React from 'react'
-import LinearGradient from 'react-native-linear-gradient'
+import { StyleSheet, Text, View, Pressable, Image } from 'react-native'
+import React, { useState } from 'react'
 import { SelectList } from 'react-native-dropdown-select-list'
 import Header from '../../component/Header/Header'
 import ButtonBottom from '../../component/Button/Button'
-
-
+import { useSelector, useDispatch } from 'react-redux';
+import { setGender } from '../../redux/silces/ProfileSilces'
 
 const Gender = () => {
+    const genderOptions = ['Male', 'Female', 'Other'];
+    const [selected, setSelected] = useState('');
+    
+    //redux
+    const dispatch = useDispatch();
 
-    const gender = [
-        { key: '1', value: 'Male' },
-        { key: '2', value: 'Female' },
-        { key: '3', value: 'Other' },
-    ]
+    const handleGenderSelection = (value: string) => {
+        dispatch(setGender(value));
+    };
 
-    const [selected, setSelected] = React.useState<string>('');
+
 
     return (
         <View style={styles.container}>
             <Header hideBack={true} title='Gender' />
-
             <View style={styles.line}></View>
-
             <View style={styles.Gender}>
                 <Text style={styles.txtGender}>Choose Gender</Text>
                 <SelectList
                     setSelected={setSelected}
-                    data={gender}
+                    data={genderOptions}
                     save="value"
                     placeholder={selected}
                     defaultOption={{ key: 1, value: 'Male' }}
@@ -39,13 +39,13 @@ const Gender = () => {
                     dropdownStyles={{ height: 150 }}
                 />
             </View>
-
-
             <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
-                <ButtonBottom title='Save' />
+                <Pressable onPress={() => handleGenderSelection(selected)}>
+                    <ButtonBottom title='Save' />
+                </Pressable>
             </View>
         </View>
-    )
+    );
 }
 
 export default Gender

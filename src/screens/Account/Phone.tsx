@@ -1,13 +1,40 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, Alert, } from 'react-native'
 import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
 import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { useSelector, useDispatch } from 'react-redux';
+import { setPhoneNumber } from '../../redux/silces/ProfileSilces'
+
+
+function formatPhoneNumber(phone: string) {
+    // Remove all non-numeric characters from the phone number string
+    const cleaned = phone.replace(/\D/g, '');
+
+    // Check if the cleaned string has a valid length and doesn't start with '0'
+    if (/^0[1-9]\d{8,10}$/.test(cleaned)) {
+        return cleaned;
+    }
+
+    return '';
+}
+
 
 const Phone = () => {
-    const [phone, setPhone] = useState<string>();
-    console.log(phone);
+
+    //redux
+    const [selected, setSelected] = useState('');
+    const dispatch = useDispatch();
+    const handlePhoneNumber = (value: string) => {
+        console.log('number', value);
+        
+        if (formatPhoneNumber(value)) {
+            dispatch(setPhoneNumber(value));
+          } else {
+            Alert.alert('Lỗi', 'số điện thoại không hợp lệ. Vui lòng kiểm tra lại.');
+          }
+    };
 
     return (
         <View style={styles.container}>
@@ -19,12 +46,18 @@ const Phone = () => {
                 <Text style={styles.txtEmail}>Phone Number</Text>
                 <View style={styles.input}>
                     <Icon name='phone-portrait-outline' size={30} />
-                    <TextInput style={styles.txtInput} value={phone} onChangeText={(value) => setPhone(value)} keyboardType='numeric' placeholder="0372711935" maxLength={11} />
+                    <TextInput style={styles.txtInput} 
+                    value={selected} 
+                    onChangeText={(text) => setSelected(text)} 
+                    keyboardType='numeric' 
+                    placeholder="0372711935" maxLength={11} />
                 </View>
             </View>
 
             <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
-                <ButtonBottom title='Save' />
+                <Pressable onPress={() => handlePhoneNumber(selected)}>
+                    <ButtonBottom title='Save' />
+                </Pressable>
             </View>
         </View>
     )
@@ -125,3 +158,7 @@ const styles = StyleSheet.create({
         paddingTop: 20,
     }
 })
+
+function dispatch(arg0: { payload: any; type: "profileSlice/setPhoneNumber" }) {
+    throw new Error('Function not implemented.')
+}

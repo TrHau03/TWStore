@@ -1,10 +1,31 @@
 import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '../../component/Header/Header'
 import ButtonBottom from '../../component/Button/Button'
+import { useSelector, useDispatch } from 'react-redux';
+import { setName } from '../../redux/silces/ProfileSilces'
+
 
 const ChangeName = () => {
+
+
+    // redux
+    const dispatch = useDispatch();
+    const [firstName, setFirstName] = useState(''); 
+    const [lastName, setLastName] = useState('');   
+    const [error, setError] = useState(''); 
+
+    const handleName = () => {
+        if (!firstName.trim() || !lastName.trim()) {
+            setError('Please enter both the first name and last name.');
+        } else {
+
+            const fullName = `${firstName} ${lastName}`;
+            dispatch(setName(fullName)); 
+            setError(''); 
+        }
+    };
     return (
         <View style={styles.container}>
             <Header hideBack title='Name' />
@@ -14,19 +35,32 @@ const ChangeName = () => {
                 <View style={styles.Name}>
                     <Text style={styles.txtName}>First Name</Text>
                     <View style={styles.input}>
-                        <TextInput style={styles.txtInput} placeholder="Maximus" />
+                        <TextInput
+                            style={styles.txtInput}
+                            placeholder="Maximus"
+                            value={firstName}
+                            onChangeText={(text) => setFirstName(text)}
+                        />
                     </View>
                 </View>
 
                 <View style={styles.Name}>
                     <Text style={styles.txtName}>Last Name</Text>
                     <View style={styles.input}>
-                        <TextInput style={styles.txtInput} placeholder="Gold" />
+                        <TextInput
+                            style={styles.txtInput}
+                            placeholder="Gold"
+                            value={lastName}
+                            onChangeText={(text) => setLastName(text)}
+                        />
                     </View>
                 </View>
             </View>
+            {error && <Text style={{ color: 'red' , fontSize: 18 , marginTop: 10}}>{error}</Text>}
             <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
-                <ButtonBottom title='Save' />
+                <Pressable onPress={handleName}>
+                    <ButtonBottom title='Save' />
+                </Pressable>
             </View>
         </View>
     )
