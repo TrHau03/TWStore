@@ -2,6 +2,7 @@
 import { configStack } from '../Root/RootStack';
 import { RootStackScreenOffer } from '../Root/RootStackOffer';
 import { RootStack } from './Props';
+import * as React from 'react';
 
 
 
