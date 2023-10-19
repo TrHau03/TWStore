@@ -37,7 +37,7 @@ const Add_Address = () => {
 
     return (
         <View style={styles.container}>
-            <Header title='Add Address' />
+            <Header title='Add Address'/>
             <View style={styles.line}></View>
 
                 <Text style={styles.txtTitle}>Provine</Text>

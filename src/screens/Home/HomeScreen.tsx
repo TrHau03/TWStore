@@ -34,7 +34,7 @@ const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } 
     )
 }
 
-const renderItem3 = ({ item }: { item: {id: number, image: string, name: string, price: number, strikeThrough: number, saleOff: number } }) => {
+const renderItem3 = ({ item }: { item: { id: number, image: string, name: string, price: number, strikeThrough: number, saleOff: number } }) => {
     return (
         <View style={styles.itemsale2}>
             <Image style={styles.imageproduct} source={{ uri: item.image }} />
@@ -57,11 +57,10 @@ const HomeScreen = () => {
 
     const [click, setClick] = useState<boolean>(false);
 
+    //reudx
     const banner = useSelector(listBanners);
     const recommenProduct = useSelector(listRecommendeds);
-    console.log(recommenProduct);
-    
-    
+
     console.log('render');
 
 
@@ -86,7 +85,7 @@ const HomeScreen = () => {
                 scaleX: animatedValue.interpolate({
                     inputRange: [0, 50],
                     outputRange: [1, 0],
-                    extrapolate:'clamp'
+                    extrapolate: 'clamp'
                 })
             }
         ]
@@ -148,7 +147,7 @@ const HomeScreen = () => {
 
                     <View style={styles.warpdot}>
                         {
-                            banner.map((e:any, index:Number) =>
+                            banner.map((e: any, index: Number) =>
                                 <Text
                                     key={e.nameScreen}
                                     style={imgActive == index ? styles.dotactive : styles.dot}
@@ -472,7 +471,7 @@ const data = [
 ];
 
 const data2 = [
-    { id: '1', name: 'FS - Nike Air Max 270 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000'},
+    { id: '1', name: 'FS - Nike Air Max 270 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
     { id: '2', name: 'FE - QUILTED MAXI CROS...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
     { id: '3', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
     { id: '4', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },

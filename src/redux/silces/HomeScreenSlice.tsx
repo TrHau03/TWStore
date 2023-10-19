@@ -14,9 +14,19 @@ interface RecomnenProduct {
     saleOff: number;
 }
 
+interface FavoriteProduct {
+    id: number;
+    image: string;
+    name: string;
+    price: number;
+    strikeThrough: number;
+    saleOff: number;
+}
+
 interface InitialState {
     banner: Array<Banner>,
     recommenProduct: Array<RecomnenProduct>,
+    favoriteProduct: Array<FavoriteProduct>,
 }
 
 const initialState: InitialState = {
@@ -51,15 +61,33 @@ const initialState: InitialState = {
         { id: 5, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 100, strikeThrough: 50, saleOff: 24 },
         { id: 6, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 },
     ],
+
+    favoriteProduct: [
+        { id: 1, image: require('../../asset/image/imgProduct.png'), name: 'Nike Air Max 270 React ENG', price: 2999, strikeThrough: 50, saleOff: 24 },
+        { id: 2, image: require('../../asset/image/imgProduct3.png'), name: 'Nike Air Max 270 React ENG', price: 300, strikeThrough: 70, saleOff: 27 },
+        { id: 3, image: require('../../asset/image/imgProduct1.png'), name: 'Nike Air Max 270 React ENG', price: 250, strikeThrough: 50, saleOff: 24 },
+        { id: 4, image: require('../../asset/image/imgProduct2.png'), name: 'Nike Air Max 270 React ENG', price: 450, strikeThrough: 10, saleOff: 28 },
+        { id: 5, image: require('../../asset/image/imgProduct3.png'), name: 'Nike Air Max 270 React ENG', price: 100, strikeThrough: 50, saleOff: 24 },
+        { id: 6, image: require('../../asset/image/imgProduct2.png'), name: 'Nike Air Max 270 React ENG', price: 250, strikeThrough: 50, saleOff: 30 },
+    ],
 };
 
 const HomeScreenSlice = createSlice({
     name: 'HomeScreenSlice',
     initialState,
     reducers: {
-
+        deleteFavourite: (state, action) => {
+            // state.favoriteProduct.splice(state.favoriteProduct.findIndex(favoriteProduct.id === action.payload.id), 1)
+            const index = state.favoriteProduct.findIndex(favoriteProduct => favoriteProduct.id === action.payload);
+            if (index !== -1) {
+                state.favoriteProduct.splice(index, 1);
+            }
+        },
     },
 });
 
+export const {
+    deleteFavourite,
+} = HomeScreenSlice.actions;
 
 export default HomeScreenSlice.reducer;

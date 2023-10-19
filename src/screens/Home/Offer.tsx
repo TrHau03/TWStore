@@ -22,7 +22,7 @@ const renderItem = ({ item }: any): React.JSX.Element => {
     <View style={styles.containerItemPD}>
       <View style={styles.content}>
         <View style={styles.left}>
-          <Image source={img} />
+          <Image source={require('../../asset/image/Offer.png')} />
         </View>
         <View style={styles.right}>
           <Text style={styles.title}>{title}</Text>
