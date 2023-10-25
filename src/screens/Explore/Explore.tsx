@@ -24,6 +24,11 @@ interface Category {
   name: string;
 }
 
+
+
+
+
+
 type navigationProps = NativeStackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
 
 const ExploreScreen = (props: any) => {
