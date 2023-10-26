@@ -11,12 +11,10 @@ import {
 } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import StarRating from 'react-native-star-rating';
 import { AirbnbRating } from 'react-native-ratings';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { configTab } from '../../component/BottomNavigation/RootTab/RootTab';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 interface Product {
   id: number;

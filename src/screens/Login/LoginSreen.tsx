@@ -14,6 +14,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 import AxiosInstance from '../../Axios/Axios';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import Realm from 'realm';
 
 interface Login {
   email: string;
@@ -45,6 +47,36 @@ const LoginScreen = (props: any) => {
       console.log('getNews Error: ', error);
     }
     return [];
+  }
+  const app = new Realm.App({
+    id: "application-0-kbkng",
+  });
+  GoogleSignin.configure({
+    webClientId: '866351015855-93hj0ef6h9er4f7er5l3vujtev37tkar.apps.googleusercontent.com',
+  });
+  // Handle user state changes
+  async function onGoogleButtonPress() {
+    // Check if your device supports Google Play
+    try {
+      // Sign into Google
+      await GoogleSignin.hasPlayServices();
+      const { idToken }: any = await GoogleSignin.signIn();
+      // use Google ID token to sign into Realm
+      const credential = Realm.Credentials.google({ idToken });
+      const user = await app.logIn(credential);
+      console.log("signed in as Realm user", user.id);
+    } catch (error: any) {
+      // handle errors
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
   }
   return (
     <KeyboardAwareScrollView>
@@ -102,7 +134,7 @@ const LoginScreen = (props: any) => {
           <View style={{ width: '40%', backgroundColor: '#9098B1', height: 0.5 }} />
         </View>
         <View style={{ marginTop: 17 }}>
-          <TouchableOpacity style={styles.btnLoginWith}>
+          <TouchableOpacity onPress={onGoogleButtonPress} style={styles.btnLoginWith}>
             <Icon name='logo-google' size={20} style={{ position: 'absolute', left: 20 }} />
             <Text style={styles.textLoginWith}>Log in with Google</Text>
           </TouchableOpacity>
