@@ -21,15 +21,27 @@ interface FavoriteProduct {
     price: number;
     strikeThrough: number;
     saleOff: number;
+} 
+interface Filters {
+    search: string,
+    status: string,
+    loading: boolean,
 }
 
 interface InitialState {
     banner: Array<Banner>,
     recommenProduct: Array<RecomnenProduct>,
     favoriteProduct: Array<FavoriteProduct>,
+    filters: Filters,
 }
 
 const initialState: InitialState = {
+    filters: {
+        search: '',
+        status: 'All',
+        loading: false,
+    },
+
     banner:
         [{
             id: 1,
@@ -83,11 +95,17 @@ const HomeScreenSlice = createSlice({
                 state.favoriteProduct.splice(index, 1);
             }
         },
+
+        searchFilterChange: (state, action) => { 
+            state.filters.search = action.payload;
+        },
+
     },
 });
 
 export const {
     deleteFavourite,
+    searchFilterChange,
 } = HomeScreenSlice.actions;
 
 export default HomeScreenSlice.reducer;

@@ -1,13 +1,16 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity, Animated } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
-import { listBanners, listRecommendeds } from '../../redux/silces/HomeSelector';
-
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
+import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { useDispatch, useSelector } from 'react-redux';
+import { listBanners, listRecommendeds, searchSelector } from '../../redux/silces/HomeSelector';
+import { searchFilterChange } from '../../redux/silces/HomeScreenSlice';
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
     <View style={styles.item}>
@@ -38,33 +41,47 @@ const renderItem3 = ({ item }: { item: { id: number, image: string, name: string
     return (
         <View style={styles.itemsale2}>
             <Image style={styles.imageproduct} source={{ uri: item.image }} />
-            <Text style={styles.nameproduct}>{item.name}</Text>
-            {/* <Image style={styles.imga} source={require('../asset/img/a.png')} /> */}
-            <Text style={styles.price}>${item.price}</Text>
-            <View style={styles.stylesaleoff}>
-                <Text style={styles.strikethrough}>${item.strikeThrough}</Text>
-                <Text style={styles.saleoff}>{item.saleOff}% Off</Text>
+            <View style={{ marginTop: 20, rowGap: 15 }}>
+                <Text style={styles.nameproduct}>{item.name}</Text>
+                <Text style={styles.price}>${item.price}</Text>
+                <View style={styles.stylesaleoff}>
+                    <Text style={styles.strikethrough}>${item.strikeThrough}</Text>
+                    <Text style={styles.saleoff}>{item.saleOff}% Off</Text>
+                </View>
             </View>
         </View>
     )
 
 }
 type NavigationProps = StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>
+type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListExplore>>;
 const HomeScreen = () => {
     const navigation = useNavigation<NavigationProps>();
+    const navigationOtherTab = useNavigation<BottomNavigationProp>();
 
-    const [imgActive, setimgActive] = useState<Number>(0);
+    const [imgActive, setimgActive] = useState(0);
 
-    const [click, setClick] = useState<boolean>(false);
+    const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
 
-    //reudx
-    const banner = useSelector(listBanners);
-    const recommenProduct = useSelector(listRecommendeds);
+    const [textInputSearch, setTextInputSearch] = useState<string>('');
+
 
     console.log('render');
 
+    //reudx
+    const dispatch = useDispatch();
+    const banner = useSelector(listBanners);
+    const recommenProduct = useSelector(listRecommendeds);
 
+    const [search, setSearch] = useState<string>('');
+    console.log(search);
 
+    const handlSearch = (e: any) => {
+        console.log("Value", e);
+        setSearch(e); 
+        dispatch(searchFilterChange(e))
+    }
+    
 
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
@@ -74,38 +91,28 @@ const HomeScreen = () => {
             }
         }
     }
-    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: any) => {
-        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
-    }
-    const TextInputAni = Animated.createAnimatedComponent(TextInput);
-    const animatedValue = useRef(new Animated.Value(0)).current;
-    const animatedSearch = {
-        transform: [
-            {
-                scaleX: animatedValue.interpolate({
-                    inputRange: [0, 50],
-                    outputRange: [1, 0],
-                    extrapolate: 'clamp'
-                })
-            }
-        ]
-    }
-    const animatedBanner = {
 
-    }
     return (
-        <SafeAreaView>
+        <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
             <View style={styles.top}>
-                <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
+                <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
                 >
                     <Icon name='search' size={22} />
-                    <TextInputAni
+                    <TextInput
                         placeholder="Search here"
-                        style={[styles.TextSearch, animatedSearch]}
-                        onFocus={() => setClick(true)}
-                        onBlur={() => setClick(false)}
-
+                        style={[styles.TextSearch]}
+                        onFocus={() => setTextInputStatus(true)}
+                        onBlur={() => setTextInputStatus(false)}
+                        onChangeText={handlSearch}
+                        // value={textInputSearch}
                     />
+                    {(textInputStatus) ?
+                        <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
+                            onPress={() => setTextInputSearch('')}
+                        >
+                            <Icon name='close' size={14} />
+                        </Pressable>
+                        : null}
                 </View>
 
                 <View style={styles.headerRight}>
@@ -118,9 +125,7 @@ const HomeScreen = () => {
                 </View>
 
             </View>
-            <ScrollView horizontal={false} style={{ paddingHorizontal: 20 }} scrollEnabled={true} stickyHeaderIndices={[7]} onScroll={(e) => {
-                const offsetY = e.nativeEvent.contentOffset.y;
-                animatedValue.setValue(offsetY)
+            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[7]} onScroll={(e) => {
             }} scrollEventThrottle={16}>
                 <View style={styles.topslide}>
 
@@ -162,7 +167,7 @@ const HomeScreen = () => {
 
                     <Text style={styles.textcategory}>Category</Text>
 
-                    <Pressable>
+                    <Pressable onPress={() => navigationOtherTab.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
                         <Text style={styles.textcategory}>
                             More Category
                         </Text>
@@ -225,13 +230,14 @@ const HomeScreen = () => {
                 </View>
                 <FlatList
                     scrollEnabled={false}
-                    style={{ marginBottom: 120, marginTop: 10, marginLeft: 5 }}
+                    contentContainerStyle={{ alignItems: 'center' }}
+                    style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
                     showsVerticalScrollIndicator={false}
                     data={recommenProduct}
                     renderItem={renderItem3}
                     keyExtractor={(item) => item.id.toString()}
                     numColumns={2}
-                    columnWrapperStyle={styles.columnWrapper}
+                    columnWrapperStyle={{ columnGap: 10 }}
                 />
             </ScrollView>
         </SafeAreaView>
@@ -243,12 +249,9 @@ export default HomeScreen
 const styles = StyleSheet.create({
     top: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 20,
+        marginBottom: 5,
     },
-
-
 
     favorite: {
         width: 24,
@@ -264,22 +267,25 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
     },
+
     headerRight: {
         paddingLeft: 10,
         gap: 15,
         flexDirection: 'row',
-        height: '100%',
         alignItems: 'center',
     },
+
     TextSearch: {
+        width: WIDTH / 2,
         justifyContent: 'center',
-        marginLeft: 10
+        marginLeft: 10,
+        paddingVertical: 0,
     },
     headerLeft: {
         borderWidth: 1,
         padding: 5,
         borderRadius: 5,
-        borderColor: '#EBF0FF',
+        borderColor: '#e1dede',
         alignItems: 'center',
         flexDirection: 'row',
         width: '80%',
@@ -290,8 +296,8 @@ const styles = StyleSheet.create({
     },
 
     slide: {
-        height: 205,
-        width: 400,
+        height: WIDTH * 0.5,
+        width: WIDTH,
         borderRadius: 6,
     },
 
@@ -372,8 +378,9 @@ const styles = StyleSheet.create({
     },
 
     listflastsale: {
-        height: 240,
-        marginTop: 15,
+        height: WIDTH * 0.7,
+        marginTop: 5,
+        marginBottom: 5
     },
 
     itemsale: {
@@ -402,7 +409,7 @@ const styles = StyleSheet.create({
 
     price: {
         fontWeight: 'bold',
-        fontSize: 13,
+        fontSize: 15,
         color: '#4464C4',
         marginLeft: 15
     },
@@ -413,14 +420,14 @@ const styles = StyleSheet.create({
 
     strikethrough: {
         textDecorationLine: 'line-through',
-        fontSize: 10,
+        fontSize: 15,
         marginRight: 12,
         marginLeft: 15
     },
 
     saleoff: {
         fontWeight: 'bold',
-        fontSize: 10,
+        fontSize: 13,
         color: '#FB7181'
     },
 
@@ -440,24 +447,18 @@ const styles = StyleSheet.create({
         marginLeft: 15
     },
 
-    columnWrapper: {
-        justifyContent: 'flex-start',
-    },
 
     listgrid: {
     },
 
     itemsale2: {
+        paddingVertical: 10,
         height: 240,
-        width: 165,
+        width: WIDTH / 2.5,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: 'black',
-        justifyContent: 'space-around',
-        marginLeft: 5,
         marginBottom: 5,
-
-
     }
 
 })
