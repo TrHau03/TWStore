@@ -1,7 +1,4 @@
-
 import { uid } from 'uid';
-
-
 import PaymentScreen from '../../screens/Account/PaymentScreen';
 import CreditCardScreen from '../../screens/Account/CreditCardScreen';
 import PaypalScreen from '../../screens/Account/PaypalScreen';

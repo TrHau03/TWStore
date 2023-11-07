@@ -17,6 +17,7 @@ import CartNavigation from '../../Navigation/CartNavigation';
 import OfferNavigation from '../../Navigation/OfferNavigation';
 import AccountNavigation from '../../Navigation/AccountNavigation';
 import { Badge } from '@ant-design/react-native';
+import React from 'react';
 
 export enum RootTabScreenENum {
     StackHome = 'Home',
@@ -48,6 +49,7 @@ export const RootBottomTab = () => {
 }
 export const configTab = (route: any) => {
     return {
+        
         tabBarIcon: ({ color, focused }: any) => {
             let iconName: any;
             if (route.name === ROUTES.HOME) {
