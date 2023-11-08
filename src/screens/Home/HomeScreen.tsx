@@ -9,8 +9,10 @@ import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilitie
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useDispatch, useSelector } from 'react-redux';
-import { listBanners, listRecommendeds, searchSelector } from '../../redux/silces/HomeSelector';
-import { searchFilterChange } from '../../redux/silces/HomeScreenSlice';
+import { listBanners, listRecommendeds, todoRemainingSelectProduct } from '../../redux/silces/HomeSelector';
+import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+
+
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
     <View style={styles.item}>
@@ -71,16 +73,18 @@ const HomeScreen = () => {
     //reudx
     const dispatch = useDispatch();
     const banner = useSelector(listBanners);
-    const recommenProduct = useSelector(listRecommendeds);
+    const recommenProduct = useSelector(todoRemainingSelectProduct);
 
     const [search, setSearch] = useState<string>('');
     console.log(search);
 
-    const handlSearch = (e: any) => {
-        console.log("Value", e);
-        setSearch(e); 
-        dispatch(searchFilterChange(e))
-    }
+    useEffect(() => {
+        dispatch(
+            HomeScreenSlice.actions.search(search)
+            
+        );
+    }, [search])
+    console.log(recommenProduct);
     
 
     const onChange = (nativeEvent: any) => {
@@ -103,8 +107,8 @@ const HomeScreen = () => {
                         style={[styles.TextSearch]}
                         onFocus={() => setTextInputStatus(true)}
                         onBlur={() => setTextInputStatus(false)}
-                        onChangeText={handlSearch}
-                        // value={textInputSearch}
+                        value={search}
+                        onChangeText={setSearch}
                     />
                     {(textInputStatus) ?
                         <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}

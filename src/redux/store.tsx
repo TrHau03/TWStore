@@ -4,7 +4,7 @@ import HomeScreenSlice from './silces/HomeScreenSlice';
 
 const store = configureStore({
     reducer:{
-        homeScreenSlice: HomeScreenSlice,
+        HomeScreenSlice: HomeScreenSlice.reducer, 
         stateReducer: todoSlideState,
     }
 })

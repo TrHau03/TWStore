@@ -18,12 +18,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { configTab } from '../../component/BottomNavigation/RootTab/RootTab';
 import { listFavorites } from '../../redux/silces/HomeSelector';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteFavourite } from '../../redux/silces/HomeScreenSlice';
+import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+
 
   //redux
   const dispatch = useDispatch();
   const handleRemoveFavorite = (id: number) => {
-    dispatch(deleteFavourite(id));
+    dispatch(HomeScreenSlice.actions.deleteFavourite(id));
   };
 
   

@@ -96,16 +96,12 @@ const HomeScreenSlice = createSlice({
             }
         },
 
-        searchFilterChange: (state, action) => { 
+        search: (state, action) => {
             state.filters.search = action.payload;
         },
-
     },
 });
 
-export const {
-    deleteFavourite,
-    searchFilterChange,
-} = HomeScreenSlice.actions;
 
-export default HomeScreenSlice.reducer;
+
+export default HomeScreenSlice;
