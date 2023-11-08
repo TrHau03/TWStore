@@ -18,29 +18,45 @@ interface Product {
 
 const RenderItem = ({ item }: { item: Product }) => {
   return (
-    <View style={styles.containerItemPD}>
-      {/* <View style={styles.content}>
-        <View style={styles.ImgContainerPD}>
-          <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.img }} />
+    // <View style={styles.containerItemPD}>
+    //   {/* <View style={styles.content}>
+    //     <View style={styles.ImgContainerPD}>
+    //       <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.img }} />
+    //     </View>
+    //     <View style={styles.in4PD}>
+    //       <View style={styles.in4Text}>
+    //         <Text style={styles.NamePD}>{item.name}</Text>
+    //         <View style={styles.star}>
+    //           <AirbnbRating count={5} size={15} showRating={false} />
+    //         </View>
+    //         <Text style={styles.PricePD}>{item.price}</Text>
+    //       </View>
+    //       <View style={styles.sale}>
+    //         <Text style={styles.txtOldPrice}>5000</Text>
+    //         <Text style={styles.txtSale}>24% Off</Text>
+    //         <TouchableOpacity style={styles.imgIc}>
+    //           <Icon name="trash-outline" size={25} />
+    //         </TouchableOpacity>
+    //       </View>
+    //     </View>
+    //   </View> */}
+
+    // </View>
+    <View style={styles.containerItemPD} >
+      <View>
+        <Image style={{ width: '100%', height: 120 , borderRadius: 5 }} source={{ uri: item.img }} />
+      </View>
+      <View style={{ width: '100%', height: 50 , marginTop: 5}}>
+        <Text style={styles.NamePD}>{item.name}</Text>
+      </View>
+      <View>
+        <Text style={styles.PricePD}>$299,43</Text>
+        <View style={styles.sale}>
+          <Text style={styles.txtOldPrice}>$534,33</Text>
+          <Text style={styles.txtSale}>24% Off</Text>
         </View>
-        <View style={styles.in4PD}>
-          <View style={styles.in4Text}>
-            <Text style={styles.NamePD}>{item.name}</Text>
-            <View style={styles.star}>
-              <AirbnbRating count={5} size={15} showRating={false} />
-            </View>
-            <Text style={styles.PricePD}>{item.price}</Text>
-          </View>
-          <View style={styles.sale}>
-            <Text style={styles.txtOldPrice}>5000</Text>
-            <Text style={styles.txtSale}>24% Off</Text>
-            <TouchableOpacity style={styles.imgIc}>
-              <Icon name="trash-outline" size={25} />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View> */}
-    </View>
+      </View>
+    </View >
   )
 }
 
@@ -53,25 +69,25 @@ const OfferScreen = () => {
   const [minute, setMinute] = useState<number>(21);
   const [seconds, setSeconds] = useState<number>(21);
   let endDate = new Date().getTime() + (1000 * 3600 * (24 * deadlineDay));
-  useEffect(() => {
-    console.log('render');
-    let setTimeCountDown = setInterval(function () {
-      let now = new Date().getTime();
-      let distance = endDate - now;
-      let day = Math.floor(distance / (24 * 60 * 60 * 1000));
-      let hour = Math.floor((distance % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
-      let minute = Math.floor((distance % (60 * 60 * 1000)) / (60 * 1000));
-      let seconds = Math.floor((distance % (60 * 1000)) / 1000);
-      setDay(day);
-      setHour(hour)
-      setMinute(minute);
-      setSeconds(seconds);
-      if (distance <= 0) {
-        clearInterval(setTimeCountDown);
-        sethideCountDown(true);
-      }
-    }, 1000);
-  }, []);
+  // useEffect(() => {
+  //   console.log('render');
+  //   let setTimeCountDown = setInterval(function () {
+  //     let now = new Date().getTime();
+  //     let distance = endDate - now;
+  //     let day = Math.floor(distance / (24 * 60 * 60 * 1000));
+  //     let hour = Math.floor((distance % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+  //     let minute = Math.floor((distance % (60 * 60 * 1000)) / (60 * 1000));
+  //     let seconds = Math.floor((distance % (60 * 1000)) / 1000);
+  //     setDay(day);
+  //     setHour(hour)
+  //     setMinute(minute);
+  //     setSeconds(seconds);
+  //     if (distance <= 0) {
+  //       clearInterval(setTimeCountDown);
+  //       sethideCountDown(true);
+  //     }
+  //   }, 1000);
+  // }, []);
   return (
     <View style={{ paddingHorizontal: 17, paddingTop: 20 }}>
       <View style={{ flexDirection: 'row' }}>
@@ -134,6 +150,7 @@ const styles = StyleSheet.create({
   sale: {
     width: '80%',
     flexDirection: 'row',
+    alignItems: 'center'
   },
   star: {
     width: '65%',
@@ -152,7 +169,6 @@ const styles = StyleSheet.create({
     margin: 1,
   },
   PricePD: {
-    marginTop: 5,
     fontSize: 16,
     fontWeight: '700',
     fontStyle: 'normal',
@@ -179,9 +195,13 @@ const styles = StyleSheet.create({
   containerItemPD: {
     marginRight: 5,
     marginBottom: 5,
-    height: 200,
-    backgroundColor: 'green',
-    width: '50%',
+    height: 250,
+    width: '47%',
+    padding: 10,
+    borderWidth: 0.5,
+    borderColor: '#c2c2c2',
+    borderRadius: 5,
+    marginLeft: 5
   },
   textUpto: {
     color: '#223263',

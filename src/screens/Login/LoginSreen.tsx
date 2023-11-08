@@ -71,7 +71,7 @@ const LoginSreen = (props: any) => {
         </View>
         <View>
           <TouchableOpacity >
-            <LinearGradient  start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
+            <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
               <Text style={styles.textLogin}>Login</Text>
             </LinearGradient>
           </TouchableOpacity>

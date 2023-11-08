@@ -9,13 +9,11 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'
-import { ScrollView } from 'react-native-gesture-handler';
-import { Layout } from 'react-native-reanimated';
-import { useNavigation } from '@react-navigation/native';
-import { ROUTES } from '../../component/constants';
-import { PropsExplore } from '../../component/Navigation/Props';
-import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { CompositeNavigationProp, CompositeScreenProps, useNavigation } from '@react-navigation/native';
+import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
+import { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 
 
 interface Category {
@@ -23,27 +21,19 @@ interface Category {
   img: any;
   name: string;
 }
-
-
-
-
-
-
-type navigationProps = NativeStackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
-
-const ExploreScreen = (props: any) => {
-  const navigation = useNavigation<navigationProps>();
+type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>,StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
+const ExploreScreen = () => {
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const [click, setClick] = useState<boolean>(false);
 
 
   const renderItem = ({ item }: any): React.JSX.Element => {
-
     const { id, img, name } = item;
 
     return (
       <TouchableOpacity
         style={styles.containerItemPD}
-        onPress={() => navigation.navigate(RootStackScreenEnumExplore.Category_Detail_Screen)}
+
       >
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
@@ -75,10 +65,10 @@ const ExploreScreen = (props: any) => {
           />
         </View>
         <View style={styles.headerRight}>
-          <TouchableOpacity  onPress={() => navigation.navigate(RootStackScreenEnumExplore.FavoriteScreen)}>{/*onPress={() => navigation.navigate('Home', { screen: 'FavoriteScreen' })} > */} 
+          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
             <Icon name="heart-outline" size={25} />
           </TouchableOpacity>
-          <TouchableOpacity   onPress={() => navigation.navigate(RootStackScreenEnumExplore.NotificationScreen)}>{/*onPress={() => navigation.navigate('Home', { screen: 'ActivityScreen' })} >*/}
+          <TouchableOpacity>
             <Icon name="notifications-outline" size={25} />
           </TouchableOpacity>
         </View>

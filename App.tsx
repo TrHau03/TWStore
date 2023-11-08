@@ -27,8 +27,9 @@ function App(): JSX.Element {
         <Navigation />
       </NavigationContainer>
     </Provider>
+    );
 
-  );
+
 }
 
 export default App;

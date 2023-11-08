@@ -4,6 +4,8 @@ import { RootStackParamListExplore, RootStackScreenEnumExplore } from "../Root/R
 import { RootStackParamListAccount, RootStackScreenEnumAccount } from "../Root/RootStackAccount";
 import { RootStackParamListOffer, RootStackScreenEnumOffer } from "../Root/RootStackOffer";
 import { RootStackParamListCart, RootStackScreenEnumCart } from "../Root/RootStackCart";
+import { fromLeft } from "react-navigation-transitions";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 export type PropsHome = {
     navigation?: StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>
@@ -22,5 +24,4 @@ export type PropsAccount = {
 }
 
 
-export const RootStack = createStackNavigator();
- 
+export const RootStack = createNativeStackNavigator();

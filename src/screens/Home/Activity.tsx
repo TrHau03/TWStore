@@ -142,7 +142,7 @@ const ActivityScreen = ({navigation}: PropsHome) => {
         <View
           style={
             visibleActivity
-              ? [styles.groupActivity, {height: '50%'}]
+              ? [styles.groupActivity, {height: '45%'}]
               : [styles.groupActivity, {height: '40%'}]
           }>
           <FlatList

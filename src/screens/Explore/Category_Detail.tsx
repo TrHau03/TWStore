@@ -7,39 +7,50 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import React, {useEffect, useRef, useState} from 'react';
 import {ROUTES} from '../../component/constants';
 import {AirbnbRating} from 'react-native-ratings';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { getAllCategories, todoRemainingSelectProduct } from '../../Redux/selector';
-import filtersSlice from './Slice/filtersSlice';
 
+interface Product {
+  id: number;
+  img: any;
+  name: string;
+  price: number;
+  category: string;
+}
+interface ArrayProduct {
+  category: string;
+}
+const dataArray: ArrayProduct[] = [
+  {category: 'All'},
+  {category: 'Man Shoes'},
+  {category: 'Women Shoes'},
+];
 
 const Category_Detail_Screen = ({navigation}: any) => {
   const [click, setClick] = useState<boolean>(false);
-  const [dataFilter, setdataFilter] = useState<string>('All');
-  const listProduct = useSelector(todoRemainingSelectProduct);
-  const listCategory = useSelector(getAllCategories)
-  const dispatch = useDispatch();
-
-  const [search, setSearch] = useState<string>('')
-  useEffect(() =>{
-    dispatch(
-      filtersSlice.actions.search(search)
-    );
-  },[search]);
-
+  const [filter, setFilter] = useState<string>('All');
+  const [dataFilter, setdataFilter] = useState<any>([]);
 
   useEffect(() => {
-    dispatch(
-      filtersSlice.actions.filterCategorySelector(dataFilter)
-    );
-  }, [dataFilter])
-const renderItem = ({ item } :any ): React.JSX.Element =>{
-    const {id, img, name, price,category} = item;
-  
+    console.log('render');
+    if (filter == 'All') {
+      setdataFilter(DataProduct)
+    } else {
+      setdataFilter(
+        DataProduct.filter(product => {
+          return product.category == filter;
+        }),
+      );
+    }
+    console.log(dataFilter);
+  }, [filter]);
+
+  const renderItem = ({item}: any): React.JSX.Element => {
+    const {id, img, name, price} = item;
+
     return (
       <TouchableOpacity style={styles.containerItemPD}>
         <View style={styles.content}>
@@ -73,7 +84,6 @@ const renderItem = ({ item } :any ): React.JSX.Element =>{
           <TextInput
             placeholder="Search"
             style={styles.TextSearch}
-            value={search} onChangeText={setSearch}
             onFocus={() => setClick(true)}
             onBlur={() => setClick(false)}
           />
@@ -104,20 +114,20 @@ const renderItem = ({ item } :any ): React.JSX.Element =>{
                 marginTop: 15,
                 marginLeft: 10,
               }}>
-                {listProduct.length} result
+                {dataFilter.length} result
             </Text>
           </View>
 
           <View>
             <Text style={{}}>
               <SelectDropdown
-                data={listCategory}
+                data={dataArray}
                 onSelect={(selectedItem, index) => {
-                  //console.log(selectedItem);
-                  setdataFilter(selectedItem.category)
-                
+                  console.log(selectedItem, index);
+
+                  setFilter(selectedItem.category);
                 }}
-                defaultButtonText={dataFilter}
+                defaultButtonText={filter}
                 buttonTextAfterSelection={(selectedItem, index) => {
                   return selectedItem.category;
                 }}
@@ -145,7 +155,7 @@ const renderItem = ({ item } :any ): React.JSX.Element =>{
         </View>
         <FlatList
           style={{marginTop: 10}}
-          data={listProduct}
+          data={dataFilter}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           numColumns={2}
@@ -309,7 +319,7 @@ const styles = StyleSheet.create({
   },
 });
 
-/*const DataProduct: Product[] = [
+const DataProduct: Product[] = [
   {
     id: 1,
     img: require('../../asset/image/imgProduct.png'),
@@ -353,4 +363,3 @@ const styles = StyleSheet.create({
     category: 'Women Shoes',
   },
 ];
-*/

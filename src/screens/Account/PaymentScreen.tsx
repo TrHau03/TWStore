@@ -23,7 +23,7 @@ const PaymentScreen = ({navigation} : ScreenProps) => {
                 {data.map((item: Item) => {
                     return (
                         <TouchableOpacity style={styles.itemPayment} key={item.id} onPress={() => navigation.navigate(item.nameScreen) }>
-                            <Icon name={item.icon} color={'#000000'} size={30} />
+                            <Icon name={item.icon} color={'#000000'} size={25} />
                             <Text style={styles.textItemPayment}>{item.namePayment}</Text>
                         </TouchableOpacity>
                     )

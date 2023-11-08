@@ -13,6 +13,7 @@ import { AirbnbRating } from 'react-native-ratings';
 import Header from '../../component/Header/Header';
 import { ScrollView } from 'react-native-gesture-handler';
 import { PropsHome } from '../../component/Navigation/Props';
+import { SafeAreaView } from 'react-native-safe-area-context';
 interface Product {
   id: number;
   img: any;
@@ -53,17 +54,20 @@ const renderItem = ({ item }: any): React.JSX.Element => {
 const FavoriteScreen = ({ navigation }: PropsHome) => {
 
   return (
-    <ScrollView style={styles.container}>
-      <Header title='Favorite' navigation={navigation} />
-      <FlatList
-      style={{marginTop: 20,paddingBottom: 80}}
-        data={DataProduct}
-        renderItem={renderItem}
-        keyExtractor={item => item.id.toString()}
-        numColumns={2}
-        showsVerticalScrollIndicator={false}
-      />
-    </ScrollView>
+    <SafeAreaView>
+      <View style={styles.container} >
+        <Header title='Favorite' navigation={navigation} />
+        <FlatList
+          nestedScrollEnabled={true}
+          style={{ marginTop: 20, marginBottom: 80 }}
+          data={DataProduct}
+          renderItem={renderItem}
+          keyExtractor={item => item.id.toString()}
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
