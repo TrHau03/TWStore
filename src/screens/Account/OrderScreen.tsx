@@ -2,41 +2,42 @@ import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native
 import React from 'react'
 import Header from '../../component/Header/Header'
 import { PropsAccount } from '../../component/Navigation/Props';
-
-interface Order {
-    id: number;
-    ma: string;
-    date: string;
-    oderStatus: string;
-    items: number;
-    price: string;
-}
+import { useSelector } from 'react-redux';
 
 const RenderItem = (props: any): React.JSX.Element => {
     const { data, navigation } = props;
     const { item } = data;
-
-    return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate('Order_Detail')}>
+    const order = useSelector((state: any) => state.OrderReducer ? state.OrderReducer : '');
+    const handleOrderPress = (orderId: any) => {
+        const selectedOrder = order.find((orderItem: any) => orderItem.orderDetails.idorder === orderId);
+        if (selectedOrder) {
+            navigation.navigate('Order_Detail', { orderData: selectedOrder });
+        }
+    };
+    
+    return <TouchableOpacity style={styles.box} onPress={() => handleOrderPress(item.orderDetails.idorder)}>
+        
         <View>
-            <Text style={styles.MaCode}>{item.ma}</Text>
-            <Text style={styles.title}>Order at Lafyuu : {item.date}</Text>
+            <Text style={styles.MaCode}>{item.orderDetails.idorder}</Text>
+            <Text style={styles.title}>Order at Lafyuu : {item.orderDetails.date}</Text>
             <View style={styles.boxBottom}>
                 <Text style={styles.title}>Order Status</Text>
-                <Text style={styles.content}>{item.oderStatus}</Text>
+                <Text style={styles.content}>{item.orderDetails.orderStatus}</Text>
             </View>
             <View style={styles.boxBottom}>
                 <Text style={styles.title}>Items</Text>
-                <Text style={styles.content}>{item.items} Items purchased</Text>
+                <Text style={styles.content}>{item.orderDetails.items.length} Items purchased</Text>
             </View>
             <View style={styles.boxBottom}>
                 <Text style={styles.title}>Price</Text>
-                <Text style={styles.price}>${item.price}</Text>
+                <Text style={styles.price}>${item.orderDetails.totalprice}</Text>
             </View>
         </View>
     </TouchableOpacity >;
 };
 
 const OrderScreen = ({ navigation }: PropsAccount) => {
+    const order = useSelector((state: any) => state.OrderReducer ? state.OrderReducer : '');
     return (
         <View style={styles.container}>
             <Header title='Order' navigation={navigation} />
@@ -45,8 +46,10 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
 
             <FlatList
                 showsVerticalScrollIndicator={false}
-                data={Data}
-                renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
+                data={order}
+                keyExtractor={(item) => item.orderDetails.idorder}
+                renderItem={(item) => <RenderItem navigation={navigation} data={item} />}
+
             />
         </View>
     )
@@ -123,37 +126,3 @@ const styles = StyleSheet.create({
     }
 })
 
-const Data: Order[] = [
-    {
-        id: 1,
-        ma: 'FGHJYTN',
-        date: 'August 1, 2017',
-        oderStatus: 'Shipping',
-        items: 2,
-        price: '299,43',
-    },
-    {
-        id: 3,
-        ma: 'FGHJYTN',
-        date: 'August 1, 2017',
-        oderStatus: 'Shipping',
-        items: 5,
-        price: '299,43',
-    },
-    {
-        id: 4,
-        ma: 'FGHJYTN',
-        date: 'August 1, 2017',
-        oderStatus: 'Shipping',
-        items: 2,
-        price: '299,43',
-    },
-    {
-        id: 5,
-        ma: 'FGHJYTN',
-        date: 'August 1, 2017',
-        oderStatus: 'Shipping',
-        items: 2,
-        price: '299,43',
-    },
-]

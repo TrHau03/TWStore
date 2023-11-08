@@ -20,7 +20,6 @@ const ChangeName = () => {
         if (!firstName.trim() || !lastName.trim()) {
             setError('Please enter both the first name and last name.');
         } else {
-
             const fullName = `${firstName} ${lastName}`;
             dispatch(setName(fullName)); 
             setError(''); 

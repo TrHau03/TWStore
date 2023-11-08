@@ -4,114 +4,86 @@ import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from '../../component/Button/Button'
 import Item from '@ant-design/react-native/lib/list/ListItem';
+import { useSelector } from 'react-redux';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
+type StackParamList = {
+  OrderDetail: { idorder: string, orderData: any }; 
+};
 
-interface Product {
-  id: number;
-  image: string;
-  name: string;
-  price: string;
-}
-
-interface Shipping_Detail {
-  id: number,
-  date: string,
-  name: string,
-  phone: string,
-  address: string,
-}
-
-interface Payment_Detail {
-  id: number,
-  quantity: number,
-  price_item: string,
-  price_ship: string,
-  price_charges: string,
-  price: string,
-}
 
 
 const Order_Detail = ({ navigation }: any) => {
 
+  const route = useRoute<RouteProp<StackParamList, 'OrderDetail'>>();
+  const selectedOrder = route.params.orderData;
+  
   return (
-    <View style={styles.container} >
-      <ScrollView
-        showsVerticalScrollIndicator={false}>
-          <View style={{marginLeft:10}}>
-          <Header title='Order detail' navigation={navigation} />
-          </View>
-        <View style={styles.line}></View>
-        <View style={{ paddingHorizontal: 20, }}>
-          <Text style={styles.txtTitle}>Product</Text>
-
-          {Data.map((item) =>
-            <View key={item.id} style={styles.boxProduct}>
-              <Image style={styles.product_Image} source={{ uri: item.image }} />
-
-              <View style={{ justifyContent: 'space-between', width: '60%' }}>
-                <Text style={styles.txtName_Product}>{item.name}</Text>
-                <Text style={styles.txtPrice_Product}>{item.price}</Text>
-              </View>
-              <Icon name='heart-outline' size={25} style={styles.icon_Heart} color={'#525252'} />
-            </View>
-          )}
-
-
-          <Text style={styles.txtTitle}>Shipping Details</Text>
-
-          {Data1.map((item) =>
-            <View key={item.id} style={styles.boxShipping}>
-
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Date Shipping</Text>
-                <Text style={styles.txtRight}>{item.date}</Text>
-              </View><View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Shipping</Text>
-                <Text style={styles.txtRight}>{item.name}</Text>
-              </View><View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>No. Ressi</Text>
-                <Text style={styles.txtRight}>{item.phone}</Text>
-              </View><View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Address</Text>
-                <Text style={styles.txtRight}>{item.address}</Text>
-              </View>
-
-            </View>
-          )}
-
-          <Text style={styles.txtTitle}>Payment Details</Text>
-          {Data2.map((item) =>
-            <View key={item.id} style={styles.boxShipping}>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Items ({item.quantity})</Text>
-                <Text style={styles.txtRight}>${item.price_item}</Text>
-              </View>
-
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Shipping</Text>
-                <Text style={styles.txtRight}>${item.price_ship}</Text>
-              </View>
-
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Import charges</Text>
-                <Text style={styles.txtRight}>${item.price_charges}</Text>
-              </View>
-
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtPrice_Product}>Total Price</Text>
-                <Text style={styles.txtPrice_Product}>${item.price}</Text>
-              </View>
-            </View>
-          )}
-
-
-          <Button style={{ marginVertical: 20 }} title='Notifi Me' />
+    <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={{ marginLeft: 10 }}>
+          <Header title="Order detail" navigation={navigation} />
         </View>
+        <View style={styles.line} />
+
+        <View style={{ paddingHorizontal: 20 }}>
+              <Text style={styles.txtTitle}>Products</Text>
+
+              {selectedOrder.orderDetails.items.map((item: any) => (
+                <View key={item.id} style={styles.boxProduct}>
+                  <Image style={styles.product_Image} source={{ uri: item.image }} />
+                  <View style={{ justifyContent: 'space-between', width: '60%' }}>
+                    <Text style={styles.txtName_Product}>{item.name}</Text>
+                    <Text style={styles.txtPrice_Product}>${item.price}</Text>
+                  </View>
+                  <Icon name="heart-outline" size={25} style={styles.icon_Heart} color={'#525252'} />
+                </View>
+              ))}
+
+              <Text style={styles.txtTitle}>Shipping Details</Text>
+              <View style={styles.boxShipping}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtLeft}>Date Shipping</Text>
+                  <Text style={styles.txtRight}>{selectedOrder.orderDetails.dateship}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtLeft}>Shipping</Text>
+                  <Text style={styles.txtRight}>{selectedOrder.orderDetails.shipping}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtLeft}>No. Ressi</Text>
+                  <Text style={styles.txtRight}>{selectedOrder.orderDetails.idship}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtLeft}>Address</Text>
+                  <Text style={styles.txtRight}>{selectedOrder.orderDetails.address}</Text>
+                </View>
+              </View>
+
+              <Text style={styles.txtTitle}>Payment Details</Text>
+              <View style={styles.boxShipping}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtLeft}>Items ({selectedOrder.orderDetails.items.length})</Text>
+                  <Text style={styles.txtRight}>${selectedOrder.orderDetails.totalitemsprice}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtLeft}>Shipping</Text>
+                  <Text style={styles.txtRight}>${selectedOrder.orderDetails.Transportfee}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                  <Text style={styles.txtPrice_Product}>Total Price</Text>
+                  <Text style={styles.txtPrice_Product}>${selectedOrder.orderDetails.totalprice}</Text>
+                </View>
+              </View>
+
+              <Button style={{ marginVertical: 20 }} title="Notify Me" />
+
+        </View>
+
       </ScrollView>
     </View>
-  )
-}
-
+  );
+};
 export default Order_Detail
 
 const styles = StyleSheet.create({
@@ -207,41 +179,4 @@ const styles = StyleSheet.create({
   }
 })
 
-const Data: Product[] = [
-  {
-    id: 1,
-    image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-    name: 'Nike Air Zoom Pegasus 36 Miami',
-    price: '299,43'
-  },
-  {
-    id: 2,
-    image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike2.png",
-    name: 'Nike Air Zoom Pegasus 36 Miami',
-    price: '299,43'
-  },
 
-
-
-]
-
-const Data1: Shipping_Detail[] = [
-  {
-    id: 1,
-    date: 'January 16, 2015',
-    name: 'POS Reggular',
-    phone: '000192848573',
-    address: '2727 Lakeshore Rd undefined Nampa, Tennessee 78410',
-  },
-]
-
-const Data2: Payment_Detail[] = [
-  {
-    id: 1,
-    quantity: 3,
-    price_item: '598.86',
-    price_ship: '40.00',
-    price_charges: '128.00',
-    price: '766.86',
-  },
-]
