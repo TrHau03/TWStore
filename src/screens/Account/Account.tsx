@@ -10,25 +10,6 @@ const AccountScreen = ({ navigation }: any) => {
 
       <View style={styles.line}></View>
 
-      {/* <Pressable style={styles.button}>
-        <Image source={require('../../asset/image/Profile_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Profile</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Image source={require('../../asset/image/Oder_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Oder</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Image source={require('../../asset/image/Address_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Address</Text>
-      </Pressable>
-
-      <Pressable style={styles.button}>
-        <Image source={require('../../asset/image/Payment_Account.png')}></Image>
-        <Text style={styles.txtbtn}>Payment</Text>
-      </Pressable> */}
       <View>
         {data.map((item) =>
           <TouchableOpacity style={styles.button} key={item.id} onPress={() => navigation?.navigate(item.screen)}>
@@ -96,14 +77,14 @@ const data = [
     id: 2,
     name: 'Order',
     icon: 'bag-check-sharp',
-    screen: 'PaymentScreen'
+    screen: 'OrderScreen'
 
   },
   {
     id: 3,
     name: 'Address',
     icon: 'location-sharp',
-    screen: 'PaymentScreen'
+    screen: 'AddressScreen'
 
   },
   {

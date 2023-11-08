@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity, Animated } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -55,7 +55,6 @@ const HomeScreen = () => {
 
     const [click, setClick] = useState<boolean>(false);
 
-    const [enableFlatlist, setEnableFlatlist] = useState<boolean>(false);
 
     console.log('render');
 
@@ -73,40 +72,51 @@ const HomeScreen = () => {
     const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: any) => {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
     }
+    const TextInputAni = Animated.createAnimatedComponent(TextInput);
+    const animatedValue = useRef(new Animated.Value(0)).current;
+    const animatedSearch = {
+        transform: [
+            {
+                scaleX: animatedValue.interpolate({
+                    inputRange: [0, 50],
+                    outputRange: [1, 0],
+                    extrapolate:'clamp'
+                })
+            }
+        ]
+    }
+    const animatedBanner = {
+
+    }
     return (
         <SafeAreaView>
-            <ScrollView horizontal={false} style={{ paddingHorizontal: 20, paddingTop: 15 }} scrollEnabled={!enableFlatlist}
-                onScroll={({ nativeEvent }) => {
-                    if (isCloseToBottom(nativeEvent)) {
-                        setEnableFlatlist(true);
-                    } else {
-                        setEnableFlatlist(false);
-                    }
-                }}>
-                <View style={styles.top}>
-                    <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
-                    >
-                        <Icon name='search' size={22} />
-                        <TextInput
-                            placeholder="Search here"
-                            style={styles.TextSearch}
-                            onFocus={() => setClick(true)}
-                            onBlur={() => setClick(false)}
+            <View style={styles.top}>
+                <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
+                >
+                    <Icon name='search' size={22} />
+                    <TextInputAni
+                        placeholder="Search here"
+                        style={[styles.TextSearch, animatedSearch]}
+                        onFocus={() => setClick(true)}
+                        onBlur={() => setClick(false)}
 
-                        />
-                    </View>
-
-                    <View style={styles.headerRight}>
-                        <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
-                            <Icon name="heart-outline" size={25} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
-                            <Icon name="notifications-outline" size={25} />
-                        </TouchableOpacity>
-                    </View>
-
+                    />
                 </View>
 
+                <View style={styles.headerRight}>
+                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
+                        <Icon name="heart-outline" size={25} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
+                        <Icon name="notifications-outline" size={25} />
+                    </TouchableOpacity>
+                </View>
+
+            </View>
+            <ScrollView horizontal={false} style={{ paddingHorizontal: 20 }} scrollEnabled={true} stickyHeaderIndices={[7]} onScroll={(e) => {
+                const offsetY = e.nativeEvent.contentOffset.y;
+                animatedValue.setValue(offsetY)
+            }} scrollEventThrottle={16}>
                 <View style={styles.topslide}>
 
                     <ScrollView
@@ -205,22 +215,19 @@ const HomeScreen = () => {
                         keyExtractor={(item) => item.id}
                     />
                 </View>
-
-
                 <View style={styles.listgrid}>
                     <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
-                    <FlatList
-                        style={{ height: 490, marginTop: 10, marginBottom: 70 }}
-                        nestedScrollEnabled={true}
-                        scrollEnabled={enableFlatlist}
-                        showsVerticalScrollIndicator={false}
-                        data={data2}
-                        renderItem={renderItem3}
-                        keyExtractor={(item) => item.id}
-                        numColumns={2}
-                        columnWrapperStyle={styles.columnWrapper}
-                    />
                 </View>
+                <FlatList
+                    scrollEnabled={false}
+                    style={{ marginBottom: 120, marginTop: 10, marginLeft: 5 }}
+                    showsVerticalScrollIndicator={false}
+                    data={data2}
+                    renderItem={renderItem3}
+                    keyExtractor={(item) => item.id}
+                    numColumns={2}
+                    columnWrapperStyle={styles.columnWrapper}
+                />
             </ScrollView>
         </SafeAreaView>
     )
@@ -233,6 +240,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        paddingHorizontal: 20,
     },
 
 
@@ -421,7 +429,6 @@ const styles = StyleSheet.create({
     imgrecomended: {
         width: '100%',
         borderRadius: 5,
-        marginTop: 10,
     },
 
     imga: {
@@ -438,7 +445,6 @@ const styles = StyleSheet.create({
     itemsale2: {
         height: 240,
         width: 165,
-        marginRight: 9,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: 'black',

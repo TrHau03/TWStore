@@ -1,50 +1,80 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, Alert, } from 'react-native'
 import React, { useState } from 'react'
-import LinearGradient from 'react-native-linear-gradient'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { Modal, Provider } from '@ant-design/react-native'
 import ButtonBottom from '../../component/Button/Button'
-import Icon from 'react-native-vector-icons/Ionicons'
+import { useSelector, useDispatch } from 'react-redux';
+import { setPassword } from '../../redux/silces/ProfileSilces'
 
 const ChangePass = () => {
+    const dispatch = useDispatch();
+    const passwordFromRedux = useSelector((state: any) => state.profileReducer.password ? state.profileReducer.password : '');
+
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+    const handlePasswordChange = () => {
+        if (oldPassword === passwordFromRedux) {
+            if (newPassword === confirmNewPassword) {
+                dispatch(setPassword(newPassword));
+                setOldPassword('');
+                setNewPassword('');
+                setConfirmNewPassword('');
+                Alert.alert('Success', 'Password has been changed.');
+            } else {
+                Alert.alert('Error', 'New passwords do not match.');
+            }
+        } else {
+            Alert.alert('Error', 'Old password is incorrect.');
+        }
+    };
+
+
     return (
         <View style={styles.container}>
-            <View style={styles.title}>
-                <Text style={styles.txtTitle}>Change Password</Text>
-            </View>
-            <View style={styles.line}></View>
+            <Text style={styles.txtTitle}>Change Password</Text>
+            <View style={styles.line}/>
 
             <View style={styles.Email}>
                 <Text style={styles.txtEmail}>Old Password</Text>
-                <View style={styles.input}>
-                    <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
-                    <TextInput secureTextEntry={true} style={styles.txtInput} value="0372711935" />
+                <View style={styles.input} >
+                    <TextInput
+                        style={styles.txtInput}
+                        value={oldPassword}
+                        onChangeText={(text) => setOldPassword(text)}
+                    />
                 </View>
             </View>
 
             <View style={styles.Email}>
                 <Text style={styles.txtEmail}>New Password</Text>
                 <View style={styles.input}>
-                    <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
-                    <TextInput secureTextEntry={true} style={styles.txtInput} value="0372711935" />
+                    <TextInput
+                        style={styles.txtInput}
+                        value={newPassword}
+                        onChangeText={(text) => setNewPassword(text)}
+                    />
                 </View>
             </View>
 
             <View style={styles.Email}>
-                <Text style={styles.txtEmail}>New Password Again</Text>
+                <Text style={styles.txtEmail}>Confirm New Password</Text>
                 <View style={styles.input}>
-                    <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
-                    <TextInput secureTextEntry={true} style={styles.txtInput} value="0372711935" />
+                    <TextInput
+                        style={styles.txtInput}
+                        value={confirmNewPassword}
+                        onChangeText={(text) => setConfirmNewPassword(text)}
+                    />
                 </View>
             </View>
+
             <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
-                <ButtonBottom title='Save' />
+                <Pressable onPress={handlePasswordChange}>
+                    <ButtonBottom title='Save' />
+                </Pressable>
             </View>
         </View>
-
-    )
-}
-
+    );
+};
 export default ChangePass
 
 const styles = StyleSheet.create({
@@ -75,22 +105,24 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 50,
         backgroundColor: "#FFFFFF",
+        flexDirection: 'row',
+        paddingLeft: 10,
+        alignItems: 'center',
         borderWidth: 1,
         borderColor: "#9098B1",
         borderRadius: 5,
-        flexDirection: 'row',
-        paddingLeft: 10,
-        alignItems: 'center'
     },
 
     txtInput: {
+        backgroundColor: "#FFFFFF",
+        width: '100%',
+        paddingLeft: 10,
         color: '#9098B1',
         fontSize: 14,
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 21.60,
         letterSpacing: 0.50,
-        marginLeft: 10,
     },
 
     txtEmail: {

@@ -2,6 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { RootStack } from './Props';
 import { RootStackScreenSlide } from '../Root/RootStackLogin';
 import { configStack } from '../Root/RootStack';
+import * as React from 'react';
 
 
 
