@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { PropsAccount } from '../../component/Navigation/Props'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
-import { Avatar, Banner, Button, Card, Checkbox, Chip, Dialog, Divider, Menu, Portal, Searchbar, Surface, useTheme } from 'react-native-paper'
 
 
 const AccountScreen = ({ navigation }: any) => {
