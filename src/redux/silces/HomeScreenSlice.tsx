@@ -96,7 +96,7 @@ const HomeScreenSlice = createSlice({
             }
         },
 
-        search: (state, action) => {
+        searchFilterChange: (state, action) => {
             state.filters.search = action.payload;
         },
     },

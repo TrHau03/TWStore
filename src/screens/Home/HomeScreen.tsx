@@ -9,7 +9,7 @@ import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilitie
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useDispatch, useSelector } from 'react-redux';
-import { listBanners, listRecommendeds, todoRemainingSelectProduct } from '../../redux/silces/HomeSelector';
+import { listBanners, listRecommendeds, todoRemainingRecomendeds } from '../../redux/silces/HomeSelector';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 
 
@@ -73,18 +73,16 @@ const HomeScreen = () => {
     //reudx
     const dispatch = useDispatch();
     const banner = useSelector(listBanners);
-    const recommenProduct = useSelector(todoRemainingSelectProduct);
+    const recommenProduct = useSelector(listRecommendeds);
 
-    const [search, setSearch] = useState<string>('');
-    console.log(search);
+    const todoList = useSelector(todoRemainingRecomendeds);
 
-    useEffect(() => {
+    const handleSearch = (e: any) => {
+        setTextInputSearch(e);
         dispatch(
-            HomeScreenSlice.actions.search(search)
-            
-        );
-    }, [search])
-    console.log(recommenProduct);
+            HomeScreenSlice.actions.searchFilterChange(e)
+        )
+    }
     
 
     const onChange = (nativeEvent: any) => {
@@ -107,8 +105,8 @@ const HomeScreen = () => {
                         style={[styles.TextSearch]}
                         onFocus={() => setTextInputStatus(true)}
                         onBlur={() => setTextInputStatus(false)}
-                        value={search}
-                        onChangeText={setSearch}
+                        onChangeText={handleSearch}
+                        value={textInputSearch}
                     />
                     {(textInputStatus) ?
                         <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
@@ -237,7 +235,7 @@ const HomeScreen = () => {
                     contentContainerStyle={{ alignItems: 'center' }}
                     style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
                     showsVerticalScrollIndicator={false}
-                    data={recommenProduct}
+                    data={todoList}
                     renderItem={renderItem3}
                     keyExtractor={(item) => item.id.toString()}
                     numColumns={2}
