@@ -21,11 +21,20 @@ interface FavoriteProduct {
     price: number;
     strikeThrough: number;
     saleOff: number;
-} 
+}
 interface Filters {
     search: string,
     status: string,
     loading: boolean,
+}
+
+interface Offer {
+    id: number;
+    image: any;
+    title: string;
+    content: string;
+    date: string;
+    time: string;
 }
 
 interface InitialState {
@@ -33,6 +42,7 @@ interface InitialState {
     recommenProduct: Array<RecomnenProduct>,
     favoriteProduct: Array<FavoriteProduct>,
     filters: Filters,
+    offer: Array<Offer>,
 }
 
 const initialState: InitialState = {
@@ -41,6 +51,44 @@ const initialState: InitialState = {
         status: 'All',
         loading: false,
     },
+
+    offer: [
+        {
+            id: 1,
+            image: require('../../asset/image/Offer.png'),
+            title: 'The Best Title',
+            content: 'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor',
+            date: '21/07/2002',
+            time: '9:00 PM',
+        },
+        {
+            id: 2,
+            image: require('../../asset/image/Offer.png'),
+            title: 'SUMMER OFFER 98% Cashback',
+            content:
+                'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor',
+            date: '21/07/2002',
+            time: '9:00 PM',
+        },
+        {
+            id: 3,
+            image: require('../../asset/image/Offer.png'),
+            title: 'Special Offer 25% OFF',
+            content:
+                'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor amet deserunt ex proident commodo',
+            date: '21/07/2002',
+            time: '9:00 PM',
+        },
+        {
+            id: 4,
+            image: require('../../asset/image/Offer.png'),
+            title: 'SUMMER OFFER 98% Cashback',
+            content:
+                'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor',
+            date: '21/07/2002',
+            time: '9:00 PM',
+        },
+    ],
 
     banner:
         [{

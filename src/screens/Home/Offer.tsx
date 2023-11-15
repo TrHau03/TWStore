@@ -4,19 +4,16 @@ import { ROUTES } from '../../component/constants';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
+import { useSelector } from 'react-redux';
+import { listOffer } from '../../redux/silces/HomeSelector';
 
-interface Offer {
-  id: number;
-  img: any;
-  title: string;
-  content: string;
-  date: string;
-  time: string;
-}
+  //redux
+  const offer = useSelector(listOffer);
 
-const renderItem = ({ item }: any): React.JSX.Element => {
+const renderItem = ({item}: any): React.JSX.Element => {
 
   const { id, img, title, content, date, time } = item;
+
 
   return (
     <View style={styles.containerItemPD}>
@@ -44,7 +41,7 @@ const OfferNorifiScreen = ({ navigation }: PropsHome) => {
       <Header title='Offer' navigation={navigation} />
       <FlatList
         style={{ marginBottom: 45}}
-        data={DataOffer}
+        data={offer}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
         numColumns={1}
@@ -100,69 +97,3 @@ const styles = StyleSheet.create({
     height: '100%'
   }
 });
-
-const DataOffer: Offer[] = [
-  {
-    id: 1,
-    img: require('../../asset/image/Offer.png'),
-    title: 'The Best Title',
-    content:
-      'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor amet deserunt ex proident commodo',
-    date: '21/07/2002',
-    time: '9:00 PM',
-  },
-  {
-    id: 2,
-    img: require('../../asset/image/Offer.png'),
-    title: 'SUMMER OFFER 98% Cashback',
-    content:
-      'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor',
-    date: '21/07/2002',
-    time: '9:00 PM',
-  },
-  {
-    id: 3,
-    img: require('../../asset/image/Offer.png'),
-    title: 'Special Offer 25% OFF',
-    content:
-      'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor amet deserunt ex proident commodo',
-    date: '21/07/2002',
-    time: '9:00 PM',
-  },
-  {
-    id: 4,
-    img: require('../../asset/image/Offer.png'),
-    title: 'SUMMER OFFER 98% Cashback',
-    content:
-      'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor',
-    date: '21/07/2002',
-    time: '9:00 PM',
-  },
-  {
-    id: 5,
-    img: require('../../asset/image/Offer.png'),
-    title: 'The Best Title',
-    content:
-      'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor amet deserunt ex proident commodo',
-    date: '21/07/2002',
-    time: '9:00 PM',
-  },
-  {
-    id: 6,
-    img: require('../../asset/image/Offer.png'),
-    title: 'SUMMER OFFER 98% Cashback',
-    content:
-      'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor',
-    date: '21/07/2002',
-    time: '9:00 PM',
-  },
-  {
-    id: 7,
-    img: require('../../asset/image/Offer.png'),
-    title: 'The Best Title',
-    content:
-      'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor amet deserunt ex proident commodo',
-    date: '21/07/2002',
-    time: '9:00 PM',
-  },
-];

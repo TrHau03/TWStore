@@ -16,6 +16,7 @@ import { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 
 
+
 interface Category {
   id: number;
   img: any;
@@ -24,6 +25,7 @@ interface Category {
 type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>,StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
 const ExploreScreen = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
+
   const [click, setClick] = useState<boolean>(false);
 
 
@@ -61,7 +63,6 @@ const ExploreScreen = () => {
             style={styles.TextSearch}
             onFocus={() => setClick(true)}
             onBlur={() => setClick(false)}
-
           />
         </View>
         <View style={styles.headerRight}>

@@ -14,20 +14,24 @@ import Navigation from './src/component/Navigation/Navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
+import SearchResult from './src/screens/Explore/SearchResult';
 
 
 
 
 function App(): JSX.Element {
-  const [isLoadding, setIsLoadding] = useState<boolean>(true);
-  setTimeout(() => {
-    setIsLoadding(false);
-  }, 1000);
-  return (
-    <Provider store={store}>
-      {(isLoadding) ? <SplashSreen /> : <NavigationContainer><Navigation/></NavigationContainer>}
-    </Provider>
-  );
+  // const [isLoadding, setIsLoadding] = useState<boolean>(true);
+  // setTimeout(() => {
+  //   setIsLoadding(false);
+  // }, 1000);
+  // return (
+  //   <Provider store={store}>
+  //     {(isLoadding) ? <SplashSreen /> : <NavigationContainer><Navigation/></NavigationContainer>}
+  //   </Provider>
+  // );
+  return(
+    <SearchResult/>
+  )
 }
 
 

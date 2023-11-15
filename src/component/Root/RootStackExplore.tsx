@@ -12,12 +12,14 @@ export enum RootStackScreenEnumExplore {
     ExploreScreen = 'ExploreScreen',
     Category_Detail_Screen = 'Category_Detail_Screen',
     FilterScreen = 'FilterScreen',
+
 }
 
 export type RootStackParamListExplore = {
     ExploreScreen: undefined,
     Category_Detail_Screen: undefined,
     FilterScreen: undefined,
+
 }
 
 
