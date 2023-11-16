@@ -12,7 +12,7 @@ import AxiosInstance from '../../Axios/Axios';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import Realm from 'realm';
-import { AccessToken, LoginButton, Profile } from 'react-native-fbsdk-next';
+import { AccessToken, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
 
 interface Login {
   email: string;
@@ -75,6 +75,44 @@ const LoginScreen = (props: any) => {
       }
     }
   }
+  async function onFaceBookButtonPress() {
+    LoginManager.logInWithPermissions(["public_profile", "email"]).then(
+      function (result) {
+        if (result.isCancelled) {
+          console.log("==> Login cancelled");
+        } else {
+          console.log(
+            "==> Login success with permissions: " +
+            result?.grantedPermissions?.toString()
+          );
+          AccessToken.getCurrentAccessToken().then(
+            (data: any) => {
+              console.log(data?.accessToken.toString())
+              // Profile.getCurrentProfile().then(
+              //   function (currentProfile) {
+              //     if (currentProfile) {
+              //       console.log("The current logged user is: " +
+              //         currentProfile.name
+              //         + ". His profile id is: " +
+              //         currentProfile.userID
+              //       );
+              //     }
+              //   }
+              // );
+              const credentials = Realm.Credentials.facebook(data?.accessToken?.toString());
+              app.logIn(credentials).then(user => {
+                console.log(`Logged in with id: ${user.id}`);
+              });
+
+            }
+          )
+        }
+      },
+      function (error) {
+        console.log("==> Login fail with error: " + error);
+      }
+    );
+  }
   return (
     <KeyboardAwareScrollView>
       <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, width: WIDTH, backgroundColor: BG_COLOR }}>
@@ -135,43 +173,11 @@ const LoginScreen = (props: any) => {
             <Icon name='logo-google' size={20} style={{ position: 'absolute', left: 20 }} />
             <Text style={styles.textLoginWith}>Log in with Google</Text>
           </TouchableOpacity>
-          {/* <TouchableOpacity style={[styles.btnLoginWith, { marginTop: 17 }]}>
+          <TouchableOpacity onPress={onFaceBookButtonPress} style={[styles.btnLoginWith, { marginTop: 17 }]}>
             <Icon name='logo-facebook' size={20} style={{ position: 'absolute', left: 20 }} />
             <Text style={styles.textLoginWith}>Log in with FaceBook</Text>
-          </TouchableOpacity> */}
-          <LoginButton
-            onLoginFinished={
-              (error, result) => {
-                if (error) {
-                  console.log("login has error: " + error);
-                } else if (result.isCancelled) {
-                  console.log("login is cancelled.");
-                } else {
-                  AccessToken.getCurrentAccessToken().then(
-                    (data: any) => {
-                      console.log(data?.accessToken.toString())
-                      // Profile.getCurrentProfile().then(
-                      //   function (currentProfile) {
-                      //     if (currentProfile) {
-                      //       console.log("The current logged user is: " +
-                      //         currentProfile.name
-                      //         + ". His profile id is: " +
-                      //         currentProfile.userID
-                      //       );
-                      //     }
-                      //   }
-                      // );
-                      const credentials = Realm.Credentials.facebook(data?.accessToken?.toString());
-                      app.logIn(credentials).then(user => {
-                        console.log(`Logged in with id: ${user.id}`);
-                      });
+          </TouchableOpacity>
 
-                    }
-                  )
-                }
-              }
-            }
-            onLogoutFinished={() => console.log("logout.")} />
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 17 }}>
           <Text style={styles.textDontAcc}>Don’t have a account? </Text>

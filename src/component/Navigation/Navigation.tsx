@@ -9,7 +9,7 @@ import BottomTab from '../BottomNavigation/BottomTabNavigator';
 
 const Navigation = () => {
     const [slide, setslide] = useState<boolean>();
-    const [isLogin, setIsLogin] = useState<boolean>(false);
+    const [isLogin, setIsLogin] = useState<boolean>(true);
     useEffect(() => {
         const temp = async () => {
             const checkSlide = await AsyncStorage.getItem('checkSlide');
@@ -20,7 +20,7 @@ const Navigation = () => {
     if (!slide) {
         return <SlideNavigation />;
     } else {
-        return isLogin ? <BottomTab/> : <LoginNavigation />
+        return isLogin ? <BottomTab /> : <LoginNavigation />
     }
 }
 
