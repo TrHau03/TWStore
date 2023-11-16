@@ -22,7 +22,6 @@ interface Product {
 
 const RenderItem = ({ item }: { item: Product }) => {
     const [numberCount, setNumberCount] = useState<number>(1);
-    const [heart, setHeart] = useState<boolean>(false);
     return (
         <View style={styles.itemCart}>
             <View>
@@ -31,14 +30,9 @@ const RenderItem = ({ item }: { item: Product }) => {
             <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
                 <View style={styles.topItem}>
                     <Text style={styles.textTitleItem}>{item.name.length < 10 ? item.name : item.name.substring(0, 10) + "..."}</Text>
-                    <View style={{ columnGap: 5, flexDirection: 'row' }}>
-                        <Pressable onPress={() => setHeart(!heart)}>
-                            <Icon name='heart' size={25} color={heart ? '#FB7181' : '#a7a6a6'} />
-                        </Pressable>
-                        <Pressable>
-                            <Icon name='trash-outline' color='#9e9e9e' size={25} />
-                        </Pressable>
-                    </View>
+                    <Pressable>
+                        <Icon name='trash-outline' color='#9e9e9e' size={25} />
+                    </Pressable>
                 </View>
                 <View style={styles.bottomItem}>
                     <Text style={styles.textPrice}>${item.price}</Text>
@@ -198,6 +192,7 @@ const styles = StyleSheet.create({
     topItem: {
         flexDirection: 'row',
         paddingLeft: 20,
+        columnGap: 20
     },
     bottomItem: {
         flexDirection: 'row',

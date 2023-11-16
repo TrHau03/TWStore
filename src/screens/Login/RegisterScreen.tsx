@@ -20,7 +20,6 @@ interface Register {
     email: string,
     password: string,
     passwordAgain: string
-    phone: string,
 }
 
 
@@ -41,14 +40,14 @@ const RegisterScreen = (props: any) => {
 
     const register = async (user: Register) => {
         try {
-            console.log('register');
+            console.log('register', user);
 
             if (user.password != user.passwordAgain) {
                 return console.log("Password not same!");
             }
-            const result = await AxiosInstance().post('/users/RegisterUser', { name: user.name, email: user.email, password: user.password, phone: user.phone });
+            const result = await AxiosInstance().post('/users/RegisterUser', { username: user.name, email: user.email, password: user.password });
             console.log(result.data);
-            return result;
+            
         } catch (error) {
             console.log('getNews Error: ', error);
         }
@@ -128,7 +127,7 @@ const RegisterScreen = (props: any) => {
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity onPress={() => register({ name, email, password, passwordAgain, phone })} >
+                    <TouchableOpacity onPress={() => register({ name, email, password, passwordAgain })} >
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
                             <Text style={styles.textLogin}>Register</Text>
                         </LinearGradient>

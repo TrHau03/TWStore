@@ -38,8 +38,13 @@ const LoginScreen = (props: any) => {
     try {
       const result = await AxiosInstance().post('/users/LoginUser', { email: user.email, password: user.password });
       console.log(result.data);
+      if (result.data.status) {
+        const response = await AxiosInstance().post(`/users/getUser/${result.data._id}`);
+        console.log(response.data);
 
-      return result;
+      } else {
+        console.log(result.data.message);
+      }
     } catch (error) {
       console.log('getNews Error: ', error);
     }
@@ -62,6 +67,13 @@ const LoginScreen = (props: any) => {
       const credential = Realm.Credentials.google({ idToken });
       const user = await app.logIn(credential);
       console.log("signed in as Realm user", user.id);
+      if (user) {
+        const response = await AxiosInstance().post(`/users/getUser/${user.id}`);
+        console.log(response.data);
+
+      } else {
+        console.log("Login failed");
+      }
     } catch (error: any) {
       // handle errors
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -100,8 +112,14 @@ const LoginScreen = (props: any) => {
               //   }
               // );
               const credentials = Realm.Credentials.facebook(data?.accessToken?.toString());
-              app.logIn(credentials).then(user => {
+              app.logIn(credentials).then(async user => {
                 console.log(`Logged in with id: ${user.id}`);
+                if (user) {
+                  const response = await AxiosInstance().post(`/users/getUser/${user.id}`);
+                  console.log(response.data);
+                } else {
+                  console.log("Login failed");
+                }
               });
 
             }

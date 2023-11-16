@@ -29,7 +29,7 @@ function App(): JSX.Element {
   const [isLoadding, setIsLoadding] = useState<boolean>(true);
   setTimeout(() => {
     setIsLoadding(false);
-  }, 1000);
+  }, 2000);
   return (
     (isLoadding) ?
       <SplashSreen />

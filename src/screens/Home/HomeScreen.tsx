@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { COLORS } from '../../utilities';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -63,12 +64,6 @@ const HomeScreen = () => {
 
     const [textInputSearch, setTextInputSearch] = useState<string>('');
 
-
-    console.log('render');
-
-
-
-
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
             const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
@@ -81,7 +76,7 @@ const HomeScreen = () => {
     return (
         <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
             <View style={styles.top}>
-                <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
+                <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: COLORS.gray }]}
                 >
                     <Icon name='search' size={22} />
                     <TextInput
@@ -102,9 +97,6 @@ const HomeScreen = () => {
                 </View>
 
                 <View style={styles.headerRight}>
-                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
-                        <Icon name="heart-outline" size={25} />
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
                         <Icon name="notifications-outline" size={25} />
                     </TouchableOpacity>
@@ -254,10 +246,8 @@ const styles = StyleSheet.create({
         height: 24,
     },
     headerRight: {
-        paddingLeft: 10,
-        gap: 15,
-        flexDirection: 'row',
-        alignItems: 'center',
+        position:'absolute',
+        right: 0
     },
     TextSearch: {
         width: WIDTH / 2,
@@ -272,7 +262,7 @@ const styles = StyleSheet.create({
         borderColor: '#e1dede',
         alignItems: 'center',
         flexDirection: 'row',
-        width: '80%',
+        width: '85%',
         height: '85%'
     },
     topslide: {
