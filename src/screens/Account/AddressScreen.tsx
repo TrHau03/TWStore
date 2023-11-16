@@ -9,13 +9,12 @@ import { useSelector } from 'react-redux';
 const RenderItem = (props: any): React.JSX.Element => {
     const { data, navigation } = props;
     const { item } = data;
-
     return (
         <View style={styles.box}>
             <View style={{ margin: 10 }}>
-                <Text style={styles.txtName}>{item.username}</Text>
-                <Text style={styles.txtContent}>{item.address}</Text>
-                <Text style={styles.txtContent}>+99 {item.phone}</Text>
+                <Text style={styles.txtName}>{item.consigneename}</Text>
+                <Text style={styles.txtContent}>{item.deliveryaddress}</Text>
+                <Text style={styles.txtContent}>+99 {item.deliverphone}</Text>
             </View>
 
             <View style={{ margin: 15, width: '100%', alignItems: 'center' }}>
@@ -29,16 +28,19 @@ const RenderItem = (props: any): React.JSX.Element => {
 
 const AddressScreen = ({ navigation }: PropsAccount) => {
     // Redux
-    const address = useSelector((state: any) => state.appdressReducer.addresses);
+    // const address = useSelector((state: any) => state.SilcesReducer.addresses);
+    const address = useSelector((state: any) => state.SilcesReducer ? state.SilcesReducer[2]?.Address : null);
+    console.log(address);
+    
     return (
         <View style={styles.container}>
             <Header title="Address" navigation={navigation} />
             <View style={styles.line}></View>
             <FlatList
                 data={address}
-                renderItem={(item) => <RenderItem navigation={navigation} data={item} />}
+                renderItem={({item}) => <RenderItem  data={{item}} />}
+                keyExtractor={(item) => item.idAddress.toString()}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={(item) => item.id.toString()}
             />
             <TouchableOpacity
                 style={{ paddingTop: 10 }}

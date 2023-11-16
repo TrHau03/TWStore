@@ -24,8 +24,7 @@ const Birthday = () => {
 
         return `${formattedDay}-${formattedMonth}-${year}`;
     };
-    //redux
-    const dispatch = useDispatch();
+
 
     const handleBirthdateSelection = (value: Date) => {
         setSelectedDate(value); // Cập nhật selectedDate với ngày đã chọn
@@ -35,7 +34,7 @@ const Birthday = () => {
     const saveBirthdate = () => {
         // Chuyển ngày đã chọn thành chuỗi định dạng ngày/tháng/năm
         const dateString = formatDateString(selectedDate.toISOString());
-        dispatch(setBirthdate(dateString));
+
     };
 
     return (

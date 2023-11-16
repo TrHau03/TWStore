@@ -17,6 +17,25 @@ const Order_Detail = ({ navigation }: any) => {
 
   const route = useRoute<RouteProp<StackParamList, 'OrderDetail'>>();
   const selectedOrder = route.params.orderData;
+  const calculateTotalItemsPrice = (items: any[]) => {
+    if (items && items.length > 0) {
+      return items.reduce(
+        (total, product) => total + parseFloat(product.price) * parseInt(product.quantity),
+        0
+      );
+    }
+    return 0;
+  };
+  
+  const calculateTotalPrice = (items: any[], transportFee: string) => {
+    const totalItemsPrice = calculateTotalItemsPrice(items);
+    const parsedTransportFee = parseFloat(transportFee);
+    return totalItemsPrice + parsedTransportFee;
+  };
+  
+  const totalItemsPrice = calculateTotalItemsPrice(selectedOrder.items);
+  const totalPrice = calculateTotalPrice(selectedOrder.items, selectedOrder.Transportfee);
+  
   
   return (
     <View style={styles.container}>
@@ -29,7 +48,7 @@ const Order_Detail = ({ navigation }: any) => {
         <View style={{ paddingHorizontal: 20 }}>
               <Text style={styles.txtTitle}>Products</Text>
 
-              {selectedOrder.orderDetails.items.map((item: any) => (
+              {selectedOrder.items.map((item: any) => (
                 <View key={item.id} style={styles.boxProduct}>
                   <Image style={styles.product_Image} source={{ uri: item.image }} />
                   <View style={{ justifyContent: 'space-between', width: '60%' }}>
@@ -44,35 +63,35 @@ const Order_Detail = ({ navigation }: any) => {
               <View style={styles.boxShipping}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                   <Text style={styles.txtLeft}>Date Shipping</Text>
-                  <Text style={styles.txtRight}>{selectedOrder.orderDetails.dateship}</Text>
+                  <Text style={styles.txtRight}>{selectedOrder.dateship}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                   <Text style={styles.txtLeft}>Shipping</Text>
-                  <Text style={styles.txtRight}>{selectedOrder.orderDetails.shipping}</Text>
+                  <Text style={styles.txtRight}>{selectedOrder.shipping}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                   <Text style={styles.txtLeft}>No. Ressi</Text>
-                  <Text style={styles.txtRight}>{selectedOrder.orderDetails.idship}</Text>
+                  <Text style={styles.txtRight}>{selectedOrder.idship}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                   <Text style={styles.txtLeft}>Address</Text>
-                  <Text style={styles.txtRight}>{selectedOrder.orderDetails.address}</Text>
+                  <Text style={styles.txtRight}>{selectedOrder.address}</Text>
                 </View>
               </View>
 
               <Text style={styles.txtTitle}>Payment Details</Text>
               <View style={styles.boxShipping}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                  <Text style={styles.txtLeft}>Items ({selectedOrder.orderDetails.items.length})</Text>
-                  <Text style={styles.txtRight}>${selectedOrder.orderDetails.totalitemsprice}</Text>
+                  <Text style={styles.txtLeft}>Items ({selectedOrder.items.length})</Text>
+                  <Text style={styles.txtRight}>${totalItemsPrice}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                   <Text style={styles.txtLeft}>Shipping</Text>
-                  <Text style={styles.txtRight}>${selectedOrder.orderDetails.Transportfee}</Text>
+                  <Text style={styles.txtRight}>${selectedOrder.Transportfee}</Text>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                   <Text style={styles.txtPrice_Product}>Total Price</Text>
-                  <Text style={styles.txtPrice_Product}>${selectedOrder.orderDetails.totalprice}</Text>
+                  <Text style={styles.txtPrice_Product}>${totalPrice}</Text>
                 </View>
               </View>
 

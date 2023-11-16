@@ -5,13 +5,12 @@ import ButtonBottom from '../../component/Button/Button';
 import { ImageLibraryOptions, ImagePickerResponse } from 'react-native-image-picker';
 import { CameraOptions } from 'react-native-image-picker';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
-import { setImage } from '../../redux/silces/ProfileSilces';
 
 const ChanceImage = () => {
     const [selectedImage, setSelectedImage] = useState<string>('');
-    const selectedImageFromRedux = useSelector((state: any) => state.profileReducer.image || '');
-    const dispatch = useDispatch();
-
+    // const selectedImageFromRedux = useSelector((state: any) => state.SilcesReducer.image || '');
+    const selectedImageFromRedux = useSelector((state: any) => state.SilcesReducer ? state.SilcesReducer[0] : null);
+    
     const AddImage = async () => {
 
         Alert.alert(
@@ -83,14 +82,14 @@ const ChanceImage = () => {
         if (!value) {
             Alert.alert('Thông báo', 'Vui lòng chọn ảnh trước khi lưu.');
         } else {
-            dispatch(setImage(value));
+            // dispatch(setImage(value));
         }
     }
     
 
     return (
         <View style={styles.container}>
-            <Image style={styles.img} source={{ uri: selectedImage || selectedImageFromRedux }} />
+            <Image style={styles.img} source={{ uri: selectedImage || selectedImageFromRedux.image }} />
 
             <View style={{ width: '100%', position: 'absolute', bottom: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
                 <Pressable style={{ width: '48.5%' }} onPress={() => AddImage()}>

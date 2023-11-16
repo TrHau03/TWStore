@@ -11,19 +11,18 @@ const ChangeName = () => {
 
 
     // redux
-    const dispatch = useDispatch();
     const [firstName, setFirstName] = useState(''); 
     const [lastName, setLastName] = useState('');   
     const [error, setError] = useState(''); 
 
     const handleName = () => {
-        if (!firstName.trim() || !lastName.trim()) {
-            setError('Please enter both the first name and last name.');
-        } else {
-            const fullName = `${firstName} ${lastName}`;
-            dispatch(setName(fullName)); 
-            setError(''); 
-        }
+        // if (!firstName.trim() || !lastName.trim()) {
+        //     setError('Please enter both the first name and last name.');
+        // } else {
+        //     const fullName = `${firstName} ${lastName}`;
+        //     dispatch(setName(fullName)); 
+        //     setError(''); 
+        // }
     };
     return (
         <View style={styles.container}>

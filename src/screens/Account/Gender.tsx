@@ -14,7 +14,7 @@ const Gender = () => {
     const dispatch = useDispatch();
 
     const handleGenderSelection = (value: string) => {
-        dispatch(setGender(value));
+        // dispatch(setGender(value));
     };
 
 

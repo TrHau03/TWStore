@@ -1,18 +1,10 @@
 import {configureStore} from '@reduxjs/toolkit'
-import ProfileSilces from './silces/ProfileSilces';
-import App_AppdressSilces from './silces/App_AppdressSilces';
-import Appdresssilces from './silces/Appdresssilces';
-import OrderSilces from './silces/OrderSilces';
+import Silces from './silces/Silces';
 import Cartsilces from './silces/Cartsilces';
-
 const store = configureStore({
     reducer:{
-        profileReducer: ProfileSilces,
-        app_appdressReducer: App_AppdressSilces,
-        appdressReducer:Appdresssilces,
-        OrderReducer: OrderSilces,
-        cartReducer:Cartsilces,
-
+        SilcesReducer:Silces,
+        CartReducer: Cartsilces,
     }
 })
 export default store;

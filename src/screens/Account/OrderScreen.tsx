@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../../component/Header/Header'
 import { PropsAccount } from '../../component/Navigation/Props';
 import { useSelector } from 'react-redux';
@@ -7,37 +7,60 @@ import { useSelector } from 'react-redux';
 const RenderItem = (props: any): React.JSX.Element => {
     const { data, navigation } = props;
     const { item } = data;
-    const order = useSelector((state: any) => state.OrderReducer ? state.OrderReducer : '');
+    // State để lưu tổng giá tiền
+    const [totalPrice, setTotalPrice] = useState<number>(0);
+
+    const order = useSelector((state: any) => state.SilcesReducer ? state.SilcesReducer[1]?.orderDetails : null);
+
+    useEffect(() => {
+        // Tính tổng giá tiền khi orderDetails thay đổi
+        if (item.items && item.items.length > 0) {
+            const calculatedTotalPrice = item.items.reduce(
+                (total: number, product: any) => total + parseFloat(product.price) * parseInt(product.quantity),
+                0
+            );
+            setTotalPrice(calculatedTotalPrice);
+        }
+    }, [item]);
     const handleOrderPress = (orderId: any) => {
-        const selectedOrder = order.find((orderItem: any) => orderItem.orderDetails.idorder === orderId);
+        const selectedOrder = order.find((orderItem: any) => orderItem.idorder === orderId);
+        
         if (selectedOrder) {
-            navigation.navigate('Order_Detail', { orderData: selectedOrder });
+            const orderDataToSend = {
+                idorder: selectedOrder.idorder,
+                orderData: selectedOrder,
+            };
+    
+            navigation.navigate('Order_Detail', orderDataToSend);
         }
     };
     
-    return <TouchableOpacity style={styles.box} onPress={() => handleOrderPress(item.orderDetails.idorder)}>
-        
+
+    return <TouchableOpacity style={styles.box} onPress={() => handleOrderPress(item.idorder)}>
+
         <View>
-            <Text style={styles.MaCode}>{item.orderDetails.idorder}</Text>
-            <Text style={styles.title}>Order at Lafyuu : {item.orderDetails.date}</Text>
+            <Text style={styles.MaCode}>{item.idorder}</Text>
+            <Text style={styles.title}>Order at Lafyuu : {item.date}</Text>
             <View style={styles.boxBottom}>
                 <Text style={styles.title}>Order Status</Text>
-                <Text style={styles.content}>{item.orderDetails.orderStatus}</Text>
+                <Text style={styles.content}>{item.orderStatus}</Text>
             </View>
             <View style={styles.boxBottom}>
                 <Text style={styles.title}>Items</Text>
-                <Text style={styles.content}>{item.orderDetails.items.length} Items purchased</Text>
+                <Text style={styles.content}>{item.items.length} Items purchased</Text>
             </View>
             <View style={styles.boxBottom}>
                 <Text style={styles.title}>Price</Text>
-                <Text style={styles.price}>${item.orderDetails.totalprice}</Text>
+                <Text style={styles.price}>${totalPrice}</Text>
             </View>
         </View>
     </TouchableOpacity >;
 };
 
 const OrderScreen = ({ navigation }: PropsAccount) => {
-    const order = useSelector((state: any) => state.OrderReducer ? state.OrderReducer : '');
+    const order = useSelector((state: any) => state.SilcesReducer ? state.SilcesReducer[1]?.orderDetails : null);
+    // const order = useSelector((state: any) => state.SilcesReducer ? state.SilcesReducer : '');
+
     return (
         <View style={styles.container}>
             <Header title='Order' navigation={navigation} />
@@ -47,9 +70,14 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
             <FlatList
                 showsVerticalScrollIndicator={false}
                 data={order}
-                keyExtractor={(item) => item.orderDetails.idorder}
-                renderItem={(item) => <RenderItem navigation={navigation} data={item} />}
-
+                keyExtractor={(item) => item.idorder}
+                renderItem={({ item }) => {
+                    const totalPrice = item.items.reduce(
+                        (total:number, product : any) => total + parseFloat(product.price) * parseInt(product.quantity),
+                        0
+                    );
+                    return <RenderItem navigation={navigation} data={{ item }} totalPrice={totalPrice} />;
+                }}
             />
         </View>
     )

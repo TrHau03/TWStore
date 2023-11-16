@@ -21,14 +21,13 @@ const Email = () => {
     const [selected, setSelected] = useState('');
 
     //redux
-    const dispatch = useDispatch();
 
     const handleEmail = (value: string) => {
         console.log('emailinput',value);
         
         if (isValidEmail(value)) {
             // Nếu địa chỉ email đúng định dạng, thì dispatch action để cập nhật email
-            dispatch(setEmail(value));
+            // dispatch(setEmail(value));
           } else {
             // Nếu địa chỉ email không hợp lệ, hiển thị thông báo lỗi
             Alert.alert('Lỗi', 'Địa chỉ email không hợp lệ. Vui lòng kiểm tra lại.');

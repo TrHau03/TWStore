@@ -6,16 +6,16 @@ import { setPassword } from '../../redux/silces/ProfileSilces'
 
 const ChangePass = () => {
     const dispatch = useDispatch();
-    const passwordFromRedux = useSelector((state: any) => state.profileReducer.password ? state.profileReducer.password : '');
-
+    // const passwordFromRedux = useSelector((state: any) => state.profileReducer.password ? state.profileReducer.password : '');
+    const passwordFromRedux = useSelector((state: any) => state.SilcesReducer ? state.SilcesReducer[0] : null);
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
 
     const handlePasswordChange = () => {
-        if (oldPassword === passwordFromRedux) {
+        if (oldPassword === passwordFromRedux.password) {
             if (newPassword === confirmNewPassword) {
-                dispatch(setPassword(newPassword));
+                // dispatch(setPassword(newPassword));
                 setOldPassword('');
                 setNewPassword('');
                 setConfirmNewPassword('');

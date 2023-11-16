@@ -49,23 +49,12 @@ const initialState: CartItem[] = [
 ];
 
 
-const calculateTotalQuantity = (items: CartItem[]) => {
-  return items.reduce((total, item) => total + item.quantity, 0);
-};
-
-const updatedInitialState = initialState.map(item => ({
-  ...item,
-  totalQuantity: calculateTotalQuantity(initialState),
-}));
 
 
 const cartSlice = createSlice({
   name: 'cartSlice',
   initialState,
   reducers: {
-    addItem: (state, action) => {
-      state.push(action.payload);
-    },
     removeItem: (state, action: PayloadAction<number>) => {
       state = state.filter(item => item.id !== action.payload);
     },
@@ -82,6 +71,6 @@ const cartSlice = createSlice({
 
 });
 
-export const { removeItem ,addItem ,updateQuantity} = cartSlice.actions;
+export const { removeItem  ,updateQuantity} = cartSlice.actions;
 
 export default cartSlice.reducer;

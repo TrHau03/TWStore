@@ -22,8 +22,9 @@ import { useSelector } from 'react-redux';
 const ProfileScreen = ({ navigation }: PropsAccount) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [nameModal, setNameModal] = useState<string>('');
+    const profile = useSelector((state: any) => state.SilcesReducer ? state.SilcesReducer[0] : null);
+    // const profile = useSelector((state: any) => state.SilcesReducer ? state.SilcesReducer : '');
 
-    const profile = useSelector((state: any) => state.profileReducer ? state.profileReducer : '');
     const renderModalContent = () => {
         switch (nameModal) {
             case 'ChangeGender':

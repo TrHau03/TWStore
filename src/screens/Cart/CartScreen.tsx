@@ -6,7 +6,7 @@ import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux';
-import { updateQuantity } from '../../redux/silces/Cartsilces';
+import { updateQuantity } from '../../redux/silces/Cartsilces'
 
 
 interface Product {
@@ -21,11 +21,11 @@ const { width: WIDTH, height: HEIGHT } = Dimensions.get('window');
 
 const CartScreen = ({ navigation }: PropsCart) => {
     const [cupon, setCupon] = useState<string>('');
-    const Cart = useSelector((state: any) => state.cartReducer ? state.cartReducer : '');
+    const Cart = useSelector((state: any) => state.CartReducer ? state.CartReducer : null);
     const dispatch = useDispatch();
-    
+
     const totalItem = Cart.reduce((total: any, item: { quantity: any }) => total + item.quantity, 0);
-    
+
     const generalPrice = Cart.reduce((previousValue: number, currentItem: Product) =>
         previousValue + currentItem.price * currentItem.quantity, 0);
 
@@ -43,6 +43,8 @@ const CartScreen = ({ navigation }: PropsCart) => {
             setQuantity(newQuantity);
             dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
         };
+
+
 
         return (
             <View style={styles.itemCart}>

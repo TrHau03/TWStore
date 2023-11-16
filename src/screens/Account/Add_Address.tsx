@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, TextInput, FlatList, ScrollView, TouchableOpaci
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { PropsAccount } from '../../component/Navigation/Props';
-import { setProvinces, setDistricts, setWard, setPhone, setDetailWard } from '../../redux/silces/App_AppdressSilces';
 import Header from '../../component/Header/Header'
 import { SelectList } from 'react-native-dropdown-select-list';
 import ButtonBottom from '../../component/Button/Button';
@@ -13,8 +12,6 @@ import ButtonBottom from '../../component/Button/Button';
 const Add_Address = ({ navigation }: PropsAccount) => {
 
   //redux
-  const dispatch = useDispatch();
-
   const [selectedProvince, setSelectedProvince] = useState('');
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [selectedWard, setSelectedWard] = useState('');
@@ -22,20 +19,7 @@ const Add_Address = ({ navigation }: PropsAccount) => {
   const [phone, setSelectedPhone] = useState('');
 
   const handleAddressSelection = () => {
-    // Check if the selectedProvince, selectedDistrict, selectedWard, and DetailWard are not empty
-    if (!selectedProvince || !selectedDistrict || !selectedWard || !DetailWard) {
-      // Show an error message because one or more fields are empty
-      Alert.alert('Please fill in all fields');
-    } else {
-      // The fields are not empty, so you can dispatch actions
-      dispatch(setProvinces(selectedProvince));
-      dispatch(setDistricts(selectedDistrict));
-      dispatch(setWard(selectedWard));
-      dispatch(setDetailWard(DetailWard));
-      dispatch(setPhone(phone));
 
-      // Additional code to handle a valid form
-    }
   };
 
   // Dữ liệu mẫu cho tỉnh/thành phố, quận/huyện và phường/xã
