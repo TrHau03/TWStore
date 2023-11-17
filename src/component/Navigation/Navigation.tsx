@@ -4,12 +4,13 @@ import LoginNavigation from './LoginNavigation';
 import SlideNavigation from './SlideNavigation';
 import React, { useEffect, useState } from 'react';
 import BottomTab from '../BottomNavigation/BottomTabNavigator';
+import { useSelector } from 'react-redux';
 
 
 
 const Navigation = () => {
     const [slide, setslide] = useState<boolean>();
-    const [isLogin, setIsLogin] = useState<boolean>(false);
+    const isLogin = useSelector((state: any) => state.SlicesReducer.isLogin);
     useEffect(() => {
         const temp = async () => {
             const checkSlide = await AsyncStorage.getItem('checkSlide');

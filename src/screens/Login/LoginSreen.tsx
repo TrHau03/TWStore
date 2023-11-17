@@ -12,20 +12,32 @@ import AxiosInstance from '../../Axios/Axios';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import Realm from 'realm';
-import { AccessToken, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
+import { AccessToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
+import { useDispatch } from 'react-redux';
+import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../redux/silces/Silces';
 
 interface Login {
   email: string;
   password: string;
 }
-
+interface User {
+  _idUser: string;
+  email: string;
+  userName: string | null | undefined;
+  cartID: [];
+  avatar: string | null | undefined;
+  gender: string;
+  birthDay: string;
+  address: []
+}
 
 const LoginScreen = (props: any) => {
   console.log(WIDTH, HEIGHT);
   const { navigation } = props
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-
+  const [pictureURL, setPictureURL] = useState<any>(null);
+  const dispatch = useDispatch();
   useEffect(() => {
     const setData = async () => {
       await AsyncStorage.setItem('checkSlide', 'true');
@@ -33,15 +45,18 @@ const LoginScreen = (props: any) => {
     setData();
   }, [])
 
-
+  const handleSubmit = (data: User) => {
+    dispatch(isLogin(true));
+    dispatch(updateUser({ _idUser: data._idUser, email: data.email, userName: data.userName, cartID: data.cartID, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address }))
+  }
   const login = async (user: Login) => {
     try {
       const result = await AxiosInstance().post('/users/LoginUser', { email: user.email, password: user.password });
-      console.log(result.data);
+      const userInfo = result?.data.user;
       if (result.data.status) {
-        const response = await AxiosInstance().post(`/users/getUser/${result.data._id}`);
-        console.log(response.data);
-
+        const response = await AxiosInstance().post(`/users/getUser/${result.data.user._id}`);
+        const user = response.data.data;
+        handleSubmit({ _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartID: user.cartID, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address })
       } else {
         console.log(result.data.message);
       }
@@ -63,14 +78,18 @@ const LoginScreen = (props: any) => {
       // Sign into Google
       await GoogleSignin.hasPlayServices();
       const { idToken }: any = await GoogleSignin.signIn();
+      const userGoogle = await GoogleSignin.signIn();
+      console.log(userGoogle);
+
       // use Google ID token to sign into Realm
       const credential = Realm.Credentials.google({ idToken });
-      const user = await app.logIn(credential);
-      console.log("signed in as Realm user", user.id);
-      if (user) {
-        const response = await AxiosInstance().post(`/users/getUser/${user.id}`);
-        console.log(response.data);
-
+      const userRealm = await app.logIn(credential);
+      console.log("signed in as Realm user", userRealm.id);
+      if (userRealm) {
+        const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`);
+        const user = response.data.data;
+        handleSubmit({ _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartID: user.cartID, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address })
+        dispatch(LoginGoogle(true));
       } else {
         console.log("Login failed");
       }
@@ -88,35 +107,48 @@ const LoginScreen = (props: any) => {
     }
   }
   async function onFaceBookButtonPress() {
+    let userFacebook: Profile;
     LoginManager.logInWithPermissions(["public_profile", "email"]).then(
       function (result) {
         if (result.isCancelled) {
           console.log("==> Login cancelled");
         } else {
-          console.log(
-            "==> Login success with permissions: " +
-            result?.grantedPermissions?.toString()
-          );
           AccessToken.getCurrentAccessToken().then(
             (data: any) => {
-              console.log(data?.accessToken.toString())
-              // Profile.getCurrentProfile().then(
-              //   function (currentProfile) {
-              //     if (currentProfile) {
-              //       console.log("The current logged user is: " +
-              //         currentProfile.name
-              //         + ". His profile id is: " +
-              //         currentProfile.userID
-              //       );
-              //     }
-              //   }
-              // );
+              Profile.getCurrentProfile().then(
+                function (currentProfile) {
+                  console.log("Fb access token", data?.accessToken?.toString());
+                  const graphRequest = new GraphRequest('/me', {
+                    accessToken: data?.accessToken,
+                    parameters: {
+                      fields: {
+                        string: 'picture.type(large)',
+                      },
+                    },
+                  }, (error, result: any) => {
+                    if (error) {
+                      console.error(error)
+                    } else {
+                      setPictureURL(result?.picture.data.url);
+                    }
+                  })
+                  new GraphRequestManager().addRequest(graphRequest).start()
+                  if (currentProfile) {
+                    userFacebook = currentProfile;
+                  }
+                }
+              );
               const credentials = Realm.Credentials.facebook(data?.accessToken?.toString());
-              app.logIn(credentials).then(async user => {
-                console.log(`Logged in with id: ${user.id}`);
-                if (user) {
-                  const response = await AxiosInstance().post(`/users/getUser/${user.id}`);
-                  console.log(response.data);
+              app.logIn(credentials).then(async userFace => {
+                console.log(`Logged in with id: ${userFace.id}`);
+                if (userFace) {
+                  const response = await AxiosInstance().post(`/users/getUser/${userFace.id}`);
+                  console.log(userFacebook);
+                  const user = response.data.data;
+                  handleSubmit({
+                    _idUser: user._idUser, email: '', userName: userFacebook.name, cartID: user.cartID, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address
+                  })
+                  dispatch(LoginFacebook(true));
                 } else {
                   console.log("Login failed");
                 }

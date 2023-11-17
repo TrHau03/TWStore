@@ -9,6 +9,8 @@ import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilitie
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { COLORS } from '../../utilities';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInitialListProduct } from '../../redux/silces/Silces';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -36,13 +38,13 @@ const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } 
     )
 }
 
-const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } }) => {
+const renderItem3 = ({ item }: any) => {
     return (
         <View style={styles.itemsale2}>
-            <Image style={styles.imageproduct} source={{ uri: item.image }} />
+            <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
             <View style={{ marginTop: 20, rowGap: 15 }}>
-                <Text style={styles.nameproduct}>{item.name}</Text>
-                <Text style={styles.price}>$299,43</Text>
+                <Text style={styles.nameproduct}>{item.productName}</Text>
+                <Text style={styles.price}>${item.price}</Text>
                 <View style={styles.stylesaleoff}>
                     <Text style={styles.strikethrough}>$534,33</Text>
                     <Text style={styles.saleoff}>24% Off</Text>
@@ -64,6 +66,11 @@ const HomeScreen = () => {
 
     const [textInputSearch, setTextInputSearch] = useState<string>('');
 
+    const dispatch = useDispatch();
+    const listProduct = useSelector((state: any) => state.SlicesReducer.listProduct);
+    useEffect(() => {
+        dispatch(fetchInitialListProduct());
+    }, [])
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
             const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
@@ -211,9 +218,9 @@ const HomeScreen = () => {
                     contentContainerStyle={{ alignItems: 'center' }}
                     style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
                     showsVerticalScrollIndicator={false}
-                    data={data2}
+                    data={listProduct}
                     renderItem={renderItem3}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item._id.toString()}
                     numColumns={2}
                     columnWrapperStyle={{ columnGap: 10 }}
                 />
@@ -246,7 +253,7 @@ const styles = StyleSheet.create({
         height: 24,
     },
     headerRight: {
-        position:'absolute',
+        position: 'absolute',
         right: 0
     },
     TextSearch: {

@@ -2,14 +2,12 @@ import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Dimensi
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { InputItem, Stepper } from '@ant-design/react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import LinearGradient from 'react-native-linear-gradient';
 import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeItem, updateQuantity } from '../../redux/silces/Cartsilces';
+import { removeItem, updateQuantity } from '../../redux/silces/CartSlices';
 interface Product {
     id: number;
     name: string;
@@ -29,9 +27,9 @@ interface Product {
 const CartScreen = ({ navigation }: PropsCart) => {
 
     const data = useSelector((state: any) => {
-        return state.CartReducer ? state.CartReducer : null
+        return state.CartReducer
     });
-    const [listData, setListData] = useState<[]>(data);
+    const [listData, setListData] = useState<[]>(data ? data : []);
 
     const [coupon, setCoupon] = useState<string>('');
 
@@ -41,13 +39,14 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const generalPrice = listData.reduce((previousValue: number, currentItem: Product) => previousValue + currentItem.price * currentItem.quantity, 0);
 
+    console.log(listData);
 
 
     useEffect(() => {
         setListData(data);
     }, [data]);
 
-    const handleRemoveItem = (id: any) => {
+    const handleRemoveItem = (id: number) => {
         dispatch(removeItem(id))
     }
     const RenderItem = ({ item }: { item: Product }) => {
@@ -72,11 +71,9 @@ const CartScreen = ({ navigation }: PropsCart) => {
                 <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
                     <View style={styles.topItem}>
                         <Text style={styles.textTitleItem}>{item.name.length < 10 ? item.name : item.name.substring(0, 10) + "..."}</Text>
-                        <View style={{}}>
-                            <Pressable onPress={() => handleRemoveItem(item.id)}>
-                                <Icon name='trash-outline' color='#9e9e9e' size={25} />
-                            </Pressable>
-                        </View>
+                        <Pressable onPress={() => handleRemoveItem(item.id)}>
+                            <Icon name='trash-outline' color='#9e9e9e' size={25} />
+                        </Pressable>
                     </View>
                     <View style={styles.bottomItem}>
                         <Text style={styles.textPrice}>${item.price}</Text>
@@ -98,7 +95,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
             </View>
             <View style={styles.line}></View>
             <View style={{ height: HEIGHT * 0.4, marginTop: '11%' }}>
-                {listData == null ?
+                {listData.length > 0 ?
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
@@ -232,6 +229,7 @@ const styles = StyleSheet.create({
     },
     topItem: {
         flexDirection: 'row',
+        columnGap: 25,
         paddingLeft: 20,
     },
     bottomItem: {
