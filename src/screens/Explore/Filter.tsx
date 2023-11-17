@@ -1,3 +1,4 @@
+
 import {
   BackHandler,
   ScrollView,
@@ -17,11 +18,11 @@ const FilterScreen = ({navigation}: any) => {
   const handleSliderChange = (values: any) => {
     setSliderValues(values);
   };
-
+ 
   const [sliderValue, setSliderValue] = useState(0);
 
   const handleTextInputChange = (text:any) => {
-    const parsedValue = parseFloat(text);
+    const parsedValue = parseFloat(text); 
     if (!isNaN(parsedValue)) {
       setSliderValue(parsedValue);
       console.log(sliderValue);
