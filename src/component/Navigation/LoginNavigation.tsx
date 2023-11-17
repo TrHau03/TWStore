@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Stack } from './Props';
 import { RootStackScreenLogin } from '../Root/RootStackLogin';
 import { configStack } from '../Root/RootStack';
+import * as React from 'react';
 
 
 

@@ -89,14 +89,14 @@ const data = [
     id: 2,
     name: 'Order',
     icon: 'bag-check-sharp',
-    screen: 'PaymentScreen'
+    screen: 'OrderScreen'
 
   },
   {
     id: 3,
     name: 'Address',
     icon: 'location-sharp',
-    screen: 'PaymentScreen'
+    screen: 'AddressScreen'
 
   },
   {
