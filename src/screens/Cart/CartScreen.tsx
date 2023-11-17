@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Dimensions, } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { InputItem, Stepper } from '@ant-design/react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -8,6 +8,8 @@ import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeItem, updateQuantity } from '../../redux/silces/Cartsilces';
 interface Product {
     id: number;
     name: string;
@@ -15,49 +17,79 @@ interface Product {
     price: number;
     size: string;
     color: string;
-    evalute: number;
+    evaluate: number;
     description: string;
     type: string;
+    quantity: number;
 }
 
-const RenderItem = ({ item }: { item: Product }) => {
-    const [numberCount, setNumberCount] = useState<number>(1);
-    const [heart, setHeart] = useState<boolean>(false);
-    return (
-        <View style={styles.itemCart}>
-            <View>
-                <Image source={{ uri: item.image }} style={{ width: 72, height: 72 }} />
-            </View>
-            <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
-                <View style={styles.topItem}>
-                    <Text style={styles.textTitleItem}>{item.name.length < 10 ? item.name : item.name.substring(0, 10) + "..."}</Text>
-                    <View style={{ columnGap: 5, flexDirection: 'row' }}>
-                        <Pressable onPress={() => setHeart(!heart)}>
-                            <Icon name='heart' size={25} color={heart ? '#FB7181' : '#a7a6a6'} />
-                        </Pressable>
-                        <Pressable>
-                            <Icon name='trash-outline' color='#9e9e9e' size={25} />
-                        </Pressable>
-                    </View>
-                </View>
-                <View style={styles.bottomItem}>
-                    <Text style={styles.textPrice}>${item.price}</Text>
-                    <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'space-between', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
-                        <Pressable onPress={() => numberCount > 1 ? setNumberCount(numberCount - 1) : setNumberCount(1)} style={numberCount > 1 ? styles.btnNumberCountMinus : [styles.btnNumberCountMinus, { backgroundColor: '#E5E5E5' }]}><Icon name='remove-outline' size={25} /></Pressable>
-                        <Text style={styles.textNumberCount}>{numberCount}</Text>
-                        <Pressable onPress={() => numberCount < 10 ? setNumberCount(numberCount + 1) : setNumberCount(10)} style={numberCount < 10 ? styles.btnNumberCountPlus : [styles.btnNumberCountPlus, { backgroundColor: '#E5E5E5' }]}><Icon name='add-outline' size={25} /></Pressable>
-                    </View>
-                </View>
-            </View>
-        </View>
-    )
-}
+
 
 
 const CartScreen = ({ navigation }: PropsCart) => {
-    const [cupon, setCupon] = useState<string>('');
 
-    const generalPrice = data.reduce((previousValue, currentValue) => previousValue + currentValue.price, 0)
+    const data = useSelector((state: any) => {
+        return state.CartReducer ? state.CartReducer : null
+    });
+    const [listData, setListData] = useState<[]>(data);
+
+    const [coupon, setCoupon] = useState<string>('');
+
+    const dispatch = useDispatch();
+
+    const totalItem = listData.reduce((total: any, item: { quantity: any }) => total + item.quantity, 0);
+
+    const generalPrice = listData.reduce((previousValue: number, currentItem: Product) => previousValue + currentItem.price * currentItem.quantity, 0);
+
+
+
+    useEffect(() => {
+        setListData(data);
+    }, [data]);
+
+    const handleRemoveItem = (id: any) => {
+        dispatch(removeItem(id))
+    }
+    const RenderItem = ({ item }: { item: Product }) => {
+        const [quantity, setQuantity] = useState<number>(item.quantity);
+
+        const changeQuantityUp = () => {
+            const newQuantity = quantity < 10 ? quantity + 1 : 10;
+            setQuantity(newQuantity);
+            dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+        };
+
+        const changeQuantityDown = () => {
+            const newQuantity = quantity > 1 ? quantity - 1 : 1;
+            setQuantity(newQuantity);
+            dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+        };
+        return (
+            <View style={styles.itemCart}>
+                <View>
+                    <Image source={{ uri: item.image }} style={{ width: 72, height: 72 }} />
+                </View>
+                <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
+                    <View style={styles.topItem}>
+                        <Text style={styles.textTitleItem}>{item.name.length < 10 ? item.name : item.name.substring(0, 10) + "..."}</Text>
+                        <View style={{}}>
+                            <Pressable onPress={() => handleRemoveItem(item.id)}>
+                                <Icon name='trash-outline' color='#9e9e9e' size={25} />
+                            </Pressable>
+                        </View>
+                    </View>
+                    <View style={styles.bottomItem}>
+                        <Text style={styles.textPrice}>${item.price}</Text>
+                        <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'space-between', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
+                            <Pressable onPress={() => changeQuantityDown()} style={quantity > 1 ? styles.btnNumberCountMinus : [styles.btnNumberCountMinus, { backgroundColor: '#E5E5E5' }]}><Icon name='remove-outline' size={25} /></Pressable>
+                            <Text style={styles.textNumberCount}>{item.quantity}</Text>
+                            <Pressable onPress={() => changeQuantityUp()} style={quantity < 10 ? styles.btnNumberCountPlus : [styles.btnNumberCountPlus, { backgroundColor: '#E5E5E5' }]}><Icon name='add-outline' size={25} /></Pressable>
+                        </View>
+                    </View>
+                </View>
+            </View>
+        )
+    }
 
     return (
         <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR }}  >
@@ -65,20 +97,23 @@ const CartScreen = ({ navigation }: PropsCart) => {
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
             <View style={styles.line}></View>
-            <FlatList style={{ maxHeight: HEIGHT * 0.40, marginTop: '11%' }}
-                showsVerticalScrollIndicator={false}
-                renderItem={(object) => <RenderItem item={object.item} />}
-                data={data}
-                onContentSizeChange={() => {
-                }}
-                keyExtractor={(item: Product) => item.id.toString()}
-            />
+            <View style={{ height: HEIGHT * 0.4, marginTop: '11%' }}>
+                {listData == null ?
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        renderItem={(object) => <RenderItem item={object.item} />}
+                        data={listData}
+                        onContentSizeChange={() => {
+                        }}
+                        keyExtractor={(item: Product) => item.id.toString()}
+                    /> : <Text style={{ fontSize: 20 }}>No data</Text>}
+            </View>
             <View style={{ borderWidth: 1, borderColor: '#9098B1', borderRadius: 5, marginTop: 25 }}>
                 <InputItem
                     style={{ fontSize: 16 }}
-                    value={cupon}
+                    value={coupon}
                     onChange={(value: any) => {
-                        setCupon(value)
+                        setCoupon(value)
                     }}
                     placeholder="Enter Cupon Code"
                     extra={
@@ -90,7 +125,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
             </View>
             <View style={styles.itemTotalPrice}>
                 <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Items ({data.length})</Text>
+                    <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
                     <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
                 </View>
                 <View style={styles.headerTotalPrice}>
@@ -267,54 +302,3 @@ const styles = StyleSheet.create({
         letterSpacing: 0.08,
     }
 })
-const data = [{
-    "id": 1,
-    "name": "Mediterranean Brome",
-    "image": "http://dummyimage.com/72x72.png/dddddd/000000",
-    "price": 1999,
-    "size": "XS",
-    "color": "#b2e162",
-    "evalute": 5,
-    "description": "Late ef-spch/lang df NEC",
-    "type": "MULTI VITAMIN INFUSION"
-}, {
-    "id": 2,
-    "name": "Bellflower",
-    "image": "http://dummyimage.com/72x72.png/dddddd/000000",
-    "price": 259,
-    "size": "M",
-    "color": "#53918b",
-    "evalute": 2,
-    "description": "Budd-chiari syndrome",
-    "type": "Lamotrigine"
-}, {
-    "id": 3,
-    "name": "Hollyhock",
-    "image": "http://dummyimage.com/72x72.png/dddddd/000000",
-    "price": 99,
-    "size": "3XL",
-    "color": "#f5c92e",
-    "evalute": 1,
-    "description": "Blepharochalasis",
-    "type": "Pravastatin Sodium"
-}, {
-    "id": 4,
-    "name": "Dock",
-    "image": "http://dummyimage.com/72x72.png/ff4444/ffffff",
-    "price": 399,
-    "size": "M",
-    "color": "#fde3b6",
-    "evalute": 1,
-    "description": "Special symptom NEC/NOS",
-    "type": "Ablavar"
-}, {
-    "id": 5,
-    "name": "Pink Mountainheath",
-    "image": "http://dummyimage.com/72x72.png/ff4444/ffffff",
-    "price": 200,
-    "size": "3XL",
-    "color": "#330c8f",
-    "evalute": 4,
-    "description": "Mucous polyp of cervix",
-    "type": "Prednisone"
-}]
