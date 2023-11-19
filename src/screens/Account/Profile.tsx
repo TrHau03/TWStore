@@ -107,8 +107,8 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                     </View>
                     <View style={styles.Content_right}>
                         <Text style={styles.txtHint}>{user.email}</Text>
-                        <Pressable onPress={() => { setModalVisible(true); setNameModal('ChangeEmail') }}>
-                            <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />
+                        <Pressable onPress={() => { !checkLogin && setModalVisible(true); !checkLogin && setNameModal('ChangeEmail') }}>
+                            {!checkLogin && <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />}
                         </Pressable>
                     </View>
                 </View>

@@ -78,18 +78,6 @@ const RegisterScreen = (props: any) => {
                     <View style={styles.textinput}>
                         <InputItem
                             style={{ fontSize: 16 }}
-                            value={phone}
-                            onChange={(value: any) => {
-                                setPhone(value)
-                            }}
-                            labelNumber={2}
-                            placeholder="Number Phone">
-                            <Icon name="phone-portrait-outline" size={25} color="#9098B1" />
-                        </InputItem>
-                    </View>
-                    <View style={styles.textinput}>
-                        <InputItem
-                            style={{ fontSize: 16 }}
                             value={email}
                             onChange={(value: any) => {
                                 setEmail(value)

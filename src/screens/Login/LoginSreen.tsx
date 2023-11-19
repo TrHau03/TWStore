@@ -15,6 +15,7 @@ import Realm from 'realm';
 import { AccessToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
 import { useDispatch } from 'react-redux';
 import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../redux/silces/Silces';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 interface Login {
   email: string;
@@ -33,7 +34,7 @@ interface User {
 
 const LoginScreen = (props: any) => {
   console.log(WIDTH, HEIGHT);
-  const { navigation } = props
+  const { navigation }: NativeStackHeaderProps = props
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [pictureURL, setPictureURL] = useState<any>(null);
@@ -202,7 +203,7 @@ const LoginScreen = (props: any) => {
         </View>
         <View style={{ flexDirection: 'row', marginTop: 17 }}>
           <Checkbox style={{ width: 150 }}><Text style={styles.checkBox}>Remember me</Text></Checkbox>
-          <TouchableOpacity style={{ position: 'absolute', right: 0 }}>
+          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumLogin.VerificationScreen)} style={{ position: 'absolute', right: 0 }}>
             <Text style={styles.checkBox}>Forgot Password?</Text>
           </TouchableOpacity>
         </View>

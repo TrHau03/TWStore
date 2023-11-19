@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
@@ -16,6 +16,8 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootTabParamList } from '../../component/BottomNavigation/RootTab/RootTab';
 import { PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { COLORS } from '../../utilities';
+import AxiosInstance from '../../Axios/Axios';
+import { AirbnbRating } from 'react-native-ratings';
 
 
 interface Category {
@@ -30,26 +32,41 @@ const ExploreScreen = () => {
   const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
 
   const [textInputSearch, setTextInputSearch] = useState<string>('');
-  const [click, setClick] = useState<boolean>(false);
 
+  const [listProduct, setListProduct] = useState<[]>([]);
+
+  useEffect(() => {
+    const fetchListProduct = async () => {
+      const response = await AxiosInstance().get('product/getAllProduct');
+      setListProduct(response.data);
+    }
+    fetchListProduct();
+  }, [])
 
   const renderItem = ({ item }: any): React.JSX.Element => {
-    const { id, img, name } = item;
-
     return (
-      <TouchableOpacity
-        style={styles.containerItemPD}
-
-      >
+      <TouchableOpacity style={styles.containerItemPD}>
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
-            <Image style={styles.img} source={img} />
+            <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.image[0] }} />
           </View>
           <View style={styles.in4PD}>
-            <Text style={styles.NamePD}>{name}</Text>
+            <View style={styles.in4Text}>
+              <Text style={styles.NamePD} >{item.productName}</Text>
+              <View style={styles.star}>
+                <AirbnbRating count={5} size={15} showRating={false} />
+              </View>
+              <Text style={styles.PricePD}>{item.price}</Text>
+            </View>
+            <View style={styles.sale}>
+              <Text style={styles.txtOldPrice}>5000</Text>
+              <Text style={styles.txtSale}>24% Off</Text>
+              <TouchableOpacity style={styles.imgIc}>
+                <Icon name="trash-outline" size={25} />
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-
       </TouchableOpacity>
     );
   };
@@ -83,29 +100,12 @@ const ExploreScreen = () => {
             <Icon name="notifications-outline" size={25} />
           </TouchableOpacity>
         </View>
-
       </View>
-      <View style={styles.Name}>
-        <Text style={styles.txtName}>Man Fashion</Text>
-        <FlatList
-          data={DataMan}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          numColumns={4}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-
-      <View style={styles.Name}>
-        <Text style={styles.txtName}>Woman Fashion</Text>
-        <FlatList
-          data={DataWoman}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          numColumns={4}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
+      <FlatList
+        data={listProduct}
+        renderItem={renderItem}
+        numColumns={2}
+        keyExtractor={(item: any) => item?._id.toString()} />
 
     </View>
 
@@ -115,37 +115,85 @@ const ExploreScreen = () => {
 export default ExploreScreen;
 
 const styles = StyleSheet.create({
-  Name: {
-    marginTop: 20
+  imgIc: {
+    width: '20%',
+    marginLeft: 10,
+  },
+  txtSale: {
+    color: 'red',
+    fontSize: 17,
+    marginLeft: 20,
+    fontWeight: 'bold',
+  },
+  txtOldPrice: {
+    textDecorationLine: 'line-through', // Gạch ngang văn bản
+    fontSize: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 'bold',
+  },
+  sale: {
+    width: '80%',
+    flexDirection: 'row',
+  },
+  star: {
+    width: '70%',
+    marginTop: 5,
   },
 
-  txtName: {
-    fontWeight: 'bold',
-    fontSize: 20,
-    color: '#223263'
-  },
-  img: {
-    width: 60,
-    height: 60,
+  content: {
+    padding: 5,
   },
   NamePD: {
+    fontSize: 16,
+    fontWeight: '700',
+    fontStyle: 'normal',
+    fontFamily: 'Helvetica Neue',
     color: 'black',
+    margin: 1,
   },
-  in4PD: {
-    height: '30%'
+  PricePD: {
+    marginTop: 5,
+    fontSize: 16,
+    fontWeight: '700',
+    fontStyle: 'normal',
+    fontFamily: 'Helvetica Neue',
+    lineHeight: 24,
+    color: '#4464C4',
+  },
+  in4Text: {
+    marginTop: 5,
+    width: '100%',
   },
   ImgContainerPD: {
-    height: '70%'
-  },
-  content: {
+    backgroundColor: '#FFFFFF',
     width: '100%',
-    height: 100,
-    alignItems: 'center',
-    justifyContent: 'center',
+    height: '50%',
+    borderRadius: 20,
+  },
+
+  in4PD: {
+    justifyContent: 'space-between',
+    width: '100%',
+    height: '50%',
+    borderRadius: 5,
   },
   containerItemPD: {
-    width: '25%',
-    padding: 8
+    borderWidth: 0.5,
+    width: WIDTH * 0.44,
+    height: 280,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 5,
+    shadowColor: '#C4C4C4',
+    shadowOffset: {
+      width: 1,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    marginLeft: 5,
+    marginBottom: 5
   },
 
   TextSearch: {
