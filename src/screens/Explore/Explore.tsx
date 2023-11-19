@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -14,6 +15,7 @@ import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootTabParamList } from '../../component/BottomNavigation/RootTab/RootTab';
 import { PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { COLORS } from '../../utilities';
 
 
 interface Category {
@@ -24,6 +26,10 @@ interface Category {
 type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
 const ExploreScreen = () => {
   const navigation = useNavigation<BottomNavigationProp>();
+
+  const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
+
+  const [textInputSearch, setTextInputSearch] = useState<string>('');
   const [click, setClick] = useState<boolean>(false);
 
 
@@ -52,26 +58,32 @@ const ExploreScreen = () => {
 
   return (
     <View style={styles.container} >
-      <View style={styles.group}>
-        <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
-        >
+      <View style={styles.top}>
+        <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: COLORS.gray }]}>
           <Icon name='search' size={22} />
           <TextInput
             placeholder="Search here"
-            style={styles.TextSearch}
-            onFocus={() => setClick(true)}
-            onBlur={() => setClick(false)}
-
+            style={[styles.TextSearch]}
+            onFocus={() => setTextInputStatus(true)}
+            onBlur={() => setTextInputStatus(false)}
+            onChangeText={setTextInputSearch}
+            value={textInputSearch}
           />
+          {(textInputStatus) ?
+            <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
+              onPress={() => setTextInputSearch('')}
+            >
+              <Icon name='close' size={14} />
+            </Pressable>
+            : null}
         </View>
+
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
-            <Icon name="heart-outline" size={25} />
-          </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
             <Icon name="notifications-outline" size={25} />
           </TouchableOpacity>
         </View>
+
       </View>
       <View style={styles.Name}>
         <Text style={styles.txtName}>Man Fashion</Text>
@@ -136,7 +148,6 @@ const styles = StyleSheet.create({
     padding: 8
   },
 
-
   TextSearch: {
     width: WIDTH / 2,
     justifyContent: 'center',
@@ -148,12 +159,9 @@ const styles = StyleSheet.create({
     height: 20
   },
   headerRight: {
-    paddingLeft: 10,
-    gap: 15,
-    flexDirection: 'row',
-    alignItems: 'center',
+    position: 'absolute',
+    right: 0
   },
-
   headerLeft: {
     borderWidth: 1,
     padding: 5,
@@ -161,12 +169,13 @@ const styles = StyleSheet.create({
     borderColor: '#e1dede',
     alignItems: 'center',
     flexDirection: 'row',
-    width: '80%',
+    width: '85%',
     height: '85%'
   },
-  group: {
-    alignItems: 'center',
+  top: {
     flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
   },
   container: {
     flex: 1,

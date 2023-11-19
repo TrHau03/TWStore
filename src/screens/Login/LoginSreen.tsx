@@ -61,7 +61,7 @@ const LoginScreen = (props: any) => {
         console.log(result.data.message);
       }
     } catch (error) {
-      console.log('getNews Error: ', error);
+      console.log('Error: ', error);
     }
     return [];
   }
