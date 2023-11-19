@@ -14,6 +14,7 @@ import Navigation from './src/component/Navigation/Navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
+import Category_Detail_Screen from './src/screens/Explore/Category_Detail';
 
 
 

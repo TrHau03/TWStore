@@ -10,9 +10,18 @@ import {
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import Header from '../../component/Header/Header'
+import { useDispatch, useSelector } from 'react-redux';
+import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import { PropsExplore } from '../../component/Navigation/Props';
+import Item from '@ant-design/react-native/lib/list/ListItem';
+import { todoRemainingProducts } from '../../redux/silces/HomeSelector';
 
-const FilterScreen = ({navigation}: any) => {
+const FilterScreen = ({navigation}: PropsExplore) => {
   const [sliderValues, setSliderValues] = useState([25, 75]);
+  const dispatch = useDispatch();
+  const [filterStatus, setFilterStatus] = useState('All');
+  const todoListProducts = useSelector(todoRemainingProducts);
 
   const handleSliderChange = (values: any) => {
     setSliderValues(values);
@@ -29,13 +38,15 @@ const FilterScreen = ({navigation}: any) => {
     }
   };
 
+  const handleBrand = (brand: any) => {
+    dispatch(
+      HomeScreenSlice.actions.statusFilterChange(brand)
+    )
+  }
+  
   return (
     <ScrollView style={styles.container}>
-      <TouchableOpacity
-        style={styles.iconBack}
-        onPress={() => navigation.goBack()}>
-        <Icon name="chevron-back" size={25} />
-      </TouchableOpacity>
+      <Header title='Filter' navigation={navigation} />
       <View style={styles.content}>
         <View style={styles.filterPrice}>
           <Text
@@ -85,6 +96,24 @@ const FilterScreen = ({navigation}: any) => {
             <Text style={{fontSize: 17, fontWeight: 'bold', color: 'black'}}>
               Max
             </Text>
+          </View>
+        </View>
+
+        <View style={styles.BuyingFormat}>
+          <View style={styles.Format}>
+            <Text  style={styles.txtBuyingFormat}>Brand</Text>
+          </View>
+          <View style={styles.groupBtn}>
+            <View style={styles.btnAll}>
+              <TouchableOpacity onPress={() => {navigation?.navigate('Category_Detail'); handleBrand(todoListProducts.brand)}}>
+                <Text>Nike</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.btnAll}>
+              <TouchableOpacity onPress={() => {navigation?.navigate('Category_Detail'); handleBrand(todoListProducts.brand)}}>
+                <Text>Adidas</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
 

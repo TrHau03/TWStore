@@ -36,6 +36,16 @@ interface Offer {
     date: string;
     time: string;
 }
+interface Product {
+    id: number;
+    image: string;
+    name: string;
+    price: number;
+    strikeThrough: number;
+    saleOff: number;
+    brand: string;
+    category: string;
+}
 
 interface InitialState {
     banner: Array<Banner>,
@@ -43,6 +53,7 @@ interface InitialState {
     favoriteProduct: Array<FavoriteProduct>,
     filters: Filters,
     offer: Array<Offer>,
+    product: Array<Product>,
 }
 
 const initialState: InitialState = {
@@ -130,6 +141,19 @@ const initialState: InitialState = {
         { id: 5, image: require('../../asset/image/imgProduct3.png'), name: 'Nike Air Max 270 React ENG', price: 100, strikeThrough: 50, saleOff: 24 },
         { id: 6, image: require('../../asset/image/imgProduct2.png'), name: 'Nike Air Max 270 React ENG', price: 250, strikeThrough: 50, saleOff: 30 },
     ],
+    product: [
+        { id: 1, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FS - Nike Air Max 270 React...', price: 299, strikeThrough: 50, saleOff: 24, brand: 'Nike', category: 'Shoes' },
+        { id: 2, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FE - QUILTED MAXI CROS...', price: 300, strikeThrough: 70, saleOff: 27 ,brand: 'Nike', category: 'Shoes'},
+        { id: 3, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 24, brand: 'Adidas' , category: 'Shoes'},
+        { id: 4, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 450, strikeThrough: 10, saleOff: 28 ,brand: 'Adidas', category: 'Shoes'},
+        { id: 5, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 100, strikeThrough: 50, saleOff: 24 , brand: 'Nike', category: 'Shoes'},
+        { id: 6, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,brand: 'Nike', category: 'Shoes'},
+        { id: 7, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,brand: 'Nike', category: 'Shoes'},
+        { id: 8, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,brand: 'Adidas', category: 'Shoes'},
+        { id: 9, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,brand: 'Nike', category: 'Shoes'},
+        { id: 10, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,brand: 'Adidas', category: 'Shoes'},
+        { id: 11, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,brand: 'Nike', category: 'Shoes'},
+    ],
 };
 
 const HomeScreenSlice = createSlice({
@@ -147,6 +171,9 @@ const HomeScreenSlice = createSlice({
         searchFilterChange: (state, action) => {
             state.filters.search = action.payload;
         },
+        statusFilterChange: (state, action) => {
+            state.filters.status = action.payload;
+        }
     },
 });
 

@@ -1,5 +1,4 @@
 
-import { fromLeft } from 'react-navigation-transitions';
 import { configStack } from '../Root/RootStack';
 import { RootStackScreenHome } from '../Root/RootStackHome';
 import { RootStack } from './Props';

@@ -12,29 +12,34 @@ import React, { useEffect, useRef, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { CompositeNavigationProp, CompositeScreenProps, useNavigation } from '@react-navigation/native';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
+import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { useDispatch, useSelector } from 'react-redux';
-import { listRecommendeds, todoRemainingRecomendeds } from '../../redux/silces/HomeSelector';
+import { listRecommendeds, todoRemainingProducts, todoRemainingRecomendeds } from '../../redux/silces/HomeSelector';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import { PropsExplore } from '../../component/Navigation/Props';
 
 interface Category {
   id: number;
   img: any;
   name: string;
 }
+
+
+type NavigationProps = StackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
 type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
 const ExploreScreen = () => {
-  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const navigation = useNavigation<NavigationProps>();
+  const navigationProfile = useNavigation<ProfileScreenNavigationProp>();
   const textInputRef = useRef(null);
-
-
   const [click, setClick] = useState<boolean>(false);
   console.log(click);
   //redux
   const todoList = useSelector(todoRemainingRecomendeds);
+  const todoListProducts = useSelector(todoRemainingProducts);
   const [textInputSearch, setTextInputSearch] = useState<string>('');
   const dispatch = useDispatch();
 
@@ -45,14 +50,22 @@ const ExploreScreen = () => {
     )
   }
 
+  const RenderItem = (props: any): React.JSX.Element => { 
+    const {data, navigation} = props;
+    const {item} = data;
+    return (
+      <TouchableOpacity style={{ paddingVertical: 10, paddingLeft: 10, height: 50}}
+        onPress={() => navigation?.navigate('Category_Detail')}>
+        <Text style={styles.TextSearch}>{item.name}</Text>
+      </TouchableOpacity>
+    )
+  }
   const renderItem = ({ item }: any): React.JSX.Element => {
     const { id, img, name } = item;
-
-
     return (
       <TouchableOpacity
         style={styles.containerItemPD}
-
+        onPress={() => navigation.navigate(RootStackScreenEnumExplore.Category_Detail)}
       >
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
@@ -65,14 +78,6 @@ const ExploreScreen = () => {
       </TouchableOpacity>
     );
   };
-
-  const renderItemSearch = ({ item }: any): React.JSX.Element => {
-    return (
-      <View style={{ padding: 10 }}>
-        <Text style={styles.TextSearch}>{item.name}</Text>
-      </View>
-    )
-  }
 
 
 
@@ -91,18 +96,17 @@ const ExploreScreen = () => {
             onBlur={() => setClick(!click)}
             onChangeText={handleSearch}
             value={textInputSearch}
-            ref={textInputRef}
           />
 
-          <TouchableOpacity style={{ width: '10%' }} onPress={() => {setClick(false); setTextInputSearch('')}}>
+          <TouchableOpacity style={{ width: '10%' }} onPress={() => { setClick(false); setTextInputSearch('') }}>
             <Icon name='close-outline' size={22} />
           </TouchableOpacity>
         </View>
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
+          <TouchableOpacity onPress={() => navigationProfile.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
             <Icon name="heart-outline" size={25} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigationProfile.navigate(RootStackScreenEnumHome.NotificationScreen)}>
             <Icon name="notifications-outline" size={25} />
           </TouchableOpacity>
         </View>
@@ -110,8 +114,8 @@ const ExploreScreen = () => {
       {(click) ?
         <View>
           <FlatList
-            renderItem={renderItemSearch}
-            data={textInputSearch == "" ? null : todoList}
+            renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
+            data={textInputSearch == "" ? null : todoListProducts}
             style={{ paddingVertical: 15, height: '100%', width: '100%' }}
           />
         </View>
@@ -286,6 +290,7 @@ const DataWoman: Category[] = [
     name: 'Red Apple',
   },
 ];
+
 function dispatch(arg0: { payload: any; type: "HomeScreenSlice/searchFilterChange"; }) {
   throw new Error('Function not implemented.');
 }

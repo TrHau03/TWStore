@@ -12,6 +12,13 @@ import {ROUTES} from '../../component/constants';
 import {AirbnbRating} from 'react-native-ratings';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { PropsExplore } from '../../component/Navigation/Props';
+import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useDispatch, useSelector } from 'react-redux';
+import { listProducts, todoRemainingProducts } from '../../redux/silces/HomeSelector';
+import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 
 interface Product {
   id: number;
@@ -28,11 +35,26 @@ const dataArray: ArrayProduct[] = [
   {category: 'Man Shoes'},
   {category: 'Women Shoes'},
 ];
-
-const Category_Detail_Screen = ({navigation}: any) => {
+type NavigationProps = StackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
+const Category_Detail_Screen = () => {
   const [click, setClick] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('All');
   const [dataFilter, setdataFilter] = useState<any>([]);
+  const navigation = useNavigation<NavigationProps>();
+
+  //redux
+  const ListProduct = useSelector(listProducts);
+  const [textInputSearch, setTextInputSearch] = useState<string>('');
+  const dispatch = useDispatch();
+  const todoListProducts = useSelector(todoRemainingProducts);
+
+  const handleSearch = (e: any) => {
+    setTextInputSearch(e);
+    dispatch(
+      HomeScreenSlice.actions.searchFilterChange(e)
+    )
+  }
+
 
   useEffect(() => {
     console.log('render');
@@ -49,13 +71,13 @@ const Category_Detail_Screen = ({navigation}: any) => {
   }, [filter]);
 
   const renderItem = ({item}: any): React.JSX.Element => {
-    const {id, img, name, price} = item;
+    const {id, image, name, price, strikeThrough, saleOff} = item;
 
     return (
       <TouchableOpacity style={styles.containerItemPD}>
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
-            <Image style={{width: '100%', height: '100%'}} source={img} />
+            <Image style={{width: '100%', height: '100%'}} source={{uri: image}} />
           </View>
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
@@ -66,8 +88,8 @@ const Category_Detail_Screen = ({navigation}: any) => {
               <Text style={styles.PricePD}>{price}</Text>
             </View>
             <View style={styles.sale}>
-              <Text style={styles.txtOldPrice}>5000</Text>
-              <Text style={styles.txtSale}>24% Off</Text>
+              <Text style={styles.txtOldPrice}>{strikeThrough}</Text>
+              <Text style={styles.txtSale}>{saleOff}</Text>
             </View>
           </View>
         </View>
@@ -82,20 +104,22 @@ const Category_Detail_Screen = ({navigation}: any) => {
           style={!click ? styles.right : [styles.right, {borderColor: 'blue'}]}>
           <Icon name='search' size={20}/>
           <TextInput
-            placeholder="Search"
+            placeholder="Search here"
             style={styles.TextSearch}
-            onFocus={() => setClick(true)}
-            onBlur={() => setClick(false)}
+            onFocus={() => setClick(!click)}
+            onBlur={() => setClick(!click)}
+            onChangeText={handleSearch}
+            value={textInputSearch}
           />
         </View>
         <View style={styles.left}>
-          <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SHORTBY)}>
+          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.ShortByScreen)}>
             <Image
               source={require('../../asset/image/Shorticon.png')}
               style={{width: 25, height: 25}}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate(ROUTES.FILTER)}>
+          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.FilterScreen)}>
           <Icon name='filter' size={20}/>
           </TouchableOpacity>
         </View>
@@ -155,7 +179,7 @@ const Category_Detail_Screen = ({navigation}: any) => {
         </View>
         <FlatList
           style={{marginTop: 10}}
-          data={dataFilter}
+          data={todoListProducts}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           numColumns={2}
@@ -291,6 +315,7 @@ const styles = StyleSheet.create({
   left: {
     flexDirection: 'row',
     marginLeft: 10,
+    gap: 10,
     width: '20%',
     height: '100%',
     alignItems: 'center',
