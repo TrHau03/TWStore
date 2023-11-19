@@ -47,10 +47,6 @@ const initialState: CartItem[] = [
     quantity: 5,
   },
 ];
-
-
-
-
 const cartSlice = createSlice({
   name: 'cartSlice',
   initialState,

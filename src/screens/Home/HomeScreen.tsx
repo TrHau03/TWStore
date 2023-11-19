@@ -8,6 +8,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { COLORS } from '../../utilities';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInitialListProduct } from '../../redux/silces/Silces';
+import AxiosInstance from '../../Axios/Axios';
+import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -35,13 +41,13 @@ const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } 
     )
 }
 
-const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } }) => {
+const renderItem3 = ({ item }: any) => {
     return (
         <View style={styles.itemsale2}>
-            <Image style={styles.imageproduct} source={{ uri: item.image }} />
+            <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
             <View style={{ marginTop: 20, rowGap: 15 }}>
-                <Text style={styles.nameproduct}>{item.name}</Text>
-                <Text style={styles.price}>$299,43</Text>
+                <Text style={styles.nameproduct}>{item.productName}</Text>
+                <Text style={styles.price}>${item.price}</Text>
                 <View style={styles.stylesaleoff}>
                     <Text style={styles.strikethrough}>$534,33</Text>
                     <Text style={styles.saleoff}>24% Off</Text>
@@ -53,7 +59,8 @@ const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } 
 }
 type NavigationProps = StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>
 type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListExplore>>;
-const HomeScreen = () => {
+const HomeScreen = (props: any) => {
+    const navigationTab = props.navigation;
     const navigation = useNavigation<NavigationProps>();
     const navigationOtherTab = useNavigation<BottomNavigationProp>();
 
@@ -63,12 +70,20 @@ const HomeScreen = () => {
 
     const [textInputSearch, setTextInputSearch] = useState<string>('');
 
+    const [images, setImages] = useState<[]>([]);
 
-    console.log('render');
+    const dispatch = useDispatch();
+    const listProduct = useSelector((state: any) => state.SlicesReducer.listProduct);
+    useEffect(() => {
+        dispatch(fetchInitialListProduct());
+        const fetchBanner = async () => {
+            const response = await AxiosInstance().get(`banner/getAllBanner`);
+            console.log(response.data.data);
 
-
-
-
+            setImages(response.data.data);
+        }
+        fetchBanner();
+    }, [])
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
             const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
@@ -81,8 +96,7 @@ const HomeScreen = () => {
     return (
         <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
             <View style={styles.top}>
-                <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
-                >
+                <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: COLORS.gray }]}>
                     <Icon name='search' size={22} />
                     <TextInput
                         placeholder="Search here"
@@ -102,9 +116,6 @@ const HomeScreen = () => {
                 </View>
 
                 <View style={styles.headerRight}>
-                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
-                        <Icon name="heart-outline" size={25} />
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
                         <Icon name="notifications-outline" size={25} />
                     </TouchableOpacity>
@@ -124,8 +135,8 @@ const HomeScreen = () => {
                         style={styles.slide}
                     >
                         {
-                            images.map((e, index) =>
-                                <Pressable onPress={() => navigation.navigate(e.nameScreen as never)} key={e.nameScreen}>
+                            images.map((e: any, index) =>
+                                <Pressable onPress={() => navigationTab.navigate(RootStackScreenEnumOffer.OfferScreen)} key={e._id}>
                                     <Image
                                         resizeMode='stretch'
                                         style={styles.slide}
@@ -138,9 +149,9 @@ const HomeScreen = () => {
 
                     <View style={styles.warpdot}>
                         {
-                            images.map((e, index) =>
+                            images.map((e: any, index) =>
                                 <Text
-                                    key={e.nameScreen}
+                                    key={e._id}
                                     style={imgActive == index ? styles.dotactive : styles.dot}
                                 >●</Text>
                             )
@@ -219,9 +230,9 @@ const HomeScreen = () => {
                     contentContainerStyle={{ alignItems: 'center' }}
                     style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
                     showsVerticalScrollIndicator={false}
-                    data={data2}
+                    data={listProduct}
                     renderItem={renderItem3}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item._id.toString()}
                     numColumns={2}
                     columnWrapperStyle={{ columnGap: 10 }}
                 />
@@ -254,10 +265,8 @@ const styles = StyleSheet.create({
         height: 24,
     },
     headerRight: {
-        paddingLeft: 10,
-        gap: 15,
-        flexDirection: 'row',
-        alignItems: 'center',
+        position: 'absolute',
+        right: 0
     },
     TextSearch: {
         width: WIDTH / 2,
@@ -272,7 +281,7 @@ const styles = StyleSheet.create({
         borderColor: '#e1dede',
         alignItems: 'center',
         flexDirection: 'row',
-        width: '80%',
+        width: '85%',
         height: '85%'
     },
     topslide: {
@@ -446,24 +455,6 @@ const styles = StyleSheet.create({
     }
 
 })
-const images = [
-    {
-        image: 'https://thietke6d.com/wp-content/uploads/2021/03/Mau-banner-quang-cao-dep-1.png',
-        nameScreen: 'OfferScreen'
-    },
-    {
-        image: 'https://intphcm.com/data/upload/banner-thoi-trang-tuoi.jpg',
-        nameScreen: 'CartScreen'
-    },
-    {
-        image: 'https://dojeannam.com/wp-content/uploads/2017/09/BANNER-KHAI-TRUONG-DOJEANNAM.jpg',
-        nameScreen: 'PaymentScreen'
-    },
-    {
-        image: 'https://intphcm.com/data/upload/banner-thoi-trang.jpg',
-        nameScreen: 'BankTransferScreen'
-    },
-]
 const data = [
     { id: '1', name: 'Man Shirt', icon: 'shirt-sharp' },
     { id: '2', name: 'Dress', icon: 'shirt-sharp' },

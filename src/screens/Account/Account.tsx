@@ -3,9 +3,22 @@ import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { PropsAccount } from '../../component/Navigation/Props'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
+import ButtonBottom from '../../component/Button/Button'
+import { useDispatch } from 'react-redux'
+import { isLogin } from '../../redux/silces/Silces'
+import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import { LoginManager } from 'react-native-fbsdk-next'
 
 
 const AccountScreen = ({ navigation }: any) => {
+  const dispatch = useDispatch();
+
+  const handleLogin = async () => {
+    dispatch(isLogin(false));
+    await GoogleSignin.signOut();
+    await LoginManager.logOut();
+  }
+
   return (
     <View style={[styles.container,]}>
       <Text style={styles.title}>Account</Text>
@@ -29,8 +42,11 @@ const AccountScreen = ({ navigation }: any) => {
             <Text style={styles.txtbtn}>{item.name}</Text>
           </TouchableOpacity>
         )}
-      </View>
 
+      </View>
+      <Pressable onPress={handleLogin} style={{ width: '100%', position: 'absolute', bottom: 120, alignSelf: 'center' }}>
+        <ButtonBottom title='Logout' />
+      </Pressable>
     </View>
   )
 }

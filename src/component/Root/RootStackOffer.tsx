@@ -7,14 +7,10 @@ import { FadeOfferScreen } from '../BottomNavigation/AniScreenBottomTab';
 
 export enum RootStackScreenEnumOffer {
     OfferScreen = 'OfferScreen',
-    ActivityScreen = 'ActivityScreen',
-    OfferNorifiScreen = 'OfferNorifiScreen',
 }
 
 export type RootStackParamListOffer = {
     OfferScreen: undefined,
-    ActivityScreen: undefined,
-    OfferNorifiScreen: undefined,
 }
 
 

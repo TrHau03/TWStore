@@ -1,10 +1,10 @@
-import {configureStore} from '@reduxjs/toolkit'
-import Silces from './silces/Silces';
-import Cartsilces from './silces/Cartsilces';
+import { configureStore } from '@reduxjs/toolkit'
+import Slides from './silces/Silces';
+import CartSlices from './silces/CartSlices';
 const store = configureStore({
-    reducer:{
-        SilcesReducer:Silces,
-        CartReducer: Cartsilces,
+    reducer: {
+        SlicesReducer: Slides,
+        CartReducer: CartSlices,
     }
 })
 export default store;
