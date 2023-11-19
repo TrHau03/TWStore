@@ -1,15 +1,17 @@
 import {
   FlatList,
   Image,
+  Modal,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {ROUTES} from '../../component/constants';
-import {AirbnbRating} from 'react-native-ratings';
+import React, { useEffect, useRef, useState } from 'react';
+import { ROUTES } from '../../component/constants';
+import { AirbnbRating } from 'react-native-ratings';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { PropsExplore } from '../../component/Navigation/Props';
@@ -19,7 +21,11 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts, todoRemainingProducts } from '../../redux/silces/HomeSelector';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
-
+import ButtonBottom from '../../component/Button/Button';
+import * as Animatable from 'react-native-animatable';
+import FilterScreen from './Filter';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import Octicons from 'react-native-vector-icons/Octicons';
 interface Product {
   id: number;
   img: any;
@@ -31,22 +37,26 @@ interface ArrayProduct {
   category: string;
 }
 const dataArray: ArrayProduct[] = [
-  {category: 'All'},
-  {category: 'Man Shoes'},
-  {category: 'Women Shoes'},
+  { category: 'All' },
+  { category: 'Man Shoes' },
+  { category: 'Women Shoes' },
 ];
 type NavigationProps = StackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
-const Category_Detail_Screen = () => {
+const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
   const [click, setClick] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('All');
   const [dataFilter, setdataFilter] = useState<any>([]);
   const navigation = useNavigation<NavigationProps>();
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [highLightBrand, setHighLightBrand] = useState<string>('');
+  const [unEnableBrand, setUnEnableBrand] = useState<boolean>(false);
+  const [sort, setSort] = useState<boolean>(false);
 
   //redux
-  const ListProduct = useSelector(listProducts);
   const [textInputSearch, setTextInputSearch] = useState<string>('');
   const dispatch = useDispatch();
   const todoListProducts = useSelector(todoRemainingProducts);
+
 
   const handleSearch = (e: any) => {
     setTextInputSearch(e);
@@ -57,27 +67,27 @@ const Category_Detail_Screen = () => {
 
 
   useEffect(() => {
-    console.log('render');
-    if (filter == 'All') {
-      setdataFilter(DataProduct)
+    if (sort) {
+      const newArray = todoListProducts.sort(function (a: { price: string; }, b: { price: string; }) {
+        return parseFloat(a.price) - parseFloat(b.price);
+      });
+      setdataFilter(newArray);
     } else {
-      setdataFilter(
-        DataProduct.filter(product => {
-          return product.category == filter;
-        }),
-      );
+      const newArray = todoListProducts.sort(function (a: { price: string; }, b: { price: string; }) {
+        return parseFloat(b.price) - parseFloat(a.price);
+      });
+      setdataFilter(newArray);
     }
-    console.log(dataFilter);
-  }, [filter]);
+  }, [todoListProducts, sort]);
 
-  const renderItem = ({item}: any): React.JSX.Element => {
-    const {id, image, name, price, strikeThrough, saleOff} = item;
+  const renderItem = ({ item }: any): React.JSX.Element => {
+    const { id, image, name, price, strikeThrough, saleOff, brand } = item;
 
     return (
       <TouchableOpacity style={styles.containerItemPD}>
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
-            <Image style={{width: '100%', height: '100%'}} source={{uri: image}} />
+            <Image style={{ width: '100%', height: '100%' }} source={{ uri: image }} />
           </View>
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
@@ -99,10 +109,24 @@ const Category_Detail_Screen = () => {
 
   return (
     <View style={styles.container}>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={() => true} >
+        <View style={{ height: '85%' }}>
+          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand }} state={{ highLightBrand, modalVisible, unEnableBrand }} />
+          <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative' }}>
+            <Pressable onPress={() => { setModalVisible(false) }}>
+              <ButtonBottom title='Cancel' />
+            </Pressable>
+          </Animatable.View>
+        </View>
+      </Modal>
       <View style={styles.group}>
         <View
-          style={!click ? styles.right : [styles.right, {borderColor: 'blue'}]}>
-          <Icon name='search' size={20}/>
+          style={!click ? styles.right : [styles.right, { borderColor: 'blue' }]}>
+          <Icon name='search' size={20} />
           <TextInput
             placeholder="Search here"
             style={styles.TextSearch}
@@ -113,14 +137,11 @@ const Category_Detail_Screen = () => {
           />
         </View>
         <View style={styles.left}>
-          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.ShortByScreen)}>
-            <Image
-              source={require('../../asset/image/Shorticon.png')}
-              style={{width: 25, height: 25}}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.FilterScreen)}>
-          <Icon name='filter' size={20}/>
+          <TouchableOpacity onPress={() => setSort(!sort)}>
+            <Octicons name={!sort ? 'sort-asc' : 'sort-desc'} size={24} />
+          </TouchableOpacity >
+          <TouchableOpacity onPress={() => { setModalVisible(true) }}>
+            <Icon name='filter' size={24} />
           </TouchableOpacity>
         </View>
       </View>
@@ -138,7 +159,7 @@ const Category_Detail_Screen = () => {
                 marginTop: 15,
                 marginLeft: 10,
               }}>
-                {dataFilter.length} result
+              {dataFilter.length} result
             </Text>
           </View>
 
@@ -178,15 +199,15 @@ const Category_Detail_Screen = () => {
           </View>
         </View>
         <FlatList
-          style={{marginTop: 10}}
-          data={todoListProducts}
+          style={{ marginTop: 10 }}
+          data={dataFilter}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           numColumns={2}
           showsVerticalScrollIndicator={false}
         />
       </View>
-    </View>
+    </View >
   );
 };
 
@@ -207,8 +228,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     textAlign: 'left',
   },
-  dropdown1DropdownStyle: {borderRadius: 5, backgroundColor: '#E6E6E6'},
-  dropdown1RowStyle: {borderBottomColor: '#C5C5C5'},
+  dropdown1DropdownStyle: { borderRadius: 5, backgroundColor: '#E6E6E6' },
+  dropdown1RowStyle: { borderBottomColor: '#C5C5C5' },
   dropdown1RowTxtStyle: {
     color: '#223263',
     fontSize: 18,
@@ -344,47 +365,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const DataProduct: Product[] = [
-  {
-    id: 1,
-    img: require('../../asset/image/imgProduct.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 29999,
-    category: 'Man Shoes',
-  },
-  {
-    id: 2,
-    img: require('../../asset/image/imgProduct3.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2999,
-    category: 'Women Shoes',
-  },
-  {
-    id: 3,
-    img: require('../../asset/image/imgProduct1.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2998,
-    category: 'Man Shoes',
-  },
-  {
-    id: 4,
-    img: require('../../asset/image/imgProduct2.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2997,
-    category: 'Women Shoes',
-  },
-  {
-    id: 5,
-    img: require('../../asset/image/imgProduct3.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2995,
-    category: 'Man Shoes',
-  },
-  {
-    id: 6,
-    img: require('../../asset/image/imgProduct2.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2996,
-    category: 'Women Shoes',
-  },
-];
+

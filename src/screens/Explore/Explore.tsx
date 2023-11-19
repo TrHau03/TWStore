@@ -21,6 +21,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { listRecommendeds, todoRemainingProducts, todoRemainingRecomendeds } from '../../redux/silces/HomeSelector';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 import { PropsExplore } from '../../component/Navigation/Props';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 interface Category {
   id: number;
@@ -29,10 +30,10 @@ interface Category {
 }
 
 
-type NavigationProps = StackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
 type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
-const ExploreScreen = () => {
-  const navigation = useNavigation<NavigationProps>();
+const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
+  console.log(navigation);
+
   const navigationProfile = useNavigation<ProfileScreenNavigationProp>();
   const textInputRef = useRef(null);
   const [click, setClick] = useState<boolean>(false);
@@ -50,12 +51,12 @@ const ExploreScreen = () => {
     )
   }
 
-  const RenderItem = (props: any): React.JSX.Element => { 
-    const {data, navigation} = props;
-    const {item} = data;
+  const RenderItem = (props: any): React.JSX.Element => {
+    const { data } = props;
+    const { item } = data;
     return (
-      <TouchableOpacity style={{ paddingVertical: 10, paddingLeft: 10, height: 50}}
-        onPress={() => navigation?.navigate('Category_Detail')}>
+      <TouchableOpacity style={{ paddingVertical: 10, paddingLeft: 10, height: 50, borderWidth: 1 }}
+        onPress={() => navigation.navigate(RootStackScreenEnumHome.HomeScreen)}>
         <Text style={styles.TextSearch}>{item.name}</Text>
       </TouchableOpacity>
     )
@@ -92,13 +93,15 @@ const ExploreScreen = () => {
           <TextInput
             placeholder="Search here"
             style={styles.TextSearch}
-            onFocus={() => setClick(!click)}
-            onBlur={() => setClick(!click)}
+            onFocus={() => setClick(true)}
+            onBlur={undefined}
             onChangeText={handleSearch}
             value={textInputSearch}
+            onSubmitEditing={() => setClick(false)}
+            blurOnSubmit ={true}
           />
 
-          <TouchableOpacity style={{ width: '10%' }} onPress={() => { setClick(false); setTextInputSearch('') }}>
+          <TouchableOpacity style={{ width: '10%' }} onPress={() => { setClick(!click); setTextInputSearch('') }}>
             <Icon name='close-outline' size={22} />
           </TouchableOpacity>
         </View>
@@ -114,7 +117,7 @@ const ExploreScreen = () => {
       {(click) ?
         <View>
           <FlatList
-            renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
+            renderItem={(item) => <RenderItem data={item} />}
             data={textInputSearch == "" ? null : todoListProducts}
             style={{ paddingVertical: 15, height: '100%', width: '100%' }}
           />

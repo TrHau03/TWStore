@@ -172,8 +172,9 @@ const HomeScreenSlice = createSlice({
             state.filters.search = action.payload;
         },
         statusFilterChange: (state, action) => {
+            console.log( 'Minhhhhh: ' +action.payload);
             state.filters.status = action.payload;
-        }
+        } 
     },
 });
 
