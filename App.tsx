@@ -8,7 +8,10 @@
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import Home from './src/screens/Home';
+import Offer from './src/screens/Offer';
 import Forgot from './src/screens/Forgot';
+import Enterotp from './src/screens/Enterotp';
+import Newpassword from './src/screens/Newpassword';
 import {
   SafeAreaView,
   ScrollView,
@@ -65,7 +68,7 @@ function App(): JSX.Element {
   };
   return (
     <SafeAreaView>
-      <Forgot/>
+      <Newpassword/>
     </SafeAreaView>
   );
 }

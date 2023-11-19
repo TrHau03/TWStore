@@ -1,21 +1,21 @@
 import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native'
 import React from 'react'
 
-const Forgot = () => {
+const Newpassword = () => {
     return (
         <View style={styles.container}>
             <Image source={require('../asset/img/OTP.png')} />
-            <Text style={styles.text1}>Xác minh mật khẩu</Text>
-            <Text style={styles.text2}>Chúng tôi sẽ gửi cho bạn một mã xác minh mật khẩu trên gmail hoặc số điện thoại này</Text>
-            <TextInput style={styles.textinput} placeholder="Nhập Email hoặc số điện thoại"></TextInput>
+            <Text style={styles.text1}>Nhập Mật Khẩu Mới</Text>
+            <Text style={styles.text2}>Quên nữa thì cúc</Text>
+            <TextInput style={styles.textinput} placeholder="Nhập mật khẩu mới"></TextInput>
             <Pressable style={styles.btn}>
-                <Text style={styles.textbtn}>Gửi Mã</Text>
+                <Text style={styles.textbtn}>Xác nhận</Text>
             </Pressable>
         </View>
     )
 }
 
-export default Forgot
+export default Newpassword
 
 const styles = StyleSheet.create({
     container: {
