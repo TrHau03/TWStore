@@ -125,7 +125,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
         :
         <View>
           <View style={styles.Name}>
-            <Text style={styles.txtName}>Man Fashion</Text>
+            <Text style={styles.txtName}>Man Shoes</Text>
             <FlatList
               data={DataMan}
               renderItem={renderItem}
@@ -136,7 +136,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
           </View>
 
           <View style={styles.Name}>
-            <Text style={styles.txtName}>Woman Fashion</Text>
+            <Text style={styles.txtName}>Woman Shoes</Text>
             <FlatList
               data={DataWoman}
               renderItem={renderItem}
@@ -224,7 +224,8 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    height: '100%'
   }
 });
 
@@ -232,32 +233,32 @@ const DataMan: Category[] = [
   {
     id: 1,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Red Apple',
+    name: 'All Shoes',
   },
   {
     id: 2,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
+    name: 'Sneakers',
   },
   {
     id: 3,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Avocado',
+    name: 'Lifestyle',
   },
   {
     id: 4,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Strawberry',
+    name: 'Scandels',
   },
   {
     id: 5,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
+    name: 'Running',
   },
   {
     id: 6,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Red Apple',
+    name: 'Sports',
   },
 ];
 
@@ -265,36 +266,32 @@ const DataWoman: Category[] = [
   {
     id: 1,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Red Apple',
+    name: 'All Shoes',
   },
   {
     id: 2,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
+    name: 'Sneakers',
   },
   {
     id: 3,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Avocado',
+    name: 'Lifestyle',
   },
   {
     id: 4,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Strawberry',
+    name: 'Scandels',
   },
   {
     id: 5,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
+    name: 'Running',
   },
   {
     id: 6,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Red Apple',
+    name: 'Sport',
   },
 ];
-
-function dispatch(arg0: { payload: any; type: "HomeScreenSlice/searchFilterChange"; }) {
-  throw new Error('Function not implemented.');
-}
 

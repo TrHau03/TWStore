@@ -25,17 +25,25 @@ interface Brand {
   _id: number;
   name: string;
 }
+interface Color {
+  _id: number;
+  name: string;
+}
+interface Size {
+  _id: number;
+  name: string;
+}
 
 const FilterScreen = (props: any) => {
-  const { unEnableBrand, highLightBrand } = props.state;
+  const { unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize } = props.state;
   console.log("brand", unEnableBrand);
 
-  const { setModalVisible, setHighLightBrand, setUnEnableBrand } = props.action;
+  const { setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize } = props.action;
   const [visibleBrand, setVisibleBrand] = useState<boolean>(false);
+  const [visibleColor, setVisibleColor] = useState<boolean>(false);
+  const [visibleSize, setVisibleSize] = useState<boolean>(false);
   const [sliderValues, setSliderValues] = useState<any>([25, 75]);
   const dispatch = useDispatch();
-  const [filterStatus, setFilterStatus] = useState('All');
-  const todoListProducts = useSelector(todoRemainingProducts);
 
 
   const handleSliderChange = (values: any) => {
@@ -54,16 +62,44 @@ const FilterScreen = (props: any) => {
   };
 
   const handleBrand = (brand: any) => {
-    setFilterStatus(brand);
     dispatch(
       HomeScreenSlice.actions.statusFilterChange(brand)
+    )
+  }
+  const handleColor = (color: any) => {
+    dispatch(
+      HomeScreenSlice.actions.statusFilterChange(color)
+    )
+  }
+  const handleSize = (size: any) => {
+    dispatch(
+      HomeScreenSlice.actions.statusFilterChange(size)
     )
   }
 
   const renderItemBrand = ({ item }: any) => {
     const { _id, name } = item;
     return (
-      <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightBrand == _id && unEnableBrand ? COLORS.blue : COLORS.white }} onPress={() => { setModalVisible(false); handleBrand(!unEnableBrand ? name : 'All'); setHighLightBrand(_id), setUnEnableBrand(!unEnableBrand) }}>
+      <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightBrand == _id && unEnableBrand ? COLORS.blue : COLORS.white }}
+        onPress={() => { setModalVisible(false); handleBrand(!unEnableBrand ? name : 'All'); setHighLightBrand(_id), setUnEnableBrand(!unEnableBrand) }}>
+        <Text style={{ fontSize: 18 }}>{name}</Text>
+      </TouchableOpacity>
+    )
+  }
+  const renderItemColor = ({ item }: any) => {
+    const { _id, name } = item;
+    return (
+      <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightColor == _id && unEnableColor ? COLORS.blue : COLORS.white }}
+        onPress={() => { setModalVisible(false); handleColor(!unEnableColor ? name : 'All'); setHighLightColor(_id), setUnEnableColor(!unEnableColor) }}>
+        <Text style={{ fontSize: 18 }}>{name}</Text>
+      </TouchableOpacity>
+    )
+  }
+  const renderItemSize = ({ item }: any) => {
+    const { _id, name } = item;
+    return (
+      <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightSize == _id && unEnableSize ? COLORS.blue : COLORS.white }}
+        onPress={() => { setModalVisible(false); handleSize(!unEnableSize ? name : 'All'); setHighLightSize(_id), setUnEnableSize(!unEnableSize) }}>
         <Text style={{ fontSize: 18 }}>{name}</Text>
       </TouchableOpacity>
     )
@@ -121,10 +157,11 @@ const FilterScreen = (props: any) => {
         </View>
 
         <View style={styles.BuyingFormat}>
+          {/*brand */}
           <View style={styles.Format}>
             <Text style={styles.txtBuyingFormat}>Brand</Text>
-            <Pressable style={{ position: 'absolute', right: 10 }} onPress={() => setVisibleBrand(!visibleBrand)}>
-              <Icon name={!visibleBrand ? 'chevron-forward-outline' : 'chevron-back-outline'} size={25} color={'#9098B1'} />
+            <Pressable onPress={() => setVisibleBrand(!visibleBrand)}>
+              <Icon name={!visibleBrand ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
           {visibleBrand &&
@@ -134,11 +171,43 @@ const FilterScreen = (props: any) => {
               numColumns={3}
               renderItem={renderItemBrand}
               keyExtractor={(item) => item._id.toString()}
+              style={{ top: 10 }}
+            />}
+
+          {/*Color */}
+          <View style={styles.Format}>
+            <Text style={styles.txtBuyingFormat}>Color</Text>
+            <Pressable onPress={() => setVisibleColor(!visibleColor)}>
+              <Icon name={!visibleColor ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
+            </Pressable>
+          </View>
+          {visibleColor &&
+            <FlatList
+              data={DataColor}
+              columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
+              numColumns={3}
+              renderItem={renderItemColor}
+              keyExtractor={(item) => item._id.toString()}
+              style={{ top: 10 }}
+            />}
+
+          {/*Size */}
+          <View style={styles.Format}>
+            <Text style={styles.txtBuyingFormat}>Size</Text>
+            <Pressable onPress={() => setVisibleSize(!visibleSize)}>
+              <Icon name={!visibleSize ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
+            </Pressable>
+          </View>
+          {visibleSize &&
+            <FlatList
+              data={DataSize}
+              columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
+              numColumns={3}
+              renderItem={renderItemSize}
+              keyExtractor={(item) => item._id.toString()}
+              style={{ top: 10 }}
             />}
         </View>
-        <TouchableOpacity style={styles.btnApply}>
-          <Text>Apply</Text>
-        </TouchableOpacity>
       </View>
     </View>
   );
@@ -147,17 +216,15 @@ const FilterScreen = (props: any) => {
 export default FilterScreen;
 
 const styles = StyleSheet.create({
+
   btnApply: {
     width: '100%',
     height: 50
   },
 
-
   Format: {
-    width: '100%',
-    height: 'auto',
     flexDirection: 'row',
-    marginBottom: 10
+    justifyContent: 'space-between'
   },
   txtBuyingFormat: {
     fontSize: 20,
@@ -167,7 +234,8 @@ const styles = StyleSheet.create({
   BuyingFormat: {
     width: '100%',
     marginTop: 25,
-    height: "auto"
+    height: "auto",
+    gap: 10
   },
   btnNew: {
     padding: 15,
@@ -239,4 +307,27 @@ const DataBrand: Brand[] =
     { _id: 4, name: 'Gucci' },
     { _id: 5, name: 'LV' },
     { _id: 6, name: 'Bargana' },
+  ];
+const DataColor: Color[] =
+  [
+    { _id: 1, name: 'Black' },
+    { _id: 2, name: 'White' },
+    { _id: 3, name: 'Red' },
+    { _id: 4, name: 'Yellow' },
+    { _id: 5, name: 'Blue' },
+    { _id: 6, name: 'Purple' },
+  ];
+const DataSize: Size[] =
+  [
+    { _id: 1, name: '36' },
+    { _id: 2, name: '37' },
+    { _id: 3, name: '38' },
+    { _id: 4, name: '39' },
+    { _id: 5, name: '40' },
+    { _id: 6, name: '41' },
+    { _id: 7, name: '42' },
+    { _id: 8, name: '43' },
+    { _id: 9, name: '44' },
+    { _id: 10, name: '45' },
+    { _id: 10, name: '46' },
   ];

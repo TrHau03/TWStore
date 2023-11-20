@@ -21,7 +21,7 @@ export const todoRemainingProducts = createSelector(listProducts, searchFilterCh
             if (status === 'All') {
                 return todo.name.includes(search);
             }
-            return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(status);
+            return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(status) || todo.color.includes(status) || todo.size.includes(status);
         })
     } else {
         return [];

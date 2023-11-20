@@ -50,6 +50,10 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [highLightBrand, setHighLightBrand] = useState<string>('');
   const [unEnableBrand, setUnEnableBrand] = useState<boolean>(false);
+  const [highLightColor, setHighLightColor] = useState<string>('');
+  const [unEnableColor, setUnEnableColor] = useState<boolean>(false);
+  const [highLightSize, setHighLightSize] = useState<string>('');
+  const [unEnableSize, setUnEnableSize] = useState<boolean>(false);
   const [sort, setSort] = useState<boolean>(false);
 
   //redux
@@ -115,7 +119,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
         animationType="slide"
         onRequestClose={() => true} >
         <View style={{ height: '85%' }}>
-          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand }} state={{ highLightBrand, modalVisible, unEnableBrand }} />
+          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize }} />
           <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative' }}>
             <Pressable onPress={() => { setModalVisible(false) }}>
               <ButtonBottom title='Cancel' />
