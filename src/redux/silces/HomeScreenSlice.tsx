@@ -24,7 +24,9 @@ interface FavoriteProduct {
 }
 interface Filters {
     search: string,
-    status: string,
+    brand: string,
+    color: string,
+    size: string,
     loading: boolean,
 }
 
@@ -62,7 +64,9 @@ interface InitialState {
 const initialState: InitialState = {
     filters: {
         search: '',
-        status: 'All',
+        brand: 'All',
+        color: 'All',
+        size: 'All',
         loading: false,
     },
 
@@ -174,9 +178,20 @@ const HomeScreenSlice = createSlice({
         searchFilterChange: (state, action) => {
             state.filters.search = action.payload;
         },
-        statusFilterChange: (state, action) => {
-            state.filters.status = action.payload;
-        } 
+        filterBrand: (state, action) => {
+            console.log(action.payload);
+            
+            state.filters.brand = action.payload;
+        } ,
+        filterColor: (state, action) => {
+            console.log(action.payload);
+            state.filters.color = action.payload;
+        },
+        filterSize: (state, action) => {
+            console.log(action.payload);
+            state.filters.size = action.payload;
+        }
+
     },
 });
 

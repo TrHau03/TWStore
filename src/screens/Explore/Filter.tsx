@@ -35,14 +35,14 @@ interface Size {
 }
 
 const FilterScreen = (props: any) => {
-  const { unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize } = props.state;
-  console.log("brand", unEnableBrand);
+  const { unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size } = props.state;
 
-  const { setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize } = props.action;
+  const { setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize } = props.action;
   const [visibleBrand, setVisibleBrand] = useState<boolean>(false);
   const [visibleColor, setVisibleColor] = useState<boolean>(false);
   const [visibleSize, setVisibleSize] = useState<boolean>(false);
   const [sliderValues, setSliderValues] = useState<any>([25, 75]);
+
   const dispatch = useDispatch();
 
 
@@ -61,27 +61,20 @@ const FilterScreen = (props: any) => {
     }
   };
 
-  const handleBrand = (brand: any) => {
-    dispatch(
-      HomeScreenSlice.actions.statusFilterChange(brand)
-    )
+  const handleFilter = (brand: string, color: string, size: string) => {
+    dispatch(HomeScreenSlice.actions.filterBrand(brand));
+    dispatch(HomeScreenSlice.actions.filterColor(color));
+    dispatch( HomeScreenSlice.actions.filterSize(size));
+    console.log(brand, color, size);
+    
   }
-  const handleColor = (color: any) => {
-    dispatch(
-      HomeScreenSlice.actions.statusFilterChange(color)
-    )
-  }
-  const handleSize = (size: any) => {
-    dispatch(
-      HomeScreenSlice.actions.statusFilterChange(size)
-    )
-  }
+
 
   const renderItemBrand = ({ item }: any) => {
     const { _id, name } = item;
     return (
       <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightBrand == _id && unEnableBrand ? COLORS.blue : COLORS.white }}
-        onPress={() => { setModalVisible(false); handleBrand(!unEnableBrand ? name : 'All'); setHighLightBrand(_id), setUnEnableBrand(!unEnableBrand) }}>
+        onPress={() => { !unEnableBrand ? setBrand(name) : setBrand('All'); setHighLightBrand(_id), setUnEnableBrand(!unEnableBrand) }}>
         <Text style={{ fontSize: 18 }}>{name}</Text>
       </TouchableOpacity>
     )
@@ -90,7 +83,7 @@ const FilterScreen = (props: any) => {
     const { _id, name } = item;
     return (
       <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightColor == _id && unEnableColor ? COLORS.blue : COLORS.white }}
-        onPress={() => { setModalVisible(false); handleColor(!unEnableColor ? name : 'All'); setHighLightColor(_id), setUnEnableColor(!unEnableColor) }}>
+        onPress={() => { !unEnableColor ? setColor(name) : setColor('All'); setHighLightColor(_id), setUnEnableColor(!unEnableColor) }}>
         <Text style={{ fontSize: 18 }}>{name}</Text>
       </TouchableOpacity>
     )
@@ -99,7 +92,7 @@ const FilterScreen = (props: any) => {
     const { _id, name } = item;
     return (
       <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightSize == _id && unEnableSize ? COLORS.blue : COLORS.white }}
-        onPress={() => { setModalVisible(false); handleSize(!unEnableSize ? name : 'All'); setHighLightSize(_id), setUnEnableSize(!unEnableSize) }}>
+        onPress={() => { !unEnableSize ? setSize(name) : setSize('All'); setHighLightSize(_id), setUnEnableSize(!unEnableSize) }}>
         <Text style={{ fontSize: 18 }}>{name}</Text>
       </TouchableOpacity>
     )
@@ -209,6 +202,9 @@ const FilterScreen = (props: any) => {
             />}
         </View>
       </View>
+      <Pressable style={{alignItems: 'center', bottom: 20}} onPress={() => {handleFilter(brand, color, size); setModalVisible(false)}}>
+        <Text>Apply</Text>
+      </Pressable>
     </View>
   );
 };

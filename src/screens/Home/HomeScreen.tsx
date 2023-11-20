@@ -9,7 +9,7 @@ import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilitie
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useDispatch, useSelector } from 'react-redux';
-import { listBanners, listRecommendeds, todoRemainingRecomendeds } from '../../redux/silces/HomeSelector';
+import { listBanners, listRecommendeds } from '../../redux/silces/HomeSelector';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 
 
@@ -74,8 +74,6 @@ const HomeScreen = () => {
     const dispatch = useDispatch();
     const banner = useSelector(listBanners);
     const recommenProduct = useSelector(listRecommendeds);
-
-    const todoList = useSelector(todoRemainingRecomendeds);
 
     const handleSearch = (e: any) => {
         setTextInputSearch(e);
@@ -235,7 +233,7 @@ const HomeScreen = () => {
                     contentContainerStyle={{ alignItems: 'center' }}
                     style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
                     showsVerticalScrollIndicator={false}
-                    data={todoList}
+                    data={recommenProduct}
                     renderItem={renderItem3}
                     keyExtractor={(item) => item.id.toString()}
                     numColumns={2}

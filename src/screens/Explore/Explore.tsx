@@ -18,7 +18,7 @@ import { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { useDispatch, useSelector } from 'react-redux';
-import { listRecommendeds, todoRemainingProducts, todoRemainingRecomendeds } from '../../redux/silces/HomeSelector';
+import { listRecommendeds, todoRemainingProducts } from '../../redux/silces/HomeSelector';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 import { PropsExplore } from '../../component/Navigation/Props';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
@@ -37,9 +37,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
   const navigationProfile = useNavigation<ProfileScreenNavigationProp>();
   const textInputRef = useRef(null);
   const [click, setClick] = useState<boolean>(false);
-  console.log(click);
   //redux
-  const todoList = useSelector(todoRemainingRecomendeds);
   const todoListProducts = useSelector(todoRemainingProducts);
   const [textInputSearch, setTextInputSearch] = useState<string>('');
   const dispatch = useDispatch();
