@@ -6,6 +6,7 @@ import AccountScreen from "../../screens/Account/Account";
 import OfferScreen from "../../screens/Offer/OfferScreen";
 import CartScreen from "../../screens/Cart/CartScreen";
 import ExploreScreen from "../../screens/Explore/Explore";
+import OfferHome from "../../screens/Offer/OfferHome";
 
 const FadeInView = (props: { children: any; }) => {
     const fadeAnim = React.useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
@@ -52,7 +53,7 @@ export const FadeCartScreen = (props: JSX.IntrinsicAttributes) => (
 );
 export const FadeOfferScreen = (props: JSX.IntrinsicAttributes) => (
     <FadeInView>
-        <OfferScreen {...props} />
+        <OfferHome {...props} />
     </FadeInView>
 );
 export const FadeAccountScreen = (props: JSX.IntrinsicAttributes) => (
