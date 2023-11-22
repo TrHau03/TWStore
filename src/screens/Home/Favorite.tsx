@@ -24,6 +24,7 @@ import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
   //redux
   const dispatch = useDispatch();
   const handleRemoveFavorite = (id: number) => {
+    console.log(id);
     dispatch(HomeScreenSlice.actions.deleteFavourite(id));
   };
 

@@ -58,6 +58,9 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
   const [color, setColor] = useState<string>('All');
   const [brand, setBrand] = useState<string>('All');
   const [size, setSize] = useState<string>('All');
+  const [priceMin, setpriceMin] = useState<string>('0')
+  const [priceMax, setpriceMax] = useState<string>('5000');
+
   //redux
   const [textInputSearch, setTextInputSearch] = useState<string>('');
   const dispatch = useDispatch();
@@ -104,8 +107,8 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
               <Text style={styles.PricePD}>{price}</Text>
             </View>
             <View style={styles.sale}>
-              <Text style={styles.txtOldPrice}>{strikeThrough}</Text>
-              <Text style={styles.txtSale}>{saleOff}</Text>
+              <Text style={styles.txtOldPrice}>${strikeThrough}</Text>
+              <Text style={styles.txtSale}>{saleOff}% Off</Text>
             </View>
           </View>
         </View>
@@ -121,8 +124,8 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
         animationType="slide"
         onRequestClose={() => true} >
         <View style={{ height: '85%' }}>
-          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size }} />
-          <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative' }}>
+          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin,setpriceMax }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size,priceMin,priceMax }} />
+          <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
             <Pressable onPress={() => { setModalVisible(false) }}>
               <ButtonBottom title='Cancel' />
             </Pressable>
@@ -174,8 +177,6 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
               <SelectDropdown
                 data={dataArray}
                 onSelect={(selectedItem, index) => {
-                  console.log(selectedItem, index);
-
                   setFilter(selectedItem.category);
                 }}
                 defaultButtonText={filter}
@@ -316,7 +317,7 @@ const styles = StyleSheet.create({
   },
   containerItemPD: {
     borderWidth: 0.5,
-    width: 180,
+    width: '47%',
     height: 300,
     backgroundColor: '#FFFFFF',
     margin: 5,
@@ -364,10 +365,11 @@ const styles = StyleSheet.create({
     height: 50,
   },
   container: {
-    height: '100%',
+    height: 'auto',
     marginTop: 10,
     padding: 15,
     backgroundColor: '#fff',
+    bottom: 10,
   },
 });
 

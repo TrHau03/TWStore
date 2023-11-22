@@ -48,6 +48,12 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
       HomeScreenSlice.actions.searchFilterChange(e)
     )
   }
+  const handleCategory = (category: string) => {
+    dispatch(
+      HomeScreenSlice.actions.filterCategory(category)
+    )
+    console.log(category)
+  }
 
   const RenderItem = (props: any): React.JSX.Element => {
     const { data } = props;
@@ -64,7 +70,8 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
     return (
       <TouchableOpacity
         style={styles.containerItemPD}
-        onPress={() => navigation.navigate(RootStackScreenEnumExplore.Category_Detail)}
+
+        onPress={() => {navigation.navigate(RootStackScreenEnumExplore.Category_Detail); handleCategory(item.name)}}
       >
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
@@ -123,20 +130,8 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
         :
         <View>
           <View style={styles.Name}>
-            <Text style={styles.txtName}>Man Shoes</Text>
             <FlatList
-              data={DataMan}
-              renderItem={renderItem}
-              keyExtractor={item => item.id.toString()}
-              numColumns={4}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-
-          <View style={styles.Name}>
-            <Text style={styles.txtName}>Woman Shoes</Text>
-            <FlatList
-              data={DataWoman}
+              data={Data}
               renderItem={renderItem}
               keyExtractor={item => item.id.toString()}
               numColumns={4}
@@ -227,11 +222,11 @@ const styles = StyleSheet.create({
   }
 });
 
-const DataMan: Category[] = [
+const Data: Category[] = [
   {
     id: 1,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'All Shoes',
+    name: 'All',
   },
   {
     id: 2,
@@ -259,37 +254,3 @@ const DataMan: Category[] = [
     name: 'Sports',
   },
 ];
-
-const DataWoman: Category[] = [
-  {
-    id: 1,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'All Shoes',
-  },
-  {
-    id: 2,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Sneakers',
-  },
-  {
-    id: 3,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Lifestyle',
-  },
-  {
-    id: 4,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Scandels',
-  },
-  {
-    id: 5,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Running',
-  },
-  {
-    id: 6,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Sport',
-  },
-];
-
