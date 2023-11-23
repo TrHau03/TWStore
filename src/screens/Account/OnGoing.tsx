@@ -8,11 +8,6 @@ import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { COLORS } from '../../utilities';
 
-interface success {
-    _id: number;
-    status: string;
-}
-
 const OnGoing = (props: any) => {
     const { date, status } = props.state;
     const { setDate, setStatus } = props.action;
@@ -28,7 +23,7 @@ const OnGoing = (props: any) => {
                 <Text style={styles.textDate}>{date}</Text>
             </View>
             <View style={styles.grpcontent}>
-                <View style={{ width: '15%', gap: 110 }}>
+                <View style={{ marginRight: '8%', gap: 110 }}>
                     <Icon name='checkmark-done-circle' size={25} color={status === 'Confirm' || status === 'Prepare' || status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
                     <Icon name='checkmark-done-circle' size={25} color={status === 'Prepare' || status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
                     <Icon name='checkmark-done-circle' size={25} color={status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
@@ -114,10 +109,3 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     }
 })
-
-const data: success[] = [
-    { _id: 1, status: 'Confirm' },
-    { _id: 2, status: 'Prepare' },
-    { _id: 3, status: 'Shipping' },
-    { _id: 4, status: 'Success' },
-]
