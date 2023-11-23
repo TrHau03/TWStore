@@ -22,11 +22,7 @@ import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 
 
   //redux
-  const dispatch = useDispatch();
-  const handleRemoveFavorite = (id: number) => {
-    console.log(id);
-    dispatch(HomeScreenSlice.actions.deleteFavourite(id));
-  };
+
 
   
 
@@ -51,7 +47,7 @@ const renderItem = ({ item }: any): React.JSX.Element => {
           <View style={styles.sale}>
             <Text style={styles.txtOldPrice}>${strikeThrough}</Text>
             <Text style={styles.txtSale}>{saleOff}% Off</Text>
-            <TouchableOpacity  onPress={() => handleRemoveFavorite(id)} style={styles.imgIc}>
+            <TouchableOpacity >
               <Icon  name="trash-outline" size={25} />
             </TouchableOpacity>
           </View>

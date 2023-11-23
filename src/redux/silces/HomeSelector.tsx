@@ -1,5 +1,4 @@
 import { createSelector } from "@reduxjs/toolkit";
-import colors from "../../utilities/colors";
 
 export const listBanners = (state: any) => state.HomeScreenSlice.banner;
 
@@ -14,13 +13,13 @@ export const filterSize = (state: any) => state.HomeScreenSlice.filters.size;
 export const filterCategory = (state: any) => state.HomeScreenSlice.filters.category;
 export const filterMinPrice = (state: any) => state.HomeScreenSlice.filterPrice.minPrice;
 export const filterMaxPrice = (state: any) => state.HomeScreenSlice.filterPrice.maxPrice;
+export const listOrder = (state: any) => state.HomeScreenSlice.order;
 
 
 export const todoRemainingProducts = createSelector(listProducts, searchFilterChange, filterBrand, filterColor, filterSize, filterCategory,filterMinPrice, filterMaxPrice, (product, search, brand, color, size, category, minPrice, maxPrice) => {
     if (product) {
         return product.filter((todo: any) => {
             if (brand === 'All' && color === 'All' && size === 'All' && category === 'All') {
-                
                 return todo.name.includes(search) && Number(minPrice) < todo.price &&  todo.price< Number(maxPrice);
                 //3 cái = all
             } else if (brand === 'All' && color === 'All' && category === 'All') {

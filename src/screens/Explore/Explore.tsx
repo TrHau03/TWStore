@@ -16,11 +16,9 @@ import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../com
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
-import { SelectList } from 'react-native-dropdown-select-list';
 import { useDispatch, useSelector } from 'react-redux';
-import { listRecommendeds, todoRemainingProducts } from '../../redux/silces/HomeSelector';
+import { todoRemainingProducts } from '../../redux/silces/HomeSelector';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
-import { PropsExplore } from '../../component/Navigation/Props';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 interface Category {
@@ -32,10 +30,9 @@ interface Category {
 
 type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
 const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
-  console.log(navigation);
 
   const navigationProfile = useNavigation<ProfileScreenNavigationProp>();
-  const textInputRef = useRef(null);
+
   const [click, setClick] = useState<boolean>(false);
   //redux
   const todoListProducts = useSelector(todoRemainingProducts);
@@ -55,7 +52,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
     console.log(category)
   }
 
-  const RenderItem = (props: any): React.JSX.Element => {
+  const RenderItem = (props: any)=> {
     const { data } = props;
     const { item } = data;
     return (
@@ -65,7 +62,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
       </TouchableOpacity>
     )
   }
-  const renderItem = ({ item }: any): React.JSX.Element => {
+  const renderItem = ({ item }: any)=> {
     const { id, img, name } = item;
     return (
       <TouchableOpacity

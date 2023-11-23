@@ -14,12 +14,11 @@ import { ROUTES } from '../../component/constants';
 import { AirbnbRating } from 'react-native-ratings';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { PropsExplore } from '../../component/Navigation/Props';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useDispatch, useSelector } from 'react-redux';
-import { listProducts, todoRemainingProducts } from '../../redux/silces/HomeSelector';
+import { todoRemainingProducts } from '../../redux/silces/HomeSelector';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 import ButtonBottom from '../../component/Button/Button';
 import * as Animatable from 'react-native-animatable';
@@ -60,7 +59,9 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
   const [size, setSize] = useState<string>('All');
   const [priceMin, setpriceMin] = useState<string>('0')
   const [priceMax, setpriceMax] = useState<string>('5000');
-
+  const [visibleBrand, setVisibleBrand] = useState<boolean>(false);
+  const [visibleColor, setVisibleColor] = useState<boolean>(false);
+  const [visibleSize, setVisibleSize] = useState<boolean>(false);
   //redux
   const [textInputSearch, setTextInputSearch] = useState<string>('');
   const dispatch = useDispatch();
@@ -89,7 +90,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
     }
   }, [todoListProducts, sort]);
 
-  const renderItem = ({ item }: any): React.JSX.Element => {
+  const renderItem = ({ item }: any) => {
     const { id, image, name, price, strikeThrough, saleOff, brand } = item;
 
     return (
@@ -124,7 +125,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
         animationType="slide"
         onRequestClose={() => true} >
         <View style={{ height: '85%' }}>
-          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin,setpriceMax }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size,priceMin,priceMax }} />
+          <FilterScreen action={{ dispatch,setVisibleSize,setVisibleColor,setVisibleBrand, setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax }} state={{ visibleBrand,visibleColor,visibleSize,highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size, priceMin, priceMax }} />
           <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
             <Pressable onPress={() => { setModalVisible(false) }}>
               <ButtonBottom title='Cancel' />

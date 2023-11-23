@@ -56,6 +56,14 @@ interface Product {
     color: string;
     size: string;
 }
+interface Order {
+    id: number;
+    code: string;
+    date: string;
+    items: number;
+    price: string;
+    oderStatus: string;
+}
 
 interface InitialState {
     banner: Array<Banner>,
@@ -65,6 +73,7 @@ interface InitialState {
     offer: Array<Offer>,
     product: Array<Product>,
     filterPrice: FilterPrice,
+    order: Array<Order>,
 }
 
 const initialState: InitialState = {
@@ -81,7 +90,40 @@ const initialState: InitialState = {
         category: 'All',
         loading: false,
     },
-
+    order: [
+        {
+            id: 1,
+            code: 'FGHJYTN',
+            date: 'August 11, 2023',
+            items: 1,
+            price: '299,43',
+            oderStatus: 'Confirm',
+        },
+        {
+            id: 2,
+            code: 'KFGSSFSF',
+            date: 'August 1, 2023',
+            items: 2,
+            price: '299,43',
+            oderStatus: 'Prepare',
+        },
+        {
+            id: 3,
+            code: 'SFVWWQC',
+            date: 'August 5, 2017',
+            items: 3,
+            price: '300,43',
+            oderStatus: 'Shipping',
+        },
+        {
+            id: 4,
+            code: 'VEWFVWF',
+            date: 'August 1, 2017',
+            items: 2,
+            price: '255,43',
+            oderStatus: 'Success',
+        },
+    ],
     offer: [
         {
             id: 1,
@@ -179,13 +221,6 @@ const HomeScreenSlice = createSlice({
     name: 'HomeScreenSlice',
     initialState,
     reducers: {
-        deleteFavourite: (state, action) => {
-            const index = state.favoriteProduct.findIndex(favoriteProduct => favoriteProduct.id === action.payload);
-            if (index !== -1) {
-                state.favoriteProduct.splice(index, 1);
-            }
-        },
-
         searchFilterChange: (state, action) => {
             state.filters.search = action.payload;
         },
@@ -202,7 +237,6 @@ const HomeScreenSlice = createSlice({
             state.filters.category = action.payload;
         },
         filterPrice: (state, action) => {
-            
             state.filterPrice.minPrice = action.payload.minPrice;
             state.filterPrice.maxPrice = action.payload.maxPrice;
         },
