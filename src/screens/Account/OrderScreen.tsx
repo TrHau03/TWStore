@@ -12,15 +12,13 @@ import { listOrder } from '../../redux/silces/HomeSelector';
 
 
 const OrderScreen = ({ navigation }: PropsAccount) => {
-    const [date, setDate] = useState<String>('123')
+    const [date, setDate] = useState<string>('');
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const dispatch = useDispatch();
     const Order = useSelector(listOrder);
-    console.log(Order);
-    
+    const [status, setStatus] = useState<string>('');
     
     const RenderItem = (props: any) => {
-        const { data, navigation } = props;
+        const { data } = props;
         const { item } = data;
 
         return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate('Order_Detail')}>
@@ -37,7 +35,7 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
                 </View>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Order Status</Text>
-                    <TouchableOpacity onPress={() => {setModalVisible(true); setDate(item.date)}  }>
+                    <TouchableOpacity onPress={() => {setModalVisible(true); setDate(item.date); setStatus(item.status) } }>
                         <Icon name='chevron-forward-outline' size={25} color={'#525252'} />
                     </TouchableOpacity>
                 </View>
@@ -53,7 +51,7 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
                 animationType="slide"
                 onRequestClose={() => true} >
                 <View style={{ height: '100%' }}>
-                    <OnGoing  action={{dispatch, setDate}} state={{date}}/>
+                    <OnGoing  action={{ setDate, setStatus}} state={{date, status}}/>
                     <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
                             <ButtonBottom title='Cancel'/>

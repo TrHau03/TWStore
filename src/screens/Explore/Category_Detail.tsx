@@ -42,6 +42,7 @@ const dataArray: ArrayProduct[] = [
 ];
 type NavigationProps = StackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
 const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
+  
   const [click, setClick] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('All');
   const [dataFilter, setdataFilter] = useState<any>([]);

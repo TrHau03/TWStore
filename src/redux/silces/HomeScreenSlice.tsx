@@ -14,14 +14,6 @@ interface RecomnenProduct {
     saleOff: number;
 }
 
-interface FavoriteProduct {
-    id: number;
-    image: string;
-    name: string;
-    price: number;
-    strikeThrough: number;
-    saleOff: number;
-}
 interface Filters {
     search: string,
     brand: string,
@@ -62,13 +54,12 @@ interface Order {
     date: string;
     items: number;
     price: string;
-    oderStatus: string;
+    status: string;
 }
 
 interface InitialState {
     banner: Array<Banner>,
     recommenProduct: Array<RecomnenProduct>,
-    favoriteProduct: Array<FavoriteProduct>,
     filters: Filters,
     offer: Array<Offer>,
     product: Array<Product>,
@@ -97,7 +88,7 @@ const initialState: InitialState = {
             date: 'August 11, 2023',
             items: 1,
             price: '299,43',
-            oderStatus: 'Confirm',
+            status: 'Confirm',
         },
         {
             id: 2,
@@ -105,7 +96,7 @@ const initialState: InitialState = {
             date: 'August 1, 2023',
             items: 2,
             price: '299,43',
-            oderStatus: 'Prepare',
+            status: 'Prepare',
         },
         {
             id: 3,
@@ -113,7 +104,7 @@ const initialState: InitialState = {
             date: 'August 5, 2017',
             items: 3,
             price: '300,43',
-            oderStatus: 'Shipping',
+            status: 'Shipping',
         },
         {
             id: 4,
@@ -121,7 +112,7 @@ const initialState: InitialState = {
             date: 'August 1, 2017',
             items: 2,
             price: '255,43',
-            oderStatus: 'Success',
+            status: 'Success',
         },
     ],
     offer: [
@@ -194,14 +185,6 @@ const initialState: InitialState = {
         { id: 6, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 },
     ],
 
-    favoriteProduct: [
-        { id: 1, image: require('../../asset/image/imgProduct.png'), name: 'Nike Air Max 270 React ENG', price: 2999, strikeThrough: 50, saleOff: 24 },
-        { id: 2, image: require('../../asset/image/imgProduct3.png'), name: 'Nike Air Max 270 React ENG', price: 300, strikeThrough: 70, saleOff: 27 },
-        { id: 3, image: require('../../asset/image/imgProduct1.png'), name: 'Nike Air Max 270 React ENG', price: 250, strikeThrough: 50, saleOff: 24 },
-        { id: 4, image: require('../../asset/image/imgProduct2.png'), name: 'Nike Air Max 270 React ENG', price: 450, strikeThrough: 10, saleOff: 28 },
-        { id: 5, image: require('../../asset/image/imgProduct3.png'), name: 'Nike Air Max 270 React ENG', price: 100, strikeThrough: 50, saleOff: 24 },
-        { id: 6, image: require('../../asset/image/imgProduct2.png'), name: 'Nike Air Max 270 React ENG', price: 250, strikeThrough: 50, saleOff: 30 },
-    ],
     product: [
         { id: 1, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FS - Nike Air Max 270 React...', price: 2000, strikeThrough: 50, saleOff: 24,sex: 'women', brand: 'Nike', category: 'Sneakers', color: 'Black', size: '44' },
         { id: 2, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FE - QUILTED MAXI CROS...', price: 3000, strikeThrough: 70, saleOff: 27 ,sex: 'women',brand: 'Nike', category: 'Sneakers', color: 'Black', size: '44'},

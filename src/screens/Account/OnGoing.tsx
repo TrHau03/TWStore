@@ -1,12 +1,25 @@
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, View, FlatList } from 'react-native'
 import React from 'react'
 import Header from '../../component/Header/Header'
 import Navigation from '../../component/Navigation/Navigation'
 import Icon from 'react-native-vector-icons/Ionicons';
+import Svg, { Path } from 'react-native-svg';
+import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { COLORS } from '../../utilities';
+
+interface success {
+    _id: number;
+    status: string;
+}
 
 const OnGoing = (props: any) => {
-    const {date} = props.state;
-    const {setDate} = props.action;
+    const { date, status } = props.state;
+    const { setDate, setStatus } = props.action;
+    const dispatch = useDispatch();
+    console.log(status);
+
+
     return (
         <View style={styles.container}>
             <Text style={styles.textTitle}>OnGoing</Text>
@@ -15,8 +28,11 @@ const OnGoing = (props: any) => {
                 <Text style={styles.textDate}>{date}</Text>
             </View>
             <View style={styles.grpcontent}>
-                <View style={{ width: '15%' }}>
-                    <Icon name='checkmark-done-circle' size={25} />
+                <View style={{ width: '15%', gap: 110 }}>
+                    <Icon name='checkmark-done-circle' size={25} color={status === 'Confirm' || status === 'Prepare' || status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status === 'Prepare' || status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status === 'Success' ? COLORS.green : COLORS.gray} />
                 </View>
                 <View style={styles.content}>
                     <View style={styles.item}>
@@ -65,12 +81,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        marginBottom: 65,
+        marginBottom: 70,
     },
     content: {
         width: '80%',
         justifyContent: 'space-between',
-        marginTop: -20,
+        marginTop: -10,
     },
     textTime: {
         color: '#F37A20',
@@ -98,3 +114,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     }
 })
+
+const data: success[] = [
+    { _id: 1, status: 'Confirm' },
+    { _id: 2, status: 'Prepare' },
+    { _id: 3, status: 'Shipping' },
+    { _id: 4, status: 'Success' },
+]
