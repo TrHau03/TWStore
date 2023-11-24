@@ -1,58 +1,53 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native'
+import React from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import Button from '../../component/Button/Button';
 import { PropsAccount } from '../../component/Navigation/Props';
-import { useSelector } from 'react-redux';
+
+interface Account {
+    id: number;
+    name: string;
+    address: string;
+    phone: string;
+}
 
 const RenderItem = (props: any): React.JSX.Element => {
     const { data, navigation } = props;
     const { item } = data;
-    return (
-        <View style={styles.box}>
-            <View style={{ margin: 10 }}>
-                <Text style={styles.txtName}>{item.consigneename}</Text>
-                <Text style={styles.txtContent}>{item.deliveryaddress}</Text>
-                <Text style={styles.txtContent}>+99 {item.deliverphone}</Text>
-            </View>
 
-            <View style={{ margin: 15, width: '100%', alignItems: 'center' }}>
-                <TouchableOpacity style={{ width: '20%' }}>
-                    <Icon name="trash" size={36} />
-                </TouchableOpacity>
+    return <View style={styles.box}>
+        <View>
+            <Text style={styles.txtName}>{item.name}</Text>
+            <Text style={styles.txtContent}>{item.address}</Text>
+            <Text style={styles.txtContent}>+99 {item.phone}</Text>
+            <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                <TouchableOpacity onPress={() => navigation?.navigate('Edit_Address')} style={styles.btnEdit}><Text style={styles.txtEdit}>Edit</Text></TouchableOpacity>
+                <TouchableOpacity style={{ justifyContent: 'center' }}><Icon name='trash' size={25} /></TouchableOpacity>
             </View>
         </View>
-    )
+    </View >;
 };
 
 const AddressScreen = ({ navigation }: PropsAccount) => {
-    // Redux
-    // const address = useSelector((state: any) => state.SilcesReducer.addresses);
-    const address = useSelector((state: any) => state.SilcesReducer ? state.SilcesReducer[2]?.Address : null);
-    console.log(address);
-    
     return (
         <View style={styles.container}>
-            <Header title="Address" navigation={navigation} />
+            <Header title='Address' />
             <View style={styles.line}></View>
+
             <FlatList
-                data={address}
-                renderItem={({item}) => <RenderItem  data={{item}} />}
-                keyExtractor={(item) => item.idAddress.toString()}
+                data={Data}
+                renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
                 showsVerticalScrollIndicator={false}
             />
-            <TouchableOpacity
-                style={{ paddingTop: 10 }}
-                onPress={() => navigation?.navigate('Add_Address')}
-            >
-                <Button title="Add Address" />
+            <TouchableOpacity style={{ paddingTop: 10 }} onPress={() => navigation?.navigate('Add_Address')}>
+                <Button title='Add Address' />
             </TouchableOpacity>
         </View>
-    );
+    )
 }
 
-export default AddressScreen;
+export default AddressScreen
 
 const styles = StyleSheet.create({
     txtEdit: {
@@ -95,17 +90,19 @@ const styles = StyleSheet.create({
 
     box: {
         borderWidth: 0.5,
+        padding: 15,
         marginTop: 15,
         width: '100%',
+        alignSelf: 'center',
     },
 
     line: {
         height: 0.5,
         backgroundColor: '#ADA8A8',
-        width: '200%',
+        width: '120%',
         marginTop: 20,
         position: 'relative',
-        right: 50
+        right: 20
     },
 
     container: {
@@ -114,4 +111,31 @@ const styles = StyleSheet.create({
         paddingTop: 20,
         paddingHorizontal: 20,
     }
-});
+})
+
+const Data: Account[] = [
+    {
+        id: 1,
+        name: 'Minh dep trai',
+        address: 'Nha cua le duc minh deo cho may dia chi nha con, doi muoi nam nua bo may cho may dia chi con Hau',
+        phone: '0372711935',
+    },
+    {
+        id: 2,
+        name: 'Hoang bao ve',
+        address: 'Nha cua le duc minh deo cho may dia chi nha con',
+        phone: '0372711935',
+    },
+    {
+        id: 3,
+        name: 'Hau loz',
+        address: 'Nha cua le duc minh deo cho may dia chi nha con',
+        phone: '0372711935',
+    },
+    {
+        id: 4,
+        name: 'Long lon',
+        address: 'Nha cua le duc minh deo cho may dia chi nha con',
+        phone: '0372711935',
+    },
+];
