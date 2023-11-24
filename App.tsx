@@ -5,91 +5,42 @@
  * @format
  */
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import Home from './src/screens/Home';
-import Offer from './src/screens/Offer';
-import Forgot from './src/screens/Forgot';
-import Enterotp from './src/screens/Enterotp';
-import Newpassword from './src/screens/Newpassword';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import SlideScreen from './src/screens/Login/SlideScreen';
+import SplashSreen from './src/screens/Login/SplashSreen';
+import LoginNavigation from './src/component/Navigation/LoginNavigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Navigation from './src/component/Navigation/Navigation';
+import { NavigationContainer } from '@react-navigation/native';
+import { DefaultTheme, PaperProvider } from 'react-native-paper';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
 
 function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      secondaryContainer: 'transparent',
+      // Use transparent to disable the little highlighting oval
+    },
   };
+  const [isLoadding, setIsLoadding] = useState<boolean>(true);
+  setTimeout(() => {
+    setIsLoadding(false);
+  }, 2000);
   return (
-    <SafeAreaView>
-      <Newpassword/>
-    </SafeAreaView>
+    (isLoadding) ?
+      <SplashSreen />
+      :
+      <NavigationContainer >
+        <PaperProvider theme={theme}>
+          <Navigation />
+        </PaperProvider>
+      </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;
