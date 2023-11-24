@@ -4,10 +4,12 @@ import Header from '../../component/Header/Header'
 import { PropsAccount } from '../../component/Navigation/Props';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
-import OnGoing from './OnGoing';
 import * as Animatable from 'react-native-animatable';
 import ButtonBottom from '../../component/Button/Button';
 import { listOrder } from '../../redux/silces/HomeSelector';
+import { HEIGHT, WIDTH } from '../../utilities/utility';
+import { RootStackScreenAccount, RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
+import StatusDeliver from './StatusDeliver';
 
 
 
@@ -16,12 +18,12 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const Order = useSelector(listOrder);
     const [status, setStatus] = useState<string>('');
-    
+
     const RenderItem = (props: any) => {
         const { data } = props;
         const { item } = data;
 
-        return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate('Order_Detail')}>
+        return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate(RootStackScreenEnumAccount.Order_Detail)}>
             <View>
                 <Text style={styles.MaCode}>{item.code}</Text>
                 <Text style={styles.title}>Order at Lafyuu : {item.date}</Text>
@@ -35,7 +37,7 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
                 </View>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Order Status</Text>
-                    <TouchableOpacity onPress={() => {setModalVisible(true); setDate(item.date); setStatus(item.status) } }>
+                    <TouchableOpacity onPress={() => { setModalVisible(true); setDate(item.date); setStatus(item.status) }}>
                         <Icon name='chevron-forward-outline' size={25} color={'#525252'} />
                     </TouchableOpacity>
                 </View>
@@ -51,20 +53,19 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
                 animationType="slide"
                 onRequestClose={() => true} >
                 <View style={{ height: '100%' }}>
-                    <OnGoing  action={{ setDate, setStatus}} state={{date, status}}/>
+                    <StatusDeliver action={{ setDate, setStatus }} state={{ date, status }} />
                     <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
-                            <ButtonBottom title='Cancel'/>
+                            <ButtonBottom title='Cancel' />
                         </Pressable>
                     </Animatable.View>
                 </View>
             </Modal>
-            <Header title='Order' />
-
+            <Header title='Order' navigation={navigation} />
             <View style={styles.line}></View>
-
             <FlatList
                 showsVerticalScrollIndicator={false}
+                style={{ marginBottom: 100 }}
                 data={Order}
                 renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
             />
@@ -136,8 +137,8 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        width: '100%',
-        height: '90%',
+        width: WIDTH,
+        height: HEIGHT,
         paddingTop: 20,
         paddingHorizontal: 20
     }

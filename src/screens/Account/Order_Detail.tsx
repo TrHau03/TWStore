@@ -4,6 +4,7 @@ import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Button from '../../component/Button/Button'
 import Item from '@ant-design/react-native/lib/list/ListItem';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 
 interface Product {
@@ -31,14 +32,14 @@ interface Payment_Detail {
 }
 
 
-const Order_Detail = ({ navigation }: any) => {
+const Order_Detail = ({ navigation }: NativeStackHeaderProps) => {
 
   return (
     <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}>
 
-        <Header title='Order Detail' />
+        <Header title='Order Detail' navigation={navigation} />
         <View style={styles.line}></View>
         <View style={{ paddingHorizontal: 20, }}>
           <Text style={styles.txtTitle}>Product</Text>
@@ -80,27 +81,27 @@ const Order_Detail = ({ navigation }: any) => {
 
           <Text style={styles.txtTitle}>Payment Details</Text>
           {Data2.map((item) =>
-          <View key={item.id} style={styles.boxShipping}>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                  <Text style={styles.txtLeft}>Items ({item.quantity})</Text>
-                  <Text style={styles.txtRight}>${item.price_item}</Text>
-                </View>
+            <View key={item.id} style={styles.boxShipping}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                <Text style={styles.txtLeft}>Items ({item.quantity})</Text>
+                <Text style={styles.txtRight}>${item.price_item}</Text>
+              </View>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                  <Text style={styles.txtLeft}>Shipping</Text>
-                  <Text style={styles.txtRight}>${item.price_ship}</Text>
-                </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                <Text style={styles.txtLeft}>Shipping</Text>
+                <Text style={styles.txtRight}>${item.price_ship}</Text>
+              </View>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                  <Text style={styles.txtLeft}>Import charges</Text>
-                  <Text style={styles.txtRight}>${item.price_charges}</Text>
-                </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                <Text style={styles.txtLeft}>Import charges</Text>
+                <Text style={styles.txtRight}>${item.price_charges}</Text>
+              </View>
 
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                  <Text style={styles.txtPrice_Product}>Total Price</Text>
-                  <Text style={styles.txtPrice_Product}>${item.price}</Text>
-                </View>  
-          </View>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
+                <Text style={styles.txtPrice_Product}>Total Price</Text>
+                <Text style={styles.txtPrice_Product}>${item.price}</Text>
+              </View>
+            </View>
           )}
 
 

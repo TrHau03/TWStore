@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { COLORS } from '../../utilities';
 
-const OnGoing = (props: any) => {
+const StatusDeliver = (props: any) => {
     const { date, status } = props.state;
     console.log(status);
 
@@ -46,7 +46,7 @@ const OnGoing = (props: any) => {
     )
 }
 
-export default OnGoing
+export default StatusDeliver
 
 const styles = StyleSheet.create({
     textTitle: {
