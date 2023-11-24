@@ -10,10 +10,7 @@ import { COLORS } from '../../utilities';
 
 const OnGoing = (props: any) => {
     const { date, status } = props.state;
-    const { setDate, setStatus } = props.action;
-    const dispatch = useDispatch();
     console.log(status);
-
 
     return (
         <View style={styles.container}>
@@ -24,10 +21,10 @@ const OnGoing = (props: any) => {
             </View>
             <View style={styles.grpcontent}>
                 <View style={{ marginRight: '8%', gap: 110 }}>
-                    <Icon name='checkmark-done-circle' size={25} color={status === 'Confirm' || status === 'Prepare' || status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
-                    <Icon name='checkmark-done-circle' size={25} color={status === 'Prepare' || status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
-                    <Icon name='checkmark-done-circle' size={25} color={status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
-                    <Icon name='checkmark-done-circle' size={25} color={status === 'Success' ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status === 1 || status > 1 ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status === 2 || status > 2 ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status === 3 || status > 3 ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status === 4 ? COLORS.green : COLORS.gray} />
                 </View>
                 <View style={styles.content}>
                     <View style={styles.item}>
