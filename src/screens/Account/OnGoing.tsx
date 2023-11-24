@@ -1,11 +1,8 @@
 import { Image, StyleSheet, Text, View, FlatList } from 'react-native'
 import React from 'react'
-import Header from '../../component/Header/Header'
-import Navigation from '../../component/Navigation/Navigation'
+
 import Icon from 'react-native-vector-icons/Ionicons';
-import Svg, { Path } from 'react-native-svg';
-import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
-import { useDispatch, useSelector } from 'react-redux';
+
 import { COLORS } from '../../utilities';
 
 const OnGoing = (props: any) => {
