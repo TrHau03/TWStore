@@ -5,43 +5,87 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
+  FlatList,
   View,
+  Pressable,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+import Header from '../../component/Header/Header'
+import { useDispatch, useSelector } from 'react-redux';
+import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import { COLORS } from '../../utilities';
+import Button from '../../component/Button/Button';
 
-const FilterScreen = ({navigation}: any) => {
-  const [sliderValues, setSliderValues] = useState([25, 75]);
+interface Brand {
+  _id: number;
+  name: string;
+}
+interface Color {
+  _id: number;
+  name: string;
+}
+interface Size {
+  _id: number;
+  name: string;
+}
 
-  const handleSliderChange = (values: any) => {
-    setSliderValues(values);
-  };
+const FilterScreen = (props: any) => {
+  const { visibleSize, visibleColor, visibleBrand, unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
+  const { dispatch, setVisibleBrand, setVisibleColor, setVisibleSize, setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
 
-  const [sliderValue, setSliderValue] = useState(0);
 
-  const handleTextInputChange = (text:any) => {
-    const parsedValue = parseFloat(text);
-    if (!isNaN(parsedValue)) {
-      setSliderValue(parsedValue);
-      console.log(sliderValue);
-      
-    }
-  };
+
+
+
+
+  const handleFilter = (brand: string, color: string, size: string, minPrice: string, maxPrice: string) => {
+    dispatch(HomeScreenSlice.actions.filterBrand(brand));
+    dispatch(HomeScreenSlice.actions.filterColor(color));
+    dispatch(HomeScreenSlice.actions.filterSize(size));
+    dispatch(HomeScreenSlice.actions.filterPrice({ minPrice, maxPrice }))
+    console.log(brand, color, size, minPrice, maxPrice);
+
+  }
+
+
+  const renderItemBrand = ({ item }: any) => {
+    const { _id, name } = item;
+    return (
+      <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightBrand == _id && unEnableBrand ? COLORS.blue : COLORS.white }}
+        onPress={() => { !unEnableBrand ? setBrand(name) : setBrand('All'); setHighLightBrand(_id), setUnEnableBrand(!unEnableBrand) }}>
+        <Text style={{ fontSize: 18 }}>{name}</Text>
+      </TouchableOpacity>
+    )
+  }
+  const renderItemColor = ({ item }: any) => {
+    const { _id, name } = item;
+    return (
+      <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightColor == _id && unEnableColor ? COLORS.blue : COLORS.white }}
+        onPress={() => { !unEnableColor ? setColor(name) : setColor('All'); setHighLightColor(_id), setUnEnableColor(!unEnableColor) }}>
+        <Text style={{ fontSize: 18 }}>{name}</Text>
+      </TouchableOpacity>
+    )
+  }
+  const renderItemSize = ({ item }: any) => {
+    const { _id, name } = item;
+    return (
+      <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightSize == _id && unEnableSize ? COLORS.blue : COLORS.white }}
+        onPress={() => { !unEnableSize ? setSize(name) : setSize('All'); setHighLightSize(_id), setUnEnableSize(!unEnableSize) }}>
+        <Text style={{ fontSize: 18 }}>{name}</Text>
+      </TouchableOpacity>
+    )
+  }
+
 
   return (
-    <ScrollView style={styles.container}>
-      <TouchableOpacity
-        style={styles.iconBack}
-        onPress={() => navigation.goBack()}>
-        <Icon name="chevron-back" size={25} />
-      </TouchableOpacity>
+    <View style={styles.container}>
       <View style={styles.content}>
         <View style={styles.filterPrice}>
           <Text
             style={{
               width: '100%',
-
               fontSize: 20,
               marginBottom: 20,
               fontWeight: 'bold',
@@ -50,14 +94,11 @@ const FilterScreen = ({navigation}: any) => {
             Price Range
           </Text>
           <View style={styles.input}>
-            <View style={styles.minPrice}>
-              <TextInput 
-           
-                />
+            <View style={styles.Price}>
+              <Text style={styles.textPrice}>{priceMin}$</Text>
             </View>
-
-            <View style={styles.maxPrice}>
-              <TextInput/>
+            <View style={styles.Price}>
+              <Text style={styles.textPrice}>{priceMax}$</Text>
             </View>
           </View>
         </View>
@@ -66,211 +107,103 @@ const FilterScreen = ({navigation}: any) => {
             width: '100%',
             alignItems: 'center',
             justifyContent: 'center',
-        
+
           }}>
           <MultiSlider
-            values={sliderValues}
+            values={[0, 5000]}
             sliderLength={300}
-            onValuesChange={handleSliderChange}
             min={0}
-            max={100}
-            step={1}
+            max={5000}
+            step={100}
             allowOverlap={false}
             snapped
+            onValuesChangeFinish={(e) => { setpriceMin(e[0].toString()); setpriceMax(e[1].toString()) }}
           />
-          <View style={styles.text}>
-            <Text style={{fontSize: 17, fontWeight: 'bold', color: 'black'}}>
-              Min
-            </Text>
-            <Text style={{fontSize: 17, fontWeight: 'bold', color: 'black'}}>
-              Max
-            </Text>
-          </View>
         </View>
 
         <View style={styles.BuyingFormat}>
+          {/*brand */}
           <View style={styles.Format}>
-            <Text  style={styles.txtBuyingFormat}>Condition</Text>
+            <Text style={styles.txtBuyingFormat}>Brand</Text>
+            <Pressable onPress={() => setVisibleBrand(!visibleBrand)}>
+              <Icon name={!visibleBrand ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
+            </Pressable>
           </View>
-          <View style={styles.groupBtn}>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>News</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Used</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Not Specified</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-        <View style={styles.BuyingFormat}>
-          <View style={styles.Format}>
-            <Text  style={styles.txtBuyingFormat}>Buying Format</Text>
-          </View>
-          <View style={styles.groupBtn}>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>All Listings</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Accepts Offers</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Auction</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Buy It Now</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Classified Ads</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+          {visibleBrand &&
+            <FlatList
+              data={DataBrand}
+              columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
+              numColumns={3}
+              renderItem={renderItemBrand}
+              keyExtractor={(item) => item._id.toString()}
+              style={{ top: 10 }}
+            />}
 
-
-        <View style={styles.BuyingFormat}>
+          {/*Color */}
           <View style={styles.Format}>
-            <Text  style={styles.txtBuyingFormat}>Item Location</Text>
+            <Text style={styles.txtBuyingFormat}>Color</Text>
+            <Pressable onPress={() => setVisibleColor(!visibleColor)}>
+              <Icon name={!visibleColor ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
+            </Pressable>
           </View>
-          <View style={styles.groupBtn}>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>US Only</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>North America</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Europe</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Asia</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-        
-        <View style={styles.BuyingFormat}>
-          <View style={styles.Format}>
-            <Text  style={styles.txtBuyingFormat}>Show Only</Text>
-          </View>
-          <View style={styles.groupBtn}>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Free Returns</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Returns Accepted</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Authorized Selle</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Completed Items</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Sold Items</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Deals & Savings</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Sale Items</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Listed as Lots</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Search in Description</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Benefits charity</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={styles.btnAll}>
-              <TouchableOpacity>
-                <Text>Authenticity Verified</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+          {visibleColor &&
+            <FlatList
+              data={DataColor}
+              columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
+              numColumns={3}
+              renderItem={renderItemColor}
+              keyExtractor={(item) => item._id.toString()}
+              style={{ top: 10 }}
+            />}
 
-          <TouchableOpacity  style={styles.btnApply}>
-            <Text>Apply</Text>
-          </TouchableOpacity>
+          {/*Size */}
+          <View style={styles.Format}>
+            <Text style={styles.txtBuyingFormat}>Size</Text>
+            <Pressable onPress={() => setVisibleSize(!visibleSize)}>
+              <Icon name={!visibleSize ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
+            </Pressable>
+          </View>
+          {visibleSize &&
+            <FlatList
+              data={DataSize}
+              columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
+              numColumns={3}
+              renderItem={renderItemSize}
+              keyExtractor={(item) => item._id.toString()}
+              style={{ top: 10 }}
+            />}
+        </View>
       </View>
-    </ScrollView>
+
+      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false),setVisibleBrand(false), setVisibleColor(false),setVisibleSize(false) }}>
+        <Button title='Apply' />
+      </Pressable>
+    </View>
   );
 };
 
 export default FilterScreen;
 
 const styles = StyleSheet.create({
-  btnApply:{
+  Price: {
+    borderWidth: 0.7,
+    width: 90,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+  },
+
+  btnApply: {
     width: '100%',
     height: 50
   },
 
-  btnAll: {
-    width: 'auto',
-    marginTop: 10,
-    padding: 15,
-    marginLeft: 15,
-    backgroundColor: 'transparent',
-    borderRadius: 5,
-    borderWidth: 0.3
-
-  },
-  groupBtn: {
-    flexDirection: 'row',
-    flexWrap: 'wrap', // Cho phép các mục tự động xuống dòng
-    width: '100%',
-    padding: 5,
-  },
   Format: {
-    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
-  txtBuyingFormat:{
+  txtBuyingFormat: {
     fontSize: 20,
     fontWeight: 'bold',
     color: 'black',
@@ -278,8 +211,10 @@ const styles = StyleSheet.create({
   BuyingFormat: {
     width: '100%',
     marginTop: 25,
+    height: "auto",
+    gap: 10
   },
-  btnNew:{
+  btnNew: {
     padding: 15,
     borderWidth: 0.3,
     borderColor: '#EBF0FF',
@@ -290,37 +225,25 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginTop: 10
   },
-  group:{
-    width: '100%',
-    padding: 5,
-    flexDirection: 'row'
-  },
-  txtCondition:{
+
+  txtCondition: {
     marginTop: 10,
     fontSize: 20,
     fontWeight: 'bold',
     color: 'black',
   },
   Condition: {
-    marginTop:10,
+    marginTop: 10,
     width: '100%',
   },
-  text: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-  },
-  maxPrice: {
-    borderWidth: 0.3,
-    height: 50,
-    width: '40%',
-    marginRight: 20,
-  },
-  minPrice: {
-    borderWidth: 0.3,
-    height: 50,
-    width: '40%',
-    marginLeft: 20,
+  textPrice: {
+    marginHorizontal: 14,
+    color: '#9098B1',
+    fontSize: 18,
+    fontFamily: 'Poppins',
+    fontWeight: '700',
+    lineHeight: 21.60,
+    letterSpacing: 0.50,
   },
   input: {
     justifyContent: 'space-between',
@@ -333,6 +256,7 @@ const styles = StyleSheet.create({
   content: {
     width: '100%',
     marginTop: 10,
+    height: '100%'
   },
   iconBack: {
     width: '100%',
@@ -343,3 +267,36 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
+
+const DataBrand: Brand[] =
+  [
+    { _id: 1, name: 'Nike' },
+    { _id: 2, name: 'Adidas' },
+    { _id: 3, name: 'Puma' },
+    { _id: 4, name: 'Gucci' },
+    { _id: 5, name: 'LV' },
+    { _id: 6, name: 'Bargana' },
+  ];
+const DataColor: Color[] =
+  [
+    { _id: 1, name: 'Black' },
+    { _id: 2, name: 'White' },
+    { _id: 3, name: 'Red' },
+    { _id: 4, name: 'Yellow' },
+    { _id: 5, name: 'Blue' },
+    { _id: 6, name: 'Purple' },
+  ];
+const DataSize: Size[] =
+  [
+    { _id: 1, name: '36' },
+    { _id: 2, name: '37' },
+    { _id: 3, name: '38' },
+    { _id: 4, name: '39' },
+    { _id: 5, name: '40' },
+    { _id: 6, name: '41' },
+    { _id: 7, name: '42' },
+    { _id: 8, name: '43' },
+    { _id: 9, name: '44' },
+    { _id: 10, name: '45' },
+    { _id: 10, name: '46' },
+  ];

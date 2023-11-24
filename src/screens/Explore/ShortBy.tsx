@@ -26,7 +26,7 @@ const ShortByScreen = ({navigation}: any) => {
   };
   
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Header/>
       <View style={styles.content}>
         <FlatList 
@@ -34,7 +34,7 @@ const ShortByScreen = ({navigation}: any) => {
           renderItem={renderItem} 
         />
       </View>
-    </ScrollView>
+    </View>
   );
 };
 

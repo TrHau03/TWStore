@@ -1,9 +1,8 @@
 import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import { ROUTES } from '../../component/constants';
-import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
+import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 
 interface Offer {
   id: number;
@@ -43,7 +42,7 @@ const OfferNorifiScreen = ({ navigation }: PropsHome) => {
     >
       <Header title='Offer' navigation={navigation} />
       <FlatList
-        style={{ marginBottom: 45}}
+        style={{ marginTop: 20 }}
         data={DataOffer}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
@@ -96,8 +95,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 15,
-    height: '100%'
+    paddingTop: PADDING_TOP,
+    paddingHorizontal: PADDING_HORIZONTAL,
+    height: HEIGHT,
+    backgroundColor: BG_COLOR
   }
 });
 

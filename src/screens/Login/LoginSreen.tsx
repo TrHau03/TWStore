@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, Button, Pressable, ScrollView } from 'react-native'
+import { Image, StyleSheet, Text, View, Button, Pressable, ScrollView, useWindowDimensions } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import React, { useEffect, useState } from 'react'
@@ -6,19 +6,39 @@ import { Checkbox, InputItem } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 
+import { RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
+import AxiosInstance from '../../Axios/Axios';
+import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import Realm from 'realm';
+import { AccessToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
+import { useDispatch } from 'react-redux';
+import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../redux/silces/Silces';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
+interface Login {
+  email: string;
+  password: string;
+}
+interface User {
+  _idUser: string;
+  email: string;
+  userName: string | null | undefined;
+  cartID: [];
+  avatar: string | null | undefined;
+  gender: string;
+  birthDay: string;
+  address: []
+}
 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
-
-
-
-
-type navigationProps = NativeStackNavigationProp<RootStackParamListLogin, RootStackScreenEnumLogin>
-const LoginSreen = (props: any) => {
-  const navigation = useNavigation<navigationProps>();
+const LoginScreen = (props: any) => {
+  console.log(WIDTH, HEIGHT);
+  const { navigation }: NativeStackHeaderProps = props
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [pictureURL, setPictureURL] = useState<any>(null);
+  const dispatch = useDispatch();
   useEffect(() => {
     const setData = async () => {
       await AsyncStorage.setItem('checkSlide', 'true');
@@ -26,11 +46,127 @@ const LoginSreen = (props: any) => {
     setData();
   }, [])
 
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
+  const handleSubmit = (data: User) => {
+    dispatch(isLogin(true));
+    dispatch(updateUser({ _idUser: data._idUser, email: data.email, userName: data.userName, cartID: data.cartID, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address }))
+  }
+  const login = async (user: Login) => {
+    try {
+      const result = await AxiosInstance().post('/users/LoginUser', { email: user.email, password: user.password });
+      const userInfo = result?.data.user;
+      if (result.data.status) {
+        const response = await AxiosInstance().post(`/users/getUser/${result.data.user._id}`);
+        const user = response.data.data;
+        handleSubmit({ _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartID: user.cartID, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address })
+      } else {
+        console.log(result.data.message);
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+    return [];
+  }
+  const app = new Realm.App({
+    id: "application-0-kbkng",
+  });
+  GoogleSignin.configure({
+    webClientId: '866351015855-93hj0ef6h9er4f7er5l3vujtev37tkar.apps.googleusercontent.com',
+  });
+  // Handle user state changes
+  async function onGoogleButtonPress() {
+    // Check if your device supports Google Play
+    try {
+      // Sign into Google
+      await GoogleSignin.hasPlayServices();
+      const { idToken }: any = await GoogleSignin.signIn();
+      const userGoogle = await GoogleSignin.signIn();
+      console.log(userGoogle);
+
+      // use Google ID token to sign into Realm
+      const credential = Realm.Credentials.google({ idToken });
+      const userRealm = await app.logIn(credential);
+      console.log("signed in as Realm user", userRealm.id);
+      if (userRealm) {
+        const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`);
+        const user = response.data.data;
+        handleSubmit({ _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartID: user.cartID, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address })
+        dispatch(LoginGoogle(true));
+      } else {
+        console.log("Login failed");
+      }
+    } catch (error: any) {
+      // handle errors
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
+  }
+  async function onFaceBookButtonPress() {
+    let userFacebook: Profile;
+    LoginManager.logInWithPermissions(["public_profile", "email"]).then(
+      function (result) {
+        if (result.isCancelled) {
+          console.log("==> Login cancelled");
+        } else {
+          AccessToken.getCurrentAccessToken().then(
+            (data: any) => {
+              Profile.getCurrentProfile().then(
+                function (currentProfile) {
+                  console.log("Fb access token", data?.accessToken?.toString());
+                  const graphRequest = new GraphRequest('/me', {
+                    accessToken: data?.accessToken,
+                    parameters: {
+                      fields: {
+                        string: 'picture.type(large)',
+                      },
+                    },
+                  }, (error, result: any) => {
+                    if (error) {
+                      console.error(error)
+                    } else {
+                      setPictureURL(result?.picture.data.url);
+                    }
+                  })
+                  new GraphRequestManager().addRequest(graphRequest).start()
+                  if (currentProfile) {
+                    userFacebook = currentProfile;
+                  }
+                }
+              );
+              const credentials = Realm.Credentials.facebook(data?.accessToken?.toString());
+              app.logIn(credentials).then(async userFace => {
+                console.log(`Logged in with id: ${userFace.id}`);
+                if (userFace) {
+                  const response = await AxiosInstance().post(`/users/getUser/${userFace.id}`);
+                  console.log(userFacebook);
+                  const user = response.data.data;
+                  handleSubmit({
+                    _idUser: user._idUser, email: '', userName: userFacebook.name, cartID: user.cartID, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address
+                  })
+                  dispatch(LoginFacebook(true));
+                } else {
+                  console.log("Login failed");
+                }
+              });
+
+            }
+          )
+        }
+      },
+      function (error) {
+        console.log("==> Login fail with error: " + error);
+      }
+    );
+  }
   return (
     <KeyboardAwareScrollView>
-      <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
+      <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, width: WIDTH, backgroundColor: BG_COLOR }}>
         <View style={styles.header}>
           <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
           <Text style={styles.textHeader}>The Wonder</Text>
@@ -65,12 +201,14 @@ const LoginSreen = (props: any) => {
             </InputItem>
           </View>
         </View>
-        <View style={{ flexDirection: 'row', gap: 80, marginTop: 17 }}>
+        <View style={{ flexDirection: 'row', marginTop: 17 }}>
           <Checkbox style={{ width: 150 }}><Text style={styles.checkBox}>Remember me</Text></Checkbox>
-          <Text style={styles.checkBox}>Forgot Password?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumLogin.VerificationScreen)} style={{ position: 'absolute', right: 0 }}>
+            <Text style={styles.checkBox}>Forgot Password?</Text>
+          </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity >
+          <TouchableOpacity onPress={() => login({ email, password })}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
               <Text style={styles.textLogin}>Login</Text>
             </LinearGradient>
@@ -82,18 +220,19 @@ const LoginSreen = (props: any) => {
           <View style={{ width: '40%', backgroundColor: '#9098B1', height: 0.5 }} />
         </View>
         <View style={{ marginTop: 17 }}>
-          <TouchableOpacity style={styles.btnLoginWith}>
+          <TouchableOpacity onPress={onGoogleButtonPress} style={styles.btnLoginWith}>
             <Icon name='logo-google' size={20} style={{ position: 'absolute', left: 20 }} />
             <Text style={styles.textLoginWith}>Log in with Google</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.btnLoginWith, { marginTop: 17 }]}>
+          <TouchableOpacity onPress={onFaceBookButtonPress} style={[styles.btnLoginWith, { marginTop: 17 }]}>
             <Icon name='logo-facebook' size={20} style={{ position: 'absolute', left: 20 }} />
             <Text style={styles.textLoginWith}>Log in with FaceBook</Text>
           </TouchableOpacity>
+
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 17 }}>
           <Text style={styles.textDontAcc}>Don’t have a account? </Text>
-          <Pressable>
+          <Pressable onPress={() => navigation.navigate(RootStackScreenEnumLogin.RegisterScreen)}>
             <Text style={styles.textRegister}>Register</Text>
           </Pressable>
         </View>
@@ -102,7 +241,7 @@ const LoginSreen = (props: any) => {
   )
 }
 
-export default LoginSreen
+export default LoginScreen
 
 const styles = StyleSheet.create({
   textRegister: {
@@ -186,7 +325,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   input: {
-    marginTop: 60
+    marginTop: HEIGHT / 13
   },
   textWelcome: {
     color: '#223263',

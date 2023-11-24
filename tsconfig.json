@@ -1,3 +1,11 @@
 {
-  "extends": "@tsconfig/react-native/tsconfig.json"
+  "extends": "@tsconfig/react-native/tsconfig.json",
+  "types": ["react-redux"],
+
+  "compilerOptions": {
+    "jsx": "react" ,
+    "esModuleInterop": true
+
+  },
+  
 }

@@ -1,28 +1,27 @@
-import { StyleSheet, Text, TouchableOpacity, View,Image } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/Ionicons'
-import {ROUTES} from '../../component/constants';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
-const NotificationScreen = ({navigation}:PropsHome) => {
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+const NotificationScreen = ({ navigation }: PropsHome) => {
 
-  
-  
+
+
   return (
     <View style={styles.container}>
       <View>
-      <Header title='Notification' navigation={navigation} />
+        <Header title='Notification' navigation={navigation} />
       </View>
-      <View style={styles.content}>
+      <View >
         <TouchableOpacity
-         style={styles.btn}
-        onPress={() => navigation?.navigate(RootStackScreenEnumHome.OfferNorifiScreen)}
-         >
-          <View 
-            style= {styles.btnOffer}
+          style={styles.btn}
+          onPress={() => navigation?.navigate(RootStackScreenEnumHome.OfferNorifiScreen)}
+        >
+          <View
+            style={styles.btnOffer}
           >
-            <Image source={require('../../asset/image/Offer.png')}/>
+            <Image source={require('../../asset/image/Offer.png')} />
             <Text style={styles.txtOffer}>Offer</Text>
           </View>
           <View style={styles.tvCount}>
@@ -30,21 +29,21 @@ const NotificationScreen = ({navigation}:PropsHome) => {
           </View>
 
         </TouchableOpacity>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.btn}
-        onPress={() => navigation?.navigate(RootStackScreenEnumHome.ActivityScreen)}
+          onPress={() => navigation?.navigate(RootStackScreenEnumHome.ActivityScreen)}
         >
           <View style={styles.btnActivity}>
-            <Image source={require('../../asset/image/Activity.png')}/>
-            <Text  style={styles.txtActivity}>Activity</Text>
+            <Image source={require('../../asset/image/Activity.png')} />
+            <Text style={styles.txtActivity}>Activity</Text>
           </View>
-          
+
           <View style={styles.tvCount}>
             <Text style={styles.txtCount}>2</Text>
           </View>
         </TouchableOpacity>
       </View>
-      
+
     </View>
   )
 }
@@ -52,15 +51,15 @@ const NotificationScreen = ({navigation}:PropsHome) => {
 export default NotificationScreen
 
 const styles = StyleSheet.create({
-  txtCount:{
+  txtCount: {
 
     fontSize: 18,
-    
+
     color: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  tvCount:{
+  tvCount: {
     width: 24,
     height: 24,
     justifyContent: 'center',
@@ -68,38 +67,38 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     borderRadius: 12
   },
-  txtActivity:{
+  txtActivity: {
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 5,
     color: 'black'
   },
-  txtOffer:{
+  txtOffer: {
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 5,
     color: 'black'
   },
-  btnActivity:{
+  btnActivity: {
     alignItems: 'center',
     height: 40,
     flexDirection: 'row'
   },
-  btnOffer:{
+  btnOffer: {
     flexDirection: 'row'
   },
-  btn:{
+  btn: {
     alignItems: 'center',
     marginLeft: 10,
     height: 40,
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
-  content:{
-    marginTop: 20
-  },
-  container:{
+
+  container: {
     flex: 1,
-    padding: 15
+    paddingHorizontal: PADDING_HORIZONTAL,
+    paddingTop: PADDING_TOP,
+    backgroundColor: BG_COLOR,
   }
 })

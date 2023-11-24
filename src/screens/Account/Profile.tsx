@@ -14,20 +14,17 @@ import Email from './Email'
 import Phone from './Phone'
 import Gender from './Gender'
 import ChangeName from './ChangeName';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import { useSelector } from 'react-redux';
 
-const user = {
-    id: uid(5),
-    name: 'Le Trung Hau',
-    userName: '@Haule',
-    gender: 'Mate',
-    birthDay: '10-12-2003',
-    email: 'hault2003@gmail.com',
-    phone: '0345625243'
-}
 
 const ProfileScreen = ({ navigation }: PropsAccount) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [nameModal, setNameModal] = useState<string>('');
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+    console.log(user);
+
+    const checkLogin = useSelector((state: any) => state.SlicesReducer.LoginGoogle || state.SlicesReducer.LoginGoogle ? true : false);
 
     return (
         <Provider>
@@ -51,7 +48,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                                             <ChangePass /> :
                                             <ChangeName />
                     }
-                    <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative' }}>
+                    <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
                             <ButtonBottom title='Cancel' />
                         </Pressable>
@@ -65,15 +62,15 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                 <View style={styles.line}></View>
 
                 <View style={styles.profile}>
-                    <Image style={styles.img} source={require('../../asset/image/z3963074144022_6001e9ff55a6b122baa9d5bbe1fa2996.jpg')} />
+                    <Image style={styles.img} source={{ uri: user.avatar ? user.avatar : 'https://scontent.fsgn19-1.fna.fbcdn.net/v/t1.30497-1/84628273_176159830277856_972693363922829312_n.jpg?stp=c15.0.50.50a_cp0_dst-jpg_p50x50&_nc_cat=1&ccb=1-7&_nc_sid=810bd0&_nc_ohc=1Peipfkz73QAX9Opczx&_nc_ht=scontent.fsgn19-1.fna&edm=AHgPADgEAAAA&oh=00_AfA0ykMKLDzMu0UJN8-3Ww8udPTFOHhS9J3niaG790lIkA&oe=657EF4D9' }} />
                     <View style={styles.name}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                            <Text style={styles.txtName}>{user.name}</Text>
-                            <Pressable onPress={() => {setModalVisible(true), setNameModal('ChangeName')} }>
-                                <MaterialCommunityIcons name='account-edit-outline' size={20} />
-                            </Pressable>
+                            <Text style={styles.txtName}>{user.userName}</Text>
+                            {checkLogin ? <></> :
+                                <Pressable onPress={() => { setModalVisible(true), setNameModal('ChangeName') }}>
+                                    <MaterialCommunityIcons name='account-edit-outline' size={20} />
+                                </Pressable>}
                         </View>
-                        <Text style={styles.txtUsername}>{user.userName}</Text>
                     </View>
                 </View>
 
@@ -110,8 +107,8 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                     </View>
                     <View style={styles.Content_right}>
                         <Text style={styles.txtHint}>{user.email}</Text>
-                        <Pressable onPress={() => { setModalVisible(true); setNameModal('ChangeEmail') }}>
-                            <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />
+                        <Pressable onPress={() => { !checkLogin && setModalVisible(true); !checkLogin && setNameModal('ChangeEmail') }}>
+                            {!checkLogin && <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />}
                         </Pressable>
                     </View>
                 </View>
@@ -128,19 +125,19 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                         </Pressable>
                     </View>
                 </View>
-
-                <View style={styles.Content}>
-                    <View style={styles.Content_left}>
-                        <Icon name='keypad' size={30} color={'#444444'} />
-                        <Text style={styles.txtContent}>Change Password</Text>
-                    </View>
-                    <View style={styles.Content_right}>
-                        <Text style={styles.txtHint}>*********</Text>
-                        <Pressable onPress={() => { setModalVisible(true); setNameModal('ChangePassword') }}>
-                            <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />
-                        </Pressable>
-                    </View>
-                </View>
+                {checkLogin ? <></> :
+                    <View style={styles.Content}>
+                        <View style={styles.Content_left}>
+                            <Icon name='keypad' size={30} color={'#444444'} />
+                            <Text style={styles.txtContent}>Change Password</Text>
+                        </View>
+                        <View style={styles.Content_right}>
+                            <Text style={styles.txtHint}>*********</Text>
+                            <Pressable onPress={() => { setModalVisible(true); setNameModal('ChangePassword') }}>
+                                <Icon name='chevron-forward-outline' size={25} color={'#9098B1'} />
+                            </Pressable>
+                        </View>
+                    </View>}
             </View >
         </Provider>
 
@@ -287,9 +284,8 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        width: '100%',
-        height: '100%',
-        paddingTop: 20,
-        paddingHorizontal: 20
+        paddingTop: PADDING_TOP,
+        paddingHorizontal: PADDING_HORIZONTAL,
+        backgroundColor: BG_COLOR
     }
 })

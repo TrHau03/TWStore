@@ -5,6 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Modal, Provider } from '@ant-design/react-native'
 import ButtonBottom from '../../component/Button/Button'
 import Icon from 'react-native-vector-icons/Ionicons'
+import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility'
 
 const ChangePass = () => {
     return (
@@ -37,7 +38,7 @@ const ChangePass = () => {
                     <TextInput secureTextEntry={true} style={styles.txtInput} value="0372711935" />
                 </View>
             </View>
-            <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
+            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
             </View>
         </View>
@@ -134,9 +135,9 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        height: '80%',
+        height: HEIGHT * 0.8,
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingTop: 20,
+        paddingHorizontal: PADDING_HORIZONTAL,
+        paddingTop: PADDING_TOP,
     }
 })

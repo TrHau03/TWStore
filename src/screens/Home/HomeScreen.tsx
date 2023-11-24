@@ -1,10 +1,19 @@
-import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity, Animated } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
+import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { COLORS } from '../../utilities';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInitialListProduct } from '../../redux/silces/Silces';
+import AxiosInstance from '../../Axios/Axios';
+import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -32,36 +41,49 @@ const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } 
     )
 }
 
-const renderItem3 = ({ item }: { item: { id: string, name: string, image: any } }) => {
+const renderItem3 = ({ item }: any) => {
     return (
         <View style={styles.itemsale2}>
-            <Image style={styles.imageproduct} source={{ uri: item.image }} />
-            <Text style={styles.nameproduct}>{item.name}</Text>
-            {/* <Image style={styles.imga} source={require('../asset/img/a.png')} /> */}
-            <Text style={styles.price}>$299,43</Text>
-            <View style={styles.stylesaleoff}>
-                <Text style={styles.strikethrough}>$534,33</Text>
-                <Text style={styles.saleoff}>24% Off</Text>
+            <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
+            <View style={{ marginTop: 20, rowGap: 15 }}>
+                <Text style={styles.nameproduct}>{item.productName}</Text>
+                <Text style={styles.price}>${item.price}</Text>
+                <View style={styles.stylesaleoff}>
+                    <Text style={styles.strikethrough}>$534,33</Text>
+                    <Text style={styles.saleoff}>24% Off</Text>
+                </View>
             </View>
         </View>
     )
 
 }
 type NavigationProps = StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>
-const HomeScreen = () => {
+type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListExplore>>;
+const HomeScreen = (props: any) => {
+    const navigationTab = props.navigation;
     const navigation = useNavigation<NavigationProps>();
+    const navigationOtherTab = useNavigation<BottomNavigationProp>();
 
     const [imgActive, setimgActive] = useState(0);
 
-    const [click, setClick] = useState<boolean>(false);
+    const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
 
-    const [enableFlatlist, setEnableFlatlist] = useState<boolean>(false);
+    const [textInputSearch, setTextInputSearch] = useState<string>('');
 
-    console.log('render');
+    const [images, setImages] = useState<[]>([]);
 
+    const dispatch = useDispatch();
+    const listProduct = useSelector((state: any) => state.SlicesReducer.listProduct);
+    useEffect(() => {
+        dispatch(fetchInitialListProduct());
+        const fetchBanner = async () => {
+            const response = await AxiosInstance().get(`banner/getAllBanner`);
+            console.log(response.data.data);
 
-
-
+            setImages(response.data.data);
+        }
+        fetchBanner();
+    }, [])
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
             const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
@@ -70,43 +92,38 @@ const HomeScreen = () => {
             }
         }
     }
-    const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: any) => {
-        return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
-    }
+
     return (
-        <SafeAreaView>
-            <ScrollView horizontal={false} style={{ paddingHorizontal: 20, paddingTop: 15 }} scrollEnabled={!enableFlatlist}
-                onScroll={({ nativeEvent }) => {
-                    if (isCloseToBottom(nativeEvent)) {
-                        setEnableFlatlist(true);
-                    } else {
-                        setEnableFlatlist(false);
-                    }
-                }}>
-                <View style={styles.top}>
-                    <View style={(!click) ? styles.headerLeft : [styles.headerLeft, { borderColor: 'blue' }]}
-                    >
-                        <Icon name='search' size={22} />
-                        <TextInput
-                            placeholder="Search here"
-                            style={styles.TextSearch}
-                            onFocus={() => setClick(true)}
-                            onBlur={() => setClick(false)}
-
-                        />
-                    </View>
-
-                    <View style={styles.headerRight}>
-                        <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.FavoriteScreen)}>
-                            <Icon name="heart-outline" size={25} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
-                            <Icon name="notifications-outline" size={25} />
-                        </TouchableOpacity>
-                    </View>
-
+        <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
+            <View style={styles.top}>
+                <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: COLORS.gray }]}>
+                    <Icon name='search' size={22} />
+                    <TextInput
+                        placeholder="Search here"
+                        style={[styles.TextSearch]}
+                        onFocus={() => setTextInputStatus(true)}
+                        onBlur={() => setTextInputStatus(false)}
+                        onChangeText={setTextInputSearch}
+                        value={textInputSearch}
+                    />
+                    {(textInputStatus) ?
+                        <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
+                            onPress={() => setTextInputSearch('')}
+                        >
+                            <Icon name='close' size={14} />
+                        </Pressable>
+                        : null}
                 </View>
 
+                <View style={styles.headerRight}>
+                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
+                        <Icon name="notifications-outline" size={25} />
+                    </TouchableOpacity>
+                </View>
+
+            </View>
+            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[7]} onScroll={(e) => {
+            }} scrollEventThrottle={16}>
                 <View style={styles.topslide}>
 
                     <ScrollView
@@ -118,8 +135,8 @@ const HomeScreen = () => {
                         style={styles.slide}
                     >
                         {
-                            images.map((e, index) =>
-                                <Pressable onPress={() => navigation.navigate(e.nameScreen as never)} key={e.nameScreen}>
+                            images.map((e: any, index) =>
+                                <Pressable onPress={() => navigationTab.navigate(RootStackScreenEnumOffer.OfferScreen)} key={e._id}>
                                     <Image
                                         resizeMode='stretch'
                                         style={styles.slide}
@@ -132,9 +149,9 @@ const HomeScreen = () => {
 
                     <View style={styles.warpdot}>
                         {
-                            images.map((e, index) =>
+                            images.map((e: any, index) =>
                                 <Text
-                                    key={e.nameScreen}
+                                    key={e._id}
                                     style={imgActive == index ? styles.dotactive : styles.dot}
                                 >●</Text>
                             )
@@ -147,7 +164,7 @@ const HomeScreen = () => {
 
                     <Text style={styles.textcategory}>Category</Text>
 
-                    <Pressable>
+                    <Pressable onPress={() => navigationOtherTab.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
                         <Text style={styles.textcategory}>
                             More Category
                         </Text>
@@ -205,22 +222,20 @@ const HomeScreen = () => {
                         keyExtractor={(item) => item.id}
                     />
                 </View>
-
-
                 <View style={styles.listgrid}>
                     <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
-                    <FlatList
-                        style={{ height: 490, marginTop: 10, marginBottom: 70 }}
-                        nestedScrollEnabled={true}
-                        scrollEnabled={enableFlatlist}
-                        showsVerticalScrollIndicator={false}
-                        data={data2}
-                        renderItem={renderItem3}
-                        keyExtractor={(item) => item.id}
-                        numColumns={2}
-                        columnWrapperStyle={styles.columnWrapper}
-                    />
                 </View>
+                <FlatList
+                    scrollEnabled={false}
+                    contentContainerStyle={{ alignItems: 'center' }}
+                    style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
+                    showsVerticalScrollIndicator={false}
+                    data={listProduct}
+                    renderItem={renderItem3}
+                    keyExtractor={(item) => item._id.toString()}
+                    numColumns={2}
+                    columnWrapperStyle={{ columnGap: 10 }}
+                />
             </ScrollView>
         </SafeAreaView>
     )
@@ -231,11 +246,9 @@ export default HomeScreen
 const styles = StyleSheet.create({
     top: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        marginBottom: 5,
     },
-
-
 
     favorite: {
         width: 24,
@@ -252,24 +265,23 @@ const styles = StyleSheet.create({
         height: 24,
     },
     headerRight: {
-        paddingLeft: 10,
-        gap: 15,
-        flexDirection: 'row',
-        height: '100%',
-        alignItems: 'center',
+        position: 'absolute',
+        right: 0
     },
     TextSearch: {
+        width: WIDTH / 2,
         justifyContent: 'center',
-        marginLeft: 10
+        marginLeft: 10,
+        paddingVertical: 0,
     },
     headerLeft: {
         borderWidth: 1,
         padding: 5,
         borderRadius: 5,
-        borderColor: '#EBF0FF',
+        borderColor: '#e1dede',
         alignItems: 'center',
         flexDirection: 'row',
-        width: '80%',
+        width: '85%',
         height: '85%'
     },
     topslide: {
@@ -277,8 +289,8 @@ const styles = StyleSheet.create({
     },
 
     slide: {
-        height: 205,
-        width: 400,
+        height: WIDTH * 0.5,
+        width: WIDTH,
         borderRadius: 6,
     },
 
@@ -359,8 +371,9 @@ const styles = StyleSheet.create({
     },
 
     listflastsale: {
-        height: 240,
-        marginTop: 15,
+        height: WIDTH * 0.7,
+        marginTop: 5,
+        marginBottom: 5
     },
 
     itemsale: {
@@ -389,7 +402,7 @@ const styles = StyleSheet.create({
 
     price: {
         fontWeight: 'bold',
-        fontSize: 13,
+        fontSize: 15,
         color: '#4464C4',
         marginLeft: 15
     },
@@ -400,14 +413,14 @@ const styles = StyleSheet.create({
 
     strikethrough: {
         textDecorationLine: 'line-through',
-        fontSize: 10,
+        fontSize: 15,
         marginRight: 12,
         marginLeft: 15
     },
 
     saleoff: {
         fontWeight: 'bold',
-        fontSize: 10,
+        fontSize: 13,
         color: '#FB7181'
     },
 
@@ -421,53 +434,27 @@ const styles = StyleSheet.create({
     imgrecomended: {
         width: '100%',
         borderRadius: 5,
-        marginTop: 10,
     },
 
     imga: {
         marginLeft: 15
     },
 
-    columnWrapper: {
-        justifyContent: 'flex-start',
-    },
 
     listgrid: {
     },
 
     itemsale2: {
+        paddingVertical: 10,
         height: 240,
-        width: 165,
-        marginRight: 9,
+        width: WIDTH / 2.5,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: 'black',
-        justifyContent: 'space-around',
-        marginLeft: 5,
         marginBottom: 5,
-
-
     }
 
 })
-const images = [
-    {
-        image: 'https://thietke6d.com/wp-content/uploads/2021/03/Mau-banner-quang-cao-dep-1.png',
-        nameScreen: 'OfferScreen'
-    },
-    {
-        image: 'https://intphcm.com/data/upload/banner-thoi-trang-tuoi.jpg',
-        nameScreen: 'CartScreen'
-    },
-    {
-        image: 'https://dojeannam.com/wp-content/uploads/2017/09/BANNER-KHAI-TRUONG-DOJEANNAM.jpg',
-        nameScreen: 'PaymentScreen'
-    },
-    {
-        image: 'https://intphcm.com/data/upload/banner-thoi-trang.jpg',
-        nameScreen: 'BankTransferScreen'
-    },
-]
 const data = [
     { id: '1', name: 'Man Shirt', icon: 'shirt-sharp' },
     { id: '2', name: 'Dress', icon: 'shirt-sharp' },

@@ -1,35 +1,40 @@
 import {
+  Animated,
+  Dimensions,
   FlatList,
   Image,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import StarRating from 'react-native-star-rating';
 import { AirbnbRating } from 'react-native-ratings';
 import Header from '../../component/Header/Header';
-import { ScrollView } from 'react-native-gesture-handler';
 import { PropsHome } from '../../component/Navigation/Props';
 import { SafeAreaView } from 'react-native-safe-area-context';
-interface Product {
-  id: number;
-  img: any;
-  name: string;
-  price: number;
-}
+import { configTab } from '../../component/BottomNavigation/RootTab/RootTab';
+import { listFavorites } from '../../redux/silces/HomeSelector';
+import { useDispatch, useSelector } from 'react-redux';
+import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 
+
+  //redux
+
+
+  
 
 const renderItem = ({ item }: any): React.JSX.Element => {
-  const { id, img, name, price } = item;
+  const { id, image, name, price, strikeThrough, saleOff } = item;
+  
 
   return (
-    <TouchableOpacity style={styles.containerItemPD}>
+    <TouchableOpacity style={styles.containerItemPD} >
       <View style={styles.content}>
         <View style={styles.ImgContainerPD}>
-          <Image style={{ width: '100%', height: '100%' }} source={img} />
+          <Image style={{ width: '100%', height: '100%' }} source={image} />
         </View>
         <View style={styles.in4PD}>
           <View style={styles.in4Text}>
@@ -40,10 +45,10 @@ const renderItem = ({ item }: any): React.JSX.Element => {
             <Text style={styles.PricePD}>{price}</Text>
           </View>
           <View style={styles.sale}>
-            <Text style={styles.txtOldPrice}>5000</Text>
-            <Text style={styles.txtSale}>24% Off</Text>
-            <TouchableOpacity style={styles.imgIc}>
-              <Icon name="trash-outline" size={25} />
+            <Text style={styles.txtOldPrice}>${strikeThrough}</Text>
+            <Text style={styles.txtSale}>{saleOff}% Off</Text>
+            <TouchableOpacity >
+              <Icon  name="trash-outline" size={25} />
             </TouchableOpacity>
           </View>
         </View>
@@ -51,16 +56,82 @@ const renderItem = ({ item }: any): React.JSX.Element => {
     </TouchableOpacity>
   );
 };
+const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
+
 const FavoriteScreen = ({ navigation }: PropsHome) => {
+
+  //redux
+  const favoriteProduct = useSelector(listFavorites);
+
+  const animatedHeader = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+  }, [animatedHeader])
+  const animationHeader = [{
+    opacity: animatedHeader.interpolate({
+      inputRange: [0, 50],
+      outputRange: [1, 0],
+      extrapolate: 'clamp',
+    }),
+    transform: [
+      {
+        translateX: animatedHeader.interpolate({
+          inputRange: [0, 50],
+          outputRange: [0, -250],
+          extrapolate: 'clamp'
+        })
+      }
+    ]
+  }]
+  const animationSearh = [{
+    opacity: animatedHeader.interpolate({
+      inputRange: [0, 50],
+      outputRange: [0, 1],
+      extrapolate: 'clamp',
+    }),
+    transform: [
+      {
+        translateX: animatedHeader.interpolate({
+          inputRange: [0, 50],
+          outputRange: [2520, -50],
+          extrapolate: 'clamp'
+        })
+      }
+    ]
+  }]
+  let currentOffset = 0;
+  let direction: string;
 
   return (
     <SafeAreaView>
       <View style={styles.container} >
-        <Header title='Favorite' navigation={navigation} />
+        <View style={{ flexDirection: 'row' }}>
+          <Animated.View style={[animationHeader, styles.header]}>
+            <Header title='Favorite' navigation={navigation} />
+          </Animated.View>
+          <Animated.View
+            style={[animationSearh, { borderColor: 'black', borderWidth: 0.5, width: '70%', flexDirection: 'row', alignItems: 'center', paddingVertical: 2, paddingHorizontal: 5, borderRadius: 5 }]}
+          >
+            <Icon name='search' size={20} />
+            <TextInput style={{ paddingVertical: 0, width: '70%' }} />
+          </Animated.View>
+        </View>
         <FlatList
+          onScroll={e => {
+            animatedHeader.setValue(e.nativeEvent.contentOffset.y);
+            direction = e.nativeEvent.contentOffset.y > currentOffset ? 'down' : 'up';
+            currentOffset = e.nativeEvent.contentOffset.y;
+            if (direction == 'down' && currentOffset > 0) {
+              navigation?.getParent()?.setOptions({ tabBarStyle: { display: 'none' } })
+            } else {
+              navigation?.getParent()?.setOptions({ tabBarStyle: { display: 'flex' } })
+            }
+          }
+          }
+
+          scrollEventThrottle={16}
           nestedScrollEnabled={true}
-          style={{ marginTop: 20, marginBottom: 80 }}
-          data={DataProduct}
+          style={{ marginTop: 20, marginBottom: 70 }}
+          data={favoriteProduct}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           numColumns={2}
@@ -74,6 +145,10 @@ const FavoriteScreen = ({ navigation }: PropsHome) => {
 export default FavoriteScreen;
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   container: {
     paddingHorizontal: 10,
     paddingTop: 20
@@ -157,57 +232,6 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     marginLeft: 5,
-    marginBottom: 10
+    marginBottom: 5
   },
 });
-
-const DataProduct: Product[] = [
-  {
-    id: 1,
-    img: require('../../asset/image/imgProduct.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 29999,
-  },
-  {
-    id: 2,
-    img: require('../../asset/image/imgProduct3.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2999,
-  },
-  {
-    id: 3,
-    img: require('../../asset/image/imgProduct1.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2998,
-  },
-  {
-    id: 4,
-    img: require('../../asset/image/imgProduct2.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2997,
-  },
-  {
-    id: 5,
-    img: require('../../asset/image/imgProduct3.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2995,
-  },
-  {
-    id: 6,
-    img: require('../../asset/image/imgProduct2.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2996,
-  },
-  {
-    id: 7,
-    img: require('../../asset/image/imgProduct2.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2996,
-  },
-  {
-    id: 8,
-    img: require('../../asset/image/imgProduct2.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2996,
-  },
-];

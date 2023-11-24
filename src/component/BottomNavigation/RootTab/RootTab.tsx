@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleProp, StyleSheet, TextStyle } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 
@@ -17,6 +17,8 @@ import CartNavigation from '../../Navigation/CartNavigation';
 import OfferNavigation from '../../Navigation/OfferNavigation';
 import AccountNavigation from '../../Navigation/AccountNavigation';
 import { Badge } from '@ant-design/react-native';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
 export enum RootTabScreenENum {
     StackHome = 'Home',
@@ -47,6 +49,11 @@ export const RootBottomTab = () => {
     return Screens;
 }
 export const configTab = (route: any) => {
+    const data = useSelector((state: any) => {
+        return state.CartReducer
+    });
+    console.log("data", data);
+
     return {
         tabBarIcon: ({ color, focused }: any) => {
             let iconName: any;
@@ -61,7 +68,7 @@ export const configTab = (route: any) => {
             } else if (route.name === ROUTES.ACCOUNT) {
                 iconName = focused ? 'person' : 'person-outline';
             }
-            return route.name === ROUTES.CART ?
+            return route.name === ROUTES.CART && data.length > 0 ?
                 <Badge dot>
                     <Icon name={iconName} size={22} color={color} />
                 </Badge> :

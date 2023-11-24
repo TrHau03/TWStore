@@ -10,28 +10,51 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
+import AxiosInstance from '../../Axios/Axios';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 
 
 
+interface Register {
+    name: string,
+    email: string,
+    password: string,
+    passwordAgain: string
+}
 
 
-
-type navigationProps = NativeStackNavigationProp<RootStackParamListLogin, RootStackScreenEnumLogin>
 const RegisterScreen = (props: any) => {
-    const navigation = useNavigation<navigationProps>();
+    const { navigation } = props;
     useEffect(() => {
         const setData = async () => {
             await AsyncStorage.setItem('checkSlide', 'true');
         }
         setData();
     }, [])
-    const [name, setNMame] = useState<string>('');
+    const [name, setName] = useState<string>('');
+    const [phone, setPhone] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordAgain, setPasswordAgain] = useState<string>('');
+
+
+    const register = async (user: Register) => {
+        try {
+            console.log('register', user);
+
+            if (user.password != user.passwordAgain) {
+                return console.log("Password not same!");
+            }
+            const result = await AxiosInstance().post('/users/RegisterUser', { username: user.name, email: user.email, password: user.password });
+            console.log(result.data);
+            
+        } catch (error) {
+            console.log('getNews Error: ', error);
+        }
+    }
     return (
         <KeyboardAwareScrollView enableOnAndroid={true}>
-            <View style={{ paddingHorizontal: 16, marginTop: 20 }}>
+            <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
                 <View style={styles.header}>
                     <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
                     <Text style={styles.textHeader}>The Wonder</Text>
@@ -45,7 +68,7 @@ const RegisterScreen = (props: any) => {
                             style={{ fontSize: 16 }}
                             value={name}
                             onChange={(value: any) => {
-                                setNMame(value)
+                                setName(value)
                             }}
                             labelNumber={2}
                             placeholder="Full Name">
@@ -54,7 +77,6 @@ const RegisterScreen = (props: any) => {
                     </View>
                     <View style={styles.textinput}>
                         <InputItem
-                            type='password'
                             style={{ fontSize: 16 }}
                             value={email}
                             onChange={(value: any) => {
@@ -93,7 +115,7 @@ const RegisterScreen = (props: any) => {
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity >
+                    <TouchableOpacity onPress={() => register({ name, email, password, passwordAgain })} >
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
                             <Text style={styles.textLogin}>Register</Text>
                         </LinearGradient>
@@ -101,7 +123,7 @@ const RegisterScreen = (props: any) => {
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
                     <Text style={styles.textDontAcc}>Already a member? </Text>
-                    <Pressable>
+                    <Pressable onPress={() => navigation.navigate('LoginScreen')}>
                         <Text style={styles.textRegister}>Log In</Text>
                     </Pressable>
                 </View>
@@ -188,7 +210,7 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     input: {
-        marginTop: 60
+        marginTop: 35
     },
     textWelcome: {
         color: '#223263',

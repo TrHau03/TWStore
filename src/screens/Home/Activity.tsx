@@ -8,11 +8,10 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, { useRef, useState } from 'react';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
-import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 
 interface Product_Notifi {
   id: number;
@@ -23,14 +22,14 @@ interface Product_Notifi {
   time: string;
 }
 
-const renderItem = ({item}: any): React.JSX.Element => {
-  const {id, img, title, content, date, time} = item;
+const renderItem = ({ item }: any): React.JSX.Element => {
+  const { id, img, title, content, date, time } = item;
 
   return (
     <View style={styles.containerItemPD}>
       <View style={styles.contentPD}>
         <View style={styles.left}>
-          <Image source={img} style={{width: 50, height: 50}} />
+          <Image source={img} style={{ width: 50, height: 50 }} />
         </View>
         <View style={styles.right}>
           <Text style={styles.title}>{title}</Text>
@@ -45,116 +44,94 @@ const renderItem = ({item}: any): React.JSX.Element => {
   );
 };
 
-const ActivityScreen = ({navigation}: PropsHome) => {
-  const [visibleProducts, setVisibleProducts] = useState<boolean>(false); // Số sản phẩm hiển thị ban đầu
-  const [checkClick, setcheckClick] = useState<boolean>(false);
-
-  const [visibleActivity, setVisibleActivity] = useState<boolean>(false); // Số sản phẩm hiển thị ban đầu
+const ActivityScreen = ({ navigation }: PropsHome) => {
+  const [checkProduct, setcheckProduct] = useState<boolean>(false);
   const [checkActivity, setcheckActivity] = useState<boolean>(false);
 
   const flatListRefProduct = useRef<FlatList>(null);
   const flatListRefActivity = useRef<FlatList>(null);
 
-  //Hàm để ẩn hiện thêm danh sách thông báo product
- /* const loadMoreProducts = () => {
-    if (!checkClick) {
-      console.log('Check');
-      setVisibleProducts(true); // Tăng số sản phẩm hiển thị khi người dùng muốn xem thêm
-    } else {
-      console.log('UnCheck');
-      setVisibleProducts(false); // Giảm số sản phẩm hiển thị
-    }
-  };*/
+
   //Hàm đưa trỏ chuột lên đầu danh sách
   const scrollToTopProduct = () => {
-      flatListRefProduct.current?.scrollToOffset({offset: 0});
+    flatListRefProduct.current?.scrollToOffset({ offset: 0 });
   };
 
-
-    //Hàm để ẩn hiện thêm danh sách thông báo product
-    const loadMoreActivity = () => {
-      if (!checkActivity) {
-        console.log('Check');
-        setVisibleActivity(true); // Tăng số sản phẩm hiển thị khi người dùng muốn xem thêm
-      } else {
-        console.log('UnCheck');
-        setVisibleActivity(false); // Giảm số sản phẩm hiển thị
-      }
-    };
-    //Hàm đưa trỏ chuột lên đầu danh sách
-    const scrollToTopActivity = () => {
-      flatListRefActivity.current?.scrollToOffset({offset: 0});
-    };
+  //Hàm đưa trỏ chuột lên đầu danh sách
+  const scrollToTopActivity = () => {
+    flatListRefActivity.current?.scrollToOffset({ offset: 0 });
+  };
 
   return (
     <View style={styles.container}>
       <Header title='Activity' navigation={navigation} />
       <View style={styles.content}>
-        <View style={styles.groupText}>
-          <Text style={styles.txtProduct}>Product</Text>
-          <TouchableOpacity
-            style={styles.btnSeeMore}
-            onPress={() => {
-              setcheckClick(!checkClick), checkClick? scrollToTopProduct() : null;
-            }}>
-            {checkClick ? (
-              <Text style={styles.txtSeeMore}>Ẩn</Text>
-            ) : (
-              <Text style={styles.txtSeeMore}>See More</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-        <View
-          style={
-            checkClick
-              ? [styles.groupProduct, {height: '40%'}]
-              : [styles.groupProduct, {height: '30%'}]
-          }>
-          <FlatList
-            ref={flatListRefProduct}
-            scrollEnabled={checkClick}
-            data={DataProduct_Notifi} // Hiển thị chỉ số sản phẩm cần
-            renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
-            numColumns={1}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
+        {!checkActivity ?
+          <View >
+            <View style={styles.groupText}>
+              <Text style={styles.txtProduct}>Product</Text>
+              <TouchableOpacity
+                style={styles.btnSeeMore}
+                onPress={() => {
+                  setcheckProduct(!checkProduct), checkProduct ? scrollToTopProduct() : null;
+                }}>
+                {checkProduct ? (
+                  <Text style={styles.txtSeeMore}>Ẩn</Text>
+                ) : (
+                  <Text style={styles.txtSeeMore}>See More</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+
+            <FlatList
+              style={
+                checkProduct
+                  ? [styles.groupProduct, { height: 'auto', marginBottom: 80}]
+                  : [styles.groupProduct, { height: '40%' }]
+              }
+              ref={flatListRefProduct}
+              scrollEnabled={checkProduct}
+              data={DataProduct_Notifi} // Hiển thị chỉ số sản phẩm cần
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              numColumns={1}
+              showsVerticalScrollIndicator={false}
+            />
+          </View> : <></>}
 
 
+        {!checkProduct ?
+          <View>
+            <View style={styles.groupText}>
+              <Text style={styles.txtProduct}>Activity</Text>
+              <TouchableOpacity
+                style={styles.btnSeeMore}
+                onPress={() => {
+                  setcheckActivity(!checkActivity), checkActivity ? scrollToTopActivity() : null;
+                }}>
+                {checkActivity ? (
+                  <Text style={styles.txtSeeMore}>Ẩn</Text>
+                ) : (
+                  <Text style={styles.txtSeeMore}>See More</Text>
+                )}
+              </TouchableOpacity>
+            </View>
 
-        <View style={styles.groupText}>
-          <Text style={styles.txtProduct}>Activity</Text>
-          <TouchableOpacity
-            style={styles.btnSeeMore}
-            onPress={() => {
-              setcheckActivity(!checkActivity),
-                loadMoreActivity(),
-                scrollToTopActivity();
-            }}>
-            {checkActivity ? (
-              <Text style={styles.txtSeeMore}>Ẩn</Text>
-            ) : (
-              <Text style={styles.txtSeeMore}>See More</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-        <View
-          style={
-            visibleActivity
-              ? [styles.groupActivity, {height: '45%'}]
-              : [styles.groupActivity, {height: '40%'}]
-          }>
-          <FlatList
-            ref={flatListRefActivity}
-            scrollEnabled={visibleActivity}
-            data={DataActivity_Notifi} // Hiển thị chỉ số sản phẩm cần
-            renderItem={renderItem}
-            keyExtractor={item => item.id.toString()}
-            numColumns={1}
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
+            <FlatList
+              style={
+                checkActivity
+                  ? [styles.groupActivity, { height: 'auto', marginBottom: 80 }]
+                  : [styles.groupActivity, { height: '40%' }]
+              }
+              ref={flatListRefActivity}
+              scrollEnabled={checkActivity}
+              data={DataActivity_Notifi} // Hiển thị chỉ số sản phẩm cần
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              numColumns={1}
+              showsVerticalScrollIndicator={false}
+            />
+          </View> : <></>}
       </View>
     </View>
   );
@@ -164,9 +141,6 @@ export default ActivityScreen;
 
 const styles = StyleSheet.create({
   groupActivity: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
   },
 
   time: {
@@ -214,9 +188,7 @@ const styles = StyleSheet.create({
   },
   btnSeeMore: {
     width: '50%',
-    marginRight: 20,
     alignItems: 'flex-end',
-    paddingLeft: 20,
   },
   txtProduct: {
     width: '50%',
@@ -227,7 +199,6 @@ const styles = StyleSheet.create({
   groupText: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
     paddingVertical: 15
   },
   content: {
@@ -236,7 +207,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 15,
+    paddingTop: PADDING_TOP,
+    paddingHorizontal: PADDING_HORIZONTAL,
+    backgroundColor: BG_COLOR
   },
 });
 

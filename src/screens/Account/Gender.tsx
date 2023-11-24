@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import { SelectList } from 'react-native-dropdown-select-list'
 import Header from '../../component/Header/Header'
 import ButtonBottom from '../../component/Button/Button'
+import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 
 
 
@@ -41,7 +42,7 @@ const Gender = () => {
             </View>
 
 
-            <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
+            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
             </View>
         </View>
@@ -125,10 +126,10 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        height: '80%',
-        width: '100%',
+        height: HEIGHT * 0.8,
+        width: WIDTH,
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingTop: 20,
+        paddingHorizontal: PADDING_HORIZONTAL,
+        paddingTop: PADDING_TOP,
     }
 })
