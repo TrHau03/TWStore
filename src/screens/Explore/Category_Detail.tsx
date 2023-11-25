@@ -8,10 +8,10 @@ import {
   View,
 } from 'react-native';
 import React, {useEffect, useRef, useState} from 'react';
-import {ROUTES} from '../../utilities';
 import {AirbnbRating} from 'react-native-ratings';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { ROUTES } from '../../component/constants';
 
 interface Product {
   id: number;
