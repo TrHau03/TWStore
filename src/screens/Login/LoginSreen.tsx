@@ -55,9 +55,14 @@ const LoginScreen = (props: any) => {
       const result = await AxiosInstance().post('/users/LoginUser', { email: user.email, password: user.password });
       const userInfo = result?.data.user;
       if (result.data.status) {
-        const response = await AxiosInstance().post(`/users/getUser/${result.data.user._id}`);
+        const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
         const user = response.data.data;
-        handleSubmit({ _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartID: user.cartID, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address })
+        if (user.active) {
+          handleSubmit({ _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartID: user.cartID, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address })
+        }else{
+          console.warn("Tài khoản đã bị khóa !");
+        }
+
       } else {
         console.log(result.data.message);
       }
@@ -85,12 +90,18 @@ const LoginScreen = (props: any) => {
       // use Google ID token to sign into Realm
       const credential = Realm.Credentials.google({ idToken });
       const userRealm = await app.logIn(credential);
-      console.log("signed in as Realm user", userRealm.id);
+      console.log("signed in as Realm user Google", userRealm.id);
       if (userRealm) {
-        const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`);
+        const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`, { name: userGoogle.user.name, email: userGoogle.user.email });
         const user = response.data.data;
-        handleSubmit({ _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartID: user.cartID, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address })
-        dispatch(LoginGoogle(true));
+        console.log("Info user Google", user);
+        if (user.active) {
+          handleSubmit({ _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartID: user.cartID, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address })
+          dispatch(LoginGoogle(true));
+        } else {
+          dispatch(LoginGoogle(false));
+          console.warn("Tài khoản đã bị khóa !!")
+        }
       } else {
         console.log("Login failed");
       }
@@ -143,13 +154,18 @@ const LoginScreen = (props: any) => {
               app.logIn(credentials).then(async userFace => {
                 console.log(`Logged in with id: ${userFace.id}`);
                 if (userFace) {
-                  const response = await AxiosInstance().post(`/users/getUser/${userFace.id}`);
+                  const response = await AxiosInstance().post(`/users/getUser/${userFace.id}`, { name: userFacebook.name, email: userFacebook.email });
                   console.log(userFacebook);
                   const user = response.data.data;
-                  handleSubmit({
-                    _idUser: user._idUser, email: '', userName: userFacebook.name, cartID: user.cartID, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address
-                  })
-                  dispatch(LoginFacebook(true));
+                  if (user.active) {
+                    handleSubmit({
+                      _idUser: user._idUser, email: '', userName: userFacebook.name, cartID: user.cartID, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address
+                    })
+                    dispatch(LoginFacebook(true));
+                  } else {
+                    dispatch(LoginFacebook(false));
+                    console.warn("Tài khoản không bị khóa !!")
+                  }
                 } else {
                   console.log("Login failed");
                 }

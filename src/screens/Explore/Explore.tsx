@@ -61,9 +61,6 @@ const ExploreScreen = () => {
             <View style={styles.sale}>
               <Text style={styles.txtOldPrice}>5000</Text>
               <Text style={styles.txtSale}>24% Off</Text>
-              <TouchableOpacity style={styles.imgIc}>
-                <Icon name="trash-outline" size={25} />
-              </TouchableOpacity>
             </View>
           </View>
         </View>

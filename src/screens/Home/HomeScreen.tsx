@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
 
     slide: {
         height: WIDTH * 0.5,
-        width: WIDTH,
+        width: WIDTH * 0.9,
         borderRadius: 6,
     },
 
