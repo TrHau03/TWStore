@@ -22,7 +22,22 @@ import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 
 
   //redux
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+  const dispatch = useDispatch();
+  const handleRemoveFavorite = (id: number) => {
+    dispatch(HomeScreenSlice.actions.deleteFavourite(id));
+  };
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
+=======
+  const dispatch = useDispatch();
+  const handleRemoveFavorite = (id: number) => {
+    console.log(id);
+    dispatch(HomeScreenSlice.actions.deleteFavourite(id));
+  };
+>>>>>>> parent of de3849d (23/11)
 
   
 
@@ -47,7 +62,7 @@ const renderItem = ({ item }: any): React.JSX.Element => {
           <View style={styles.sale}>
             <Text style={styles.txtOldPrice}>${strikeThrough}</Text>
             <Text style={styles.txtSale}>{saleOff}% Off</Text>
-            <TouchableOpacity >
+            <TouchableOpacity  onPress={() => handleRemoveFavorite(id)} style={styles.imgIc}>
               <Icon  name="trash-outline" size={25} />
             </TouchableOpacity>
           </View>
