@@ -15,6 +15,10 @@ import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Header from '../../component/Header/Header'
 import { useDispatch, useSelector } from 'react-redux';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import { PropsExplore } from '../../component/Navigation/Props';
+import Item from '@ant-design/react-native/lib/list/ListItem';
+import { todoRemainingProducts } from '../../redux/silces/HomeSelector';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { COLORS } from '../../utilities';
 
 interface Brand {
@@ -32,8 +36,17 @@ interface Size {
 
 const FilterScreen = (props: any) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
   const { visibleSize, visibleColor, visibleBrand, unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
   const { dispatch, setVisibleBrand, setVisibleColor, setVisibleSize, setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
+=======
+  const { unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
+
+  const { setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize,setpriceMin, setpriceMax } = props.action;
+  const [visibleBrand, setVisibleBrand] = useState<boolean>(false);
+  const [visibleColor, setVisibleColor] = useState<boolean>(false);
+  const [visibleSize, setVisibleSize] = useState<boolean>(false);
+>>>>>>> parent of de3849d (23/11)
 
 
 =======
@@ -46,14 +59,26 @@ const FilterScreen = (props: any) => {
   const [sliderValues, setSliderValues] = useState<any>([25, 75]);
 >>>>>>> parent of 01c1d3d (minh dep trai 22/11)
 
+  const dispatch = useDispatch();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  const [sliderValue, setSliderValue] = useState(0);
+>>>>>>> parent of de3849d (23/11)
 
+  const handleTextInputChange = (text: any) => {
+    const parsedValue = parseFloat(text);
+    if (!isNaN(parsedValue)) {
+      setSliderValue(parsedValue);
+    }
+  };
 
-  const handleFilter = (brand: string, color: string, size: string, minPrice: string, maxPrice: string) => {
+  const handleFilter = (brand: string, color: string, size: string, minPrice:string, maxPrice:string) => {
     dispatch(HomeScreenSlice.actions.filterBrand(brand));
     dispatch(HomeScreenSlice.actions.filterColor(color));
     dispatch(HomeScreenSlice.actions.filterSize(size));
+<<<<<<< HEAD
     dispatch(HomeScreenSlice.actions.filterPrice({ minPrice, maxPrice }))
     console.log(brand, color, size, minPrice, maxPrice);
 
@@ -81,6 +106,9 @@ const FilterScreen = (props: any) => {
     console.log(brand, color, size);
     
 >>>>>>> parent of 01c1d3d (minh dep trai 22/11)
+=======
+    dispatch(HomeScreenSlice.actions.filterPrice({minPrice,maxPrice}))
+>>>>>>> parent of de3849d (23/11)
   }
 
 
@@ -218,7 +246,7 @@ const FilterScreen = (props: any) => {
       </View>
 <<<<<<< HEAD
 
-      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false),setVisibleBrand(false), setVisibleColor(false),setVisibleSize(false) }}>
+      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false) }}>
         <Button title='Apply' />
 =======
       <Pressable style={{alignItems: 'center', bottom: 20}} onPress={() => {handleFilter(brand, color, size); setModalVisible(false)}}>
@@ -233,7 +261,11 @@ export default FilterScreen;
 
 const styles = StyleSheet.create({
 <<<<<<< HEAD
+<<<<<<< HEAD
   Price: {
+=======
+  Price:{
+>>>>>>> parent of de3849d (23/11)
     borderWidth: 0.7,
     width: 90,
     height: 40,

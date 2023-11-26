@@ -43,6 +43,7 @@ interface Product {
     color: string;
     size: string;
 }
+<<<<<<< HEAD
 interface Order {
     id: number;
     code: string;
@@ -51,6 +52,8 @@ interface Order {
     price: string;
     status: number;
 }
+=======
+>>>>>>> parent of de3849d (23/11)
 
 interface InitialState {
     banner: Array<Banner>,
@@ -60,9 +63,12 @@ interface InitialState {
     product: Array<Product>,
 <<<<<<< HEAD
     filterPrice: FilterPrice,
+<<<<<<< HEAD
     order: Array<Order>,
 =======
 >>>>>>> parent of 01c1d3d (minh dep trai 22/11)
+=======
+>>>>>>> parent of de3849d (23/11)
 }
 
 const initialState: InitialState = {
@@ -73,6 +79,7 @@ const initialState: InitialState = {
         size: 'All',
         loading: false,
     },
+<<<<<<< HEAD
     order: [
         {
             id: 1,
@@ -107,6 +114,9 @@ const initialState: InitialState = {
             status: 4,
         },
     ],
+=======
+
+>>>>>>> parent of de3849d (23/11)
     offer: [
         {
             id: 1,
@@ -211,16 +221,23 @@ const HomeScreenSlice = createSlice({
     initialState,
     reducers: {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         deleteFavourite: (state, action) => {
             // state.favoriteProduct.splice(state.favoriteProduct.findIndex(favoriteProduct.id === action.payload.id), 1)
+=======
+        deleteFavourite: (state, action) => {
+>>>>>>> parent of de3849d (23/11)
             const index = state.favoriteProduct.findIndex(favoriteProduct => favoriteProduct.id === action.payload);
             if (index !== -1) {
                 state.favoriteProduct.splice(index, 1);
             }
         },
 
+<<<<<<< HEAD
 >>>>>>> parent of 01c1d3d (minh dep trai 22/11)
+=======
+>>>>>>> parent of de3849d (23/11)
         searchFilterChange: (state, action) => {
             state.filters.search = action.payload;
         },
@@ -242,6 +259,7 @@ const HomeScreenSlice = createSlice({
             state.filters.category = action.payload;
         },
         filterPrice: (state, action) => {
+            
             state.filterPrice.minPrice = action.payload.minPrice;
             state.filterPrice.maxPrice = action.payload.maxPrice;
         },
