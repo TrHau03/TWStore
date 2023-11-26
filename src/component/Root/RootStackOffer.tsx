@@ -1,26 +1,24 @@
 
 import { uid } from 'uid';
 import OfferScreen from '../../screens/Offer/OfferScreen';
-import { FadeOfferScreen } from '../BottomNavigation/AniScreenBottomTab';
-import OfferHome from '../../screens/Offer/OfferHome';
 
 
 
 export enum RootStackScreenEnumOffer {
-    OfferHome = 'OfferHome',
     OfferScreen = 'OfferScreen',
-
+    ActivityScreen = 'ActivityScreen',
+    OfferNorifiScreen = 'OfferNorifiScreen',
 }
 
 export type RootStackParamListOffer = {
-    OfferHome: undefined,
     OfferScreen: undefined,
+    ActivityScreen: undefined,
+    OfferNorifiScreen: undefined,
 }
 
 
 export const RootStackScreenOffer = () => {
     const Screen: any = [
-        { id: uid(), name: RootStackScreenEnumOffer.OfferHome, component: FadeOfferScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumOffer.OfferScreen, component: OfferScreen, options: {} },
 
 

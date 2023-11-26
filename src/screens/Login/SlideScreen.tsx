@@ -7,7 +7,6 @@ import { useNavigation } from '@react-navigation/native';
 
 import LoginNavigation from '../../component/Navigation/LoginNavigation';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
-import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 
 
 
@@ -20,7 +19,7 @@ const SlideScreen = (props: any) => {
 
     return (
         (!loadLoginScreen) ?
-            <View style={{paddingHorizontal: PADDING_HORIZONTAL, width: '100%', height: '100%', backgroundColor: BG_COLOR }}>
+            <View style={{ padding: 20, width: '100%', height: '100%' }}>
                 <View style={{ marginTop: '40%' }}>
                     <Image style={styles.imageSlide1} source={step === 1 ? require('../../asset/image/IconSlide1.png') : step === 2 ? require('../../asset/image/IconSlide2.png') : require('../../asset/image/IconSlide3.png')} />
                 </View>
@@ -38,7 +37,7 @@ const SlideScreen = (props: any) => {
                     <View style={step === 2 ? styles.slideFocus : styles.slideUnfocus} />
                     <View style={step === 3 ? styles.slideFocus : styles.slideUnfocus} />
                 </View>
-            </View> : <LoginNavigation />
+            </View> : <LoginNavigation/>
     )
 }
 
@@ -71,7 +70,7 @@ const styles = StyleSheet.create({
         fontWeight: '300',
     },
     textTitle: {
-        width: '85%',
+        width: '80%',
         color: '#252525',
         fontSize: 40,
         fontFamily: 'Montserrat',

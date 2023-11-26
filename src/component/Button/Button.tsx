@@ -22,7 +22,7 @@ export default ButtonBottom
 const styles = StyleSheet.create({
     textButton: {
         color: 'white',
-        fontSize: 22,
+        fontSize: 24,
         fontFamily: 'Poppins',
         fontWeight: '700',
     },

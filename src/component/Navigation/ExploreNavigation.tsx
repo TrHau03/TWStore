@@ -1,18 +1,18 @@
 
 import { configStack } from '../Root/RootStack';
 import { RootStackScreenExplore } from '../Root/RootStackExplore';
-import { Stack } from './Props';
+import { RootStack } from './Props';
 
 
 
 
 const ExploreNavigation = () => {
 
-    return <Stack.Navigator initialRouteName='ExploreScreen' screenOptions={({ route }) => configStack(route)}>
+    return <RootStack.Navigator initialRouteName='ExploreScreen' screenOptions={({ route }) => configStack(route)}>
         {RootStackScreenExplore().map((item: any) => {
-            return <Stack.Screen key={item.id} name={item.name} component={item.component} options={item.options} />
+            return <RootStack.Screen key={item.id} name={item.name} component={item.component} options={item.options} />
         })}
-    </Stack.Navigator>
+    </RootStack.Navigator>
 }
 
 

@@ -1,7 +1,6 @@
 
 import { uid } from 'uid';
 import CartScreen from '../../screens/Cart/CartScreen';
-import { FadeCartScreen } from '../BottomNavigation/AniScreenBottomTab';
 
 
 
@@ -16,7 +15,7 @@ export type RootStackParamListCart = {
 
 export const RootStackScreenCart = () => {
     const Screen: any = [
-        { id: uid(), name: RootStackScreenEnumCart.CartScreen, component: FadeCartScreen, options: {} },
+        { id: uid(), name: RootStackScreenEnumCart.CartScreen, component: CartScreen, options: {} },
         
 
     ]

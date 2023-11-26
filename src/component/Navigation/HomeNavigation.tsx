@@ -1,17 +1,17 @@
 
+import { fromLeft } from 'react-navigation-transitions';
 import { configStack } from '../Root/RootStack';
-import {  RootStackScreenHome } from '../Root/RootStackHome';
-import { Stack } from './Props';
-import React from 'react';
+import { RootStackScreenHome } from '../Root/RootStackHome';
+import { RootStack } from './Props';
 
 
 const HomeNavigation = () => {
 
-    return <Stack.Navigator initialRouteName='HomeScreen' screenOptions={(props) => configStack(props)} >
+    return <RootStack.Navigator initialRouteName='HomeScreen'  screenOptions={() => configStack()} >
         {RootStackScreenHome().map((item: any) => {
-            return <Stack.Screen key={item.id} name={item.name} component={item.component} options={item.options} />
+            return <RootStack.Screen key={item.id} name={item.name} component={item.component} options={item.options} />
         })}
-    </Stack.Navigator>
+    </RootStack.Navigator>
 }
 
 

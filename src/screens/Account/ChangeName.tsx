@@ -3,7 +3,6 @@ import React from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '../../component/Header/Header'
 import ButtonBottom from '../../component/Button/Button'
-import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 
 const ChangeName = () => {
     return (
@@ -26,7 +25,7 @@ const ChangeName = () => {
                     </View>
                 </View>
             </View>
-            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
                 <ButtonBottom title='Save' />
             </View>
         </View>
@@ -112,10 +111,10 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        height: HEIGHT * 0.8,
-        width: WIDTH,
+        height: '80%',
+        width: '100%',
         alignItems: 'center',
-        paddingHorizontal: PADDING_HORIZONTAL,
-        paddingTop: PADDING_TOP,
+        paddingHorizontal: 20,
+        paddingTop: 20,
     }
 })

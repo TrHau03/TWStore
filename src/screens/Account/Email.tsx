@@ -4,7 +4,6 @@ import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
 import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { HEIGHT, WIDTH } from '../../utilities/utility'
 
 const Email = () => {
     return (
@@ -22,7 +21,7 @@ const Email = () => {
                 <Text style={styles.verifi}>We Will Send verification to your New Email</Text>
             </View>
 
-            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <View style={{ width: '100%', position: 'absolute', bottom: 10 }}>
                 <ButtonBottom title='Change Email' />
             </View>
         </View>
@@ -131,8 +130,7 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        height: HEIGHT * 0.8,
-        width: WIDTH,
+        height: '80%',
         alignItems: 'center',
         paddingHorizontal: 20,
         paddingTop: 20,

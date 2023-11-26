@@ -7,7 +7,6 @@ import {
     useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
 import { InputItem } from '@ant-design/react-native';
-import { BG_COLOR, PADDING_HORIZONTAL } from '../../utilities/utility';
 const VerificationScreen = () => {
     const [value, setValue] = useState<string>('');
     const [verify, setVerify] = useState<boolean>(false);
@@ -17,7 +16,7 @@ const VerificationScreen = () => {
     });
     return (
         <KeyboardAwareScrollView>
-            <View style={{ paddingHorizontal: PADDING_HORIZONTAL, alignItems: 'center', backgroundColor: BG_COLOR }}>
+            <View style={{ paddingHorizontal: 20, alignItems: 'center' }}>
                 <View style={{ marginTop: 100 }}>
                     <Image source={require('../../asset/image/Verification.png')} />
                     <Text style={styles.textOTP}>OTP Verification</Text>
@@ -34,7 +33,7 @@ const VerificationScreen = () => {
                             placeholder="Email">
                         </InputItem>
                     </View>
-                    :
+                        :
                     <View style={{ width: '100%', alignItems: 'center' }}>
                         <Text style={styles.textEnterOTP}>Enter the OTP sent to</Text>
                         <Text style={styles.textEmail}>******@gmail.com</Text>
