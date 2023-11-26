@@ -15,6 +15,7 @@ import { fetchInitialListProduct } from '../../redux/silces/Silces';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { listRecommended } from '../../redux/silces/HomeSelector';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
@@ -28,11 +29,12 @@ const renderItem = ({ item }: { item: { id: string, name: string, icon: any } })
 
 const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } }) => {
     return (
-        < View style={styles.itemsale} >
-            <Image style={styles.imageproduct} source={{ uri: item.image }} />
-            <Text style={styles.nameproduct}>{item.name}</Text>
-
-            <Text style={styles.price}>$299,43</Text>
+        <View style={styles.itemsale} >
+            <View style={{ rowGap: 20 }}>
+                <Image style={styles.imageproduct} source={{ uri: item.image }} />
+                <Text style={styles.nameproduct}>{item.name}</Text>
+                <Text style={styles.price}>$299,43</Text>
+            </View>
             <View style={styles.stylesaleoff}>
                 <Text style={styles.strikethrough}>$534,33</Text>
                 <Text style={styles.saleoff}>24% Off</Text>
@@ -47,11 +49,13 @@ const renderItem3 = ({ item }: any) => {
             <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
             <View style={{ marginTop: 20, rowGap: 15 }}>
                 <Text style={styles.nameproduct}>{item.productName}</Text>
-                <Text style={styles.price}>${item.price}</Text>
             </View>
             <View style={styles.stylesaleoff}>
-                <Text style={styles.strikethrough}>$534,33</Text>
-                <Text style={styles.saleoff}>24% Off</Text>
+                <Text style={styles.price}>${item.price}</Text>
+                <View style={{ flexDirection: "row" }}>
+                    <Text style={styles.strikethrough}>$534,33</Text>
+                    <Text style={styles.saleoff}>24% Off</Text>
+                </View>
             </View>
         </View>
     )
@@ -72,9 +76,10 @@ const HomeScreen = (props: any) => {
 
     const [images, setImages] = useState<[]>([]);
     const [brand, setBrand] = useState<[]>([]);
+    const listProduct = useSelector(listRecommended);
 
     const dispatch = useDispatch();
-    const listProduct = useSelector((state: any) => state.SlicesReducer.listProduct);
+
     useEffect(() => {
         dispatch(fetchInitialListProduct());
         const fetchBanner = async () => {
@@ -126,7 +131,7 @@ const HomeScreen = (props: any) => {
                 </View>
 
             </View>
-            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[7]} scrollEventThrottle={16}>
+            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[6]} scrollEventThrottle={16}>
                 <View style={styles.topslide}>
                     <ScrollView
                         nestedScrollEnabled={true}
@@ -227,7 +232,7 @@ const HomeScreen = (props: any) => {
                     showsVerticalScrollIndicator={false}
                     data={listProduct}
                     renderItem={renderItem3}
-                    keyExtractor={(item) => item._id.toString()}
+                    keyExtractor={(item: any) => item._id.toString()}
                     numColumns={2}
                     columnWrapperStyle={{ columnGap: 10 }}
                 />
@@ -373,13 +378,13 @@ const styles = StyleSheet.create({
     },
 
     itemsale: {
+        paddingHorizontal: 10,
+        paddingVertical: 5,
         height: 240,
         width: 140,
-        marginRight: 9,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: '#EBF0FF',
-        justifyContent: 'space-around',
     },
 
     imageproduct: {
@@ -387,26 +392,23 @@ const styles = StyleSheet.create({
         width: 72,
         height: 72,
     },
-
     nameproduct: {
         fontWeight: 'bold',
         fontSize: 13,
         color: '#223263',
         width: 110,
-        marginLeft: 15
     },
 
     price: {
         fontWeight: 'bold',
-        fontSize: 15,
+        fontSize: 18,
         color: '#4464C4',
-        marginLeft: 15
     },
 
     stylesaleoff: {
-        flexDirection: 'row',
         position: 'absolute',
-        bottom: 10
+        bottom: 10,
+        alignItems: 'center'
     },
 
     strikethrough: {
@@ -444,6 +446,7 @@ const styles = StyleSheet.create({
 
     itemsale2: {
         paddingVertical: 10,
+        paddingHorizontal: 10,
         height: 240,
         width: WIDTH / 2.5,
         borderWidth: 1,

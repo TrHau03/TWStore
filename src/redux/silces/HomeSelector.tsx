@@ -1,10 +1,6 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-export const listBanners = (state: any) => state.HomeScreenSlice.banner;
-
-export const listRecommendeds = (state: any) => state.HomeScreenSlice.recommenProduct;
-export const listOffer = (state: any) => state.HomeScreenSlice.offer;
-export const listFavorites = (state: any) => state.HomeScreenSlice.favoriteProduct;
+const listProductRecommend = (state: any) => state.SlicesReducer.listProduct;
 export const searchFilterChange = (state: any) => state.HomeScreenSlice.filters.search;
 export const listProducts = (state: any) => state.HomeScreenSlice.product;
 export const filterBrand = (state: any) => state.HomeScreenSlice.filters.brand;
@@ -55,3 +51,8 @@ export const todoRemainingProducts = createSelector(listProducts, searchFilterCh
         return [];
     }
 });
+export const listRecommended = createSelector(listProductRecommend, (list) => {
+    return list.filter((item: any) => {
+        return item.price < 200
+    })
+})
