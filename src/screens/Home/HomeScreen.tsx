@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity, Animated } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
@@ -19,8 +20,7 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
     <View style={styles.item}>
         <View style={styles.bodericon}>
-            {/* <Image style={styles.Icon} source={item.icon} /> */}
-            <Icon name={item.icon} size={26} />
+            <MaterialCommunityIcons name='shoe-sneaker' size={26} />
         </View>
         <Text style={styles.textname}>{item.name}</Text>
     </View>
@@ -48,10 +48,10 @@ const renderItem3 = ({ item }: any) => {
             <View style={{ marginTop: 20, rowGap: 15 }}>
                 <Text style={styles.nameproduct}>{item.productName}</Text>
                 <Text style={styles.price}>${item.price}</Text>
-                <View style={styles.stylesaleoff}>
-                    <Text style={styles.strikethrough}>$534,33</Text>
-                    <Text style={styles.saleoff}>24% Off</Text>
-                </View>
+            </View>
+            <View style={styles.stylesaleoff}>
+                <Text style={styles.strikethrough}>$534,33</Text>
+                <Text style={styles.saleoff}>24% Off</Text>
             </View>
         </View>
     )
@@ -71,6 +71,7 @@ const HomeScreen = (props: any) => {
     const [textInputSearch, setTextInputSearch] = useState<string>('');
 
     const [images, setImages] = useState<[]>([]);
+    const [brand, setBrand] = useState<[]>([]);
 
     const dispatch = useDispatch();
     const listProduct = useSelector((state: any) => state.SlicesReducer.listProduct);
@@ -78,11 +79,14 @@ const HomeScreen = (props: any) => {
         dispatch(fetchInitialListProduct());
         const fetchBanner = async () => {
             const response = await AxiosInstance().get(`banner/getAllBanner`);
-            console.log(response.data.data);
-
-            setImages(response.data.data);
+            setImages(response.data.banner);
         }
         fetchBanner();
+        const fetchBrand = async () => {
+            const response = await AxiosInstance().get(`brand/getAllBrand`);
+            setBrand(response.data)
+        }
+        fetchBrand();
     }, [])
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
@@ -122,10 +126,8 @@ const HomeScreen = (props: any) => {
                 </View>
 
             </View>
-            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[7]} onScroll={(e) => {
-            }} scrollEventThrottle={16}>
+            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[7]} scrollEventThrottle={16}>
                 <View style={styles.topslide}>
-
                     <ScrollView
                         nestedScrollEnabled={true}
                         onScroll={({ nativeEvent }) => onChange(nativeEvent)}
@@ -161,26 +163,19 @@ const HomeScreen = (props: any) => {
                 </View>
 
                 <View style={styles.category}>
-
-                    <Text style={styles.textcategory}>Category</Text>
-
-                    <Pressable onPress={() => navigationOtherTab.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
-                        <Text style={styles.textcategory}>
-                            More Category
-                        </Text>
-                    </Pressable>
-
+                    <Text style={styles.textcategory}>Brand</Text>
+                    <View style={styles.listcategory}>
+                        <FlatList
+                            data={brand}
+                            horizontal
+                            nestedScrollEnabled={true}
+                            renderItem={renderItem}
+                            keyExtractor={(item) => item.name}
+                        />
+                    </View>
                 </View>
 
-                <View style={styles.listcategory}>
-                    <FlatList
-                        data={data}
-                        horizontal
-                        nestedScrollEnabled={true}
-                        renderItem={renderItem}
-                        keyExtractor={(item) => item.name}
-                    />
-                </View>
+
 
                 <View style={styles.flashsale}>
 
@@ -312,13 +307,14 @@ const styles = StyleSheet.create({
     },
 
     category: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginVertical: 20,
     },
 
     textcategory: {
+        alignSelf: 'flex-start',
         fontWeight: 'bold',
         fontSize: 15,
         color: '#223263'
@@ -408,7 +404,9 @@ const styles = StyleSheet.create({
     },
 
     stylesaleoff: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        position: 'absolute',
+        bottom: 10
     },
 
     strikethrough: {

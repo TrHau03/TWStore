@@ -7,8 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {AirbnbRating} from 'react-native-ratings';
+import React, { useEffect, useRef, useState } from 'react';
+import { AirbnbRating } from 'react-native-ratings';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { ROUTES } from '../../component/constants';
@@ -24,12 +24,12 @@ interface ArrayProduct {
   category: string;
 }
 const dataArray: ArrayProduct[] = [
-  {category: 'All'},
-  {category: 'Man Shoes'},
-  {category: 'Women Shoes'},
+  { category: 'All' },
+  { category: 'Man Shoes' },
+  { category: 'Women Shoes' },
 ];
 
-const Category_Detail_Screen = ({navigation}: any) => {
+const Category_Detail_Screen = ({ navigation }: any) => {
   const [click, setClick] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('All');
   const [dataFilter, setdataFilter] = useState<any>([]);
@@ -48,14 +48,14 @@ const Category_Detail_Screen = ({navigation}: any) => {
     console.log(dataFilter);
   }, [filter]);
 
-  const renderItem = ({item}: any): React.JSX.Element => {
-    const {id, img, name, price} = item;
+  const renderItem = ({ item }: any): React.JSX.Element => {
+    const { id, img, name, price } = item;
 
     return (
       <TouchableOpacity style={styles.containerItemPD}>
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
-            <Image style={{width: '100%', height: '100%'}} source={img} />
+            <Image style={{ width: '100%', height: '100%' }} source={img} />
           </View>
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
@@ -79,8 +79,8 @@ const Category_Detail_Screen = ({navigation}: any) => {
     <View style={styles.container}>
       <View style={styles.group}>
         <View
-          style={!click ? styles.right : [styles.right, {borderColor: 'blue'}]}>
-          <Icon name='search' size={20}/>
+          style={!click ? styles.right : [styles.right, { borderColor: 'blue' }]}>
+          <Icon name='search' size={20} />
           <TextInput
             placeholder="Search"
             style={styles.TextSearch}
@@ -92,11 +92,11 @@ const Category_Detail_Screen = ({navigation}: any) => {
           <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SHORTBY)}>
             <Image
               source={require('../../asset/image/Shorticon.png')}
-              style={{width: 25, height: 25}}
+              style={{ width: 25, height: 25 }}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate(ROUTES.FILTER)}>
-          <Icon name='filter' size={20}/>
+            <Icon name='filter' size={20} />
           </TouchableOpacity>
         </View>
       </View>
@@ -114,7 +114,7 @@ const Category_Detail_Screen = ({navigation}: any) => {
                 marginTop: 15,
                 marginLeft: 10,
               }}>
-                {dataFilter.length} result
+              {dataFilter.length} result
             </Text>
           </View>
 
@@ -154,10 +154,11 @@ const Category_Detail_Screen = ({navigation}: any) => {
           </View>
         </View>
         <FlatList
-          style={{marginTop: 10}}
+          style={{ marginTop: 10 }}
           data={dataFilter}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
+          columnWrapperStyle={{justifyContent:'center'}}
           numColumns={2}
           showsVerticalScrollIndicator={false}
         />
@@ -183,8 +184,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     textAlign: 'left',
   },
-  dropdown1DropdownStyle: {borderRadius: 5, backgroundColor: '#E6E6E6'},
-  dropdown1RowStyle: {borderBottomColor: '#C5C5C5'},
+  dropdown1DropdownStyle: { borderRadius: 5, backgroundColor: '#E6E6E6' },
+  dropdown1RowStyle: { borderBottomColor: '#C5C5C5' },
   dropdown1RowTxtStyle: {
     color: '#223263',
     fontSize: 18,
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   star: {
-    width: '65%',
+    width: '75%',
     marginTop: 5,
   },
 
@@ -265,8 +266,8 @@ const styles = StyleSheet.create({
   },
   containerItemPD: {
     borderWidth: 0.5,
-    width: 180,
-    height: 300,
+    width: '48%',
+    height: 270,
     backgroundColor: '#FFFFFF',
     margin: 5,
     borderRadius: 5,
