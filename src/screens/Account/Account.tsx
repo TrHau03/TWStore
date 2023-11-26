@@ -5,7 +5,7 @@ import { PropsAccount } from '../../component/Navigation/Props'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 import ButtonBottom from '../../component/Button/Button'
 import { useDispatch } from 'react-redux'
-import { isLogin } from '../../redux/silces/Silces'
+import { isLogin } from '../../Redux/silces/Silces'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { LoginManager } from 'react-native-fbsdk-next'
 

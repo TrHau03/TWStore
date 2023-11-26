@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Header from '../../component/Header/Header'
 import { useDispatch, useSelector } from 'react-redux';
-import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import HomeScreenSlice from '../../Redux/silces/HomeScreenSlice';
 import { COLORS } from '../../utilities';
 import Button from '../../component/Button/Button';
 
@@ -34,6 +34,9 @@ interface Size {
 const FilterScreen = (props: any) => {
   const { visibleSize, visibleColor, visibleBrand, unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
   const { dispatch, setVisibleBrand, setVisibleColor, setVisibleSize, setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
+
+
+
 
 
 

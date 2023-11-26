@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity, Animated } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
@@ -11,17 +10,17 @@ import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavig
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { COLORS } from '../../utilities';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchInitialListProduct } from '../../redux/silces/Silces';
+import { fetchInitialListProduct } from '../../Redux/silces/Silces';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { listRecommended } from '../../redux/silces/HomeSelector';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
     <View style={styles.item}>
         <View style={styles.bodericon}>
-            <MaterialCommunityIcons name='shoe-sneaker' size={26} />
+            {/* <Image style={styles.Icon} source={item.icon} /> */}
+            <Icon name={item.icon} size={26} />
         </View>
         <Text style={styles.textname}>{item.name}</Text>
     </View>
@@ -29,12 +28,11 @@ const renderItem = ({ item }: { item: { id: string, name: string, icon: any } })
 
 const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } }) => {
     return (
-        <View style={styles.itemsale} >
-            <View style={{ rowGap: 20 }}>
-                <Image style={styles.imageproduct} source={{ uri: item.image }} />
-                <Text style={styles.nameproduct}>{item.name}</Text>
-                <Text style={styles.price}>$299,43</Text>
-            </View>
+        < View style={styles.itemsale} >
+            <Image style={styles.imageproduct} source={{ uri: item.image }} />
+            <Text style={styles.nameproduct}>{item.name}</Text>
+
+            <Text style={styles.price}>$299,43</Text>
             <View style={styles.stylesaleoff}>
                 <Text style={styles.strikethrough}>$534,33</Text>
                 <Text style={styles.saleoff}>24% Off</Text>
@@ -49,10 +47,8 @@ const renderItem3 = ({ item }: any) => {
             <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
             <View style={{ marginTop: 20, rowGap: 15 }}>
                 <Text style={styles.nameproduct}>{item.productName}</Text>
-            </View>
-            <View style={styles.stylesaleoff}>
                 <Text style={styles.price}>${item.price}</Text>
-                <View style={{ flexDirection: "row" }}>
+                <View style={styles.stylesaleoff}>
                     <Text style={styles.strikethrough}>$534,33</Text>
                     <Text style={styles.saleoff}>24% Off</Text>
                 </View>
@@ -75,23 +71,18 @@ const HomeScreen = (props: any) => {
     const [textInputSearch, setTextInputSearch] = useState<string>('');
 
     const [images, setImages] = useState<[]>([]);
-    const [brand, setBrand] = useState<[]>([]);
-    const listProduct = useSelector(listRecommended);
 
     const dispatch = useDispatch();
-
+    const listProduct = useSelector((state: any) => state.SlicesReducer.listProduct);
     useEffect(() => {
         dispatch(fetchInitialListProduct());
         const fetchBanner = async () => {
             const response = await AxiosInstance().get(`banner/getAllBanner`);
-            setImages(response.data.banner);
+            console.log(response.data.data);
+
+            setImages(response.data.data);
         }
         fetchBanner();
-        const fetchBrand = async () => {
-            const response = await AxiosInstance().get(`brand/getAllBrand`);
-            setBrand(response.data)
-        }
-        fetchBrand();
     }, [])
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
@@ -131,8 +122,10 @@ const HomeScreen = (props: any) => {
                 </View>
 
             </View>
-            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[6]} scrollEventThrottle={16}>
+            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[7]} onScroll={(e) => {
+            }} scrollEventThrottle={16}>
                 <View style={styles.topslide}>
+
                     <ScrollView
                         nestedScrollEnabled={true}
                         onScroll={({ nativeEvent }) => onChange(nativeEvent)}
@@ -168,19 +161,26 @@ const HomeScreen = (props: any) => {
                 </View>
 
                 <View style={styles.category}>
-                    <Text style={styles.textcategory}>Brand</Text>
-                    <View style={styles.listcategory}>
-                        <FlatList
-                            data={brand}
-                            horizontal
-                            nestedScrollEnabled={true}
-                            renderItem={renderItem}
-                            keyExtractor={(item) => item.name}
-                        />
-                    </View>
+
+                    <Text style={styles.textcategory}>Category</Text>
+
+                    <Pressable onPress={() => navigationOtherTab.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
+                        <Text style={styles.textcategory}>
+                            More Category
+                        </Text>
+                    </Pressable>
+
                 </View>
 
-
+                <View style={styles.listcategory}>
+                    <FlatList
+                        data={data}
+                        horizontal
+                        nestedScrollEnabled={true}
+                        renderItem={renderItem}
+                        keyExtractor={(item) => item.name}
+                    />
+                </View>
 
                 <View style={styles.flashsale}>
 
@@ -232,7 +232,7 @@ const HomeScreen = (props: any) => {
                     showsVerticalScrollIndicator={false}
                     data={listProduct}
                     renderItem={renderItem3}
-                    keyExtractor={(item: any) => item._id.toString()}
+                    keyExtractor={(item) => item._id.toString()}
                     numColumns={2}
                     columnWrapperStyle={{ columnGap: 10 }}
                 />
@@ -312,14 +312,13 @@ const styles = StyleSheet.create({
     },
 
     category: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginVertical: 20,
     },
 
     textcategory: {
-        alignSelf: 'flex-start',
         fontWeight: 'bold',
         fontSize: 15,
         color: '#223263'
@@ -378,13 +377,13 @@ const styles = StyleSheet.create({
     },
 
     itemsale: {
-        paddingHorizontal: 10,
-        paddingVertical: 5,
         height: 240,
         width: 140,
+        marginRight: 9,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: '#EBF0FF',
+        justifyContent: 'space-around',
     },
 
     imageproduct: {
@@ -392,23 +391,24 @@ const styles = StyleSheet.create({
         width: 72,
         height: 72,
     },
+
     nameproduct: {
         fontWeight: 'bold',
         fontSize: 13,
         color: '#223263',
         width: 110,
+        marginLeft: 15
     },
 
     price: {
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 15,
         color: '#4464C4',
+        marginLeft: 15
     },
 
     stylesaleoff: {
-        position: 'absolute',
-        bottom: 10,
-        alignItems: 'center'
+        flexDirection: 'row'
     },
 
     strikethrough: {
@@ -446,7 +446,6 @@ const styles = StyleSheet.create({
 
     itemsale2: {
         paddingVertical: 10,
-        paddingHorizontal: 10,
         height: 240,
         width: WIDTH / 2.5,
         borderWidth: 1,

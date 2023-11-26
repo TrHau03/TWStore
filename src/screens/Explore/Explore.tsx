@@ -18,8 +18,6 @@ import { PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 import { COLORS } from '../../utilities';
 import AxiosInstance from '../../Axios/Axios';
 import { AirbnbRating } from 'react-native-ratings';
-import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 
 interface Category {
@@ -28,8 +26,8 @@ interface Category {
   name: string;
 }
 type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
-const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
-  const navigationBottom = useNavigation<BottomNavigationProp>();
+const ExploreScreen = () => {
+  const navigation = useNavigation<BottomNavigationProp>();
 
   const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
 
@@ -39,7 +37,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
 
   useEffect(() => {
     const fetchListProduct = async () => {
-      const response = await AxiosInstance().get('category/getAllCategory');
+      const response = await AxiosInstance().get('product/getAllProduct');
       setListProduct(response.data);
     }
     fetchListProduct();
@@ -47,12 +45,22 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
 
   const renderItem = ({ item }: any): React.JSX.Element => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Category_Detail_Screen)} style={styles.containerItemPD}>
+      <TouchableOpacity style={styles.containerItemPD}>
         <View style={styles.content}>
-
+          <View style={styles.ImgContainerPD}>
+            <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.image[0] }} />
+          </View>
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
-              <Text style={styles.NamePD} >{item.name}</Text>
+              <Text style={styles.NamePD} >{item.productName}</Text>
+              <View style={styles.star}>
+                <AirbnbRating count={5} size={15} showRating={false} />
+              </View>
+              <Text style={styles.PricePD}>{item.price}</Text>
+            </View>
+            <View style={styles.sale}>
+              <Text style={styles.txtOldPrice}>5000</Text>
+              <Text style={styles.txtSale}>24% Off</Text>
             </View>
           </View>
         </View>
@@ -85,7 +93,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
         </View>
 
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => navigationBottom.navigate(RootStackScreenEnumHome.NotificationScreen)}>
+          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
             <Icon name="notifications-outline" size={25} />
           </TouchableOpacity>
         </View>
