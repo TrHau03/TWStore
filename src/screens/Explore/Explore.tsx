@@ -12,26 +12,15 @@ import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
-<<<<<<< HEAD
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootTabParamList } from '../../component/BottomNavigation/RootTab/RootTab';
 import { PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { COLORS } from '../../utilities';
 import AxiosInstance from '../../Axios/Axios';
 import { AirbnbRating } from 'react-native-ratings';
-
-=======
-import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
-import { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
-import { SelectList } from 'react-native-dropdown-select-list';
-import { useDispatch, useSelector } from 'react-redux';
-import { listRecommendeds, todoRemainingProducts } from '../../redux/silces/HomeSelector';
-import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
-import { PropsExplore } from '../../component/Navigation/Props';
+import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
->>>>>>> parent of de3849d (23/11)
+
 
 interface Category {
   id: number;
@@ -39,87 +28,31 @@ interface Category {
   name: string;
 }
 type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
-const ExploreScreen = () => {
-  const navigation = useNavigation<BottomNavigationProp>();
+const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
+  const navigationBottom = useNavigation<BottomNavigationProp>();
 
   const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
 
-<<<<<<< HEAD
-=======
-type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
-const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
-  console.log(navigation);
-
-  const navigationProfile = useNavigation<ProfileScreenNavigationProp>();
-  const textInputRef = useRef(null);
-  const [click, setClick] = useState<boolean>(false);
-  //redux
-  const todoListProducts = useSelector(todoRemainingProducts);
->>>>>>> parent of de3849d (23/11)
   const [textInputSearch, setTextInputSearch] = useState<string>('');
 
-<<<<<<< HEAD
   const [listProduct, setListProduct] = useState<[]>([]);
 
   useEffect(() => {
     const fetchListProduct = async () => {
-      const response = await AxiosInstance().get('product/getAllProduct');
+      const response = await AxiosInstance().get('category/getAllCategory');
       setListProduct(response.data);
     }
     fetchListProduct();
   }, [])
-=======
-  const handleSearch = (e: any) => {
-    setTextInputSearch(e);
-    dispatch(
-      HomeScreenSlice.actions.searchFilterChange(e)
-    )
-  }
->>>>>>> parent of 01c1d3d (minh dep trai 22/11)
 
-<<<<<<< HEAD
   const renderItem = ({ item }: any): React.JSX.Element => {
-=======
-  const RenderItem = (props: any): React.JSX.Element => {
-    const { data } = props;
-    const { item } = data;
     return (
-      <TouchableOpacity style={{ paddingVertical: 10, paddingLeft: 10, height: 50, borderWidth: 1 }}
-        onPress={() => navigation.navigate(RootStackScreenEnumHome.HomeScreen)}>
-        <Text style={styles.TextSearch}>{item.name}</Text>
-      </TouchableOpacity>
-    )
-  }
-  const renderItem = ({ item }: any): React.JSX.Element => {
-    const { id, img, name } = item;
->>>>>>> parent of de3849d (23/11)
-    return (
-<<<<<<< HEAD
-      <TouchableOpacity style={styles.containerItemPD}>
-=======
-      <TouchableOpacity
-        style={styles.containerItemPD}
-        onPress={() => navigation.navigate(RootStackScreenEnumExplore.Category_Detail)}
-      >
->>>>>>> parent of 01c1d3d (minh dep trai 22/11)
+      <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Category_Detail_Screen)} style={styles.containerItemPD}>
         <View style={styles.content}>
-          <View style={styles.ImgContainerPD}>
-            <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.image[0] }} />
-          </View>
+
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
-              <Text style={styles.NamePD} >{item.productName}</Text>
-              <View style={styles.star}>
-                <AirbnbRating count={5} size={15} showRating={false} />
-              </View>
-              <Text style={styles.PricePD}>{item.price}</Text>
-            </View>
-            <View style={styles.sale}>
-              <Text style={styles.txtOldPrice}>5000</Text>
-              <Text style={styles.txtSale}>24% Off</Text>
-              <TouchableOpacity style={styles.imgIc}>
-                <Icon name="trash-outline" size={25} />
-              </TouchableOpacity>
+              <Text style={styles.NamePD} >{item.name}</Text>
             </View>
           </View>
         </View>
@@ -152,53 +85,16 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
         </View>
 
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
+          <TouchableOpacity onPress={() => navigationBottom.navigate(RootStackScreenEnumHome.NotificationScreen)}>
             <Icon name="notifications-outline" size={25} />
           </TouchableOpacity>
         </View>
       </View>
-<<<<<<< HEAD
       <FlatList
         data={listProduct}
         renderItem={renderItem}
         numColumns={2}
         keyExtractor={(item: any) => item?._id.toString()} />
-=======
-      {(click) ?
-        <View>
-          <FlatList
-            renderItem={(item) => <RenderItem data={item} />}
-            data={textInputSearch == "" ? null : todoListProducts}
-            style={{ paddingVertical: 15, height: '100%', width: '100%' }}
-          />
-        </View>
-        :
-        <View>
-          <View style={styles.Name}>
-            <Text style={styles.txtName}>Man Shoes</Text>
-            <FlatList
-              data={DataMan}
-              renderItem={renderItem}
-              keyExtractor={item => item.id.toString()}
-              numColumns={4}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-
-          <View style={styles.Name}>
-            <Text style={styles.txtName}>Woman Shoes</Text>
-            <FlatList
-              data={DataWoman}
-              renderItem={renderItem}
-              keyExtractor={item => item.id.toString()}
-              numColumns={4}
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        </View>
-      }
-
->>>>>>> parent of 01c1d3d (minh dep trai 22/11)
 
     </View>
 
@@ -330,43 +226,6 @@ const DataMan: Category[] = [
   {
     id: 1,
     img: require('../../asset/image/iconCategory.png'),
-<<<<<<< HEAD
-    name: 'Red Apple',
-=======
-    name: 'All Shoes',
->>>>>>> parent of 01c1d3d (minh dep trai 22/11)
-  },
-  {
-    id: 2,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
-  },
-  {
-    id: 3,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Avocado',
-  },
-  {
-    id: 4,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Strawberry',
-  },
-  {
-    id: 5,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
-  },
-  {
-    id: 6,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Red Apple',
-  },
-];
-
-const DataWoman: Category[] = [
-  {
-    id: 1,
-    img: require('../../asset/image/iconCategory.png'),
     name: 'Red Apple',
   },
   {
@@ -400,32 +259,31 @@ const DataWoman: Category[] = [
   {
     id: 1,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'All Shoes',
+    name: 'Red Apple',
   },
   {
     id: 2,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Sneakers',
+    name: 'Orginal',
   },
   {
     id: 3,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Lifestyle',
+    name: 'Avocado',
   },
   {
     id: 4,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Scandels',
+    name: 'Strawberry',
   },
   {
     id: 5,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Running',
+    name: 'Orginal',
   },
   {
     id: 6,
     img: require('../../asset/image/iconCategory.png'),
-    name: 'Sport',
+    name: 'Red Apple',
   },
 ];
-

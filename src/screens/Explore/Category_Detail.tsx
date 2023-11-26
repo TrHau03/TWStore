@@ -7,27 +7,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {ROUTES} from '../../utilities';
-import {AirbnbRating} from 'react-native-ratings';
+import React, { useEffect, useRef, useState } from 'react';
+import { AirbnbRating } from 'react-native-ratings';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
-<<<<<<< HEAD
+import { ROUTES } from '../../component/constants';
 
-=======
-import { PropsExplore } from '../../component/Navigation/Props';
-import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { useDispatch, useSelector } from 'react-redux';
-import { listProducts, todoRemainingProducts } from '../../redux/silces/HomeSelector';
-import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
-import ButtonBottom from '../../component/Button/Button';
-import * as Animatable from 'react-native-animatable';
-import FilterScreen from './Filter';
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import Octicons from 'react-native-vector-icons/Octicons';
->>>>>>> parent of de3849d (23/11)
 interface Product {
   id: number;
   img: any;
@@ -39,49 +24,15 @@ interface ArrayProduct {
   category: string;
 }
 const dataArray: ArrayProduct[] = [
-  {category: 'All'},
-  {category: 'Man Shoes'},
-  {category: 'Women Shoes'},
+  { category: 'All' },
+  { category: 'Man Shoes' },
+  { category: 'Women Shoes' },
 ];
 
-const Category_Detail_Screen = ({navigation}: any) => {
+const Category_Detail_Screen = ({ navigation }: any) => {
   const [click, setClick] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('All');
   const [dataFilter, setdataFilter] = useState<any>([]);
-<<<<<<< HEAD
-=======
-  const navigation = useNavigation<NavigationProps>();
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
-  const [highLightBrand, setHighLightBrand] = useState<string>('');
-  const [unEnableBrand, setUnEnableBrand] = useState<boolean>(false);
-  const [highLightColor, setHighLightColor] = useState<string>('');
-  const [unEnableColor, setUnEnableColor] = useState<boolean>(false);
-  const [highLightSize, setHighLightSize] = useState<string>('');
-  const [unEnableSize, setUnEnableSize] = useState<boolean>(false);
-  const [sort, setSort] = useState<boolean>(false);
-  const [color, setColor] = useState<string>('All');
-  const [brand, setBrand] = useState<string>('All');
-  const [size, setSize] = useState<string>('All');
-<<<<<<< HEAD
-=======
-  const [priceMin, setpriceMin] = useState<string>('0')
-  const [priceMax, setpriceMax] = useState<string>('5000');
-
->>>>>>> parent of de3849d (23/11)
-  //redux
-  const [textInputSearch, setTextInputSearch] = useState<string>('');
-  const dispatch = useDispatch();
-  const todoListProducts = useSelector(todoRemainingProducts);
-
-
-  const handleSearch = (e: any) => {
-    setTextInputSearch(e);
-    dispatch(
-      HomeScreenSlice.actions.searchFilterChange(e)
-    )
-  }
-
->>>>>>> parent of 01c1d3d (minh dep trai 22/11)
 
   useEffect(() => {
     console.log('render');
@@ -97,19 +48,14 @@ const Category_Detail_Screen = ({navigation}: any) => {
     console.log(dataFilter);
   }, [filter]);
 
-<<<<<<< HEAD
-  const renderItem = ({item}: any): React.JSX.Element => {
-    const {id, img, name, price} = item;
-=======
   const renderItem = ({ item }: any): React.JSX.Element => {
-    const { id, image, name, price, strikeThrough, saleOff, brand } = item;
->>>>>>> parent of de3849d (23/11)
+    const { id, img, name, price } = item;
 
     return (
       <TouchableOpacity style={styles.containerItemPD}>
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
-            <Image style={{width: '100%', height: '100%'}} source={img} />
+            <Image style={{ width: '100%', height: '100%' }} source={img} />
           </View>
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
@@ -120,13 +66,8 @@ const Category_Detail_Screen = ({navigation}: any) => {
               <Text style={styles.PricePD}>{price}</Text>
             </View>
             <View style={styles.sale}>
-<<<<<<< HEAD
               <Text style={styles.txtOldPrice}>5000</Text>
               <Text style={styles.txtSale}>24% Off</Text>
-=======
-              <Text style={styles.txtOldPrice}>{strikeThrough}</Text>
-              <Text style={styles.txtSale}>{saleOff}</Text>
->>>>>>> parent of 01c1d3d (minh dep trai 22/11)
             </View>
           </View>
         </View>
@@ -136,32 +77,10 @@ const Category_Detail_Screen = ({navigation}: any) => {
 
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
-=======
-      <Modal
-        transparent={false}
-        visible={modalVisible}
-        animationType="slide"
-        onRequestClose={() => true} >
-        <View style={{ height: '85%' }}>
-<<<<<<< HEAD
-          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size }} />
-          <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative' }}>
-=======
-          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin,setpriceMax }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size,priceMin,priceMax }} />
-          <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
->>>>>>> parent of de3849d (23/11)
-            <Pressable onPress={() => { setModalVisible(false) }}>
-              <ButtonBottom title='Cancel' />
-            </Pressable>
-          </Animatable.View>
-        </View>
-      </Modal>
->>>>>>> parent of 01c1d3d (minh dep trai 22/11)
       <View style={styles.group}>
         <View
-          style={!click ? styles.right : [styles.right, {borderColor: 'blue'}]}>
-          <Icon name='search' size={20}/>
+          style={!click ? styles.right : [styles.right, { borderColor: 'blue' }]}>
+          <Icon name='search' size={20} />
           <TextInput
             placeholder="Search"
             style={styles.TextSearch}
@@ -173,11 +92,11 @@ const Category_Detail_Screen = ({navigation}: any) => {
           <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SHORTBY)}>
             <Image
               source={require('../../asset/image/Shorticon.png')}
-              style={{width: 25, height: 25}}
+              style={{ width: 25, height: 25 }}
             />
           </TouchableOpacity>
           <TouchableOpacity onPress={() => navigation.navigate(ROUTES.FILTER)}>
-          <Icon name='filter' size={20}/>
+            <Icon name='filter' size={20} />
           </TouchableOpacity>
         </View>
       </View>
@@ -195,7 +114,7 @@ const Category_Detail_Screen = ({navigation}: any) => {
                 marginTop: 15,
                 marginLeft: 10,
               }}>
-                {dataFilter.length} result
+              {dataFilter.length} result
             </Text>
           </View>
 
@@ -235,10 +154,11 @@ const Category_Detail_Screen = ({navigation}: any) => {
           </View>
         </View>
         <FlatList
-          style={{marginTop: 10}}
+          style={{ marginTop: 10 }}
           data={dataFilter}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
+          columnWrapperStyle={{justifyContent:'center'}}
           numColumns={2}
           showsVerticalScrollIndicator={false}
         />
@@ -264,8 +184,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     textAlign: 'left',
   },
-  dropdown1DropdownStyle: {borderRadius: 5, backgroundColor: '#E6E6E6'},
-  dropdown1RowStyle: {borderBottomColor: '#C5C5C5'},
+  dropdown1DropdownStyle: { borderRadius: 5, backgroundColor: '#E6E6E6' },
+  dropdown1RowStyle: { borderBottomColor: '#C5C5C5' },
   dropdown1RowTxtStyle: {
     color: '#223263',
     fontSize: 18,
@@ -302,7 +222,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   star: {
-    width: '65%',
+    width: '75%',
     marginTop: 5,
   },
 
@@ -346,8 +266,8 @@ const styles = StyleSheet.create({
   },
   containerItemPD: {
     borderWidth: 0.5,
-    width: 180,
-    height: 300,
+    width: '48%',
+    height: 270,
     backgroundColor: '#FFFFFF',
     margin: 5,
     borderRadius: 5,

@@ -5,16 +5,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 import { COLORS } from '../../utilities';
 
-<<<<<<< HEAD:src/screens/Account/StatusDeliver.tsx
 const StatusDeliver = (props: any) => {
-=======
-interface success {
-    _id: number;
-    status: string;
-}
-
-const OnGoing = (props: any) => {
->>>>>>> parent of dc3b9c3 (fsdf):src/screens/Account/OnGoing.tsx
     const { date, status } = props.state;
     console.log(status);
 
@@ -26,19 +17,11 @@ const OnGoing = (props: any) => {
                 <Text style={styles.textDate}>{date}</Text>
             </View>
             <View style={styles.grpcontent}>
-<<<<<<< HEAD:src/screens/Account/StatusDeliver.tsx
                 <View style={{ marginRight: '8%', gap: 110 }}>
                     <Icon name='checkmark-done-circle' size={25} color={status === 1 || status > 1 ? COLORS.green : COLORS.gray} />
                     <Icon name='checkmark-done-circle' size={25} color={status === 2 || status > 2 ? COLORS.green : COLORS.gray} />
                     <Icon name='checkmark-done-circle' size={25} color={status === 3 || status > 3 ? COLORS.green : COLORS.gray} />
                     <Icon name='checkmark-done-circle' size={25} color={status === 4 ? COLORS.green : COLORS.gray} />
-=======
-                <View style={{ width: '15%', gap: 110 }}>
-                    <Icon name='checkmark-done-circle' size={25} color={status === 'Confirm' || status === 'Prepare' || status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
-                    <Icon name='checkmark-done-circle' size={25} color={status === 'Prepare' || status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
-                    <Icon name='checkmark-done-circle' size={25} color={status === 'Shipping' || status === 'Success' ? COLORS.green : COLORS.gray} />
-                    <Icon name='checkmark-done-circle' size={25} color={status === 'Success' ? COLORS.green : COLORS.gray} />
->>>>>>> parent of dc3b9c3 (fsdf):src/screens/Account/OnGoing.tsx
                 </View>
                 <View style={styles.content}>
                     <View style={styles.item}>
@@ -120,10 +103,3 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20
     }
 })
-
-const data: success[] = [
-    { _id: 1, status: 'Confirm' },
-    { _id: 2, status: 'Prepare' },
-    { _id: 3, status: 'Shipping' },
-    { _id: 4, status: 'Success' },
-]

@@ -1,8 +1,7 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Modal, Pressable } from 'react-native'
+import React, { useState } from 'react'
 import Header from '../../component/Header/Header'
 import { PropsAccount } from '../../component/Navigation/Props';
-<<<<<<< HEAD
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Animatable from 'react-native-animatable';
@@ -11,23 +10,9 @@ import { listOrder } from '../../redux/silces/HomeSelector';
 import { HEIGHT, WIDTH } from '../../utilities/utility';
 import { RootStackScreenAccount, RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
 import StatusDeliver from './StatusDeliver';
-=======
->>>>>>> parent of de3849d (23/11)
 
-interface Order {
-    id: number;
-    ma: string;
-    date: string;
-    oderStatus: string;
-    items: number;
-    price: string;
-}
 
-const RenderItem = ( props : any): React.JSX.Element => {
-    const {data, navigation} = props;
-    const {item} = data;
 
-<<<<<<< HEAD
 const OrderScreen = ({ navigation }: PropsAccount) => {
     const [date, setDate] = useState<string>('');
     const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -56,32 +41,12 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
                         <Icon name='chevron-forward-outline' size={25} color={'#525252'} />
                     </TouchableOpacity>
                 </View>
-=======
-    return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate('Order_Detail')}>
-        <View>
-            <Text style={styles.MaCode}>{item.ma}</Text>
-            <Text style={styles.title}>Order at Lafyuu : {item.date}</Text>
-            <View  style={styles.boxBottom}>
-                <Text style={styles.title}>Order Status</Text>
-                <Text style={styles.content}>{item.oderStatus}</Text>
->>>>>>> parent of de3849d (23/11)
             </View>
-            <View style={styles.boxBottom}>
-                <Text style={styles.title}>Items</Text>
-                <Text style={styles.content}>{item.items} Items purchased</Text>
-            </View>
-            <View style={styles.boxBottom}>
-                <Text style={styles.title}>Price</Text>
-                <Text style={styles.price}>${item.price}</Text>
-            </View>
-        </View>
-    </TouchableOpacity >;
-};
+        </TouchableOpacity >;
+    };
 
-const OrderScreen = ({navigation}: PropsAccount) => {
     return (
         <View style={styles.container}>
-<<<<<<< HEAD
             <Modal
                 transparent={false}
                 visible={modalVisible}
@@ -97,19 +62,11 @@ const OrderScreen = ({navigation}: PropsAccount) => {
                 </View>
             </Modal>
             <Header title='Order' navigation={navigation} />
-=======
-            <Header title='Order'/>
-
->>>>>>> parent of de3849d (23/11)
             <View style={styles.line}></View>
             <FlatList
                 showsVerticalScrollIndicator={false}
-<<<<<<< HEAD
                 style={{ marginBottom: 100 }}
                 data={Order}
-=======
-                data={Data}
->>>>>>> parent of de3849d (23/11)
                 renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
             />
         </View>
@@ -119,12 +76,12 @@ const OrderScreen = ({navigation}: PropsAccount) => {
 export default OrderScreen
 
 const styles = StyleSheet.create({
-    boxBottom:{
+    boxBottom: {
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
 
-    price:{
+    price: {
         color: 'black',
         fontSize: 14,
         fontFamily: 'Poppins',
@@ -132,7 +89,7 @@ const styles = StyleSheet.create({
         lineHeight: 21.60,
         letterSpacing: 0.50,
     },
-    
+
     content: {
         color: '#223263',
         fontSize: 14,
@@ -177,55 +134,12 @@ const styles = StyleSheet.create({
         marginTop: 20,
         position: 'relative',
         right: 20
-<<<<<<< HEAD
     },
 
     container: {
         width: WIDTH,
         height: HEIGHT,
-=======
-      },
-    
-      container: {
-        width: '100%',
-        height: '90%',
->>>>>>> parent of de3849d (23/11)
         paddingTop: 20,
         paddingHorizontal: 20
-      }
+    }
 })
-
-const Data: Order[] = [
-    {
-        id: 1,
-        ma: 'FGHJYTN',
-        date: 'August 1, 2017',
-        oderStatus: 'Shipping',
-        items: 2,
-        price: '299,43',
-    },
-    {
-        id: 3,
-        ma: 'FGHJYTN',
-        date: 'August 1, 2017',
-        oderStatus: 'Shipping',
-        items: 5,
-        price: '299,43',
-    },
-    {
-        id: 4,
-        ma: 'FGHJYTN',
-        date: 'August 1, 2017',
-        oderStatus: 'Shipping',
-        items: 2,
-        price: '299,43',
-    },
-    {
-        id: 5,
-        ma: 'FGHJYTN',
-        date: 'August 1, 2017',
-        oderStatus: 'Shipping',
-        items: 2,
-        price: '299,43',
-    },
-]
