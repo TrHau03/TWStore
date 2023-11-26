@@ -33,6 +33,34 @@ const Category_Detail_Screen = ({navigation}: any) => {
   const [click, setClick] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('All');
   const [dataFilter, setdataFilter] = useState<any>([]);
+<<<<<<< HEAD
+=======
+  const navigation = useNavigation<NavigationProps>();
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [highLightBrand, setHighLightBrand] = useState<string>('');
+  const [unEnableBrand, setUnEnableBrand] = useState<boolean>(false);
+  const [highLightColor, setHighLightColor] = useState<string>('');
+  const [unEnableColor, setUnEnableColor] = useState<boolean>(false);
+  const [highLightSize, setHighLightSize] = useState<string>('');
+  const [unEnableSize, setUnEnableSize] = useState<boolean>(false);
+  const [sort, setSort] = useState<boolean>(false);
+  const [color, setColor] = useState<string>('All');
+  const [brand, setBrand] = useState<string>('All');
+  const [size, setSize] = useState<string>('All');
+  //redux
+  const [textInputSearch, setTextInputSearch] = useState<string>('');
+  const dispatch = useDispatch();
+  const todoListProducts = useSelector(todoRemainingProducts);
+
+
+  const handleSearch = (e: any) => {
+    setTextInputSearch(e);
+    dispatch(
+      HomeScreenSlice.actions.searchFilterChange(e)
+    )
+  }
+
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
 
   useEffect(() => {
     console.log('render');
@@ -66,8 +94,13 @@ const Category_Detail_Screen = ({navigation}: any) => {
               <Text style={styles.PricePD}>{price}</Text>
             </View>
             <View style={styles.sale}>
+<<<<<<< HEAD
               <Text style={styles.txtOldPrice}>5000</Text>
               <Text style={styles.txtSale}>24% Off</Text>
+=======
+              <Text style={styles.txtOldPrice}>{strikeThrough}</Text>
+              <Text style={styles.txtSale}>{saleOff}</Text>
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
             </View>
           </View>
         </View>
@@ -77,6 +110,23 @@ const Category_Detail_Screen = ({navigation}: any) => {
 
   return (
     <View style={styles.container}>
+<<<<<<< HEAD
+=======
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={() => true} >
+        <View style={{ height: '85%' }}>
+          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size }} />
+          <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative' }}>
+            <Pressable onPress={() => { setModalVisible(false) }}>
+              <ButtonBottom title='Cancel' />
+            </Pressable>
+          </Animatable.View>
+        </View>
+      </Modal>
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
       <View style={styles.group}>
         <View
           style={!click ? styles.right : [styles.right, {borderColor: 'blue'}]}>

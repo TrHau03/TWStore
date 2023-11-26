@@ -22,7 +22,14 @@ import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 
 
   //redux
+<<<<<<< HEAD
 
+=======
+  const dispatch = useDispatch();
+  const handleRemoveFavorite = (id: number) => {
+    dispatch(HomeScreenSlice.actions.deleteFavourite(id));
+  };
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
 
   
 

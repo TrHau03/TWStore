@@ -19,12 +19,7 @@ interface Filters {
     brand: string,
     color: string,
     size: string,
-    category: string,
     loading: boolean,
-}
-interface FilterPrice {
-    minPrice: string;
-    maxPrice: string;
 }
 
 interface Offer {
@@ -63,22 +58,19 @@ interface InitialState {
     filters: Filters,
     offer: Array<Offer>,
     product: Array<Product>,
+<<<<<<< HEAD
     filterPrice: FilterPrice,
     order: Array<Order>,
+=======
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
 }
 
 const initialState: InitialState = {
-    filterPrice: {
-        minPrice: '0',
-        maxPrice: '5000',
-    },
-
     filters: {
         search: '',
         brand: 'All',
         color: 'All',
         size: 'All',
-        category: 'All',
         loading: false,
     },
     order: [
@@ -186,6 +178,7 @@ const initialState: InitialState = {
     ],
 
     product: [
+<<<<<<< HEAD
         { id: 1, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FS - Nike Air Max 270 React...', price: 2000, strikeThrough: 50, saleOff: 24, sex: 'women', brand: 'Nike', category: 'Sneakers', color: 'Black', size: '44' },
         { id: 2, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FE - QUILTED MAXI CROS...', price: 3000, strikeThrough: 70, saleOff: 27, sex: 'women', brand: 'Nike', category: 'Sneakers', color: 'Black', size: '44' },
         { id: 3, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 2500, strikeThrough: 50, saleOff: 24, sex: 'women', brand: 'Adidas', category: 'Sneakers', color: 'Black', size: '40' },
@@ -197,6 +190,19 @@ const initialState: InitialState = {
         { id: 9, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 2500, strikeThrough: 50, saleOff: 30, sex: 'man', brand: 'Nike', category: 'Sports', color: 'Yellow', size: '44' },
         { id: 10, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 2500, strikeThrough: 50, saleOff: 30, sex: 'man', brand: 'Adidas', category: 'Sports', color: 'Yellow', size: '39' },
         { id: 11, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30, sex: 'man', brand: 'Nike', category: 'Sports', color: 'Yellow', size: '45' },
+=======
+        { id: 1, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FS - Nike Air Max 270 React...', price: 299, strikeThrough: 50, saleOff: 24,sex: 'women', brand: 'Nike', category: 'Sneakers', color: 'Black', size: '44' },
+        { id: 2, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FE - QUILTED MAXI CROS...', price: 300, strikeThrough: 70, saleOff: 27 ,sex: 'women',brand: 'Nike', category: 'Sneakers', color: 'Black', size: '44'},
+        { id: 3, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 24,sex: 'women', brand: 'Adidas' , category: 'Sneakers', color: 'Black', size: '40'},
+        { id: 4, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 450, strikeThrough: 10, saleOff: 28 ,sex: 'women',brand: 'Adidas', category: 'Sneakers', color: 'Black', size: '41'},
+        { id: 5, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 100, strikeThrough: 50, saleOff: 24 ,sex: 'women', brand: 'Nike', category: 'Lifestyle', color: 'White', size: '40'},
+        { id: 6, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,sex: 'women',brand: 'Nike', category: 'Lifestyle', color: 'White', size: '42'},
+        { id: 7, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,sex: 'man',brand: 'Nike', category: 'Lifestyle', color: 'Blue', size: '42'},
+        { id: 8, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,sex: 'man',brand: 'Adidas', category: 'Sneakers', color: 'Blue', size: '41'},
+        { id: 9, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,sex: 'man',brand: 'Nike', category: 'Sports', color: 'Yellow', size:'44'},
+        { id: 10, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,sex: 'man',brand: 'Adidas', category: 'Sports', color: 'Yellow', size: '39'},
+        { id: 11, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 ,sex: 'man',brand: 'Nike', category: 'Sports', color: 'Yellow', size: '45'},
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
     ],
 };
 
@@ -204,17 +210,33 @@ const HomeScreenSlice = createSlice({
     name: 'HomeScreenSlice',
     initialState,
     reducers: {
+<<<<<<< HEAD
+=======
+        deleteFavourite: (state, action) => {
+            // state.favoriteProduct.splice(state.favoriteProduct.findIndex(favoriteProduct.id === action.payload.id), 1)
+            const index = state.favoriteProduct.findIndex(favoriteProduct => favoriteProduct.id === action.payload);
+            if (index !== -1) {
+                state.favoriteProduct.splice(index, 1);
+            }
+        },
+
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
         searchFilterChange: (state, action) => {
             state.filters.search = action.payload;
         },
         filterBrand: (state, action) => {
+            console.log(action.payload);
+            
             state.filters.brand = action.payload;
         },
         filterColor: (state, action) => {
+            console.log(action.payload);
             state.filters.color = action.payload;
         },
         filterSize: (state, action) => {
+            console.log(action.payload);
             state.filters.size = action.payload;
+<<<<<<< HEAD
         },
         filterCategory: (state, action) => {
             state.filters.category = action.payload;
@@ -223,6 +245,10 @@ const HomeScreenSlice = createSlice({
             state.filterPrice.minPrice = action.payload.minPrice;
             state.filterPrice.maxPrice = action.payload.maxPrice;
         },
+=======
+        }
+
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
     },
 });
 

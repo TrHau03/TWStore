@@ -33,6 +33,7 @@ const ExploreScreen = () => {
 
   const [textInputSearch, setTextInputSearch] = useState<string>('');
 
+<<<<<<< HEAD
   const [listProduct, setListProduct] = useState<[]>([]);
 
   useEffect(() => {
@@ -42,10 +43,25 @@ const ExploreScreen = () => {
     }
     fetchListProduct();
   }, [])
+=======
+  const handleSearch = (e: any) => {
+    setTextInputSearch(e);
+    dispatch(
+      HomeScreenSlice.actions.searchFilterChange(e)
+    )
+  }
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
 
   const renderItem = ({ item }: any): React.JSX.Element => {
     return (
+<<<<<<< HEAD
       <TouchableOpacity style={styles.containerItemPD}>
+=======
+      <TouchableOpacity
+        style={styles.containerItemPD}
+        onPress={() => navigation.navigate(RootStackScreenEnumExplore.Category_Detail)}
+      >
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
             <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.image[0] }} />
@@ -101,11 +117,48 @@ const ExploreScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
+<<<<<<< HEAD
       <FlatList
         data={listProduct}
         renderItem={renderItem}
         numColumns={2}
         keyExtractor={(item: any) => item?._id.toString()} />
+=======
+      {(click) ?
+        <View>
+          <FlatList
+            renderItem={(item) => <RenderItem data={item} />}
+            data={textInputSearch == "" ? null : todoListProducts}
+            style={{ paddingVertical: 15, height: '100%', width: '100%' }}
+          />
+        </View>
+        :
+        <View>
+          <View style={styles.Name}>
+            <Text style={styles.txtName}>Man Shoes</Text>
+            <FlatList
+              data={DataMan}
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              numColumns={4}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+
+          <View style={styles.Name}>
+            <Text style={styles.txtName}>Woman Shoes</Text>
+            <FlatList
+              data={DataWoman}
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              numColumns={4}
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        </View>
+      }
+
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
 
     </View>
 
@@ -237,7 +290,11 @@ const DataMan: Category[] = [
   {
     id: 1,
     img: require('../../asset/image/iconCategory.png'),
+<<<<<<< HEAD
     name: 'Red Apple',
+=======
+    name: 'All Shoes',
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
   },
   {
     id: 2,
@@ -298,3 +355,37 @@ const DataWoman: Category[] = [
     name: 'Red Apple',
   },
 ];
+
+const DataWoman: Category[] = [
+  {
+    id: 1,
+    img: require('../../asset/image/iconCategory.png'),
+    name: 'All Shoes',
+  },
+  {
+    id: 2,
+    img: require('../../asset/image/iconCategory.png'),
+    name: 'Sneakers',
+  },
+  {
+    id: 3,
+    img: require('../../asset/image/iconCategory.png'),
+    name: 'Lifestyle',
+  },
+  {
+    id: 4,
+    img: require('../../asset/image/iconCategory.png'),
+    name: 'Scandels',
+  },
+  {
+    id: 5,
+    img: require('../../asset/image/iconCategory.png'),
+    name: 'Running',
+  },
+  {
+    id: 6,
+    img: require('../../asset/image/iconCategory.png'),
+    name: 'Sport',
+  },
+];
+

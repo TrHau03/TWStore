@@ -10,6 +10,7 @@ export const listProducts = (state: any) => state.HomeScreenSlice.product;
 export const filterBrand = (state: any) => state.HomeScreenSlice.filters.brand;
 export const filterColor = (state: any) => state.HomeScreenSlice.filters.color;
 export const filterSize = (state: any) => state.HomeScreenSlice.filters.size;
+<<<<<<< HEAD
 export const filterCategory = (state: any) => state.HomeScreenSlice.filters.category;
 export const filterMinPrice = (state: any) => state.HomeScreenSlice.filterPrice.minPrice;
 export const filterMaxPrice = (state: any) => state.HomeScreenSlice.filterPrice.maxPrice;
@@ -50,6 +51,28 @@ export const todoRemainingProducts = createSelector(listProducts, searchFilterCh
                 return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && todo.color.includes(color) && todo.size.includes(size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             }
             return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && todo.color.includes(color) && todo.size.includes(size) && todo.category.includes(category) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+=======
+
+export const todoRemainingProducts = createSelector(listProducts, searchFilterChange, filterBrand, filterColor, filterSize, (product, search, brand, color, size) => {
+    if (product) {
+        return product.filter((todo: any) => {
+            if (brand === 'All' && color === 'All' && size === 'All') {
+                return todo.name.includes(search);
+            } else if (brand === 'All' && color === 'All') {
+                return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.size.includes(size);
+            }else if (brand === 'All' && size === 'All') {
+                return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.color.includes(color);
+            }else if (color === 'All' && size === 'All') {
+                return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand);
+            }else if (brand === 'All') {
+                return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.color.includes(color) && todo.size.includes(size) ;
+            }else if (size === 'All') {
+                return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.color.includes(color) && todo.brand.includes(brand) ;
+            }else if (color === 'All') {
+                return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.size.includes(size) && todo.brand.includes(brand) ;
+            }
+            return todo.name.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && todo.color.includes(color) && todo.size.includes(size);
+>>>>>>> parent of 01c1d3d (minh dep trai 22/11)
         })
     } else {
         return [];
