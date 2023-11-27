@@ -11,11 +11,11 @@ import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavig
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { COLORS } from '../../utilities';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchInitialListProduct } from '../../redux/silces/Silces';
+import { fetchInitialListProduct } from '../../Redux/silces/Silces';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { listRecommended } from '../../redux/silces/HomeSelector';
+import { listRecommended } from '../../Redux/silces/HomeSelector';
 
 
 const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (

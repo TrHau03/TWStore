@@ -21,7 +21,7 @@ const Navigation = () => {
     if (!slide) {
         return <SlideNavigation />;
     } else {
-        return isLogin ? <BottomTab /> : <LoginNavigation />
+        return true ? <BottomTab /> : <LoginNavigation />
     }
 }
 
