@@ -93,7 +93,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
     const { id, image, name, price, strikeThrough, saleOff, brand } = item;
 
     return (
-      <TouchableOpacity style={styles.containerItemPD}>
+      <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Productdetail)} style={styles.containerItemPD}>
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
             <Image style={{ width: '100%', height: '100%' }} source={{ uri: image }} />

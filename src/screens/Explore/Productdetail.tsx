@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import Productreviews from './Productreviews';
 import { NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { useIsFocused } from '@react-navigation/native';
+import AxiosInstance from '../../Axios/Axios';
 
 
 
@@ -22,23 +26,39 @@ type CustomRatingBarProps = {
   numberOfRatings: number;
 };
 
+interface Review {
+  id: number;
+  stars: number;
+  user: {
+    name: string;
+    image: string;
+  };
+  date: string;
+  time: string;
+  comment: string;
+  commentImage: string[] | null;
+}
 
 
+const Productdetail = (props: NativeStackHeaderProps) => {
+  const { id } = props?.route.params as { id: string | undefined };
+  const [product, setProduct] = useState<{}>({});
+  const isFocused = useIsFocused();
 
-export default function Productdetail() {
+  useEffect(() => {
+    const fetchProductByID = async () => {
+      const response = await AxiosInstance().get(`product/getProductById/${id}`);
+      console.log(response.data);
+
+      //setProduct(response.data.banner);
+    }
+    if (isFocused) {
+      fetchProductByID();
+    }
+  }, [isFocused])
+
   // Định nghĩa kiểu dữ liệu cho đánh giá (Review)
-  interface Review {
-    id: number;
-    stars: number;
-    user: {
-      name: string;
-      image: string;
-    };
-    date: string;
-    time: string;
-    comment: string;
-    commentImage: string[] | null;
-  }
+
   //đánh giá sản phẩm
   const [defaultRating, setDefaultRating] = useState(4);
   const [maxRating] = useState([1, 2, 3, 4, 5]);
@@ -54,16 +74,7 @@ export default function Productdetail() {
   //sản phẩm yêu thích
   const [isImageToggled, setIsImageToggled] = useState(false);
   const sortedSizes = availableSizes.slice().sort((a, b) => a - b);
-  const [imageSource, setImageSource] = useState(require('../asset/image/love.png'));
-  const handleImagePress = () => {
-    setIsImageToggled(!isImageToggled);
 
-    if (isImageToggled) {
-      setImageSource(require('../asset/image/love.png'));
-    } else {
-      setImageSource(require('../asset/image/loveeeeee.png'));
-    }
-  };
 
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
 
@@ -123,10 +134,10 @@ export default function Productdetail() {
 
       <ScrollView>
         <View style={styles.header}>
-          <Image style={styles.icon} source={require('../asset/image/back.png')} />
+          <Icon name='chevron-back-outline' />
           <Text style={styles.name}>Nike Air Max 270 Rea...</Text>
-          <Image style={styles.icon} source={require('../asset/image/search.png')} />
-          <Image style={styles.icon} source={require('../asset/image/list.png')} />
+          <Icon name='search' />
+          <Icon name='list' />
         </View>
         <View>
           <View style={styles.slideshowcontainer}>
@@ -158,12 +169,6 @@ export default function Productdetail() {
           </View>
           <View style={styles.nameproduct}>
             <Text style={styles.product}>Nike Air Zoom Pegasus 36 Miami</Text>
-            <TouchableOpacity onPress={handleImagePress}>
-              <Image
-                source={imageSource}
-                style={{ width: 45, height: 40, justifyContent: 'center', alignItems: 'center', marginLeft: 20 }}
-              />
-            </TouchableOpacity>
           </View>
           <View style={styles.marginlefft}>
             <View>
@@ -304,7 +309,7 @@ export default function Productdetail() {
 
   );
 }
-
+export default Productdetail;
 const styles = StyleSheet.create({
   CommentImage: {
     width: '20%',
@@ -664,35 +669,35 @@ const styles = StyleSheet.create({
 const products = [
   {
     id: 1,
-    image: require('../asset/image/hong.png'),
+    image: require('../../asset/image/hong.png'),
     name: 'FS - Nike Air Max 270 React...',
     price: '299,43',
     oldPrice: '534,33',
   },
   {
     id: 2,
-    image: require('../asset/image/tui.png'),
+    image: require('../../asset/image/trang.png'),
     name: 'FS - QUILTED MAXI CROS...',
     price: '299,43',
     oldPrice: '534,33',
   },
   {
     id: 3,
-    image: require('../asset/image/trang.png'),
+    image: require('../../asset/image/trang.png'),
     name: 'FS - Nike Air Max 270 React...',
     price: '299,43',
     oldPrice: '534,33',
   },
   {
     id: 4,
-    image: require('../asset/image/xanhbien.png'),
+    image: require('../../asset/image/xanhbien.png'),
     name: 'FS - Nike Air Max 270 React...',
     price: '299,43',
     oldPrice: '534,33',
   },
   {
     id: 5,
-    image: require('../asset/image/den.png'),
+    image: require('../../asset/image/den.png'),
     name: 'FS - Nike Air Max 270 React...',
     price: '299,43',
     oldPrice: '534,33',
@@ -701,37 +706,37 @@ const products = [
 const slideshow = [
   {
     id: '1',
-    img: require('../asset/image/do.png'),
+    img: require('../../asset/image/do.png'),
     mau: 'do',
   },
   {
     id: '2',
-    img: require('../asset/image/den.png'),
+    img: require('../../asset/image/den.png'),
     mau: 'den',
   },
   {
     id: '3',
-    img: require('../asset/image/hong.png'),
+    img: require('../../asset/image/hong.png'),
     mau: 'hong',
   },
   {
     id: '4',
-    img: require('../asset/image/trang.png'),
+    img: require('../../asset/image/trang.png'),
     mau: 'trang',
   },
   {
     id: '5',
-    img: require('../asset/image/xanhbien.png'),
+    img: require('../../asset/image/xanhbien.png'),
     mau: 'xanhbien',
   },
   {
     id: '6',
-    img: require('../asset/image/xanhbien.png'),
+    img: require('../../asset/image/xanhbien.png'),
     mau: 'xanhbien',
   },
   {
     id: '7',
-    img: require('../asset/image/xanhbien.png'),
+    img: require('../../asset/image/xanhbien.png'),
     mau: 'xanhbien',
   },
 ];

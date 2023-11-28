@@ -32,8 +32,14 @@ interface Size {
 }
 
 const FilterScreen = (props: any) => {
-  const { visibleSize, visibleColor, visibleBrand, unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
-  const { dispatch, setVisibleBrand, setVisibleColor, setVisibleSize, setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
+  const [visibleBrand, setVisibleBrand] = useState<boolean>(false);
+  const [visibleSize, setVisibleSize] = useState<boolean>(false);
+  const [visibleColor, setVisibleColor] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
+
+  const { unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
+  const { setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
 
 
 
@@ -175,7 +181,7 @@ const FilterScreen = (props: any) => {
         </View>
       </View>
 
-      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false),setVisibleBrand(false), setVisibleColor(false),setVisibleSize(false) }}>
+      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false), setVisibleBrand(false), setVisibleColor(false), setVisibleSize(false) }}>
         <Button title='Apply' />
       </Pressable>
     </View>
