@@ -1,12 +1,21 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import AxiosInstance from '../../Axios/Axios';
-
 
 export const fetchInitialListProduct: any = createAsyncThunk('Slice/fetchInitialListProduct', async (data: any) => {
   const response = await AxiosInstance().get(`product/getAllProduct`);
 
   return response.data;
 })
+
+export const fetchInitialListEvents: any = createAsyncThunk('Slice/fetchInitialListEvents', async (data: any) => {
+    const response = await AxiosInstance().get(`event/getAllEvent`);
+
+    return response.data;
+  },
+);
+
+
+
 const initialState = {
   isLogin: false,
   isLoading: false,
@@ -30,18 +39,20 @@ const initialState = {
       items: [
         {
           id: 1,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Nike Air Zoom Pegasus 36 Miami',
           price: '299.43',
           quantity: '1',
         },
         {
           id: 2,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike2.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike2.png',
           name: 'Nike Air Zoom Pegasus 36 Miami',
           price: '299.43',
           quantity: '1',
-        }
+        },
       ],
       dateship: 'January 16, 2015',
       shipping: 'GHTK',
@@ -56,11 +67,12 @@ const initialState = {
       items: [
         {
           id: 3,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 3',
           price: '199.99',
           quantity: '1',
-        }
+        },
       ],
       dateship: 'February 25, 2018',
       shipping: 'DHL',
@@ -75,25 +87,28 @@ const initialState = {
       items: [
         {
           id: 4,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 4',
           price: '249.99',
           quantity: '1',
         },
         {
           id: 5,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 5',
           price: '149.99',
           quantity: '1',
         },
         {
           id: 6,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 6',
           price: '199.99',
           quantity: '1',
-        }
+        },
       ],
       dateship: 'March 12, 2019',
       shipping: 'FedEx',
@@ -108,32 +123,36 @@ const initialState = {
       items: [
         {
           id: 7,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 7',
           price: '179.99',
           quantity: '1',
         },
         {
           id: 8,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 8',
           price: '219.99',
           quantity: '1',
         },
         {
           id: 9,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 9',
           price: '159.99',
           quantity: '1',
         },
         {
           id: 10,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 10',
           price: '249.99',
           quantity: '1',
-        }
+        },
       ],
       dateship: 'April 5, 2020',
       shipping: 'UPS',
@@ -148,11 +167,12 @@ const initialState = {
       items: [
         {
           id: 11,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 11',
           price: '169.99',
           quantity: '1',
-        }
+        },
       ],
       dateship: 'May 20, 2021',
       shipping: 'USPS',
@@ -167,11 +187,12 @@ const initialState = {
       items: [
         {
           id: 12,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
+          image:
+            'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png',
           name: 'Sample Product 12',
           price: '199.99',
           quantity: '1',
-        }
+        },
       ],
       dateship: 'June 10, 2022',
       shipping: 'DHL',
@@ -180,46 +201,52 @@ const initialState = {
       address: '202 Cedar Street, Yetanothertown, USA',
     },
   ],
-  listProduct: []
+  listProduct: [],
+  listEvents: [],
 };
-
 
 const Slice = createSlice({
   name: 'Slice',
   initialState,
   reducers: {
     updateUser: (state, action) => {
-      const value = action.payload
+      const value = action.payload;
       state.user = value;
     },
     isLogin: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.isLogin = value;
     },
     isLoading: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.isLoading = value;
     },
     LoginGoogle: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.LoginGoogle = value;
     },
     LoginFacebook: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.LoginFaceBook = value;
     },
-
   },
-  extraReducers: (builder) => {
+
+  
+  extraReducers: builder => {
     builder
+      .addCase(fetchInitialListEvents.fulfilled, (state, action) => {
+        state.listEvents =  action.payload;
+      })
       .addCase(fetchInitialListProduct.fulfilled, (state, action) => {
         state.listProduct = action.payload;
-      })
+      });
   },
+  
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle } = Slice.actions
+export const {updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle} =
+  Slice.actions;
 export default Slice.reducer;
