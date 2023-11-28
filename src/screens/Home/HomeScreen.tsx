@@ -1,27 +1,26 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { CompositeNavigationProp, NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
+import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { COLORS } from '../../utilities';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInitialListProduct } from '../../redux/silces/Silces';
+import AxiosInstance from '../../Axios/Axios';
+import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { listRecommended } from '../../redux/silces/HomeSelector';
 
 
-const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
-    <View style={styles.item}>
-        <View style={styles.bodericon}>
-            {/* <Image style={styles.Icon} source={item.icon} /> */}
-            <Icon name={item.icon} size={26} />
-        </View>
-        <Text style={styles.textname}>{item.name}</Text>
-    </View>
-);
 
-const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } }) => {
-    return (
-        < View style={styles.itemsale} >
-            <Image style={styles.imageproduct} source={{ uri: item.image }} />
-            <Text style={styles.nameproduct}>{item.name}</Text>
+const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
+    const isFocused = useIsFocused();
 
             <Text style={styles.price}>$299,43</Text>
             <View style={styles.stylesaleoff}>
@@ -62,6 +61,27 @@ const HomeScreen = () => {
 
 
 
+    const [images, setImages] = useState<[]>([]);
+    const [brand, setBrand] = useState<[]>([]);
+    const listProduct = useSelector(listRecommended);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchInitialListProduct());
+        const fetchBanner = async () => {
+            const response = await AxiosInstance().get(`banner/getAllBanner`);
+            setImages(response.data.banner);
+        }
+        const fetchBrand = async () => {
+            const response = await AxiosInstance().get(`brand/getAllBrand`);
+            setBrand(response.data)
+        }
+        if (isFocused) {
+            fetchBrand();
+            fetchBanner();
+        }
+    }, [isFocused])
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
             const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
@@ -72,6 +92,34 @@ const HomeScreen = () => {
     }
     const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }: any) => {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - 20;
+
+
+    const renderItem = ({ item }: { item: { name: string, linkIcon: string } }) => (
+        <View style={styles.item}>
+            <View style={styles.bodericon}>
+                <Image style={{ width: 50, height: 50 }} source={{ uri: item.linkIcon }} />
+            </View>
+            <Text style={styles.textname}>{item.name}</Text>
+        </View>
+    );
+
+
+    const renderItem3 = ({ item }: any) => {
+        return (
+            <Pressable style={styles.itemsale2} onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })}>
+                <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
+                <View style={{ marginTop: 20, rowGap: 15 }}>
+                    <Text style={styles.nameproduct}>{item.productName}</Text>
+                </View>
+                <View style={styles.stylesaleoff}>
+                    <Text style={styles.price}>${item.price}</Text>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={styles.strikethrough}>$534,33</Text>
+                        <Text style={styles.saleoff}>24% Off</Text>
+                    </View>
+                </View>
+            </Pressable>
+        )
     }
     return (
         <SafeAreaView>
@@ -107,8 +155,15 @@ const HomeScreen = () => {
 
                 </View>
 
-                <View style={styles.topslide}>
+                <View style={styles.headerRight}>
+                    <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
+                        <Icon name="notifications-outline" size={25} />
+                    </TouchableOpacity>
+                </View>
 
+            </View>
+            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]} scrollEventThrottle={16}>
+                <View style={styles.topslide}>
                     <ScrollView
                         nestedScrollEnabled={true}
                         onScroll={({ nativeEvent }) => onChange(nativeEvent)}
@@ -120,6 +175,8 @@ const HomeScreen = () => {
                         {
                             images.map((e, index) =>
                                 <Pressable onPress={() => navigation.navigate(e.nameScreen as never)} key={e.nameScreen}>
+                            images.map((e: any, index) =>
+                                <Pressable onPress={() => navigation.navigate(RootStackScreenEnumOffer.OfferScreen)} key={e._id}>
                                     <Image
                                         resizeMode='stretch'
                                         style={styles.slide}
@@ -204,6 +261,16 @@ const HomeScreen = () => {
                         renderItem={renderItem2}
                         keyExtractor={(item) => item.id}
                     />
+                    <Text style={styles.textcategory}>Brand</Text>
+                    <View style={styles.listcategory}>
+                        <FlatList
+                            data={brand}
+                            horizontal
+                            nestedScrollEnabled={true}
+                            renderItem={renderItem}
+                            keyExtractor={(item) => item.name}
+                        />
+                    </View>
                 </View>
 
 
@@ -221,6 +288,17 @@ const HomeScreen = () => {
                         columnWrapperStyle={styles.columnWrapper}
                     />
                 </View>
+                <FlatList
+                    scrollEnabled={false}
+                    contentContainerStyle={{ alignItems: 'center' }}
+                    style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
+                    showsVerticalScrollIndicator={false}
+                    data={listProduct}
+                    renderItem={renderItem3}
+                    keyExtractor={(item: any) => item._id.toString()}
+                    numColumns={2}
+                    columnWrapperStyle={{ columnGap: 10 }}
+                />
             </ScrollView>
         </SafeAreaView>
     )
@@ -277,8 +355,8 @@ const styles = StyleSheet.create({
     },
 
     slide: {
-        height: 205,
-        width: 400,
+        height: WIDTH * 0.5,
+        width: WIDTH * 0.9,
         borderRadius: 6,
     },
 
@@ -300,13 +378,14 @@ const styles = StyleSheet.create({
     },
 
     category: {
-        flexDirection: 'row',
+        flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginVertical: 20,
     },
 
     textcategory: {
+        alignSelf: 'flex-start',
         fontWeight: 'bold',
         fontSize: 15,
         color: '#223263'
@@ -327,7 +406,7 @@ const styles = StyleSheet.create({
     },
 
     textname: {
-        fontSize: 12
+        fontSize: 16
     },
 
     bodericon: {
@@ -364,13 +443,13 @@ const styles = StyleSheet.create({
     },
 
     itemsale: {
+        paddingHorizontal: 10,
+        paddingVertical: 5,
         height: 240,
         width: 140,
-        marginRight: 9,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: '#EBF0FF',
-        justifyContent: 'space-around',
     },
 
     imageproduct: {
@@ -378,24 +457,23 @@ const styles = StyleSheet.create({
         width: 72,
         height: 72,
     },
-
     nameproduct: {
         fontWeight: 'bold',
         fontSize: 13,
         color: '#223263',
         width: 110,
-        marginLeft: 15
     },
 
     price: {
         fontWeight: 'bold',
-        fontSize: 13,
+        fontSize: 18,
         color: '#4464C4',
-        marginLeft: 15
     },
 
     stylesaleoff: {
-        flexDirection: 'row'
+        position: 'absolute',
+        bottom: 10,
+        alignItems: 'center'
     },
 
     strikethrough: {
@@ -436,6 +514,8 @@ const styles = StyleSheet.create({
     },
 
     itemsale2: {
+        paddingVertical: 10,
+        paddingHorizontal: 10,
         height: 240,
         width: 165,
         marginRight: 9,

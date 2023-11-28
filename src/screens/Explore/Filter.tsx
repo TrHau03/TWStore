@@ -17,6 +17,15 @@ const FilterScreen = ({navigation}: any) => {
   const handleSliderChange = (values: any) => {
     setSliderValues(values);
   };
+const FilterScreen = (props: any) => {
+  const [visibleBrand, setVisibleBrand] = useState<boolean>(false);
+  const [visibleSize, setVisibleSize] = useState<boolean>(false);
+  const [visibleColor, setVisibleColor] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
+
+  const { unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
+  const { setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
 
   const [sliderValue, setSliderValue] = useState(0);
 
@@ -240,6 +249,10 @@ const FilterScreen = ({navigation}: any) => {
           </TouchableOpacity>
       </View>
     </ScrollView>
+      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false), setVisibleBrand(false), setVisibleColor(false), setVisibleSize(false) }}>
+        <Button title='Apply' />
+      </Pressable>
+    </View>
   );
 };
 

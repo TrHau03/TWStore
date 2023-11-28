@@ -28,6 +28,140 @@ const LoginSreen = (props: any) => {
 
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const handleSubmit = (data: User) => {
+    dispatch(isLogin(true));
+    dispatch(updateUser({ _idUser: data._idUser, email: data.email, userName: data.userName, cartID: data.cartID, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address }))
+  }
+  const login = async (user: Login) => {
+    try {
+      const result = await AxiosInstance().post('/users/LoginUser', { email: user.email, password: user.password });
+      const userInfo = result?.data.user;
+      if (result.data.status) {
+        const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
+        const user = response.data.data;
+        if (user.active) {
+          handleSubmit({ _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartID: user.cartID, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address })
+        }else{
+          console.warn("Tài khoản đã bị khóa !");
+        }
+
+      } else {
+        console.log(result.data.message);
+      }
+    } catch (error) {
+      console.log('Error: ', error);
+    }
+    return [];
+  }
+  const app = new Realm.App({
+    id: "application-0-kbkng",
+  });
+  GoogleSignin.configure({
+    webClientId: '866351015855-93hj0ef6h9er4f7er5l3vujtev37tkar.apps.googleusercontent.com',
+  });
+  // Handle user state changes
+  async function onGoogleButtonPress() {
+    // Check if your device supports Google Play
+    try {
+      // Sign into Google
+      await GoogleSignin.hasPlayServices();
+      const { idToken }: any = await GoogleSignin.signIn();
+      const userGoogle = await GoogleSignin.signIn();
+      console.log(userGoogle);
+
+      // use Google ID token to sign into Realm
+      const credential = Realm.Credentials.google({ idToken });
+      const userRealm = await app.logIn(credential);
+      console.log("signed in as Realm user Google", userRealm.id);
+      if (userRealm) {
+        const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`, { name: userGoogle.user.name, email: userGoogle.user.email });
+        const user = response.data.data;
+        console.log("Info user Google", user);
+        if (user.active) {
+          handleSubmit({ _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartID: user.cartID, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address })
+          dispatch(LoginGoogle(true));
+        } else {
+          dispatch(LoginGoogle(false));
+          console.warn("Tài khoản đã bị khóa !!")
+        }
+      } else {
+        console.log("Login failed");
+      }
+    } catch (error: any) {
+      // handle errors
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        // user cancelled the login flow
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        // operation (e.g. sign in) is in progress already
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        // play services not available or outdated
+      } else {
+        // some other error happened
+      }
+    }
+  }
+  async function onFaceBookButtonPress() {
+    let userFacebook: Profile;
+    LoginManager.logInWithPermissions(["public_profile", "email"]).then(
+      function (result) {
+        if (result.isCancelled) {
+          console.log("==> Login cancelled");
+        } else {
+          AccessToken.getCurrentAccessToken().then(
+            (data: any) => {
+              Profile.getCurrentProfile().then(
+                function (currentProfile) {
+                  console.log("Fb access token", data?.accessToken?.toString());
+                  const graphRequest = new GraphRequest('/me', {
+                    accessToken: data?.accessToken,
+                    parameters: {
+                      fields: {
+                        string: 'picture.type(large)',
+                      },
+                    },
+                  }, (error, result: any) => {
+                    if (error) {
+                      console.error(error)
+                    } else {
+                      setPictureURL(result?.picture.data.url);
+                    }
+                  })
+                  new GraphRequestManager().addRequest(graphRequest).start()
+                  if (currentProfile) {
+                    userFacebook = currentProfile;
+                  }
+                }
+              );
+              const credentials = Realm.Credentials.facebook(data?.accessToken?.toString());
+              app.logIn(credentials).then(async userFace => {
+                console.log(`Logged in with id: ${userFace.id}`);
+                if (userFace) {
+                  const response = await AxiosInstance().post(`/users/getUser/${userFace.id}`, { name: userFacebook.name, email: userFacebook.email });
+                  console.log(userFacebook);
+                  const user = response.data.data;
+                  if (user.active) {
+                    handleSubmit({
+                      _idUser: user._idUser, email: '', userName: userFacebook.name, cartID: user.cartID, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address
+                    })
+                    dispatch(LoginFacebook(true));
+                  } else {
+                    dispatch(LoginFacebook(false));
+                    console.warn("Tài khoản không bị khóa !!")
+                  }
+                } else {
+                  console.log("Login failed");
+                }
+              });
+
+            }
+          )
+        }
+      },
+      function (error) {
+        console.log("==> Login fail with error: " + error);
+      }
+    );
+  }
   return (
     <KeyboardAwareScrollView>
       <View style={{ paddingHorizontal: 16, marginTop: 20 }}>

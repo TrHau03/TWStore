@@ -11,9 +11,14 @@ import React, { useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { CompositeNavigationProp, CompositeScreenProps, useNavigation } from '@react-navigation/native';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
-import { BottomTabNavigationProp, BottomTabScreenProps } from '@react-navigation/bottom-tabs';
-import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootTabParamList } from '../../component/BottomNavigation/RootTab/RootTab';
+import { PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { COLORS } from '../../utilities';
+import AxiosInstance from '../../Axios/Axios';
+import { AirbnbRating } from 'react-native-ratings';
+import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 
 interface Category {
@@ -21,11 +26,23 @@ interface Category {
   img: any;
   name: string;
 }
-type ProfileScreenNavigationProp = CompositeNavigationProp<BottomTabNavigationProp<RootTabParamList, 'StackHome'>,StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
-const ExploreScreen = () => {
-  const navigation = useNavigation<ProfileScreenNavigationProp>();
-  const [click, setClick] = useState<boolean>(false);
+type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
+const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
+  const navigationBottom = useNavigation<BottomNavigationProp>();
 
+  const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
+
+  const [textInputSearch, setTextInputSearch] = useState<string>('');
+
+  const [listProduct, setListProduct] = useState<[]>([]);
+
+  useEffect(() => {
+    const fetchListProduct = async () => {
+      const response = await AxiosInstance().get('category/getAllCategory');
+      setListProduct(response.data);
+    }
+    fetchListProduct();
+  }, [])
 
   const renderItem = ({ item }: any): React.JSX.Element => {
     const { id, img, name } = item;
@@ -41,6 +58,13 @@ const ExploreScreen = () => {
           </View>
           <View style={styles.in4PD}>
             <Text style={styles.NamePD}>{name}</Text>
+      <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Category_Detail_Screen)} style={styles.containerItemPD}>
+        <View style={styles.content}>
+
+          <View style={styles.in4PD}>
+            <View style={styles.in4Text}>
+              <Text style={styles.NamePD} >{item.name}</Text>
+            </View>
           </View>
         </View>
 
@@ -69,6 +93,7 @@ const ExploreScreen = () => {
             <Icon name="heart-outline" size={25} />
           </TouchableOpacity>
           <TouchableOpacity>
+          <TouchableOpacity onPress={() => navigationBottom.navigate(RootStackScreenEnumHome.NotificationScreen)}>
             <Icon name="notifications-outline" size={25} />
           </TouchableOpacity>
         </View>
