@@ -2,7 +2,7 @@ import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatLi
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp, NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,55 +18,10 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { listRecommended } from '../../Redux/silces/HomeSelector';
 
 
-const renderItem = ({ item }: { item: { id: string, name: string, icon: any } }) => (
-    <View style={styles.item}>
-        <View style={styles.bodericon}>
-            <MaterialCommunityIcons name='shoe-sneaker' size={26} />
-        </View>
-        <Text style={styles.textname}>{item.name}</Text>
-    </View>
-);
 
-const renderItem2 = ({ item }: { item: { id: string, name: string, image: any } }) => {
-    return (
-        <View style={styles.itemsale} >
-            <View style={{ rowGap: 20 }}>
-                <Image style={styles.imageproduct} source={{ uri: item.image }} />
-                <Text style={styles.nameproduct}>{item.name}</Text>
-                <Text style={styles.price}>$299,43</Text>
-            </View>
-            <View style={styles.stylesaleoff}>
-                <Text style={styles.strikethrough}>$534,33</Text>
-                <Text style={styles.saleoff}>24% Off</Text>
-            </View>
-        </View >
-    )
-}
+const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
+    const isFocused = useIsFocused();
 
-const renderItem3 = ({ item }: any) => {
-    return (
-        <View style={styles.itemsale2}>
-            <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
-            <View style={{ marginTop: 20, rowGap: 15 }}>
-                <Text style={styles.nameproduct}>{item.productName}</Text>
-            </View>
-            <View style={styles.stylesaleoff}>
-                <Text style={styles.price}>${item.price}</Text>
-                <View style={{ flexDirection: "row" }}>
-                    <Text style={styles.strikethrough}>$534,33</Text>
-                    <Text style={styles.saleoff}>24% Off</Text>
-                </View>
-            </View>
-        </View>
-    )
-
-}
-type NavigationProps = StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>
-type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListExplore>>;
-const HomeScreen = (props: any) => {
-    const navigationTab = props.navigation;
-    const navigation = useNavigation<NavigationProps>();
-    const navigationOtherTab = useNavigation<BottomNavigationProp>();
 
     const [imgActive, setimgActive] = useState(0);
 
@@ -78,21 +33,24 @@ const HomeScreen = (props: any) => {
     const [brand, setBrand] = useState<[]>([]);
     const listProduct = useSelector(listRecommended);
 
+
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchInitialListProduct());
         const fetchBanner = async () => {
             const response = await AxiosInstance().get(`banner/getAllBanner`);
             setImages(response.data.banner);
         }
-        fetchBanner();
         const fetchBrand = async () => {
             const response = await AxiosInstance().get(`brand/getAllBrand`);
             setBrand(response.data)
         }
-        fetchBrand();
-    }, [])
+        if (isFocused) {
+            dispatch(fetchInitialListProduct());
+            fetchBrand();
+            fetchBanner();
+        }
+    }, [isFocused])
     const onChange = (nativeEvent: any) => {
         if (nativeEvent) {
             const slide = Math.ceil(nativeEvent.contentOffset.x / nativeEvent.layoutMeasurement.width);
@@ -102,6 +60,34 @@ const HomeScreen = (props: any) => {
         }
     }
 
+
+    const renderItem = ({ item }: { item: { name: string, linkIcon: string } }) => (
+        <View style={styles.item}>
+            <View style={styles.bodericon}>
+                <Image style={{ width: 50, height: 50 }} source={{ uri: item.linkIcon }} />
+            </View>
+            <Text style={styles.textname}>{item.name}</Text>
+        </View>
+    );
+
+
+    const renderItem3 = ({ item }: any) => {
+        return (
+            <Pressable style={styles.itemsale2} onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })}>
+                <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
+                <View style={{ marginTop: 20, rowGap: 15 }}>
+                    <Text style={styles.nameproduct}>{item.productName}</Text>
+                </View>
+                <View style={styles.stylesaleoff}>
+                    <Text style={styles.price}>${item.price}</Text>
+                    <View style={{ flexDirection: "row" }}>
+                        <Text style={styles.strikethrough}>$534,33</Text>
+                        <Text style={styles.saleoff}>24% Off</Text>
+                    </View>
+                </View>
+            </Pressable>
+        )
+    }
     return (
         <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
             <View style={styles.top}>
@@ -131,7 +117,7 @@ const HomeScreen = (props: any) => {
                 </View>
 
             </View>
-            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[6]} scrollEventThrottle={16}>
+            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]} scrollEventThrottle={16}>
                 <View style={styles.topslide}>
                     <ScrollView
                         nestedScrollEnabled={true}
@@ -143,7 +129,7 @@ const HomeScreen = (props: any) => {
                     >
                         {
                             images.map((e: any, index) =>
-                                <Pressable onPress={() => navigationTab.navigate(RootStackScreenEnumOffer.OfferScreen)} key={e._id}>
+                                <Pressable onPress={() => navigation.navigate(RootStackScreenEnumOffer.OfferScreen)} key={e._id}>
                                     <Image
                                         resizeMode='stretch'
                                         style={styles.slide}
@@ -178,49 +164,6 @@ const HomeScreen = (props: any) => {
                             keyExtractor={(item) => item.name}
                         />
                     </View>
-                </View>
-
-
-
-                <View style={styles.flashsale}>
-
-                    <Text style={styles.textflashsale}>Flash Sale</Text>
-
-                    <Pressable>
-                        <Text style={styles.textflashsale2}>
-                            See More
-                        </Text>
-                    </Pressable>
-
-                </View>
-
-                <View style={styles.listflastsale}>
-                    <FlatList
-                        data={data2}
-                        horizontal
-                        nestedScrollEnabled={true}
-                        renderItem={renderItem2}
-                        keyExtractor={(item) => item.id}
-                    />
-                </View>
-
-                <View style={styles.megasale}>
-                    <Text style={styles.textflashsale}>Mega Sale</Text>
-                    <Pressable>
-                        <Text style={styles.textflashsale2}>
-                            See More
-                        </Text>
-                    </Pressable>
-                </View>
-
-                <View style={styles.listflastsale}>
-                    <FlatList
-                        nestedScrollEnabled={true}
-                        data={data2}
-                        horizontal
-                        renderItem={renderItem2}
-                        keyExtractor={(item) => item.id}
-                    />
                 </View>
                 <View style={styles.listgrid}>
                     <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
@@ -340,7 +283,7 @@ const styles = StyleSheet.create({
     },
 
     textname: {
-        fontSize: 12
+        fontSize: 16
     },
 
     bodericon: {

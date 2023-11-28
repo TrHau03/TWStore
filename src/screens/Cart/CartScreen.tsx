@@ -39,7 +39,6 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const generalPrice = listData.reduce((previousValue: number, currentItem: Product) => previousValue + currentItem.price * currentItem.quantity, 0);
 
-    console.log(listData);
 
 
     useEffect(() => {
