@@ -33,10 +33,10 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
     const [brand, setBrand] = useState<[]>([]);
     const listProduct = useSelector(listRecommended);
 
+
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchInitialListProduct());
         const fetchBanner = async () => {
             const response = await AxiosInstance().get(`banner/getAllBanner`);
             setImages(response.data.banner);
@@ -46,6 +46,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
             setBrand(response.data)
         }
         if (isFocused) {
+            dispatch(fetchInitialListProduct());
             fetchBrand();
             fetchBanner();
         }

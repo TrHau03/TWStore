@@ -3,8 +3,8 @@ import AxiosInstance from '../../Axios/Axios';
 
 
 export const fetchInitialListProduct: any = createAsyncThunk('Slice/fetchInitialListProduct', async (data: any) => {
-  const response = await AxiosInstance().get(`product/getAllProduct`);
 
+  const response = await AxiosInstance().get(`product/getAllProduct`);
   return response.data;
 })
 const initialState = {

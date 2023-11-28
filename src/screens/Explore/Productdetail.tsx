@@ -7,7 +7,9 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
-  Button
+  Button,
+  ImageSourcePropType,
+  Pressable
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Productreviews from './Productreviews';
@@ -38,11 +40,25 @@ interface Review {
   comment: string;
   commentImage: string[] | null;
 }
+interface Product {
+  _id: string;
+  brand: any;
+  categoryID: any;
+  colorID: any;
+  image: [];
+  offer: number;
+  price: number;
+  productName: string;
+  quantity: number;
+  size: [];
+  description: string;
+}
 
 
 const Productdetail = (props: NativeStackHeaderProps) => {
   const { id } = props?.route.params as { id: string | undefined };
-  const [product, setProduct] = useState<{}>({});
+  const { navigation } = props
+  const [product, setProduct] = useState<Product>();
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -50,7 +66,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       const response = await AxiosInstance().get(`product/getProductById/${id}`);
       console.log(response.data);
 
-      //setProduct(response.data.banner);
+      setProduct(response.data);
     }
     if (isFocused) {
       fetchProductByID();
@@ -68,12 +84,9 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   //chọn màu chọn size
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
-  const availableColors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF'];
-  const availableSizes = [46, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 45];
 
   //sản phẩm yêu thích
-  const [isImageToggled, setIsImageToggled] = useState(false);
-  const sortedSizes = availableSizes.slice().sort((a, b) => a - b);
+  const sortedSizes = product?.size.slice().sort((a, b) => a - b);
 
 
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
@@ -121,7 +134,6 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
 
   //next screen
-  const navigation = useNavigation();
 
   const handleAddTocart = () => {
     console.log('nhấn được rồi nè !')
@@ -134,10 +146,10 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
       <ScrollView>
         <View style={styles.header}>
-          <Icon name='chevron-back-outline' />
-          <Text style={styles.name}>Nike Air Max 270 Rea...</Text>
-          <Icon name='search' />
-          <Icon name='list' />
+          <Pressable style={{ position: 'absolute', left: 10 }} onPress={() => navigation.goBack()}>
+            <Icon name='chevron-back-outline' size={26} />
+          </Pressable>
+          <Text style={styles.name}>{product?.brand?.name}</Text>
         </View>
         <View>
           <View style={styles.slideshowcontainer}>
@@ -148,15 +160,14 @@ const Productdetail = (props: NativeStackHeaderProps) => {
               showsHorizontalScrollIndicator={false}
               onScroll={handleScroll}
             >
-              {slideshow.map((product, index) => (
-                <View key={product.id} style={styles.slide}>
-                  <Image source={product.img} style={styles.image} />
-                  <Text style={styles.imageText}>{product.mau}</Text>
+              {product?.image.map((product: any, index: any) => (
+                <View key={index} style={styles.slide}>
+                  <Image source={{ uri: product }} style={styles.image} />
                 </View>
               ))}
             </ScrollView>
             <View style={styles.pagination}>
-              {slideshow.map((_, index) => (
+              {product?.image.map((_: any, index: React.Key | null | undefined) => (
                 <View
                   key={index}
                   style={[
@@ -168,13 +179,13 @@ const Productdetail = (props: NativeStackHeaderProps) => {
             </View>
           </View>
           <View style={styles.nameproduct}>
-            <Text style={styles.product}>Nike Air Zoom Pegasus 36 Miami</Text>
+            <Text style={styles.product}>{product?.productName}</Text>
           </View>
           <View style={styles.marginlefft}>
             <View>
               <CustomRatingBar numberOfRatings={10} />
             </View>
-            <Text style={styles.price}>$299,43</Text>
+            <Text style={styles.price}>${product?.price}</Text>
             <Text style={styles.textsize}>Select Size</Text>
             <View style={styles.sizeContainer}>
               <ScrollView
@@ -182,22 +193,22 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                 contentContainerStyle={styles.sizeScrollViewContent}
                 showsHorizontalScrollIndicator={false}
               >
-                {sortedSizes.map((size, index) => (
+                {sortedSizes?.map((size: any, index) => (
                   <TouchableOpacity
                     key={index}
                     style={[
                       styles.sizeCircle,
-                      { borderColor: selectedSize === size ? '#1C1C1C' : '#EBF0FF' },
+                      { borderColor: selectedSize === size?.name ? '#1C1C1C' : '#EBF0FF' },
                     ]}
-                    onPress={() => setSelectedSize(size)}
+                    onPress={() => setSelectedSize(size.name)}
                   >
                     <Text
                       style={[
                         styles.sizeText,
-                        { color: selectedSize === size ? '#223263' : '#223263' },
+                        { color: selectedSize === size.name ? '#223263' : '#223263' },
                       ]}
                     >
-                      {size}
+                      {size.name}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -211,16 +222,16 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                 contentContainerStyle={styles.colorScrollViewContent}
                 showsHorizontalScrollIndicator={false}
               >
-                {availableColors.map((color, index) => (
+                {product?.colorID.map((color: any, index: React.Key | null | undefined) => (
                   <TouchableOpacity
                     key={index}
                     style={[
                       styles.colorCircle,
-                      { backgroundColor: color },
+                      { backgroundColor: color.code },
                     ]}
-                    onPress={() => setSelectedColor(color)}
+                    onPress={() => setSelectedColor(color.code)}
                   >
-                    {selectedColor === color && <View style={styles.selectedColorDot}></View>}
+                    {selectedColor === color.code && <View style={styles.selectedColorDot}></View>}
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -405,7 +416,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     paddingHorizontal: 16,
     height: 80,
     backgroundColor: 'white',
@@ -416,7 +427,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   name: {
-    marginTop: 30,
     fontSize: 22,
     lineHeight: 24,
     fontFamily: 'poppins',
@@ -658,7 +668,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#EBF0FF',
+    backgroundColor: '#d2d2d2',
     marginHorizontal: 5,
   },
   activeDot: {
