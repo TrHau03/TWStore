@@ -45,7 +45,7 @@ const Category_Detail_Screen = ({navigation}: any) => {
         }),
       );
     }
-    console.log(dataFilter);
+    console.log('dataFilter'+dataFilter);
   }, [filter]);
 
   const renderItem = ({item}: any): React.JSX.Element => {

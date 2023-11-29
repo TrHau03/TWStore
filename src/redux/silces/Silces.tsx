@@ -4,6 +4,11 @@ import AxiosInstance from '../../Axios/Axios';
 
 export const fetchInitialListProduct: any = createAsyncThunk('Slice/fetchInitialListProduct', async (data: any) => {
   const response = await AxiosInstance().get(`product/getAllProduct`);
+  
+  return response.data;
+})
+export const fetchInitialUser: any = createAsyncThunk('Slice/fetchInitialUser', async (data: any) => {
+  const response = await AxiosInstance().get(`user/getUser`);
 
   return response.data;
 })
@@ -13,6 +18,7 @@ const initialState = {
   LoginGoogle: false,
   LoginFaceBook: false,
   user: {
+    _id:'',
     _idUser: '',
     email: '',
     userName: '',
@@ -21,6 +27,7 @@ const initialState = {
     gender: '',
     birthDay: '',
     address: [],
+    phone: '123',
   },
   orderDetails: [
     {
@@ -192,6 +199,9 @@ const Slice = createSlice({
       const value = action.payload
       state.user = value;
     },
+    updatePhone: (state, action) => {
+      state.user.phone = action.payload;
+    },
     isLogin: (state, action) => {
       console.log("login", action.payload);
       const value = action.payload;
@@ -219,7 +229,10 @@ const Slice = createSlice({
       .addCase(fetchInitialListProduct.fulfilled, (state, action) => {
         state.listProduct = action.payload;
       })
+      .addCase(fetchInitialUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+      })
   },
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle } = Slice.actions
+export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle,updatePhone } = Slice.actions
 export default Slice.reducer;

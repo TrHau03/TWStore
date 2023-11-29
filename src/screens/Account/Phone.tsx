@@ -1,14 +1,27 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
 import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
+import { useDispatch, useSelector } from 'react-redux'
+import { updatePhone, updateUser } from '../../Redux/silces/Silces'
+import AxiosInstance from '../../Axios/Axios'
 
-const Phone = () => {
-    const [phone, setPhone] = useState<string>();
-    console.log(phone);
+const Phone = (props: any) => {
+    const { setModalVisible } = props.action;
+    const [phone, setPhone] = useState<string>()
+    const dispatch = useDispatch();
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+
+    const handleChangePhone = () => {
+        dispatch(updatePhone(phone));
+    }
+
+    const fetchPhone = async () => {
+        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._id, phone: phone });
+    };
 
     return (
         <View style={styles.container}>
@@ -20,13 +33,13 @@ const Phone = () => {
                 <Text style={styles.txtEmail}>Phone Number</Text>
                 <View style={styles.input}>
                     <Icon name='phone-portrait-outline' size={30} />
-                    <TextInput style={styles.txtInput} value={phone} onChangeText={(value) => setPhone(value)} keyboardType='numeric' placeholder="0372711935" maxLength={11} />
+                    <TextInput style={styles.txtInput} value={phone} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setPhone(e.nativeEvent.text) }} keyboardType='numeric' maxLength={11} />
                 </View>
             </View>
 
-            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable onPress={() => { setModalVisible(false), handleChangePhone(), fetchPhone() }} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
-            </View>
+            </Pressable>
         </View>
     )
 }

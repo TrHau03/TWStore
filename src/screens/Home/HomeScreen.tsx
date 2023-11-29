@@ -74,11 +74,11 @@ const HomeScreen = (props: any) => {
 
     const dispatch = useDispatch();
     const listProduct = useSelector((state: any) => state.SlicesReducer.listProduct);
+    
     useEffect(() => {
         dispatch(fetchInitialListProduct());
         const fetchBanner = async () => {
             const response = await AxiosInstance().get(`banner/getAllBanner`);
-            console.log(response.data.data);
 
             setImages(response.data.data);
         }

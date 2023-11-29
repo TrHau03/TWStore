@@ -7,11 +7,11 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 
-const Birthday = () => {
+const Birthday = (props: any) => {
+    const {setBirthday} = props.action;
     const [date, setDate] = useState(new Date());
     const [open, setOpen] = useState<boolean>(false);
-    console.log(date);
-
+    
     return (
         <View style={styles.container}>
             <Header hideBack title='BirthDay' />

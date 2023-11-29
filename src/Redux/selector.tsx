@@ -27,7 +27,7 @@ export const todoRemainingSelectProduct = createSelector(
     search,
     filterCategorySelector,
     (listProduct,search, category) => {
-        console.log(search);
+        console.log('search: '+search);
         
     return listProduct.filter((todo: any) => {
         if (category === 'All') {

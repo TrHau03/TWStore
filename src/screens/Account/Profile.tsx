@@ -15,15 +15,15 @@ import Phone from './Phone'
 import Gender from './Gender'
 import ChangeName from './ChangeName';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import AxiosInstance from '../../Axios/Axios';
 
 
 const ProfileScreen = ({ navigation }: PropsAccount) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [nameModal, setNameModal] = useState<string>('');
+    const [birthday, setBirthday] = useState<string>('')
     const user = useSelector((state: any) => state.SlicesReducer.user);
-    console.log(user);
-
     const checkLogin = useSelector((state: any) => state.SlicesReducer.LoginGoogle || state.SlicesReducer.LoginGoogle ? true : false);
 
     return (
@@ -39,11 +39,11 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                         (nameModal == 'ChangeGender') ?
                             <Gender /> :
                             (nameModal == 'ChangeBirthDay') ?
-                                <Birthday /> :
+                                <Birthday action={{ setBirthday }} /> :
                                 (nameModal == 'ChangeEmail') ?
                                     <Email /> :
                                     (nameModal == 'ChangePhone') ?
-                                        <Phone /> :
+                                        <Phone action={{ setModalVisible }} /> :
                                         (nameModal == 'ChangePassword') ?
                                             <ChangePass /> :
                                             <ChangeName />
