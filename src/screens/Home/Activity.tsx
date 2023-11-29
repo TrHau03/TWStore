@@ -8,10 +8,17 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
-import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import AxiosInstance from '../../Axios/Axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { listRecommended } from '../../Redux/silces/HomeSelector';
+import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { useIsFocused } from '@react-navigation/native';
+import { fetchInitialListProduct } from '../../Redux/silces/Silces';
+import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 interface Product_Notifi {
   id: number;
@@ -22,31 +29,15 @@ interface Product_Notifi {
   time: string;
 }
 
-const renderItem = ({ item }: any): React.JSX.Element => {
-  const { id, img, title, content, date, time } = item;
-
-  return (
-    <View style={styles.containerItemPD}>
-      <View style={styles.contentPD}>
-        <View style={styles.left}>
-          <Image source={img} style={{ width: 50, height: 50 }} />
-        </View>
-        <View style={styles.right}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.txtcontent}>{content}</Text>
-          <View style={styles.contentRight}>
-            <Text style={styles.date}>{date}</Text>
-            <Text style={styles.time}>{time}</Text>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-};
 
 const ActivityScreen = ({ navigation }: PropsHome) => {
   const [checkProduct, setcheckProduct] = useState<boolean>(false);
   const [checkActivity, setcheckActivity] = useState<boolean>(false);
+  const listProduct = useSelector(listRecommended);
+  const [reversedListProduct, setReversedListProduct] = useState<Product_Notifi[]>([]);
+  const isFocused = useIsFocused();
+  const dispatch = useDispatch();
+
 
   const flatListRefProduct = useRef<FlatList>(null);
   const flatListRefActivity = useRef<FlatList>(null);
@@ -61,6 +52,41 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
   const scrollToTopActivity = () => {
     flatListRefActivity.current?.scrollToOffset({ offset: 0 });
   };
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(fetchInitialListProduct());
+    }
+  }, [isFocused]);
+  useEffect(() => {
+    const reversedList = [...listProduct].reverse();
+    setReversedListProduct(reversedList);
+  }, [listProduct]);
+
+
+
+  const renderItem = ({ item }: any) => {
+    return (
+      <Pressable>
+        <View style={styles.containerItemPD}>
+          <View style={styles.contentPD}>
+            <View style={styles.left}>
+              {item.image && item.image.length > 0 && (
+                <Image source={{ uri: item.image[0] }} style={styles.imgProduct} />
+              )}
+            </View>
+            <View style={styles.right}>
+              <Text style={styles.title}>New Product</Text>
+              <Text style={styles.txtcontent}>{item.productName}</Text>
+            </View>
+          </View>
+        </View>
+      </Pressable>
+    );
+  };
+  
+
+
 
   return (
     <View style={styles.container}>
@@ -86,14 +112,14 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
             <FlatList
               style={
                 checkProduct
-                  ? [styles.groupProduct, { height: 'auto', marginBottom: 80}]
+                  ? [styles.groupProduct, { height: 'auto', marginBottom: 80 }]
                   : [styles.groupProduct, { height: '40%' }]
               }
               ref={flatListRefProduct}
               scrollEnabled={checkProduct}
-              data={DataProduct_Notifi} // Hiển thị chỉ số sản phẩm cần
+              data={reversedListProduct}
               renderItem={renderItem}
-              keyExtractor={item => item.id.toString()}
+              keyExtractor={item => item._id}
               numColumns={1}
               showsVerticalScrollIndicator={false}
             />
@@ -125,7 +151,7 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
               }
               ref={flatListRefActivity}
               scrollEnabled={checkActivity}
-              data={DataActivity_Notifi} // Hiển thị chỉ số sản phẩm cần
+              data={DataActivity_Notifi}
               renderItem={renderItem}
               keyExtractor={item => item.id.toString()}
               numColumns={1}
@@ -158,6 +184,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
     color: 'black',
+    marginBottom:5,
   },
   contentRight: {
     flexDirection: 'row',
@@ -165,9 +192,17 @@ const styles = StyleSheet.create({
   },
   right: {
     width: '80%',
+    height:'auto',
   },
   left: {
     width: '20%',
+    height:  'auto',
+    marginRight:20,
+  },
+  imgProduct:{
+    width: '100%',
+    height:  HEIGHT *0.1,
+    borderRadius:10,
   },
 
   contentPD: {
@@ -176,6 +211,7 @@ const styles = StyleSheet.create({
   containerItemPD: {
     width: '100%',
     height: 'auto',
+    margin:10,
   },
 
   groupProduct: {
@@ -335,48 +371,3 @@ const DataActivity_Notifi: Product_Notifi[] = [
   },
 ];
 
-/*
-import React, { useState } from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
-
-const ProductList = ({ products }) => {
-  const [visibleProducts, setVisibleProducts] = useState(5);
-  const [showAll, setShowAll] = useState(false);
-
-  const toggleShowAll = () => {
-    setShowAll(!showAll);
-    if (!showAll) {
-      setVisibleProducts(products.length);
-    } else {
-      setVisibleProducts(5);
-    }
-  };
-
-  const renderItem = ({ item }) => (
-    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <Text>{item.name}</Text>
-      <Text>${item.price}</Text>
-    </View>
-  );
-
-  return (
-    <View>
-      <FlatList
-        data={products.slice(0, visibleProducts)}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
-      />
-      {products.length > 5 && (
-        <TouchableOpacity onPress={toggleShowAll}>
-          <Text>{showAll ? 'See Less' : 'See More'}</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-};
-
-export default ProductList;
-
-
-
-*/

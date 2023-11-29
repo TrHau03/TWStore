@@ -7,15 +7,6 @@ export const fetchInitialListProduct: any = createAsyncThunk('Slice/fetchInitial
   return response.data;
 })
 
-export const fetchInitialListEvents: any = createAsyncThunk('Slice/fetchInitialListEvents', async (data: any) => {
-    const response = await AxiosInstance().get(`event/getAllEvent`);
-
-    return response.data;
-  },
-);
-
-
-
 const initialState = {
   isLogin: false,
   isLoading: false,
@@ -238,9 +229,6 @@ const Slice = createSlice({
   
   extraReducers: builder => {
     builder
-      .addCase(fetchInitialListEvents.fulfilled, (state, action) => {
-        state.listEvents =  action.payload;
-      })
       .addCase(fetchInitialListProduct.fulfilled, (state, action) => {
         state.listProduct = action.payload;
       });

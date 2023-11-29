@@ -18,9 +18,9 @@ import {
 } from '../../utilities/utility';
 import {useDispatch, useSelector} from 'react-redux';
 import {listRecommended} from '../../Redux/silces/HomeSelector';
-import {fetchInitialListEvents} from '../../Redux/silces/Silces';
 import AxiosInstance from '../../Axios/Axios';
 import { ObjectId } from 'mongoose';
+import { useIsFocused } from '@react-navigation/native';
 
 interface Offer {
   id: number;
@@ -31,7 +31,7 @@ interface Offer {
   time: string;
 }
 
-const renderItem = ({ item }: { item: { _id: ObjectId, eventImage: string, eventName: string } }) => {
+const renderItem = ({ item }: { item: { _id: ObjectId, eventImage: string, eventName: string ,levelGiamgia : string} }) => {
   return (
     <View style={styles.containerItemPD}>
       <View style={styles.content}>
@@ -40,6 +40,7 @@ const renderItem = ({ item }: { item: { _id: ObjectId, eventImage: string, event
         </View>
         <View style={styles.right}>
           <Text style={styles.title}>{item.eventName}</Text>
+          <Text style={styles.textinsize}>giảm {item.levelGiamgia} %</Text>
         </View>
       </View>
     </View>
@@ -49,15 +50,15 @@ const renderItem = ({ item }: { item: { _id: ObjectId, eventImage: string, event
 
 const OfferNorifiScreen = ({navigation}: PropsHome) => {
   const [event, setEvent] = useState<[]>([]);
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(fetchInitialListEvents());
     const fetchEvent = async () => {
       const response = await AxiosInstance().get(`event/getAllEvent`);
+      console.log("data event :" + response.data);
       setEvent(response.data);
     };
     fetchEvent();
+
   }, []);
 
   return (
@@ -65,7 +66,7 @@ const OfferNorifiScreen = ({navigation}: PropsHome) => {
       <Header title="Offer" navigation={navigation} />
       <FlatList
         style={{marginTop: 20}}
-        data={[...event].reverse()}
+        data={event}
         renderItem={renderItem}
         keyExtractor={(item) => item._id.toString()}
         numColumns={1}
@@ -93,6 +94,16 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
     color: 'black',
+    paddingHorizontal: PADDING_HORIZONTAL,
+    paddingTop:10,
+    paddingBottom:10,
+  },
+  textinsize: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'black',
+    paddingHorizontal: PADDING_HORIZONTAL,
+    paddingBottom:10,
   },
   contentRight: {
     flexDirection: 'row',
@@ -100,18 +111,23 @@ const styles = StyleSheet.create({
   },
   right: {
     width: '90%',
+    height: 'auto',
+    borderRadius: 15,
   },
   left: {
-    width: '10%',
-  },
-
-  content: {
-    flexDirection: 'row',
+    width: '30%',
+    height: 'auto',
+    borderRadius: 15,
   },
   containerItemPD: {
     width: '100%',
     height: 'auto',
     marginTop: 20,
+    backgroundColor:'blue',
+    borderRadius: 15,
+  },
+  content: {
+    flexDirection: 'row',
   },
   container: {
     flex: 1,
@@ -122,68 +138,3 @@ const styles = StyleSheet.create({
   },
 });
 
-// const DataOffer: Offer[] = [
-//   {
-//     id: 1,
-//     img: require('../../asset/image/Offer.png'),
-//     title: 'The Best Title',
-//     content:
-//       'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor amet deserunt ex proident commodo',
-//     date: '21/07/2002',
-//     time: '9:00 PM',
-//   },
-//   {
-//     id: 2,
-//     img: require('../../asset/image/Offer.png'),
-//     title: 'SUMMER OFFER 98% Cashback',
-//     content:
-//       'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor',
-//     date: '21/07/2002',
-//     time: '9:00 PM',
-//   },
-//   {
-//     id: 3,
-//     img: require('../../asset/image/Offer.png'),
-//     title: 'Special Offer 25% OFF',
-//     content:
-//       'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor amet deserunt ex proident commodo',
-//     date: '21/07/2002',
-//     time: '9:00 PM',
-//   },
-//   {
-//     id: 4,
-//     img: require('../../asset/image/Offer.png'),
-//     title: 'SUMMER OFFER 98% Cashback',
-//     content:
-//       'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor',
-//     date: '21/07/2002',
-//     time: '9:00 PM',
-//   },
-//   {
-//     id: 5,
-//     img: require('../../asset/image/Offer.png'),
-//     title: 'The Best Title',
-//     content:
-//       'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor amet deserunt ex proident commodo',
-//     date: '21/07/2002',
-//     time: '9:00 PM',
-//   },
-//   {
-//     id: 6,
-//     img: require('../../asset/image/Offer.png'),
-//     title: 'SUMMER OFFER 98% Cashback',
-//     content:
-//       'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor',
-//     date: '21/07/2002',
-//     time: '9:00 PM',
-//   },
-//   {
-//     id: 7,
-//     img: require('../../asset/image/Offer.png'),
-//     title: 'The Best Title',
-//     content:
-//       'Culpa cillum consectetur labore nulla nulla magna irure. Id veniam culpa officia aute dolor amet deserunt ex proident commodo',
-//     date: '21/07/2002',
-//     time: '9:00 PM',
-//   },
-// ];

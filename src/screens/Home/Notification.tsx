@@ -4,10 +4,11 @@ import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+
+
+
+
 const NotificationScreen = ({ navigation }: PropsHome) => {
-
-
-
   return (
     <View style={styles.container}>
       <View>
