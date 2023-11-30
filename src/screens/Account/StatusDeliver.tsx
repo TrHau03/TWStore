@@ -7,7 +7,6 @@ import { COLORS } from '../../utilities';
 
 const StatusDeliver = (props: any) => {
     const { date, status } = props.state;
-    console.log(status);
 
     return (
         <View style={styles.container}>

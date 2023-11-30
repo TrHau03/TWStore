@@ -64,8 +64,6 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   useEffect(() => {
     const fetchProductByID = async () => {
       const response = await AxiosInstance().get(`product/getProductById/${id}`);
-      console.log(response.data);
-
       setProduct(response.data);
     }
     if (isFocused) {
