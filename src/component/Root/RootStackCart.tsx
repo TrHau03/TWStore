@@ -17,7 +17,7 @@ export type RootStackParamListCart = {
 export const RootStackScreenCart = () => {
     const Screen: any = [
         { id: uid(), name: RootStackScreenEnumCart.CartScreen, component: FadeCartScreen, options: {} },
-        
+
 
     ]
     return Screen;

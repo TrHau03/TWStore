@@ -19,7 +19,6 @@ interface Filters {
     brand: string,
     color: string,
     size: string,
-    category: string,
     loading: boolean,
 }
 interface FilterPrice {
@@ -78,7 +77,6 @@ const initialState: InitialState = {
         brand: 'All',
         color: 'All',
         size: 'All',
-        category: 'All',
         loading: false,
     },
     order: [
@@ -211,13 +209,12 @@ const HomeScreenSlice = createSlice({
             state.filters.brand = action.payload;
         },
         filterColor: (state, action) => {
+            console.log(action.payload);
+            
             state.filters.color = action.payload;
         },
         filterSize: (state, action) => {
             state.filters.size = action.payload;
-        },
-        filterCategory: (state, action) => {
-            state.filters.category = action.payload;
         },
         filterPrice: (state, action) => {
             state.filterPrice.minPrice = action.payload.minPrice;

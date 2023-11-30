@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { useIsFocused } from '@react-navigation/native';
 import AxiosInstance from '../../Axios/Axios';
+import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 
 
 
@@ -146,7 +147,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
       <ScrollView>
         <View style={styles.header}>
-          <Pressable style={{ position: 'absolute', left: 10 }} onPress={() => navigation.goBack()}>
+          <Pressable style={{ position: 'absolute', left: 10 }} onPress={() => navigation.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
             <Icon name='chevron-back-outline' size={26} />
           </Pressable>
           <Text style={styles.name}>{product?.brand?.name}</Text>

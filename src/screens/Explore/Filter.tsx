@@ -9,7 +9,7 @@ import {
   View,
   Pressable,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Header from '../../component/Header/Header'
@@ -17,14 +17,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 import { COLORS } from '../../utilities';
 import Button from '../../component/Button/Button';
+import { useIsFocused } from '@react-navigation/native';
+import AxiosInstance from '../../Axios/Axios';
 
 interface Brand {
   _id: number;
   name: string;
+  linkIcon: string;
 }
 interface Color {
   _id: number;
   name: string;
+  code: string;
 }
 interface Size {
   _id: number;
@@ -32,6 +36,32 @@ interface Size {
 }
 
 const FilterScreen = (props: any) => {
+  const isFocused = useIsFocused();
+
+  const [dataBrand, setDataBrand] = useState<Brand[]>([]);
+  const [dataColor, setDataColor] = useState<Color[]>([]);
+  const [dataSize, setDataSize] = useState<Color[]>([]);
+
+  useEffect(() => {
+    const fetchBrand = async () => {
+      const response = await AxiosInstance().get(`brand/getAllBrand`);
+      setDataBrand(response.data)
+    }
+    const fetchColor = async () => {
+      const response = await AxiosInstance().get(`color/getAllColor`);
+      setDataColor(response.data)
+    }
+    const fetchSize = async () => {
+      const response = await AxiosInstance().get(`Size/getAllSize`);
+      setDataSize(response.data)
+    }
+    if (isFocused) {
+      fetchBrand();
+      fetchColor();
+      fetchSize();
+    }
+  }, [isFocused])
+
   const [visibleBrand, setVisibleBrand] = useState<boolean>(false);
   const [visibleSize, setVisibleSize] = useState<boolean>(false);
   const [visibleColor, setVisibleColor] = useState<boolean>(false);
@@ -66,10 +96,10 @@ const FilterScreen = (props: any) => {
     )
   }
   const renderItemColor = ({ item }: any) => {
-    const { _id, name } = item;
+    const { _id, name, code } = item;
     return (
       <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightColor == _id && unEnableColor ? COLORS.blue : COLORS.white }}
-        onPress={() => { !unEnableColor ? setColor(name) : setColor('All'); setHighLightColor(_id), setUnEnableColor(!unEnableColor) }}>
+        onPress={() => { !unEnableColor ? setColor(code) : setColor('All'); setHighLightColor(_id), setUnEnableColor(!unEnableColor) }}>
         <Text style={{ fontSize: 18 }}>{name}</Text>
       </TouchableOpacity>
     )
@@ -137,11 +167,11 @@ const FilterScreen = (props: any) => {
           </View>
           {visibleBrand &&
             <FlatList
-              data={DataBrand}
+              data={dataBrand}
               columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
               numColumns={3}
               renderItem={renderItemBrand}
-              keyExtractor={(item) => item._id.toString()}
+              keyExtractor={(item: any) => item._id.toString()}
               style={{ top: 10 }}
             />}
 
@@ -154,7 +184,7 @@ const FilterScreen = (props: any) => {
           </View>
           {visibleColor &&
             <FlatList
-              data={DataColor}
+              data={dataColor}
               columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
               numColumns={3}
               renderItem={renderItemColor}
@@ -171,7 +201,7 @@ const FilterScreen = (props: any) => {
           </View>
           {visibleSize &&
             <FlatList
-              data={DataSize}
+              data={dataSize}
               columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
               numColumns={3}
               renderItem={renderItemSize}
@@ -273,36 +303,3 @@ const styles = StyleSheet.create({
     width: '100%',
   },
 });
-
-const DataBrand: Brand[] =
-  [
-    { _id: 1, name: 'Nike' },
-    { _id: 2, name: 'Adidas' },
-    { _id: 3, name: 'Puma' },
-    { _id: 4, name: 'Gucci' },
-    { _id: 5, name: 'LV' },
-    { _id: 6, name: 'Bargana' },
-  ];
-const DataColor: Color[] =
-  [
-    { _id: 1, name: 'Black' },
-    { _id: 2, name: 'White' },
-    { _id: 3, name: 'Red' },
-    { _id: 4, name: 'Yellow' },
-    { _id: 5, name: 'Blue' },
-    { _id: 6, name: 'Purple' },
-  ];
-const DataSize: Size[] =
-  [
-    { _id: 1, name: '36' },
-    { _id: 2, name: '37' },
-    { _id: 3, name: '38' },
-    { _id: 4, name: '39' },
-    { _id: 5, name: '40' },
-    { _id: 6, name: '41' },
-    { _id: 7, name: '42' },
-    { _id: 8, name: '43' },
-    { _id: 9, name: '44' },
-    { _id: 10, name: '45' },
-    { _id: 10, name: '46' },
-  ];

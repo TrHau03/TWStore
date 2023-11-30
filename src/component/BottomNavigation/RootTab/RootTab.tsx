@@ -52,8 +52,6 @@ export const configTab = (route: any) => {
     const data = useSelector((state: any) => {
         return state.CartReducer
     });
-    console.log("data", data);
-
     return {
         tabBarIcon: ({ color, focused }: any) => {
             let iconName: any;

@@ -16,7 +16,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { PropsExplore } from '../../component/Navigation/Props';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useDispatch, useSelector } from 'react-redux';
 import { listProducts, todoRemainingProducts } from '../../redux/silces/HomeSelector';
@@ -26,6 +26,7 @@ import * as Animatable from 'react-native-animatable';
 import FilterScreen from './Filter';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import Octicons from 'react-native-vector-icons/Octicons';
+import { fetchInitialListProductFilter } from '../../redux/silces/Silces';
 interface Product {
   id: number;
   img: any;
@@ -36,17 +37,22 @@ interface Product {
 interface ArrayProduct {
   category: string;
 }
-const dataArray: ArrayProduct[] = [
-  { category: 'All' },
-  { category: 'Man Shoes' },
-  { category: 'Women Shoes' },
-];
 type NavigationProps = StackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
 const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
-  const [click, setClick] = useState<boolean>(false);
-  const [filter, setFilter] = useState<string>('All');
-  const [dataFilter, setdataFilter] = useState<any>([]);
+  const { categoryID }: any = props.route.params;
+
+  const isFocused = useIsFocused();
+  const dispatch = useDispatch();
   const navigation = useNavigation<NavigationProps>();
+
+  useEffect(() => {
+    if (isFocused) {
+      dispatch(fetchInitialListProductFilter(categoryID))
+    }
+  }, [isFocused])
+
+  const [click, setClick] = useState<boolean>(false);
+  const [dataFilter, setdataFilter] = useState<any>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [highLightBrand, setHighLightBrand] = useState<string>('');
   const [unEnableBrand, setUnEnableBrand] = useState<boolean>(false);
@@ -63,17 +69,13 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
 
   //redux
   const [textInputSearch, setTextInputSearch] = useState<string>('');
-  const dispatch = useDispatch();
   const todoListProducts = useSelector(todoRemainingProducts);
-
-
   const handleSearch = (e: any) => {
     setTextInputSearch(e);
     dispatch(
       HomeScreenSlice.actions.searchFilterChange(e)
     )
   }
-
 
   useEffect(() => {
     if (sort) {
@@ -87,28 +89,28 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
       });
       setdataFilter(newArray);
     }
-  }, [todoListProducts, sort]);
+  });
 
   const renderItem = ({ item }: any): React.JSX.Element => {
-    const { id, image, name, price, strikeThrough, saleOff, brand } = item;
+    const { image, productName, price, strikeThrough, offer, brand } = item;
 
     return (
-      <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Productdetail)} style={styles.containerItemPD}>
+      <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Productdetail, { id: item._id })} style={styles.containerItemPD}>
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
-            <Image style={{ width: '100%', height: '100%' }} source={{ uri: image }} />
+            <Image style={{ width: '100%', height: '100%' }} source={{ uri: image[0] }} />
           </View>
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
-              <Text style={styles.NamePD}>{name}</Text>
+              <Text style={styles.NamePD}>{productName}</Text>
               <View style={styles.star}>
                 <AirbnbRating count={5} size={15} showRating={false} />
               </View>
-              <Text style={styles.PricePD}>{price}</Text>
+              {(offer > 0) ? <Text style={styles.PricePD}>{price}</Text> : <></>}
             </View>
             <View style={styles.sale}>
-              <Text style={styles.txtOldPrice}>${strikeThrough}</Text>
-              <Text style={styles.txtSale}>{saleOff}% Off</Text>
+              <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>${price}</Text>
+              <Text style={styles.txtSale}>{offer}% Off</Text>
             </View>
           </View>
         </View>
@@ -171,45 +173,12 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
               {dataFilter.length} result
             </Text>
           </View>
-
-          <View>
-            <Text style={{}}>
-              <SelectDropdown
-                data={dataArray}
-                onSelect={(selectedItem, index) => {
-                  setFilter(selectedItem.category);
-                }}
-                defaultButtonText={filter}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return selectedItem.category;
-                }}
-                rowTextForSelection={(item, index) => {
-                  return item.category;
-                }}
-                buttonStyle={styles.dropdown1BtnStyle}
-                buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                renderDropdownIcon={isOpened => {
-                  return (
-                    <Icon
-                      name={isOpened ? 'chevron-up' : 'chevron-down'}
-                      color={'#444'}
-                      size={18}
-                    />
-                  );
-                }}
-                dropdownIconPosition={'right'}
-                dropdownStyle={styles.dropdown1DropdownStyle}
-                rowStyle={styles.dropdown1RowStyle}
-                rowTextStyle={styles.dropdown1RowTxtStyle}
-              />
-            </Text>
-          </View>
         </View>
         <FlatList
           style={{ marginTop: 10 }}
           data={dataFilter}
           renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={item => item._id.toString()}
           numColumns={2}
           showsVerticalScrollIndicator={false}
         />
@@ -290,7 +259,6 @@ const styles = StyleSheet.create({
     margin: 1,
   },
   PricePD: {
-    marginTop: 5,
     fontSize: 16,
     fontWeight: '700',
     fontStyle: 'normal',
