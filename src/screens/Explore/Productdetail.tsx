@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,12 +7,19 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
-  Button
+  Button,
+  ImageSourcePropType,
+  Pressable
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Productreviews from './Productreviews';
 import { NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
+import Icon from 'react-native-vector-icons/Ionicons';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { useIsFocused } from '@react-navigation/native';
+import AxiosInstance from '../../Axios/Axios';
+import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 
 
 
@@ -22,23 +29,53 @@ type CustomRatingBarProps = {
   numberOfRatings: number;
 };
 
+interface Review {
+  id: number;
+  stars: number;
+  user: {
+    name: string;
+    image: string;
+  };
+  date: string;
+  time: string;
+  comment: string;
+  commentImage: string[] | null;
+}
+interface Product {
+  _id: string;
+  brand: any;
+  categoryID: any;
+  colorID: any;
+  image: [];
+  offer: number;
+  price: number;
+  productName: string;
+  quantity: number;
+  size: [];
+  description: string;
+}
 
 
+const Productdetail = (props: NativeStackHeaderProps) => {
+  const { id } = props?.route.params as { id: string | undefined };
+  const { navigation } = props
+  const [product, setProduct] = useState<Product>();
+  const isFocused = useIsFocused();
 
-export default function Productdetail() {
+  useEffect(() => {
+    const fetchProductByID = async () => {
+      const response = await AxiosInstance().get(`product/getProductById/${id}`);
+      console.log(response.data);
+
+      setProduct(response.data);
+    }
+    if (isFocused) {
+      fetchProductByID();
+    }
+  }, [isFocused])
+
   // Định nghĩa kiểu dữ liệu cho đánh giá (Review)
-  interface Review {
-    id: number;
-    stars: number;
-    user: {
-      name: string;
-      image: string;
-    };
-    date: string;
-    time: string;
-    comment: string;
-    commentImage: string[] | null;
-  }
+
   //đánh giá sản phẩm
   const [defaultRating, setDefaultRating] = useState(4);
   const [maxRating] = useState([1, 2, 3, 4, 5]);
@@ -48,22 +85,10 @@ export default function Productdetail() {
   //chọn màu chọn size
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [selectedSize, setSelectedSize] = useState<number | null>(null);
-  const availableColors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF'];
-  const availableSizes = [46, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 45];
 
   //sản phẩm yêu thích
-  const [isImageToggled, setIsImageToggled] = useState(false);
-  const sortedSizes = availableSizes.slice().sort((a, b) => a - b);
-  const [imageSource, setImageSource] = useState(require('../asset/image/love.png'));
-  const handleImagePress = () => {
-    setIsImageToggled(!isImageToggled);
+  const sortedSizes = product?.size.slice().sort((a, b) => a - b);
 
-    if (isImageToggled) {
-      setImageSource(require('../asset/image/love.png'));
-    } else {
-      setImageSource(require('../asset/image/loveeeeee.png'));
-    }
-  };
 
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
 
@@ -110,7 +135,6 @@ export default function Productdetail() {
 
 
   //next screen
-  const navigation = useNavigation();
 
   const handleAddTocart = () => {
     console.log('nhấn được rồi nè !')
@@ -123,10 +147,10 @@ export default function Productdetail() {
 
       <ScrollView>
         <View style={styles.header}>
-          <Image style={styles.icon} source={require('../asset/image/back.png')} />
-          <Text style={styles.name}>Nike Air Max 270 Rea...</Text>
-          <Image style={styles.icon} source={require('../asset/image/search.png')} />
-          <Image style={styles.icon} source={require('../asset/image/list.png')} />
+          <Pressable style={{ position: 'absolute', left: 10 }} onPress={() => navigation.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
+            <Icon name='chevron-back-outline' size={26} />
+          </Pressable>
+          <Text style={styles.name}>{product?.brand?.name}</Text>
         </View>
         <View>
           <View style={styles.slideshowcontainer}>
@@ -137,15 +161,14 @@ export default function Productdetail() {
               showsHorizontalScrollIndicator={false}
               onScroll={handleScroll}
             >
-              {slideshow.map((product, index) => (
-                <View key={product.id} style={styles.slide}>
-                  <Image source={product.img} style={styles.image} />
-                  <Text style={styles.imageText}>{product.mau}</Text>
+              {product?.image.map((product: any, index: any) => (
+                <View key={index} style={styles.slide}>
+                  <Image source={{ uri: product }} style={styles.image} />
                 </View>
               ))}
             </ScrollView>
             <View style={styles.pagination}>
-              {slideshow.map((_, index) => (
+              {product?.image.map((_: any, index: React.Key | null | undefined) => (
                 <View
                   key={index}
                   style={[
@@ -157,19 +180,13 @@ export default function Productdetail() {
             </View>
           </View>
           <View style={styles.nameproduct}>
-            <Text style={styles.product}>Nike Air Zoom Pegasus 36 Miami</Text>
-            <TouchableOpacity onPress={handleImagePress}>
-              <Image
-                source={imageSource}
-                style={{ width: 45, height: 40, justifyContent: 'center', alignItems: 'center', marginLeft: 20 }}
-              />
-            </TouchableOpacity>
+            <Text style={styles.product}>{product?.productName}</Text>
           </View>
           <View style={styles.marginlefft}>
             <View>
               <CustomRatingBar numberOfRatings={10} />
             </View>
-            <Text style={styles.price}>$299,43</Text>
+            <Text style={styles.price}>${product?.price}</Text>
             <Text style={styles.textsize}>Select Size</Text>
             <View style={styles.sizeContainer}>
               <ScrollView
@@ -177,22 +194,22 @@ export default function Productdetail() {
                 contentContainerStyle={styles.sizeScrollViewContent}
                 showsHorizontalScrollIndicator={false}
               >
-                {sortedSizes.map((size, index) => (
+                {sortedSizes?.map((size: any, index) => (
                   <TouchableOpacity
                     key={index}
                     style={[
                       styles.sizeCircle,
-                      { borderColor: selectedSize === size ? '#1C1C1C' : '#EBF0FF' },
+                      { borderColor: selectedSize === size?.name ? '#1C1C1C' : '#EBF0FF' },
                     ]}
-                    onPress={() => setSelectedSize(size)}
+                    onPress={() => setSelectedSize(size.name)}
                   >
                     <Text
                       style={[
                         styles.sizeText,
-                        { color: selectedSize === size ? '#223263' : '#223263' },
+                        { color: selectedSize === size.name ? '#223263' : '#223263' },
                       ]}
                     >
-                      {size}
+                      {size.name}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -206,16 +223,16 @@ export default function Productdetail() {
                 contentContainerStyle={styles.colorScrollViewContent}
                 showsHorizontalScrollIndicator={false}
               >
-                {availableColors.map((color, index) => (
+                {product?.colorID.map((color: any, index: React.Key | null | undefined) => (
                   <TouchableOpacity
                     key={index}
                     style={[
                       styles.colorCircle,
-                      { backgroundColor: color },
+                      { backgroundColor: color.code },
                     ]}
-                    onPress={() => setSelectedColor(color)}
+                    onPress={() => setSelectedColor(color.code)}
                   >
-                    {selectedColor === color && <View style={styles.selectedColorDot}></View>}
+                    {selectedColor === color.code && <View style={styles.selectedColorDot}></View>}
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -304,7 +321,7 @@ export default function Productdetail() {
 
   );
 }
-
+export default Productdetail;
 const styles = StyleSheet.create({
   CommentImage: {
     width: '20%',
@@ -400,7 +417,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     paddingHorizontal: 16,
     height: 80,
     backgroundColor: 'white',
@@ -411,7 +428,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   name: {
-    marginTop: 30,
     fontSize: 22,
     lineHeight: 24,
     fontFamily: 'poppins',
@@ -653,7 +669,7 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: '#EBF0FF',
+    backgroundColor: '#d2d2d2',
     marginHorizontal: 5,
   },
   activeDot: {
@@ -664,35 +680,35 @@ const styles = StyleSheet.create({
 const products = [
   {
     id: 1,
-    image: require('../asset/image/hong.png'),
+    image: require('../../asset/image/hong.png'),
     name: 'FS - Nike Air Max 270 React...',
     price: '299,43',
     oldPrice: '534,33',
   },
   {
     id: 2,
-    image: require('../asset/image/tui.png'),
+    image: require('../../asset/image/trang.png'),
     name: 'FS - QUILTED MAXI CROS...',
     price: '299,43',
     oldPrice: '534,33',
   },
   {
     id: 3,
-    image: require('../asset/image/trang.png'),
+    image: require('../../asset/image/trang.png'),
     name: 'FS - Nike Air Max 270 React...',
     price: '299,43',
     oldPrice: '534,33',
   },
   {
     id: 4,
-    image: require('../asset/image/xanhbien.png'),
+    image: require('../../asset/image/xanhbien.png'),
     name: 'FS - Nike Air Max 270 React...',
     price: '299,43',
     oldPrice: '534,33',
   },
   {
     id: 5,
-    image: require('../asset/image/den.png'),
+    image: require('../../asset/image/den.png'),
     name: 'FS - Nike Air Max 270 React...',
     price: '299,43',
     oldPrice: '534,33',
@@ -701,37 +717,37 @@ const products = [
 const slideshow = [
   {
     id: '1',
-    img: require('../asset/image/do.png'),
+    img: require('../../asset/image/do.png'),
     mau: 'do',
   },
   {
     id: '2',
-    img: require('../asset/image/den.png'),
+    img: require('../../asset/image/den.png'),
     mau: 'den',
   },
   {
     id: '3',
-    img: require('../asset/image/hong.png'),
+    img: require('../../asset/image/hong.png'),
     mau: 'hong',
   },
   {
     id: '4',
-    img: require('../asset/image/trang.png'),
+    img: require('../../asset/image/trang.png'),
     mau: 'trang',
   },
   {
     id: '5',
-    img: require('../asset/image/xanhbien.png'),
+    img: require('../../asset/image/xanhbien.png'),
     mau: 'xanhbien',
   },
   {
     id: '6',
-    img: require('../asset/image/xanhbien.png'),
+    img: require('../../asset/image/xanhbien.png'),
     mau: 'xanhbien',
   },
   {
     id: '7',
-    img: require('../asset/image/xanhbien.png'),
+    img: require('../../asset/image/xanhbien.png'),
     mau: 'xanhbien',
   },
 ];

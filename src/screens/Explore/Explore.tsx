@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'
-import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp, NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootTabParamList } from '../../component/BottomNavigation/RootTab/RootTab';
@@ -29,25 +29,29 @@ interface Category {
 }
 type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
 const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
+  const isFocused = useIsFocused();
+
   const navigationBottom = useNavigation<BottomNavigationProp>();
 
   const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
 
   const [textInputSearch, setTextInputSearch] = useState<string>('');
 
-  const [listProduct, setListProduct] = useState<[]>([]);
+  const [listCategory, setListCategory] = useState<[]>([]);
 
   useEffect(() => {
-    const fetchListProduct = async () => {
+    const fetchListCategory = async () => {
       const response = await AxiosInstance().get('category/getAllCategory');
-      setListProduct(response.data);
+      setListCategory(response.data);
     }
-    fetchListProduct();
-  }, [])
+    if (isFocused) {
+      fetchListCategory();
+    }
+  }, [isFocused])
 
   const renderItem = ({ item }: any): React.JSX.Element => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Category_Detail_Screen)} style={styles.containerItemPD}>
+      <TouchableOpacity onPress={() => { navigation.navigate(RootStackScreenEnumExplore.Category_Detail_Screen, { categoryID: item._id }) }} style={styles.containerItemPD}>
         <View style={styles.content}>
 
           <View style={styles.in4PD}>
@@ -91,7 +95,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
         </View>
       </View>
       <FlatList
-        data={listProduct}
+        data={listCategory}
         renderItem={renderItem}
         numColumns={2}
         keyExtractor={(item: any) => item?._id.toString()} />

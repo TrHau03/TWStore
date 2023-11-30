@@ -16,7 +16,6 @@ import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { configTab } from '../../component/BottomNavigation/RootTab/RootTab';
-import { listFavorites } from '../../redux/silces/HomeSelector';
 import { useDispatch, useSelector } from 'react-redux';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 
@@ -61,7 +60,6 @@ const { height: HEIGHT, width: WIDTH } = Dimensions.get('window');
 const FavoriteScreen = ({ navigation }: PropsHome) => {
 
   //redux
-  const favoriteProduct = useSelector(listFavorites);
 
   const animatedHeader = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -131,7 +129,7 @@ const FavoriteScreen = ({ navigation }: PropsHome) => {
           scrollEventThrottle={16}
           nestedScrollEnabled={true}
           style={{ marginTop: 20, marginBottom: 70 }}
-          data={favoriteProduct}
+          data={null}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           numColumns={2}
