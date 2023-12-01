@@ -150,7 +150,7 @@ const FilterScreen = (props: any) => {
             sliderLength={300}
             min={0}
             max={5000}
-            step={100}
+            step={50}
             allowOverlap={false}
             snapped
             onValuesChangeFinish={(e) => { setpriceMin(e[0].toString()); setpriceMax(e[1].toString()) }}

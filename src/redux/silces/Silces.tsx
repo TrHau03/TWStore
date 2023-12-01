@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import AxiosInstance from '../../Axios/Axios';
 
 
@@ -19,7 +19,7 @@ const initialState = {
     _idUser: '',
     email: '',
     userName: '',
-    cartID: [],
+    cartItem: [],
     avatar: '',
     gender: '',
     birthDay: '',
@@ -37,6 +37,16 @@ const Slice = createSlice({
     updateUser: (state, action) => {
       const value = action.payload
       state.user = value;
+    },
+    removeItem: (state, action: PayloadAction<number>) => {
+      state.user.cartItem = state.user.cartItem.filter((item: any) => item.productID._id !== action.payload);
+    },
+    updateQuantity: (state, action) => {
+      const { id, quantity } = action.payload;
+      const quantityToUpdate: any = state.user.cartItem.find((item: any) => item.productID._id === id);
+      if (quantityToUpdate) {
+        quantityToUpdate.quantity = quantity;
+      }
     },
     isLogin: (state, action) => {
       console.log("login", action.payload);
@@ -67,9 +77,9 @@ const Slice = createSlice({
       }),
       builder
         .addCase(fetchInitialListProductFilter.fulfilled, (state: any, action: any) => {
-          state.listProductFilter = action.payload
+          state.listProductFilter = action.payload;
         })
   },
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle } = Slice.actions
+export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity } = Slice.actions
 export default Slice.reducer;

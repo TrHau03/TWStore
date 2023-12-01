@@ -7,28 +7,21 @@ import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeItem, updateQuantity } from '../../redux/silces/CartSlices';
-interface Product {
-    id: number;
-    name: string;
-    image: string;
-    price: number;
-    size: string;
-    color: string;
-    evaluate: number;
-    description: string;
-    type: string;
-    quantity: number;
-}
-
-
+import { removeItem, updateQuantity } from '../../redux/silces/Silces'
+import AxiosInstance from '../../Axios/Axios'
 
 
 const CartScreen = ({ navigation }: PropsCart) => {
 
     const data = useSelector((state: any) => {
-        return state.CartReducer
+        return state.SlicesReducer.user.cartItem;
     });
+
+    const user = useSelector((state: any) => {
+        return state.SlicesReducer.user;
+    });
+
+
     const [listData, setListData] = useState<[]>(data ? data : []);
 
     const [coupon, setCoupon] = useState<string>('');
@@ -37,7 +30,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const totalItem = listData.reduce((total: any, item: { quantity: any }) => total + item.quantity, 0);
 
-    const generalPrice = listData.reduce((previousValue: number, currentItem: Product) => previousValue + currentItem.price * currentItem.quantity, 0);
+    const generalPrice = listData.reduce((previousValue: number, currentItem: any) => previousValue + currentItem.productID?.price * currentItem.quantity, 0);
 
 
 
@@ -45,37 +38,38 @@ const CartScreen = ({ navigation }: PropsCart) => {
         setListData(data);
     }, [data]);
 
-    const handleRemoveItem = (id: number) => {
-        dispatch(removeItem(id))
+    const handleRemoveItem = async (id: number) => {
+        const check = dispatch(removeItem(id))
+        check && await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: data.cartItem })
     }
-    const RenderItem = ({ item }: { item: Product }) => {
+    const RenderItem = ({ item }: { item: any }) => {
         const [quantity, setQuantity] = useState<number>(item.quantity);
 
         const changeQuantityUp = () => {
             const newQuantity = quantity < 10 ? quantity + 1 : 10;
             setQuantity(newQuantity);
-            dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+            dispatch(updateQuantity({ id: item.productID._id, quantity: newQuantity }));
         };
 
         const changeQuantityDown = () => {
             const newQuantity = quantity > 1 ? quantity - 1 : 1;
             setQuantity(newQuantity);
-            dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+            dispatch(updateQuantity({ id: item.productID._id, quantity: newQuantity }));
         };
         return (
             <View style={styles.itemCart}>
                 <View>
-                    <Image source={{ uri: item.image }} style={{ width: 72, height: 72 }} />
+                    <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
                 </View>
                 <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
                     <View style={styles.topItem}>
-                        <Text style={styles.textTitleItem}>{item.name.length < 10 ? item.name : item.name.substring(0, 10) + "..."}</Text>
-                        <Pressable onPress={() => handleRemoveItem(item.id)}>
+                        <Text style={styles.textTitleItem}>{item.productID.productName.length < 15 ? item.productID.productName : item.productID.productName.substring(0, 15) + "..."}</Text>
+                        <Pressable onPress={() => handleRemoveItem(item.productID._id)}>
                             <Icon name='trash-outline' color='#9e9e9e' size={25} />
                         </Pressable>
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>${item.price}</Text>
+                        <Text style={styles.textPrice}>${item.productID.price}</Text>
                         <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'space-between', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
                             <Pressable onPress={() => changeQuantityDown()} style={quantity > 1 ? styles.btnNumberCountMinus : [styles.btnNumberCountMinus, { backgroundColor: '#E5E5E5' }]}><Icon name='remove-outline' size={25} /></Pressable>
                             <Text style={styles.textNumberCount}>{item.quantity}</Text>
@@ -101,7 +95,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         data={listData}
                         onContentSizeChange={() => {
                         }}
-                        keyExtractor={(item: Product) => item.id.toString()}
+                        keyExtractor={(item: any) => item.productID._id.toString()}
                     /> : <Text style={{ fontSize: 20 }}>No data</Text>}
             </View>
             <View style={{ borderWidth: 1, borderColor: '#9098B1', borderRadius: 5, marginTop: 25 }}>
