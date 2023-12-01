@@ -14,7 +14,7 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import Realm from 'realm';
 import { AccessToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
 import { useDispatch } from 'react-redux';
-import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../Redux/silces/Silces';
+import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../redux/silces/Silces';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 interface Login {
@@ -22,16 +22,14 @@ interface Login {
   password: string;
 }
 interface User {
-  _id: string;
   _idUser: string;
   email: string;
   userName: string | null | undefined;
-  cartID: [];
+  cartItem: [];
   avatar: string | null | undefined;
   gender: string;
   birthDay: string;
-  address: [];
-  phone: string;
+  address: []
 }
 
 const LoginScreen = (props: any) => {
@@ -50,9 +48,8 @@ const LoginScreen = (props: any) => {
 
   const handleSubmit = (data: User) => {
     dispatch(isLogin(true));
-    dispatch(updateUser({_id:data._id, _idUser: data._idUser, email: data.email, userName: data.userName, cartID: data.cartID, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address, phone: data.phone }))
+    dispatch(updateUser({ _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address }))
   }
-
   const login = async (user: Login) => {
     try {
       const result = await AxiosInstance().post('/users/LoginUser', { email: user.email, password: user.password });
@@ -61,7 +58,7 @@ const LoginScreen = (props: any) => {
         const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
         const user = response.data.data;
         if (user.active) {
-          handleSubmit({ _id: user._id, _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartID: user.cartID, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
+          handleSubmit({ _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address })
         } else {
           console.warn("Tài khoản đã bị khóa !");
         }
@@ -74,7 +71,6 @@ const LoginScreen = (props: any) => {
     }
     return [];
   }
-
   const app = new Realm.App({
     id: "application-0-kbkng",
   });
@@ -100,7 +96,7 @@ const LoginScreen = (props: any) => {
         const user = response.data.data;
         console.log("Info user Google", user);
         if (user.active) {
-          handleSubmit({ _id: user._id, _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartID: user.cartID, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
+          handleSubmit({ _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartItem: user.cartItem, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address })
           dispatch(LoginGoogle(true));
         } else {
           dispatch(LoginGoogle(false));
@@ -162,8 +158,9 @@ const LoginScreen = (props: any) => {
                   console.log(userFacebook);
                   const user = response.data.data;
                   if (user.active) {
+                    console.log("UserFacebook", user);
                     handleSubmit({
-                      _id: user._id, _idUser: user._idUser, email: '', userName: userFacebook.name, cartID: user.cartID, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone
+                      _idUser: user._idUser, email: '', userName: userFacebook.name, cartItem: user.cartItem, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address
                     })
                     dispatch(LoginFacebook(true));
                   } else {

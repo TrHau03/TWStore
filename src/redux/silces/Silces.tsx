@@ -1,15 +1,13 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import AxiosInstance from '../../Axios/Axios';
 
 
-export const fetchInitialListProduct: any = createAsyncThunk('Slice/fetchInitialListProduct', async (data: any) => {
-  const response = await AxiosInstance().get(`product/getAllProduct`);
-  
+export const fetchInitialListProductRecommend: any = createAsyncThunk('Slice/fetchInitialListProductRecommend', async (url: any) => {
+  const response = await AxiosInstance().get(url);
   return response.data;
 })
-export const fetchInitialUser: any = createAsyncThunk('Slice/fetchInitialUser', async (data: any) => {
-  const response = await AxiosInstance().get(`user/getUser`);
-
+export const fetchInitialListProductFilter: any = createAsyncThunk('Slice/fetchInitialListProductFilter', async (url: any) => {
+  const response = await AxiosInstance().get(`product/getProductByIdCategory/${url}`);
   return response.data;
 })
 const initialState = {
@@ -18,176 +16,17 @@ const initialState = {
   LoginGoogle: false,
   LoginFaceBook: false,
   user: {
-    _id:'',
     _idUser: '',
     email: '',
     userName: '',
-    cartID: [],
+    cartItem: [],
     avatar: '',
     gender: '',
     birthDay: '',
     address: [],
-    phone: '',
   },
-  orderDetails: [
-    {
-      idorder: 'FGHJYTN',
-      date: 'August 1, 2017',
-      orderStatus: 'Shipping',
-      items: [
-        {
-          id: 1,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Nike Air Zoom Pegasus 36 Miami',
-          price: '299.43',
-          quantity: '1',
-        },
-        {
-          id: 2,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike2.png",
-          name: 'Nike Air Zoom Pegasus 36 Miami',
-          price: '299.43',
-          quantity: '1',
-        }
-      ],
-      dateship: 'January 16, 2015',
-      shipping: 'GHTK',
-      Transportfee: '40',
-      idship: '000199999999',
-      address: 'địa chỉ nhà minh lỏ',
-    },
-    {
-      idorder: 'ABCXYZ',
-      date: 'September 10, 2017',
-      orderStatus: 'Delivered',
-      items: [
-        {
-          id: 3,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 3',
-          price: '199.99',
-          quantity: '1',
-        }
-      ],
-      dateship: 'February 25, 2018',
-      shipping: 'DHL',
-      Transportfee: '40',
-      idship: '000299999999',
-      address: '123 Main Street, Anytown, USA',
-    },
-    {
-      idorder: 'DEF123',
-      date: 'October 5, 2018',
-      orderStatus: 'Delivered',
-      items: [
-        {
-          id: 4,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 4',
-          price: '249.99',
-          quantity: '1',
-        },
-        {
-          id: 5,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 5',
-          price: '149.99',
-          quantity: '1',
-        },
-        {
-          id: 6,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 6',
-          price: '199.99',
-          quantity: '1',
-        }
-      ],
-      dateship: 'March 12, 2019',
-      shipping: 'FedEx',
-      Transportfee: '40',
-      idship: '000399999999',
-      address: '456 Elm Street, Othertown, USA',
-    },
-    {
-      idorder: 'XYZ456',
-      date: 'November 20, 2019',
-      orderStatus: 'Processing',
-      items: [
-        {
-          id: 7,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 7',
-          price: '179.99',
-          quantity: '1',
-        },
-        {
-          id: 8,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 8',
-          price: '219.99',
-          quantity: '1',
-        },
-        {
-          id: 9,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 9',
-          price: '159.99',
-          quantity: '1',
-        },
-        {
-          id: 10,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 10',
-          price: '249.99',
-          quantity: '1',
-        }
-      ],
-      dateship: 'April 5, 2020',
-      shipping: 'UPS',
-      Transportfee: '40',
-      idship: '000499999999',
-      address: '789 Oak Street, Anothertown, USA',
-    },
-    {
-      idorder: 'MNO789',
-      date: 'December 15, 2020',
-      orderStatus: 'Delivered',
-      items: [
-        {
-          id: 11,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 11',
-          price: '169.99',
-          quantity: '1',
-        }
-      ],
-      dateship: 'May 20, 2021',
-      shipping: 'USPS',
-      Transportfee: '40',
-      idship: '000599999999',
-      address: '101 Pine Street, Yetanothertown, USA',
-    },
-    {
-      idorder: 'PQR123',
-      date: 'January 5, 2022',
-      orderStatus: 'Processing',
-      items: [
-        {
-          id: 12,
-          image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-          name: 'Sample Product 12',
-          price: '199.99',
-          quantity: '1',
-        }
-      ],
-      dateship: 'June 10, 2022',
-      shipping: 'DHL',
-      Transportfee: '40',
-      idship: '000699999999',
-      address: '202 Cedar Street, Yetanothertown, USA',
-    },
-  ],
-  listProduct: []
+  listProductRecommend: [],
+  listProductFilter: [],
 };
 
 
@@ -199,11 +38,15 @@ const Slice = createSlice({
       const value = action.payload
       state.user = value;
     },
-    updatePhone: (state, action) => {
-      state.user.phone = action.payload;
+    removeItem: (state, action: PayloadAction<number>) => {
+      state.user.cartItem = state.user.cartItem.filter((item: any) => item.productID._id !== action.payload);
     },
-    updateGender: (state, action) => {
-      state.user.gender = action.payload;
+    updateQuantity: (state, action) => {
+      const { id, quantity } = action.payload;
+      const quantityToUpdate: any = state.user.cartItem.find((item: any) => item.productID._id === id);
+      if (quantityToUpdate) {
+        quantityToUpdate.quantity = quantity;
+      }
     },
     isLogin: (state, action) => {
       console.log("login", action.payload);
@@ -229,13 +72,14 @@ const Slice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchInitialListProduct.fulfilled, (state, action) => {
-        state.listProduct = action.payload;
-      })
-      .addCase(fetchInitialUser.fulfilled, (state, action) => {
-        state.user = action.payload;
-      })
+      .addCase(fetchInitialListProductRecommend.fulfilled, (state, action) => {
+        state.listProductRecommend = action.payload;
+      }),
+      builder
+        .addCase(fetchInitialListProductFilter.fulfilled, (state: any, action: any) => {
+          state.listProductFilter = action.payload;
+        })
   },
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle,updatePhone, updateGender } = Slice.actions
+export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity } = Slice.actions
 export default Slice.reducer;

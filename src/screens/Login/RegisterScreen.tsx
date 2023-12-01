@@ -6,7 +6,7 @@ import { Checkbox, InputItem } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
@@ -24,7 +24,7 @@ interface Register {
 
 
 const RegisterScreen = (props: any) => {
-    const { navigation } = props;
+    const { navigation }: NativeStackHeaderProps = props;
     useEffect(() => {
         const setData = async () => {
             await AsyncStorage.setItem('checkSlide', 'true');
@@ -45,9 +45,11 @@ const RegisterScreen = (props: any) => {
             if (user.password != user.passwordAgain) {
                 return console.log("Password not same!");
             }
-            const result = await AxiosInstance().post('/users/RegisterUser', { username: user.name, email: user.email, password: user.password });
-            console.log(result.data);
-            
+            const result = await AxiosInstance().post('/usersInfo/RegisterUser', { username: user.name, email: user.email, password: user.password });
+            if (result) {
+                navigation.navigate(RootStackScreenEnumLogin.LoginScreen)
+            }
+
         } catch (error) {
             console.log('getNews Error: ', error);
         }

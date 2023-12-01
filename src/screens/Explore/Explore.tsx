@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons'
-import { CompositeNavigationProp, NavigationProp, useNavigation } from '@react-navigation/native';
+import { CompositeNavigationProp, NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootTabParamList } from '../../component/BottomNavigation/RootTab/RootTab';
@@ -18,6 +18,8 @@ import { PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 import { COLORS } from '../../utilities';
 import AxiosInstance from '../../Axios/Axios';
 import { AirbnbRating } from 'react-native-ratings';
+import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 
 interface Category {
@@ -26,41 +28,35 @@ interface Category {
   name: string;
 }
 type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
-const ExploreScreen = () => {
-  const navigation = useNavigation<BottomNavigationProp>();
+const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
+  const isFocused = useIsFocused();
+
+  const navigationBottom = useNavigation<BottomNavigationProp>();
 
   const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
 
   const [textInputSearch, setTextInputSearch] = useState<string>('');
 
-  const [listProduct, setListProduct] = useState<[]>([]);
+  const [listCategory, setListCategory] = useState<[]>([]);
 
   useEffect(() => {
-    const fetchListProduct = async () => {
-      const response = await AxiosInstance().get('product/getAllProduct');
-      setListProduct(response.data);
+    const fetchListCategory = async () => {
+      const response = await AxiosInstance().get('category/getAllCategory');
+      setListCategory(response.data);
     }
-    fetchListProduct();
-  }, [])
+    if (isFocused) {
+      fetchListCategory();
+    }
+  }, [isFocused])
 
   const renderItem = ({ item }: any): React.JSX.Element => {
     return (
-      <TouchableOpacity style={styles.containerItemPD}>
+      <TouchableOpacity onPress={() => { navigation.navigate(RootStackScreenEnumExplore.Category_Detail_Screen, { categoryID: item._id }) }} style={styles.containerItemPD}>
         <View style={styles.content}>
-          <View style={styles.ImgContainerPD}>
-            <Image style={{ width: '100%', height: '100%' }} source={{ uri: item.image[0] }} />
-          </View>
+
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
-              <Text style={styles.NamePD} >{item.productName}</Text>
-              <View style={styles.star}>
-                <AirbnbRating count={5} size={15} showRating={false} />
-              </View>
-              <Text style={styles.PricePD}>{item.price}</Text>
-            </View>
-            <View style={styles.sale}>
-              <Text style={styles.txtOldPrice}>5000</Text>
-              <Text style={styles.txtSale}>24% Off</Text>
+              <Text style={styles.NamePD} >{item.name}</Text>
             </View>
           </View>
         </View>
@@ -93,13 +89,13 @@ const ExploreScreen = () => {
         </View>
 
         <View style={styles.headerRight}>
-          <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
+          <TouchableOpacity onPress={() => navigationBottom.navigate(RootStackScreenEnumHome.NotificationScreen)}>
             <Icon name="notifications-outline" size={25} />
           </TouchableOpacity>
         </View>
       </View>
       <FlatList
-        data={listProduct}
+        data={listCategory}
         renderItem={renderItem}
         numColumns={2}
         keyExtractor={(item: any) => item?._id.toString()} />
