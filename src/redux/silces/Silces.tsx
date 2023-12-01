@@ -202,6 +202,9 @@ const Slice = createSlice({
     updatePhone: (state, action) => {
       state.user.phone = action.payload;
     },
+    updateGender: (state, action) => {
+      state.user.gender = action.payload;
+    },
     isLogin: (state, action) => {
       console.log("login", action.payload);
       const value = action.payload;
@@ -234,5 +237,5 @@ const Slice = createSlice({
       })
   },
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle,updatePhone } = Slice.actions
+export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle,updatePhone, updateGender } = Slice.actions
 export default Slice.reducer;

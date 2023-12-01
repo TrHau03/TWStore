@@ -22,7 +22,6 @@ import AxiosInstance from '../../Axios/Axios';
 const ProfileScreen = ({ navigation }: PropsAccount) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [nameModal, setNameModal] = useState<string>('');
-    const [birthday, setBirthday] = useState<string>('')
     const user = useSelector((state: any) => state.SlicesReducer.user);
     const checkLogin = useSelector((state: any) => state.SlicesReducer.LoginGoogle || state.SlicesReducer.LoginGoogle ? true : false);
 
@@ -37,9 +36,9 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                 <View style={{ height: '100%' }}>
                     {
                         (nameModal == 'ChangeGender') ?
-                            <Gender /> :
+                            <Gender action={{ setModalVisible }}/> :
                             (nameModal == 'ChangeBirthDay') ?
-                                <Birthday action={{ setBirthday }} /> :
+                                <Birthday action={{ setModalVisible }} /> :
                                 (nameModal == 'ChangeEmail') ?
                                     <Email /> :
                                     (nameModal == 'ChangePhone') ?
