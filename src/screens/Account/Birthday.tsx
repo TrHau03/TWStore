@@ -6,12 +6,26 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { updateBirthDay } from '../../Redux/silces/Silces';
+import { useDispatch, useSelector } from 'react-redux';
+import AxiosInstance from '../../Axios/Axios';
 
 const Birthday = (props: any) => {
-    const {setBirthday} = props.action;
+    const {setModalVisible} = props.action;
     const [date, setDate] = useState(new Date());
-    const [open, setOpen] = useState<boolean>(false);
-    
+    const [open, setOpen] = useState<boolean>(false); 
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+
+    const birthDay = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+
+    const dispatch = useDispatch();
+    const handleChangeBirthDay = () => {
+        dispatch(updateBirthDay(birthDay));
+    }
+
+    const fetchBirthDay = async () => {
+        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._id, birthDay: birthDay });
+    };
     return (
         <View style={styles.container}>
             <Header hideBack title='BirthDay' />
@@ -20,9 +34,9 @@ const Birthday = (props: any) => {
             <View style={styles.Birthday}>
                 <Text style={styles.txtBirthday}>Your Birthday</Text>
 
-                <View style={styles.input}>
-                    <Text style={styles.txtInput}>{`${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`}</Text>
-                    <Pressable onPress={() => setOpen(true)} style={{ paddingRight: 10 }}>
+                <View style={styles.input}> 
+                    <Text style={styles.txtInput}>{birthDay}</Text>
+                    <Pressable  onPressOut={() => setOpen(true)} style={{ paddingRight: 10 }}>
                         <Icon name='calendar' size={30} color={'#434343'} />
                     </Pressable>
                 </View>
@@ -42,9 +56,9 @@ const Birthday = (props: any) => {
                 />
             </View>
 
-            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable onPress={()=> {setModalVisible(false), handleChangeBirthDay(), fetchBirthDay()}} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
-            </View>
+            </Pressable>
         </View>
     )
 }

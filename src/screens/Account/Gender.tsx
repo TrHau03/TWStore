@@ -1,6 +1,5 @@
 import { StyleSheet, Text, View, Pressable, Image, TextInput } from 'react-native'
 import React, { useState } from 'react'
-import LinearGradient from 'react-native-linear-gradient'
 import { SelectList } from 'react-native-dropdown-select-list'
 import Header from '../../component/Header/Header'
 import ButtonBottom from '../../component/Button/Button'
@@ -16,8 +15,8 @@ const Gender = (props: any) => {
     const { setModalVisible } = props.action;
     const [gender, setGender] = useState<string>('');
 
-    
     const user = useSelector((state: any) => state.SlicesReducer.user);
+    
     
     const listGender = [
         { key: '1', value: 'Male' },
@@ -30,6 +29,7 @@ const Gender = (props: any) => {
     }
     const fetchGender = async () => {
         const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._id, gender: gender });
+        console.log(response.data)
     };
     
     return (

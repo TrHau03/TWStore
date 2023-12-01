@@ -14,7 +14,7 @@ const Phone = (props: any) => {
     const [phone, setPhone] = useState<string>()
     const dispatch = useDispatch();
     const user = useSelector((state: any) => state.SlicesReducer.user);
-
+    
     const handleChangePhone = () => {
         dispatch(updatePhone(phone));
     }
@@ -33,7 +33,7 @@ const Phone = (props: any) => {
                 <Text style={styles.txtEmail}>Phone Number</Text>
                 <View style={styles.input}>
                     <Icon name='phone-portrait-outline' size={30} />
-                    <TextInput style={styles.txtInput} value={phone} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setPhone(e.nativeEvent.text) }} keyboardType='numeric' maxLength={11} />
+                    <TextInput defaultValue={user.phone} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setPhone(e.nativeEvent.text) }} keyboardType='numeric' maxLength={11} />
                 </View>
             </View>
 
