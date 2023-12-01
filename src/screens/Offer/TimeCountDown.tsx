@@ -2,14 +2,13 @@ import { StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { BG_COLOR } from '../../utilities/utility';
 
-const TimeCountDown = () => {
-    const deadlineDay = 1.5;
+const TimeCountDown = ({ item }: any) => {
     const [hideCountDown, setHideCountDown] = useState<boolean>(false);
     const [day, setDay] = useState<number>(21);
     const [hour, setHour] = useState<number>(12);
     const [minute, setMinute] = useState<number>(21);
     const [seconds, setSeconds] = useState<number>(21);
-    let endDate = new Date().getTime() + (1000 * 3600 * (24 * deadlineDay));
+    let endDate = new Date(item.soNgayGiamgia).getTime();
     useEffect(() => {
         console.log('render');
         let setTimeCountDown = setInterval(function () {
@@ -43,7 +42,7 @@ const TimeCountDown = () => {
                     <View style={styles.timeCountDown}><Text style={styles.textTimeCountDown}>{(minute < 10) ? '0' + minute : minute}</Text></View>
                     <Text style={styles.spaceViewTimeCountDown}>:</Text>
                     <View style={styles.timeCountDown}><Text style={styles.textTimeCountDown}>{(seconds < 10) ? '0' + seconds : seconds}</Text></View>
-                    <Text style={styles.textUpto}>Sale 50% </Text>
+                    <Text style={styles.textUpto}>Sale {item.levelGiamgia}% </Text>
                 </View> : <></>}
         </View>
     )

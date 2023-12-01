@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Header from '../../component/Header/Header'
 import { useDispatch, useSelector } from 'react-redux';
-import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import HomeScreenSlice from '../../Redux/silces/HomeScreenSlice';
 import { COLORS } from '../../utilities';
 import Button from '../../component/Button/Button';
 
@@ -32,8 +32,14 @@ interface Size {
 }
 
 const FilterScreen = (props: any) => {
-  const { visibleSize, visibleColor, visibleBrand, unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
-  const { dispatch, setVisibleBrand, setVisibleColor, setVisibleSize, setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
+  const [visibleBrand, setVisibleBrand] = useState<boolean>(false);
+  const [visibleSize, setVisibleSize] = useState<boolean>(false);
+  const [visibleColor, setVisibleColor] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
+
+  const { unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
+  const { setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
 
 
 
@@ -45,7 +51,6 @@ const FilterScreen = (props: any) => {
     dispatch(HomeScreenSlice.actions.filterColor(color));
     dispatch(HomeScreenSlice.actions.filterSize(size));
     dispatch(HomeScreenSlice.actions.filterPrice({ minPrice, maxPrice }))
-    console.log(brand, color, size, minPrice, maxPrice);
 
   }
 
@@ -175,7 +180,7 @@ const FilterScreen = (props: any) => {
         </View>
       </View>
 
-      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false),setVisibleBrand(false), setVisibleColor(false),setVisibleSize(false) }}>
+      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false), setVisibleBrand(false), setVisibleColor(false), setVisibleSize(false) }}>
         <Button title='Apply' />
       </Pressable>
     </View>

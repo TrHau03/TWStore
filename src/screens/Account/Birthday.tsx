@@ -10,7 +10,6 @@ import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/
 const Birthday = () => {
     const [date, setDate] = useState(new Date());
     const [open, setOpen] = useState<boolean>(false);
-    console.log(date);
 
     return (
         <View style={styles.container}>

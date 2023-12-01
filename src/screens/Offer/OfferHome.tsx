@@ -1,23 +1,56 @@
-import { StyleSheet, Text, View, ImageBackground } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, ImageBackground, FlatList, Pressable } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import AxiosInstance from '../../Axios/Axios'
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
+import { useIsFocused } from '@react-navigation/native';
 
-const OfferHome = () => {
+
+
+
+
+
+const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
+
+  const [event, setEvent] = useState<[]>([]);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      const response = await AxiosInstance().get(`event/getAllEvent`);
+      setEvent(response.data.filter((item: any) => {
+        return new Date(item.soNgayGiamgia).getTime() > new Date().getTime();
+      }));
+    }
+    if (isFocused) {
+      fetchEvent();
+    }
+  }, [isFocused])
+
+
+  const renderItem = ({ item }: any) => {
+    return (
+      <Pressable onPress={() => navigation.navigate(RootStackScreenEnumOffer.OfferScreen, { item })}>
+        <ImageBackground
+          source={{ uri: item.eventImage }}
+          style={styles.backgroundimg}>
+          <Text style={styles.textbackgroundimg}>{item.eventName}</Text>
+        </ImageBackground>
+      </Pressable>
+    )
+  }
   return (
     <View style={styles.container}>
       <Text style={styles.offer}>Offer</Text>
       <View style={styles.cupon}>
         <Text style={styles.textcupon}>Use “MEGSL” Cupon For Get 90%off</Text>
       </View>
-      <ImageBackground
-        source={require('../../asset/image/Promotion.png')}
-        style={styles.backgroundimg}>
-        <Text style={styles.textbackgroundimg}>90% Off Super Mega Sale</Text>
-      </ImageBackground>
-      <ImageBackground
-        source={require('../../asset/image/Promotion2.png')}
-        style={styles.backgroundimg}>
-        <Text style={styles.textbackgroundimg}>Super Flash Sale 50% Off</Text>
-      </ImageBackground>
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        data={event}
+        keyExtractor={(item: any) => item._id.toString()}
+        renderItem={renderItem} />
     </View>
   )
 }
