@@ -27,7 +27,7 @@ const initialState = {
     gender: '',
     birthDay: '',
     address: [],
-    phone: '123',
+    phone: '',
   },
   orderDetails: [
     {

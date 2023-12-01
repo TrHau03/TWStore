@@ -45,7 +45,7 @@ const Gender = (props: any) => {
                     data={listGender}
                     save="value"
                     boxStyles={{ borderRadius: 5 }}
-                    defaultOption={{key: '1', value: 'Male'}}
+                    defaultOption={{key: user.gender, value: user.gender}}
                     search={false}
                     inputStyles={{ width: '95%', fontSize: 16 }}
                     dropdownTextStyles={{ fontSize: 16 }}
