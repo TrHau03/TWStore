@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Pressable } from 'react-native'
 import * as React from 'react';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
@@ -7,6 +7,7 @@ import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import { useEffect, useState } from 'react';
 import { useIsFocused } from '@react-navigation/native';
 import AxiosInstance from '../../Axios/Axios';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 const Notification = () => (
   <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
@@ -16,7 +17,7 @@ const Notification = () => (
 
 const renderItem = ({ item }: { item: { title: string, content: string, discountCode: string, discountLevel: string, startDay: string, endDay: string } }) => {
   return (
-    <View style={{ margin: 10 }}>
+    <TouchableOpacity style={styles.containervoucher} onPress={() => copyVoucher(item.discountCode)}>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.content}>{item.content}</Text>
 
@@ -24,8 +25,13 @@ const renderItem = ({ item }: { item: { title: string, content: string, discount
         <Text style={styles.textbottom}>Giảm lên đến {item.discountLevel}%</Text>
         <Text style={styles.textbottom}>Mã giảm giá : {item.discountCode}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
+};
+
+const copyVoucher = (discountCode : string) => {
+  Clipboard.setString(discountCode);
+  console.log(`Mã giảm giá ${discountCode} đã được sao chép vào clipboard.`);
 };
 
 
@@ -112,18 +118,25 @@ const styles = StyleSheet.create({
     paddingBottom: 5,
   },
   content: {
-    margin:5,
+    margin: 5,
     fontSize: 15,
     fontWeight: 'bold',
     color: '#686361',
   },
-  textbottom:{
-    margin:5,
+  textbottom: {
+    margin: 5,
     fontSize: 15,
     fontWeight: 'bold',
     color: '#3E3C3B',
-
-  }
+  },
+  containervoucher: {
+    margin: 10,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    borderColor: '#ADD8E6',
+    borderWidth: 1
+  },
 
 
 })
