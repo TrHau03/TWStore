@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   Button,
   ImageSourcePropType,
-  Pressable
+  Pressable,
+  Alert
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Productreviews from './Productreviews';
@@ -20,6 +21,8 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { useIsFocused } from '@react-navigation/native';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '../../redux/silces/Silces';
 
 
 
@@ -60,13 +63,21 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const { id } = props?.route.params as { id: string | undefined };
   const { navigation } = props
   const [product, setProduct] = useState<Product>();
+  const [handleAdd, setHandleAdd] = useState<boolean>(false);
   const isFocused = useIsFocused();
+  const dispatch = useDispatch();
+
+  const data = useSelector((state: any) => {
+    return state.SlicesReducer.user.cartItem;
+  });
+
+  const user = useSelector((state: any) => {
+    return state.SlicesReducer.user;
+  });
 
   useEffect(() => {
     const fetchProductByID = async () => {
       const response = await AxiosInstance().get(`product/getProductById/${id}`);
-      console.log(response.data);
-
       setProduct(response.data);
     }
     if (isFocused) {
@@ -84,7 +95,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
   //chọn màu chọn size
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [selectedSize, setSelectedSize] = useState<number | null>(null);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   //sản phẩm yêu thích
   const sortedSizes = product?.size.slice().sort((a, b) => a - b);
@@ -132,15 +143,35 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     setCurrentPage(currentIndex);
   };
 
-
+  const handle = ({ productID, sizeProduct, colorProduct }: any) => {
+    dispatch(addItem({ productID: productID, sizeProduct: sizeProduct, colorProduct: colorProduct, quantity: 1 }));
+    setHandleAdd(true);
+  }
 
   //next screen
 
-  const handleAddTocart = () => {
-    console.log('nhấn được rồi nè !')
+  const handleAddTocart = async () => {
+    const cart: { productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
+    data.map((item: any) =>
+      cart.push({ productID: item.productID._id, sizeProduct: item.sizeProduct, colorProduct: item.colorProduct, quantity: 1 })
+    )
+    await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart })
   };
 
 
+  const createTwoButtonAlert = () =>
+    Alert.alert('Alert Title', 'My Alert Msg', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      { text: 'OK', onPress: () => handleAddTocart() },
+    ]);
+  if (handleAdd) {
+    createTwoButtonAlert();
+    setHandleAdd(false);
+  }
 
   return (
     <View style={{ height: '100%' }}>
@@ -199,14 +230,14 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                     key={index}
                     style={[
                       styles.sizeCircle,
-                      { borderColor: selectedSize === size?.name ? '#1C1C1C' : '#EBF0FF' },
+                      { borderColor: selectedSize === size?._id ? '#1C1C1C' : '#EBF0FF' },
                     ]}
-                    onPress={() => setSelectedSize(size.name)}
+                    onPress={() => setSelectedSize(size._id)}
                   >
                     <Text
                       style={[
                         styles.sizeText,
-                        { color: selectedSize === size.name ? '#223263' : '#223263' },
+                        { color: selectedSize === size._id ? '#223263' : '#223263' },
                       ]}
                     >
                       {size.name}
@@ -230,9 +261,9 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                       styles.colorCircle,
                       { backgroundColor: color.code },
                     ]}
-                    onPress={() => setSelectedColor(color.code)}
+                    onPress={() => setSelectedColor(color._id)}
                   >
-                    {selectedColor === color.code && <View style={styles.selectedColorDot}></View>}
+                    {selectedColor === color._id && <View style={styles.selectedColorDot}></View>}
                   </TouchableOpacity>
                 ))}
               </ScrollView>
@@ -310,7 +341,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       <View style={styles.addtocartButtonContainer}>
         <TouchableOpacity
           style={styles.addtocartButton}
-          onPress={() => handleAddTocart()}
+          onPress={() => { handle({ productID: product, sizeProduct: selectedSize, colorProduct: selectedColor }) }}
         >
           <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
             <Text style={styles.addtocartButtonText}>Add to cart</Text>

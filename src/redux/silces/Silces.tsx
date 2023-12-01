@@ -41,6 +41,9 @@ const Slice = createSlice({
     removeItem: (state, action: PayloadAction<number>) => {
       state.user.cartItem = state.user.cartItem.filter((item: any) => item.productID._id !== action.payload);
     },
+    addItem: (state, action) => {
+      state.user.cartItem.push(action.payload as never);
+    },
     updateQuantity: (state, action) => {
       const { id, quantity } = action.payload;
       const quantityToUpdate: any = state.user.cartItem.find((item: any) => item.productID._id === id);
@@ -81,5 +84,5 @@ const Slice = createSlice({
         })
   },
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity } = Slice.actions
+export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, addItem, removeItem, updateQuantity } = Slice.actions
 export default Slice.reducer;

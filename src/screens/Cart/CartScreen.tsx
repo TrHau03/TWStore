@@ -26,12 +26,15 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const [coupon, setCoupon] = useState<string>('');
 
+    const [checkRemoveItem, setCheckRemoveItem] = useState<boolean>(false);
+
     const dispatch = useDispatch();
 
     const totalItem = listData.reduce((total: any, item: { quantity: any }) => total + item.quantity, 0);
 
     const generalPrice = listData.reduce((previousValue: number, currentItem: any) => previousValue + currentItem.productID?.price * currentItem.quantity, 0);
 
+    const cart: { productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
 
 
     useEffect(() => {
@@ -39,9 +42,18 @@ const CartScreen = ({ navigation }: PropsCart) => {
     }, [data]);
 
     const handleRemoveItem = async (id: number) => {
-        const check = dispatch(removeItem(id))
-        check && await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: data.cartItem })
+        dispatch(removeItem(id));
+        setCheckRemoveItem(true);
     }
+    const handlRemoveData = async () => {
+        data.map((item: any) => {
+            cart.push({ productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
+        }
+        )
+        await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart });
+        setCheckRemoveItem(false);
+    }
+    checkRemoveItem && handlRemoveData();
     const RenderItem = ({ item }: { item: any }) => {
         const [quantity, setQuantity] = useState<number>(item.quantity);
 
@@ -95,7 +107,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         data={listData}
                         onContentSizeChange={() => {
                         }}
-                        keyExtractor={(item: any) => item.productID._id.toString()}
+                        keyExtractor={(item: any) => item?.productID?._id?.toString()}
                     /> : <Text style={{ fontSize: 20 }}>No data</Text>}
             </View>
             <View style={{ borderWidth: 1, borderColor: '#9098B1', borderRadius: 5, marginTop: 25 }}>
