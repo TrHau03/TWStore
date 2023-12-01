@@ -25,7 +25,7 @@ interface User {
   _idUser: string;
   email: string;
   userName: string | null | undefined;
-  cartID: [];
+  cartItem: [];
   avatar: string | null | undefined;
   gender: string;
   birthDay: string;
@@ -48,7 +48,7 @@ const LoginScreen = (props: any) => {
 
   const handleSubmit = (data: User) => {
     dispatch(isLogin(true));
-    dispatch(updateUser({ _idUser: data._idUser, email: data.email, userName: data.userName, cartID: data.cartID, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address }))
+    dispatch(updateUser({ _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address }))
   }
   const login = async (user: Login) => {
     try {
@@ -58,8 +58,8 @@ const LoginScreen = (props: any) => {
         const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
         const user = response.data.data;
         if (user.active) {
-          handleSubmit({ _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartID: user.cartID, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address })
-        }else{
+          handleSubmit({ _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address })
+        } else {
           console.warn("Tài khoản đã bị khóa !");
         }
 
@@ -96,7 +96,7 @@ const LoginScreen = (props: any) => {
         const user = response.data.data;
         console.log("Info user Google", user);
         if (user.active) {
-          handleSubmit({ _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartID: user.cartID, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address })
+          handleSubmit({ _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartItem: user.cartItem, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address })
           dispatch(LoginGoogle(true));
         } else {
           dispatch(LoginGoogle(false));
@@ -158,8 +158,9 @@ const LoginScreen = (props: any) => {
                   console.log(userFacebook);
                   const user = response.data.data;
                   if (user.active) {
+                    console.log("UserFacebook", user);
                     handleSubmit({
-                      _idUser: user._idUser, email: '', userName: userFacebook.name, cartID: user.cartID, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address
+                      _idUser: user._idUser, email: '', userName: userFacebook.name, cartItem: user.cartItem, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address
                     })
                     dispatch(LoginFacebook(true));
                   } else {

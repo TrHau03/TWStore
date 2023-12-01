@@ -19,33 +19,33 @@ export const todoRemainingProducts = createSelector(listProducts, searchFilterCh
             if (brand === 'All' && color === 'All' && size === 'All') {
                 return todo.productName.includes(search) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (brand === 'All' && color === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.size.name.includes(size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (brand === 'All' && size === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.colorID.filter((colorID: { code: string | any[]; }) => colorID.code.includes(color)) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (color === 'All' && size === 'All') {
                 return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.name.includes(brand) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (brand === 'All' && color === 'All' && size === 'All') {
                 return todo.productName.toLowerCase().includes(search.toLowerCase()) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (brand === 'All' && color === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.size.includes(size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (brand === 'All' && size === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.colorID.filter((colorID: { code: string | any[]; }) => colorID.code.includes(color)) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (brand === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.size.includes(size) && todo.colorID.filter((colorID: { code: string | any[]; }) => colorID.code.includes(color)) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (color === 'All' && size === 'All') {
                 return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (color === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && todo.size.includes(size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (size === 'All') {
                 return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (brand === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.colorID.filter((colorID: { code: string | any[]; }) => colorID.code.includes(color)) && todo.size.includes(size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice) && Number(minPrice) < todo.price && todo.price < Number(maxPrice)
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice) && Number(minPrice) < todo.price && todo.price < Number(maxPrice)
             } else if (size === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.colorID.filter((colorID: { code: string | any[]; }) => colorID.code.includes(color)) && todo.brand.includes(brand) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && todo.brand.includes(brand) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (color === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.size.includes(size) && todo.brand.includes(brand) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && todo.brand.includes(brand) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             }
-            return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && todo.colorID.filter((colorID: { code: string | any[]; }) => colorID.code.includes(color)) && todo.size.includes(size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+            return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
         })
     } else {
         return [];
