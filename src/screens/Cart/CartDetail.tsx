@@ -8,6 +8,8 @@ import { useSelector } from 'react-redux';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
+import AxiosInstance from '../../Axios/Axios'
+import { RadioButton } from 'react-native-paper'
 
 interface Product {
     id: number;
@@ -43,15 +45,10 @@ const CartDetail = ({ navigation }: PropsCart) => {
     const [isReceiverNameValid, setIsReceiverNameValid] = useState(true);
     const [addressList, setAddressList] = useState<string[]>([]);
     const [selectedAddress, setSelectedAddress] = useState<string>('');
-
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+    const [paymentMethods, setPaymentMethods] = useState<{ _id: number, name: string }[]>([]);
 
     const user = useSelector((state: any) => state.SlicesReducer.user);
-
-    useEffect(() => {
-        setVoucher(route.params?.Level ?? '');
-        setTotalAfterShipping(route.params?.totalAfterShipping ?? 0);
-    }, [route.params]);
-
 
 
     const totalItem = listData.reduce((total: any, item: { quantity: any }) => total + item.quantity, 0);
@@ -66,6 +63,7 @@ const CartDetail = ({ navigation }: PropsCart) => {
         setPhoneNumber(text);
         setIsPhoneNumberValid(isValidPhoneNumber(text));
     };
+
     const handleOrderSubmit = () => {
         if (receiverName.trim() === '') {
             Alert.alert('Thông báo', 'Vui lòng nhập tên người nhận hàng');
@@ -76,15 +74,31 @@ const CartDetail = ({ navigation }: PropsCart) => {
             Alert.alert('Thông báo', 'Vui lòng nhập số điện thoại hợp lệ');
             return;
         }
+
+        if (!selectedPaymentMethod) {
+            Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán');
+            return;
+        }
+
         console.log('Tên người nhận hàng:', receiverName);
         console.log('Số điện thoại:', phoneNumber);
-        console.log('Địa chỉ nhận hàng ' ,selectedAddress);
-        
+        console.log('Địa chỉ nhận hàng:', selectedAddress);
+        console.log('Phương thức thanh toán được chọn:', selectedPaymentMethod);
+
+        // Thêm các bước xử lý tiếp theo sau khi kiểm tra thành công
     };
+
+
+
     const isValidPhoneNumber = (number: string) => {
         const phoneNumberRegex = /^\d{10,12}$/;
         return phoneNumberRegex.test(number);
     };
+
+    useEffect(() => {
+        setVoucher(route.params?.Level ?? '');
+        setTotalAfterShipping(route.params?.totalAfterShipping ?? 0);
+    }, [route.params]);
 
     useEffect(() => {
         if (user && user.address && user.address.length > 0) {
@@ -94,6 +108,21 @@ const CartDetail = ({ navigation }: PropsCart) => {
             setAddressList(addresses);
         }
     }, [user]);
+
+    useEffect(() => {
+        const fetchPayment = async () => {
+            try {
+                const response = await AxiosInstance().get(`payment/getAllPaymentMethod`);
+                const paymentMethods = response.data.data;  // Thay đổi tên trường nếu cần thiết
+                setPaymentMethods(paymentMethods && Array.isArray(paymentMethods) ? paymentMethods : []);
+            } catch (error) {
+                console.error('Error fetching payment methods:', error);
+            }
+        };
+
+        fetchPayment();
+    }, []);
+
 
 
     useEffect(() => {
@@ -121,16 +150,38 @@ const CartDetail = ({ navigation }: PropsCart) => {
         );
     };
 
-    const RenderAddressItem = ({ address, onPress }: { address: string; onPress: () => void }) => {
+    const RadioButton = ({ selected }: { selected: boolean }) => {
         return (
-            <TouchableOpacity onPress={onPress}>
-                <View style={styles.addressItem}>
-                    <Text>{address}</Text>
+            <View style={[styles.radioButton, { backgroundColor: selected ? '#40BFFF' : 'transparent' }]}>
+                {selected && <View style={styles.innerCircle} />}
+            </View>
+        );
+    };
+    const RenderPaymentItem = ({ paymentMethod }: { paymentMethod: any }) => {
+        const [isSelected, setIsSelected] = useState(false);
+
+        const handlePress = () => {
+            setPaymentMethods((prevMethods) => {
+                const updatedMethods = prevMethods.map((method) => ({
+                    ...method,
+                    isSelected: method === paymentMethod,
+                }));
+                return updatedMethods;
+            });
+
+            setIsSelected(true);
+            setSelectedPaymentMethod(paymentMethod);
+        };
+
+        return (
+            <TouchableOpacity onPress={handlePress}>
+                <View style={styles.paymentItemContainer}>
+                    <Text>{paymentMethod.name}</Text>
+                    <RadioButton selected={paymentMethod.isSelected} />
                 </View>
             </TouchableOpacity>
         );
     };
-
 
 
     return (
@@ -181,7 +232,7 @@ const CartDetail = ({ navigation }: PropsCart) => {
                         placeholder="Tên người nhận hàng"
                     />
 
-                    <Text>Nhập số điện thoại người đặt hàng:</Text>
+                    <Text>Nhập số điện thoại người nhận hàng:</Text>
                     <TextInput
                         style={[
                             styles.textinput,
@@ -208,7 +259,10 @@ const CartDetail = ({ navigation }: PropsCart) => {
                         dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
                         dropdownStyles={{ height: 150 }}
                     />
-
+                    <Text>Chọn phương thức thanh toán:</Text>
+                    {paymentMethods && paymentMethods.map((paymentMethod) => (
+                        <RenderPaymentItem key={paymentMethod._id} paymentMethod={paymentMethod} />
+                    ))}
 
 
                 </View>
@@ -232,8 +286,39 @@ const CartDetail = ({ navigation }: PropsCart) => {
 export default CartDetail;
 
 const styles = StyleSheet.create({
-    addressItem: {
+    paymentItemContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        borderWidth: 0.5,
+        borderRadius: 5,
+        marginTop: 10,
     },
+    radioButton: {
+        width: 20,
+        height: 20,
+        borderRadius: 10,
+        borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    innerCircle: {
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        backgroundColor: '#40BFFF',
+    },
+    addressItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+        borderWidth: 0.5,
+        borderRadius: 5,
+        marginTop: 10,
+    },
+
     textinput: {
         margin: 5,
         borderRadius: 10,
