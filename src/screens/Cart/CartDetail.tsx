@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Alert, TextInput } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
@@ -6,6 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
 import { useSelector } from 'react-redux';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native';
+import { SelectList } from 'react-native-dropdown-select-list'
 
 interface Product {
     id: number;
@@ -22,7 +24,7 @@ interface Product {
 
 type CartDetailRouteParams = {
     CartDetail: {
-        Level?: string; 
+        Level?: string;
         totalAfterShipping?: number;
     };
 };
@@ -35,22 +37,64 @@ const CartDetail = ({ navigation }: PropsCart) => {
     const [voucher, setVoucher] = useState<string>('');
     const [totalAfterShipping, setTotalAfterShipping] = useState<number>(0);
     const discountLevel = route.params?.Level ?? '';
-    
+    const [receiverName, setReceiverName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
+    const [isReceiverNameValid, setIsReceiverNameValid] = useState(true);
+    const [addressList, setAddressList] = useState<string[]>([]);
+    const [selectedAddress, setSelectedAddress] = useState<string>('');
+
+
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+
     useEffect(() => {
         setVoucher(route.params?.Level ?? '');
         setTotalAfterShipping(route.params?.totalAfterShipping ?? 0);
     }, [route.params]);
 
-    console.log('Voucher:', discountLevel);
-    console.log('Total After Shipping:', totalAfterShipping);
+
 
     const totalItem = listData.reduce((total: any, item: { quantity: any }) => total + item.quantity, 0);
-
     const generalPrice = listData.reduce((previousValue: number, currentItem: Product) => previousValue + currentItem.price * currentItem.quantity, 0);
 
-    const PaymentScreen = () => {
-        console.log('sang trang rồi nè ');
+    const handleReceiverNameChange = (text: string) => {
+        setReceiverName(text);
+        setIsReceiverNameValid(text.trim() !== '');
     };
+
+    const handlePhoneNumberChange = (text: string) => {
+        setPhoneNumber(text);
+        setIsPhoneNumberValid(isValidPhoneNumber(text));
+    };
+    const handleOrderSubmit = () => {
+        if (receiverName.trim() === '') {
+            Alert.alert('Thông báo', 'Vui lòng nhập tên người nhận hàng');
+            return;
+        }
+
+        if (phoneNumber.trim() === '' || !isValidPhoneNumber(phoneNumber)) {
+            Alert.alert('Thông báo', 'Vui lòng nhập số điện thoại hợp lệ');
+            return;
+        }
+        console.log('Tên người nhận hàng:', receiverName);
+        console.log('Số điện thoại:', phoneNumber);
+        console.log('Địa chỉ nhận hàng ' ,selectedAddress);
+        
+    };
+    const isValidPhoneNumber = (number: string) => {
+        const phoneNumberRegex = /^\d{10,12}$/;
+        return phoneNumberRegex.test(number);
+    };
+
+    useEffect(() => {
+        if (user && user.address && user.address.length > 0) {
+            const addresses = user.address.map((addr: any) => {
+                return `${addr.street}, ${addr.ward}, ${addr.district}, ${addr.city}`;
+            });
+            setAddressList(addresses);
+        }
+    }, [user]);
+
 
     useEffect(() => {
         setListData(data);
@@ -60,15 +104,15 @@ const CartDetail = ({ navigation }: PropsCart) => {
         return (
             <View style={styles.itemCart}>
                 <View>
-                    <Image source={{ uri: item.image }} style={{ width: 72, height: 72 }} />
+                    <Image source={{ uri: item.image }} style={styles.itemImage} />
                 </View>
-                <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
+                <View style={styles.itemInfoContainer}>
                     <View style={styles.topItem}>
                         <Text style={styles.textTitleItem}>{item.name.length < 10 ? item.name : item.name.substring(0, 10) + '...'}</Text>
                     </View>
                     <View style={styles.bottomItem}>
                         <Text style={styles.textPrice}>${item.price}</Text>
-                        <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'space-between', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
+                        <View style={styles.quantityContainer}>
                             <Text style={styles.textNumberCount}>{item.quantity}</Text>
                         </View>
                     </View>
@@ -77,54 +121,109 @@ const CartDetail = ({ navigation }: PropsCart) => {
         );
     };
 
+    const RenderAddressItem = ({ address, onPress }: { address: string; onPress: () => void }) => {
+        return (
+            <TouchableOpacity onPress={onPress}>
+                <View style={styles.addressItem}>
+                    <Text>{address}</Text>
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+
+
     return (
         <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR }}>
             <View style={{ marginTop: 17 }}>
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
             <View style={styles.line}></View>
-            <View style={{ height: HEIGHT * 0.4, marginTop: '11%' }}>
-                {listData.length > 0 ? (
-                    <FlatList
-                        showsVerticalScrollIndicator={false}
-                        renderItem={(object) => <RenderItem item={object.item} />}
-                        data={listData}
-                        onContentSizeChange={() => { }}
-                        keyExtractor={(item: Product) => item.id.toString()}
-                    />
-                ) : (
-                    <Text style={{ fontSize: 20 }}>No data</Text>
-                )}
-            </View>
+            <ScrollView
+                style={{ marginTop: 15, height: 'auto' }}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+                nestedScrollEnabled={true}
+            >
+                {listData.map((item) => (
+                    <RenderItem key={item.id} item={item} />
+                ))}
 
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ flexGrow: 1 }}>
-                <View style={{ height: HEIGHT * 0.8 }}>
-                    <View style={styles.itemTotalPrice}>
-                        <View style={styles.headerTotalPrice}>
-                            <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
-                            <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
-                        </View>
-                        <View style={styles.headerTotalPrice}>
-                            <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
-                            <Text style={styles.textHeaderTotalRight}>40$</Text>
-                        </View>
-                        <View style={styles.headerTotalPrice}>
-                            <Text style={styles.textHeaderTotalLeft}>Voucher</Text>
-                            <Text style={styles.textHeaderTotalRight}>
-                                {discountLevel ? `${discountLevel}%` : '0%'}
-                            </Text>
-                        </View>
-                        <View style={styles.bottomTotalPrice}>
-                            <Text style={styles.textBottomTotalLeft}>Total Price</Text>
-                            <Text style={styles.textBottomTotalRight}>{totalAfterShipping}</Text>
-                        </View>
+                <View style={styles.itemTotalPrice}>
+                    <View style={styles.headerTotalPrice}>
+                        <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
+                        <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
                     </View>
-                    <View style={{ marginTop: 15 }}>
-                        <Pressable onPress={() => PaymentScreen()}>
-                            <ButtonBottom title='Check Out' />
-                        </Pressable>
+                    <View style={styles.headerTotalPrice}>
+                        <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
+                        <Text style={styles.textHeaderTotalRight}>40$</Text>
+                    </View>
+                    <View style={styles.headerTotalPrice}>
+                        <Text style={styles.textHeaderTotalLeft}>Voucher</Text>
+                        <Text style={styles.textHeaderTotalRight}>{discountLevel ? `${discountLevel}%` : '0%'}</Text>
+                    </View>
+                    <View style={styles.bottomTotalPrice}>
+                        <Text style={styles.textBottomTotalLeft}>Total Price</Text>
+                        <Text style={styles.textBottomTotalRight}>{totalAfterShipping}</Text>
                     </View>
                 </View>
+                <View style={styles.item}>
+                    <Text>Nhập tên người nhận hàng:</Text>
+                    <TextInput
+                        style={[
+                            styles.textinput,
+                            {
+                                borderColor: receiverName.trim() !== '' || isReceiverNameValid ? '#E5E5E5' : 'red',
+                            },
+                        ]}
+                        value={receiverName}
+                        onChangeText={handleReceiverNameChange}
+                        placeholder="Tên người nhận hàng"
+                    />
+
+                    <Text>Nhập số điện thoại người đặt hàng:</Text>
+                    <TextInput
+                        style={[
+                            styles.textinput,
+                            {
+                                borderColor: phoneNumber.trim() !== '' || isPhoneNumberValid ? '#E5E5E5' : 'red',
+                            },
+                        ]}
+                        value={phoneNumber}
+                        onChangeText={handlePhoneNumberChange}
+                        placeholder="Số điện thoại"
+                        keyboardType="numeric"
+                    />
+                    <Text>Chọn địa chỉ giao hàng:</Text>
+                    <SelectList
+                        setSelected={setSelectedAddress}
+                        data={addressList.map((address, index) => ({ key: index, value: address }))}
+                        save="value"
+                        placeholder={selectedAddress}
+                        defaultOption={{ key: 1, value: 'Select an address' }}
+                        boxStyles={{ borderRadius: 5 }}
+                        search={false}
+                        inputStyles={{ width: '95%', fontSize: 16 }}
+                        dropdownTextStyles={{ fontSize: 16 }}
+                        dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
+                        dropdownStyles={{ height: 150 }}
+                    />
+
+
+
+                </View>
+
+                <View style={{ marginTop: 15 }}>
+                    <Pressable onPress={() => handleOrderSubmit()}>
+                        <ButtonBottom title='Check Out' />
+                    </Pressable>
+                </View>
+
+
+                <View style={{ height: 50 }}>
+
+                </View>
+
             </ScrollView>
         </SafeAreaView>
     );
@@ -133,6 +232,19 @@ const CartDetail = ({ navigation }: PropsCart) => {
 export default CartDetail;
 
 const styles = StyleSheet.create({
+    addressItem: {
+    },
+    textinput: {
+        margin: 5,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#E5E5E5',
+        height: 40,
+        width: '90%',
+        padding: 10,
+        fontSize: 15,
+    },
+
     btnCheckOut: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -191,22 +303,29 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     itemTotalPrice: {
-        padding: 16,
+        padding: 10, // giảm padding xuống 10
         borderWidth: 0.5,
         borderColor: '#9098B1',
         borderRadius: 5,
-        marginTop: 20
+        marginTop: 20,
+    },
+    item: {
+        padding: 10, // giảm padding xuống 10
+        borderWidth: 0.5,
+        borderColor: '#9098B1',
+        borderRadius: 5,
+        marginTop: 20,
     },
     topItem: {
         flexDirection: 'row',
-        columnGap: 25,
-        paddingLeft: 20,
+        columnGap: 15, // giảm khoảng cách giữa các cột xuống 15
+        paddingLeft: 10, // giảm padding xuống 10
     },
     bottomItem: {
         flexDirection: 'row',
         height: '50%',
         alignItems: 'center',
-        paddingLeft: 20,
+        paddingLeft: 10, // giảm padding xuống 10
     },
     btnNumberCountMinus: {
         backgroundColor: '#EBF0FF',
@@ -220,7 +339,7 @@ const styles = StyleSheet.create({
     },
     textNumberCount: {
         color: '#223263',
-        fontSize: 18,
+        fontSize: 16, // giảm font size xuống 16
         fontFamily: 'Poppins',
         fontWeight: '400',
         lineHeight: 18,
@@ -229,44 +348,66 @@ const styles = StyleSheet.create({
     },
     textPrice: {
         color: '#40BFFF',
-        fontSize: 15,
+        fontSize: 13, // giảm font size xuống 13
         fontFamily: 'Poppins',
         fontWeight: '700',
-        lineHeight: 18,
+        lineHeight: 16,
         letterSpacing: 0.50,
     },
     textTitleItem: {
         width: '65%',
         color: '#223263',
-        fontSize: 15,
+        fontSize: 13, // giảm font size xuống 13
         fontFamily: 'Poppins',
         fontWeight: '700',
-        lineHeight: 18,
+        lineHeight: 16,
         letterSpacing: 0.50,
     },
     itemCart: {
-        height: 110,
+        height: 90, // giảm chiều cao xuống 90
         backgroundColor: '#E5E5E5',
         borderRadius: 10,
         alignItems: 'center',
         flexDirection: 'row',
-        padding: 15,
-        marginBottom: 16
+        padding: 10, // giảm padding xuống 10
+        marginBottom: 12 // giảm marginBottom xuống 12
     },
     line: {
         position: 'absolute',
         width: WIDTH,
         height: 1,
         backgroundColor: '#E5E5E5',
-        marginTop: 60,
-
+        marginTop: 50, // giảm marginTop xuống 50
     },
     txtTitlePage: {
         color: '#223263',
-        fontSize: 20,
+        fontSize: 18, // giảm font size xuống 18
         fontFamily: 'Poppins',
         fontWeight: '700',
-        lineHeight: 24,
+        lineHeight: 22,
         letterSpacing: 0.08,
-    }
+    },
+    itemImage: {
+        width: 60,
+        height: 60,
+        borderRadius: 5,
+    },
+    itemInfoContainer: {
+        flexDirection: 'column',
+        height: '100%',
+        gap: 10,
+    },
+    quantityContainer: {
+        flexDirection: 'row',
+        backgroundColor: 'white',
+        borderRadius: 5,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: 80,
+        height: 30,
+        paddingHorizontal: 2,
+        position: 'absolute',
+        right: 30,
+    },
 })
+
