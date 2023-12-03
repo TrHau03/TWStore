@@ -10,6 +10,7 @@ export const fetchInitialListProductFilter: any = createAsyncThunk('Slice/fetchI
   const response = await AxiosInstance().get(`product/getProductByIdCategory/${url}`);
   return response.data;
 })
+
 const initialState = {
   isLogin: false,
   isLoading: false,
@@ -29,13 +30,12 @@ const initialState = {
   listProductFilter: [],
 };
 
-
 const Slice = createSlice({
   name: 'Slice',
   initialState,
   reducers: {
     updateUser: (state, action) => {
-      const value = action.payload
+      const value = action.payload;
       state.user = value;
     },
     removeItem: (state, action: PayloadAction<number>) => {
@@ -52,28 +52,29 @@ const Slice = createSlice({
       }
     },
     isLogin: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.isLogin = value;
     },
     isLoading: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.isLoading = value;
     },
     LoginGoogle: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.LoginGoogle = value;
     },
     LoginFacebook: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.LoginFaceBook = value;
     },
-
   },
-  extraReducers: (builder) => {
+
+  
+  extraReducers: builder => {
     builder
       .addCase(fetchInitialListProductRecommend.fulfilled, (state, action) => {
         state.listProductRecommend = action.payload;
@@ -83,6 +84,7 @@ const Slice = createSlice({
           state.listProductFilter = action.payload;
         })
   },
+  
 });
 export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, addItem, removeItem, updateQuantity } = Slice.actions
 export default Slice.reducer;

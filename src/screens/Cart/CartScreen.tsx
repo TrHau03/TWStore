@@ -9,9 +9,14 @@ import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/uti
 import { useDispatch, useSelector } from 'react-redux';
 import { removeItem, updateQuantity } from '../../redux/silces/Silces'
 import AxiosInstance from '../../Axios/Axios'
+import { useNavigation } from '@react-navigation/native'
 
 
 const CartScreen = ({ navigation }: PropsCart) => {
+    const navigations = useNavigation<{
+        navigate: (screen: string, params?: { totalAfterShipping?: number; Level?: any }) => void;
+    }>();
+
 
     const data = useSelector((state: any) => {
         return state.SlicesReducer.user.cartItem;
@@ -23,8 +28,16 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
 
     const [listData, setListData] = useState<[]>(data ? data : []);
-
+    const [voucher, setVoucher] = useState()
+    const [discountLevel, setDiscountLevel] = useState<number>(0);
+    const [discountedPrice, setDiscountedPrice] = useState<number>(0);
+    const [isVoucherApplied, setIsVoucherApplied] = useState(false);
+    const [inputBorderColor, setInputBorderColor] = useState('#9098B1');
     const [coupon, setCoupon] = useState<string>('');
+    const [isInvalidCoupon, setIsInvalidCoupon] = useState<boolean>(false);
+
+    const shippingFee = 40;
+
 
     const [checkRemoveItem, setCheckRemoveItem] = useState<boolean>(false);
 
@@ -36,10 +49,54 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const cart: { productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
 
+    const generalPriceAfterShipping = generalPrice + shippingFee;
 
     useEffect(() => {
         setListData(data);
-    }, [data]);
+
+        const fetchVoucher = async () => {
+            try {
+                const response = await AxiosInstance().get('promotion/getAllPromotion');
+                setVoucher(response.data);
+            } catch (error) {
+                console.error('Error fetching voucher:', error);
+            }
+        };
+
+        fetchVoucher();
+    }, []);
+
+    const handleApplyCoupon = async () => {
+        try {
+            const response = await AxiosInstance().get(`promotion/getAllPromotion`);
+            console.log("data voucher :" + response.data.discountCode);
+            const appliedPromotion = response.data.find((promo: { discountCode: string }) => promo.discountCode === coupon);
+
+            if (appliedPromotion) {
+                const discountLevelValue = appliedPromotion.discountLevel;
+                const discountAmount = (generalPriceAfterShipping * discountLevelValue) / 100;
+                const discountedPriceValue = generalPriceAfterShipping - discountAmount;
+
+                // Cập nhật giá trị discountLevel và discountedPrice vào state
+                setDiscountLevel(discountLevelValue);
+                setDiscountedPrice(discountedPriceValue);
+                setIsVoucherApplied(true);
+                setIsInvalidCoupon(false); // Không có lỗi nữa
+                setInputBorderColor('#9098B1'); // Màu sắc khi có voucher
+                console.log(`Applied discount: ${discountLevelValue}%`);
+            } else {
+                console.log('Invalid coupon code');
+                setIsVoucherApplied(false);
+                setIsInvalidCoupon(true); // Có lỗi khi mã giảm giá không hợp lệ
+                setInputBorderColor('red'); // Màu sắc khi mã giảm giá không hợp lệ
+            }
+        } catch (error) {
+            console.error('Error applying coupon:', error);
+        }
+    };
+
+
+
 
     const handleRemoveItem = async (id: number) => {
         dispatch(removeItem(id));
@@ -99,7 +156,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
             <View style={styles.line}></View>
-            <View style={{ height: HEIGHT * 0.4, marginTop: '11%' }}>
+            <View style={{ height: HEIGHT * 0.35, marginTop: '11%' }}>
                 {listData.length > 0 ?
                     <FlatList
                         showsVerticalScrollIndicator={false}
@@ -110,38 +167,67 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         keyExtractor={(item: any) => item?.productID?._id?.toString()}
                     /> : <Text style={{ fontSize: 20 }}>No data</Text>}
             </View>
-            <View style={{ borderWidth: 1, borderColor: '#9098B1', borderRadius: 5, marginTop: 25 }}>
-                <InputItem
-                    style={{ fontSize: 16 }}
-                    value={coupon}
-                    onChange={(value: any) => {
-                        setCoupon(value)
-                    }}
-                    placeholder="Enter Cupon Code"
-                    extra={
-                        <Pressable style={styles.btnApply}>
-                            <Text style={styles.textApply}>Apply</Text>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+            >
+
+                <View style={{ height: HEIGHT * 0.8 }}>
+
+
+                    <View style={{ borderWidth: 1, borderColor: isInvalidCoupon ? 'red' : inputBorderColor, borderRadius: 5, marginTop: 25 }}>
+                        <InputItem
+                            style={{ fontSize: 16 }}
+                            value={coupon}
+                            onChange={(value: any) => {
+                                setCoupon(value);
+                                setIsVoucherApplied(false);
+                                setIsInvalidCoupon(false); // Ẩn lỗi khi người dùng bắt đầu nhập lại
+                            }}
+                            placeholder={isInvalidCoupon ? "Invalid Coupon Code" : "Enter Coupon Code"}
+                            extra={
+                                <Pressable onPress={handleApplyCoupon} style={styles.btnApply}>
+                                    <Text style={styles.textApply}>Apply</Text>
+                                </Pressable>
+                            }
+                        />
+                    </View>
+
+                    <View style={styles.itemTotalPrice}>
+                        <View style={styles.headerTotalPrice}>
+                            <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
+                            <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
+                        </View>
+                        <View style={styles.headerTotalPrice}>
+                            <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
+                            <Text style={styles.textHeaderTotalRight}>40$</Text>
+                        </View>
+                        <View style={styles.headerTotalPrice}>
+                            <Text style={styles.textHeaderTotalLeft}>Voucher</Text>
+                            <Text style={styles.textHeaderTotalRight}>{isVoucherApplied ? `${discountLevel}%` : '0%'}</Text>
+                        </View>
+                        <View style={styles.bottomTotalPrice}>
+                            <Text style={styles.textBottomTotalLeft}>Total Price</Text>
+                            <Text style={styles.textBottomTotalRight}>{isVoucherApplied ? `$${discountedPrice}` : `$${generalPriceAfterShipping}`}</Text>
+                        </View>
+
+                    </View>
+                    <View style={{ marginTop: 15 }}>
+                        <Pressable onPress={() => navigations.
+                            navigate('CartDetail', {
+                                Level: isVoucherApplied ? discountLevel : '0',
+                                totalAfterShipping: isVoucherApplied ? discountedPrice : generalPriceAfterShipping
+                            })}>
+                            <ButtonBottom title='Check Out' />
                         </Pressable>
-                    }
-                />
-            </View>
-            <View style={styles.itemTotalPrice}>
-                <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
-                    <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
+
+
+                    </View>
                 </View>
-                <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
-                    <Text style={styles.textHeaderTotalRight}>$0.0</Text>
-                </View>
-                <View style={styles.bottomTotalPrice}>
-                    <Text style={styles.textBottomTotalLeft}>Total Price</Text>
-                    <Text style={styles.textBottomTotalRight}>${generalPrice}</Text>
-                </View>
-            </View>
-            <View style={{ marginTop: 15 }}>
-                <ButtonBottom title='Check Out' />
-            </View>
+
+            </ScrollView>
+
+
         </SafeAreaView >
     )
 }

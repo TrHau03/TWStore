@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Header from '../../component/Header/Header'
 import { useDispatch, useSelector } from 'react-redux';
-import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import HomeScreenSlice from '../../Redux/silces/HomeScreenSlice';
 import { COLORS } from '../../utilities';
 import Button from '../../component/Button/Button';
 import { useIsFocused } from '@react-navigation/native';
@@ -81,7 +81,6 @@ const FilterScreen = (props: any) => {
     dispatch(HomeScreenSlice.actions.filterColor(color));
     dispatch(HomeScreenSlice.actions.filterSize(size));
     dispatch(HomeScreenSlice.actions.filterPrice({ minPrice, maxPrice }))
-    console.log(brand, color, size, minPrice, maxPrice);
 
   }
 

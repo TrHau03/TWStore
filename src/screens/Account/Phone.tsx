@@ -8,7 +8,6 @@ import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/
 
 const Phone = () => {
     const [phone, setPhone] = useState<string>();
-    console.log(phone);
 
     return (
         <View style={styles.container}>

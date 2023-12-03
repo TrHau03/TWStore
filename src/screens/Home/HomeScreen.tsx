@@ -399,19 +399,3 @@ const styles = StyleSheet.create({
     }
 
 })
-const data = [
-    { id: '1', name: 'Man Shirt', icon: 'shirt-sharp' },
-    { id: '2', name: 'Dress', icon: 'shirt-sharp' },
-    { id: '3', name: 'Man Work', icon: 'shirt-sharp' },
-    { id: '4', name: 'Woman Bag', icon: 'shirt-sharp' },
-    { id: '5', name: 'Man Shoes', icon: 'shirt-sharp' },
-];
-
-const data2 = [
-    { id: '1', name: 'FS - Nike Air Max 270 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-    { id: '2', name: 'FE - QUILTED MAXI CROS...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-    { id: '3', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-    { id: '4', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-    { id: '5', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-    { id: '6', name: 'FA - Nike Air Max 350 React...', image: 'http://dummyimage.com/72x72.png/dddddd/000000' },
-];

@@ -19,8 +19,8 @@ import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../com
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useDispatch, useSelector } from 'react-redux';
-import { listProducts, todoRemainingProducts } from '../../redux/silces/HomeSelector';
-import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import { listProducts, todoRemainingProducts } from '../../Redux/silces/HomeSelector';
+import HomeScreenSlice from '../../Redux/silces/HomeScreenSlice';
 import ButtonBottom from '../../component/Button/Button';
 import * as Animatable from 'react-native-animatable';
 import FilterScreen from './Filter';
