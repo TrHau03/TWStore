@@ -4,6 +4,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import Button from '../../component/Button/Button';
 import { PropsAccount } from '../../component/Navigation/Props';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { HEIGHT, WIDTH } from '../../utilities/utility';
+import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteAddress } from '../../redux/silces/Silces';
+import AxiosInstance from '../../Axios/Axios';
 
 interface Account {
     id: number;
@@ -12,35 +18,51 @@ interface Account {
     phone: string;
 }
 
-const RenderItem = (props: any): React.JSX.Element => {
-    const { data, navigation } = props;
-    const { item } = data;
 
-    return <View style={styles.box}>
-        <View>
-            <Text style={styles.txtName}>{item.name}</Text>
-            <Text style={styles.txtContent}>{item.address}</Text>
-            <Text style={styles.txtContent}>+99 {item.phone}</Text>
-            <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
-                <TouchableOpacity onPress={() => navigation?.navigate('Edit_Address')} style={styles.btnEdit}><Text style={styles.txtEdit}>Edit</Text></TouchableOpacity>
-                <TouchableOpacity style={{ justifyContent: 'center' }}><Icon name='trash' size={25} /></TouchableOpacity>
+
+const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
+    const listData = useSelector((state: any) => {
+        return state.SlicesReducer.user.address;
+    });
+    const user = useSelector((state: any) => {
+        return state.SlicesReducer.user;
+    });
+    const dispatch = useDispatch();
+    const handleRemove = async (position: number) => {
+        dispatch(deleteAddress(position))
+        const response = await AxiosInstance().post(`users/updateAddressUser`, {
+            _idUser: user._idUser,
+            typeUpdate: 'delete',
+            position: position,
+        });
+    }
+
+    const RenderItem = (props: any): React.JSX.Element => {
+        const { data, navigation } = props;
+        const { item } = data;
+
+        const address = `${item.street}, ${item.ward}, ${item.district}, ${item.city}`
+        return <View style={styles.box}>
+            <View>
+                <Text style={styles.txtName}>Địa chỉ số {item.position}</Text>
+                <Text style={styles.txtContent}>{address}</Text>
+                <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                    <TouchableOpacity onPress={() => handleRemove(item.position)} style={{ justifyContent: 'center' }}><Icon name='trash' size={25} /></TouchableOpacity>
+                </View>
             </View>
-        </View>
-    </View >;
-};
-
-const AddressScreen = ({ navigation }: PropsAccount) => {
+        </View >;
+    };
     return (
         <View style={styles.container}>
-            <Header title='Address' />
+            <Header title='Address' navigation={navigation} />
             <View style={styles.line}></View>
-
             <FlatList
-                data={Data}
+                style={{ maxHeight: '80%' }}
+                data={listData}
                 renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
                 showsVerticalScrollIndicator={false}
             />
-            <TouchableOpacity style={{ paddingTop: 10 }} onPress={() => navigation?.navigate('Add_Address')}>
+            <TouchableOpacity style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 20 }} onPress={() => navigation?.navigate(RootStackScreenEnumAccount.Add_Address)}>
                 <Button title='Add Address' />
             </TouchableOpacity>
         </View>
@@ -70,7 +92,7 @@ const styles = StyleSheet.create({
     },
     txtContent: {
         color: '#9098B1',
-        fontSize: 14,
+        fontSize: 16,
         fontFamily: 'Poppins',
         fontWeight: '400',
         lineHeight: 21.60,
@@ -106,8 +128,8 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        height: '92%',
-        width: '100%',
+        height: '100%',
+        width: WIDTH,
         paddingTop: 20,
         paddingHorizontal: 20,
     }

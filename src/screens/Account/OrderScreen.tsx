@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Animatable from 'react-native-animatable';
 import ButtonBottom from '../../component/Button/Button';
-import { listOrder } from '../../Redux/silces/HomeSelector';
+import { listOrder } from '../../redux/silces/HomeSelector';
 import { HEIGHT, WIDTH } from '../../utilities/utility';
 import { RootStackScreenAccount, RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
 import StatusDeliver from './StatusDeliver';

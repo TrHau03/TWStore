@@ -9,50 +9,44 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
 import AxiosInstance from '../../Axios/Axios'
-import { RadioButton } from 'react-native-paper'
+import { NativeStackHeaderProps } from '@react-navigation/native-stack'
+import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount'
 
-interface Product {
-    id: number;
-    name: string;
-    image: string;
-    price: number;
-    size: string;
-    color: string;
-    evaluate: number;
-    description: string;
-    type: string;
-    quantity: number;
-}
 
 type CartDetailRouteParams = {
     CartDetail: {
         Level?: string;
         totalAfterShipping?: number;
+        generalPriceAfterShipping: number;
+        shipping: number;
     };
 };
 
 
-const CartDetail = ({ navigation }: PropsCart) => {
-    const data = useSelector((state: any) => state.CartReducer);
-    const [listData, setListData] = useState<Product[]>(data ? data : []);
+const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
+    const listData = useSelector((state: any) => {
+        return state.SlicesReducer.user.cartItem;
+    });
     const route = useRoute<RouteProp<CartDetailRouteParams, 'CartDetail'>>();
     const [voucher, setVoucher] = useState<string>('');
     const [totalAfterShipping, setTotalAfterShipping] = useState<number>(0);
     const discountLevel = route.params?.Level ?? '';
-    const [receiverName, setReceiverName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
+
     const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
     const [isReceiverNameValid, setIsReceiverNameValid] = useState(true);
+    const [paymentMethods, setPaymentMethods] = useState<{ _id: number, name: string }[]>([]);
     const [addressList, setAddressList] = useState<string[]>([]);
+
+
+
+    const [receiverName, setReceiverName] = useState<string>('');
+    const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [selectedAddress, setSelectedAddress] = useState<string>('');
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-    const [paymentMethods, setPaymentMethods] = useState<{ _id: number, name: string }[]>([]);
 
-    const user = useSelector((state: any) => state.SlicesReducer.user);
+    const address = useSelector((state: any) => state.SlicesReducer.user.address);
 
 
-    const totalItem = listData.reduce((total: any, item: { quantity: any }) => total + item.quantity, 0);
-    const generalPrice = listData.reduce((previousValue: number, currentItem: Product) => previousValue + currentItem.price * currentItem.quantity, 0);
 
     const handleReceiverNameChange = (text: string) => {
         setReceiverName(text);
@@ -100,14 +94,6 @@ const CartDetail = ({ navigation }: PropsCart) => {
         setTotalAfterShipping(route.params?.totalAfterShipping ?? 0);
     }, [route.params]);
 
-    useEffect(() => {
-        if (user && user.address && user.address.length > 0) {
-            const addresses = user.address.map((addr: any) => {
-                return `${addr.street}, ${addr.ward}, ${addr.district}, ${addr.city}`;
-            });
-            setAddressList(addresses);
-        }
-    }, [user]);
 
     useEffect(() => {
         const fetchPayment = async () => {
@@ -123,30 +109,25 @@ const CartDetail = ({ navigation }: PropsCart) => {
         fetchPayment();
     }, []);
 
-
-
-    useEffect(() => {
-        setListData(data);
-    }, [data]);
-
-    const RenderItem = ({ item }: { item: Product }) => {
+    const RenderItem = ({ item }: any) => {
         return (
             <View style={styles.itemCart}>
                 <View>
-                    <Image source={{ uri: item.image }} style={styles.itemImage} />
+                    <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
                 </View>
-                <View style={styles.itemInfoContainer}>
+                <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
                     <View style={styles.topItem}>
-                        <Text style={styles.textTitleItem}>{item.name.length < 10 ? item.name : item.name.substring(0, 10) + '...'}</Text>
+                        <Text style={styles.textTitleItem}>{item.productID.productName.length < 25 ? item.productID.productName : item.productID.productName.substring(0, 25) + "..."}</Text>
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>${item.price}</Text>
-                        <View style={styles.quantityContainer}>
+                        <Text style={styles.textPrice}>${item.productID.price}</Text>
+                        <View style={{ backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'center', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
                             <Text style={styles.textNumberCount}>{item.quantity}</Text>
                         </View>
                     </View>
                 </View>
             </View>
+
         );
     };
 
@@ -168,7 +149,6 @@ const CartDetail = ({ navigation }: PropsCart) => {
                 }));
                 return updatedMethods;
             });
-
             setIsSelected(true);
             setSelectedPaymentMethod(paymentMethod);
         };
@@ -185,7 +165,7 @@ const CartDetail = ({ navigation }: PropsCart) => {
 
 
     return (
-        <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR }}>
+        <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR, height: '100%' }}>
             <View style={{ marginTop: 17 }}>
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
@@ -196,30 +176,15 @@ const CartDetail = ({ navigation }: PropsCart) => {
                 contentContainerStyle={{ flexGrow: 1 }}
                 nestedScrollEnabled={true}
             >
-                {listData.map((item) => (
-                    <RenderItem key={item.id} item={item} />
+                {listData.map((item: any) => (
+                    <RenderItem keyExtractor={item.id} item={item} />
                 ))}
 
                 <View style={styles.itemTotalPrice}>
-                    <View style={styles.headerTotalPrice}>
-                        <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
-                        <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
-                    </View>
-                    <View style={styles.headerTotalPrice}>
-                        <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
-                        <Text style={styles.textHeaderTotalRight}>40$</Text>
-                    </View>
-                    <View style={styles.headerTotalPrice}>
-                        <Text style={styles.textHeaderTotalLeft}>Voucher</Text>
-                        <Text style={styles.textHeaderTotalRight}>{discountLevel ? `${discountLevel}%` : '0%'}</Text>
-                    </View>
-                    <View style={styles.bottomTotalPrice}>
-                        <Text style={styles.textBottomTotalLeft}>Total Price</Text>
-                        <Text style={styles.textBottomTotalRight}>{totalAfterShipping}</Text>
-                    </View>
+                    <Text style={styles.textBottomTotalLeft}>Total Price (+ shipping)</Text>
+                    <Text style={styles.textBottomTotalRight}>${totalAfterShipping}</Text>
                 </View>
                 <View style={styles.item}>
-                    <Text>Nhập tên người nhận hàng:</Text>
                     <TextInput
                         style={[
                             styles.textinput,
@@ -231,8 +196,6 @@ const CartDetail = ({ navigation }: PropsCart) => {
                         onChangeText={handleReceiverNameChange}
                         placeholder="Tên người nhận hàng"
                     />
-
-                    <Text>Nhập số điện thoại người nhận hàng:</Text>
                     <TextInput
                         style={[
                             styles.textinput,
@@ -245,20 +208,28 @@ const CartDetail = ({ navigation }: PropsCart) => {
                         placeholder="Số điện thoại"
                         keyboardType="numeric"
                     />
-                    <Text>Chọn địa chỉ giao hàng:</Text>
-                    <SelectList
-                        setSelected={setSelectedAddress}
-                        data={addressList.map((address, index) => ({ key: index, value: address }))}
-                        save="value"
-                        placeholder={selectedAddress}
-                        defaultOption={{ key: 1, value: 'Select an address' }}
-                        boxStyles={{ borderRadius: 5 }}
-                        search={false}
-                        inputStyles={{ width: '95%', fontSize: 16 }}
-                        dropdownTextStyles={{ fontSize: 16 }}
-                        dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
-                        dropdownStyles={{ height: 150 }}
-                    />
+                    <View>
+                        <SelectList
+
+                            setSelected={setSelectedAddress}
+                            data={address.map((address: any, index: any) => {
+                                const value = `${address.street}, ${address.ward}, ${address.district}, ${address.city}`
+                                return { key: index, value: value }
+                            })}
+                            save="value"
+                            placeholder={selectedAddress}
+                            defaultOption={{ key: 1, value: 'Select an address' }}
+                            boxStyles={{ borderRadius: 5, borderWidth: 0.5 }}
+                            search={false}
+                            inputStyles={{ width: '95%', fontSize: 15 }}
+                            dropdownTextStyles={{ fontSize: 16 }}
+                            dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
+                            dropdownStyles={{ height: 150, borderWidth: 0.5 }}
+                        />
+                        <Pressable onPress={() => navigation?.navigate('Account', { screen: RootStackScreenEnumAccount.Add_Address })}>
+                            <Text>Thêm địa chỉ</Text>
+                        </Pressable>
+                    </View>
                     <Text>Chọn phương thức thanh toán:</Text>
                     {paymentMethods && paymentMethods.map((paymentMethod) => (
                         <RenderPaymentItem key={paymentMethod._id} paymentMethod={paymentMethod} />
@@ -266,19 +237,12 @@ const CartDetail = ({ navigation }: PropsCart) => {
 
 
                 </View>
-
-                <View style={{ marginTop: 15 }}>
-                    <Pressable onPress={() => handleOrderSubmit()}>
-                        <ButtonBottom title='Check Out' />
-                    </Pressable>
-                </View>
-
-
-                <View style={{ height: 50 }}>
-
-                </View>
-
             </ScrollView>
+            <View style={{ position: 'absolute', bottom: 20, width: '100%', alignSelf: 'center' }}>
+                <Pressable onPress={() => handleOrderSubmit()}>
+                    <ButtonBottom title='Check Out' />
+                </Pressable>
+            </View>
         </SafeAreaView>
     );
 };
@@ -378,8 +342,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         paddingTop: 10,
-        borderTopWidth: 0.5,
-        borderColor: '#9098B1',
         alignItems: 'center',
     },
     headerTotalPrice: {
@@ -393,6 +355,8 @@ const styles = StyleSheet.create({
         borderColor: '#9098B1',
         borderRadius: 5,
         marginTop: 20,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
     },
     item: {
         padding: 10, // giảm padding xuống 10
