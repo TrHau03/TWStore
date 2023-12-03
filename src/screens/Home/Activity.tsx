@@ -14,10 +14,10 @@ import { PropsHome } from '../../component/Navigation/Props';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 import AxiosInstance from '../../Axios/Axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { listRecommended } from '../../Redux/silces/HomeSelector';
+import { listRecommended } from '../../redux/silces/HomeSelector';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useIsFocused } from '@react-navigation/native';
-import { fetchInitialListProduct } from '../../Redux/silces/Silces';
+import { fetchInitialListProduct } from '../../redux/silces/Silces';
 import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 interface Product_Notifi {
