@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Dimensions, } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Dimensions, Alert, } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { InputItem, Stepper } from '@ant-design/react-native'
@@ -14,11 +14,11 @@ import { useNavigation } from '@react-navigation/native'
 
 const CartScreen = ({ navigation }: PropsCart) => {
     const navigations = useNavigation<{
-        navigate: (screen: string, params?: { totalAfterShipping?: number; Level?: any }) => void;
+        navigate: (screen: string, params?: { totalAfterShipping?: number; Level?: any; generalPriceAfterShipping: number, shipping: number }) => void;
     }>();
 
 
-    const data = useSelector((state: any) => {
+    const listData = useSelector((state: any) => {
         return state.SlicesReducer.user.cartItem;
     });
 
@@ -26,8 +26,6 @@ const CartScreen = ({ navigation }: PropsCart) => {
         return state.SlicesReducer.user;
     });
 
-
-    const [listData, setListData] = useState<[]>(data ? data : []);
     const [voucher, setVoucher] = useState()
     const [discountLevel, setDiscountLevel] = useState<number>(0);
     const [discountedPrice, setDiscountedPrice] = useState<number>(0);
@@ -52,8 +50,6 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const generalPriceAfterShipping = generalPrice + shippingFee;
 
     useEffect(() => {
-        setListData(data);
-
         const fetchVoucher = async () => {
             try {
                 const response = await AxiosInstance().get('promotion/getAllPromotion');
@@ -95,7 +91,10 @@ const CartScreen = ({ navigation }: PropsCart) => {
         }
     };
 
-
+    const createTwoButtonAlert = () =>
+        Alert.alert('Notification', 'Not product in your Cart ! ', [
+            { text: 'OK' }
+        ]);
 
 
     const handleRemoveItem = async (id: number) => {
@@ -103,7 +102,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
         setCheckRemoveItem(true);
     }
     const handlRemoveData = async () => {
-        data.map((item: any) => {
+        listData.map((item: any) => {
             cart.push({ productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
         }
         )
@@ -162,8 +161,6 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         showsVerticalScrollIndicator={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
-                        onContentSizeChange={() => {
-                        }}
                         keyExtractor={(item: any) => item?.productID?._id?.toString()}
                     /> : <Text style={{ fontSize: 20 }}>No data</Text>}
             </View>
@@ -200,7 +197,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         </View>
                         <View style={styles.headerTotalPrice}>
                             <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
-                            <Text style={styles.textHeaderTotalRight}>40$</Text>
+                            <Text style={styles.textHeaderTotalRight}>{shippingFee}$</Text>
                         </View>
                         <View style={styles.headerTotalPrice}>
                             <Text style={styles.textHeaderTotalLeft}>Voucher</Text>
@@ -213,15 +210,15 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
                     </View>
                     <View style={{ marginTop: 15 }}>
-                        <Pressable onPress={() => navigations.
-                            navigate('CartDetail', {
-                                Level: isVoucherApplied ? discountLevel : '0',
-                                totalAfterShipping: isVoucherApplied ? discountedPrice : generalPriceAfterShipping
-                            })}>
+                        <Pressable onPress={() => listData.length > 0 ? navigations.navigate('CartDetail', {
+                            Level: isVoucherApplied ? discountLevel : '0',
+                            totalAfterShipping: isVoucherApplied ? discountedPrice : generalPriceAfterShipping,
+                            generalPriceAfterShipping,
+                            shipping: shippingFee
+
+                        }) : createTwoButtonAlert()}>
                             <ButtonBottom title='Check Out' />
                         </Pressable>
-
-
                     </View>
                 </View>
 

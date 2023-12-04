@@ -12,13 +12,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
-import AxiosInstance from '../../Axios/Axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { listRecommended } from '../../redux/silces/HomeSelector';
+<<<<<<< HEAD
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useIsFocused } from '@react-navigation/native';
 import { fetchInitialListProduct } from '../../redux/silces/Silces';
 import { black } from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
+=======
+import { useIsFocused } from '@react-navigation/native';
+import { fetchInitialListProductRecommend } from '../../redux/silces/Silces';
+>>>>>>> main
 
 interface Product_Notifi {
   id: number;
@@ -55,7 +59,7 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(fetchInitialListProduct());
+      dispatch(fetchInitialListProductRecommend());
     }
   }, [isFocused]);
   useEffect(() => {
@@ -84,7 +88,7 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
       </Pressable>
     );
   };
-  
+
 
 
 
@@ -184,7 +188,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
     color: 'black',
-    marginBottom:5,
+    marginBottom: 5,
   },
   contentRight: {
     flexDirection: 'row',
@@ -192,17 +196,17 @@ const styles = StyleSheet.create({
   },
   right: {
     width: '80%',
-    height:'auto',
+    height: 'auto',
   },
   left: {
     width: '20%',
-    height:  'auto',
-    marginRight:20,
+    height: 'auto',
+    marginRight: 20,
   },
-  imgProduct:{
+  imgProduct: {
     width: '100%',
-    height:  HEIGHT *0.1,
-    borderRadius:10,
+    height: HEIGHT * 0.1,
+    borderRadius: 10,
   },
 
   contentPD: {
@@ -211,7 +215,7 @@ const styles = StyleSheet.create({
   containerItemPD: {
     width: '100%',
     height: 'auto',
-    margin:10,
+    margin: 10,
   },
 
   groupProduct: {

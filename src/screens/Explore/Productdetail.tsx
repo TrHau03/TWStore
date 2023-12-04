@@ -10,7 +10,8 @@ import {
   Button,
   ImageSourcePropType,
   Pressable,
-  Alert
+  Alert,
+  Modal
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Productreviews from './Productreviews';
@@ -107,17 +108,19 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     ? reviewsData.filter((review) => review.stars === selectedStar)
     : reviewsData;
 
-  const reviewCount = filteredReviews.length;
-  const sortReviewsByDateTime = (reviews: Review[]) => {
-    return reviews.sort((a: Review, b: Review) => {
-      const dateTimeA = new Date(
-        `${a.date} ${a.time}`
-      ).getTime();
-      const dateTimeB = new Date(
-        `${b.date} ${b.time}`
-      ).getTime();
-      return dateTimeA - dateTimeB;
-    });
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+  const handleConfirm = () => {
+    // Xử lý logic khi người dùng xác nhận
+    setModalVisible(false);
+  };
+
+  const handleOpenModal = () => {
+    setModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
 
 
@@ -158,16 +161,11 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart })
   };
 
-
   const createTwoButtonAlert = () =>
-    Alert.alert('Alert Title', 'My Alert Msg', [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      { text: 'OK', onPress: () => handleAddTocart() },
+    Alert.alert('Notification', 'Add to cart successfully!', [
+      { text: 'OK', onPress: () => handleAddTocart() }
     ]);
+
   if (handleAdd) {
     createTwoButtonAlert();
     setHandleAdd(false);
@@ -175,7 +173,6 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
   return (
     <View style={{ height: '100%' }}>
-
       <ScrollView>
         <View style={styles.header}>
           <Pressable style={{ position: 'absolute', left: 10 }} onPress={() => navigation.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
@@ -341,14 +338,14 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       <View style={styles.addtocartButtonContainer}>
         <TouchableOpacity
           style={styles.addtocartButton}
-          onPress={() => { handle({ productID: product, sizeProduct: selectedSize, colorProduct: selectedColor }) }}
+          onPress={() => { handle({ productID: product, sizeProduct: selectedSize, colorProduct: selectedColor }); }}
         >
           <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
             <Text style={styles.addtocartButtonText}>Add to cart</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
-    </View>
+    </View >
 
   );
 }

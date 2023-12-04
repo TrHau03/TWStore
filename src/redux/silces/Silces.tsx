@@ -51,6 +51,12 @@ const Slice = createSlice({
         quantityToUpdate.quantity = quantity;
       }
     },
+    addAddress: (state, action) => {
+      state.user.address.push(action.payload as never);
+    },
+    deleteAddress: (state, action) => {
+      state.user.address = state.user.address.filter((item: any) => item.position !== action.payload);
+    },
     isLogin: (state, action) => {
       console.log('login', action.payload);
       const value = action.payload;
@@ -73,7 +79,7 @@ const Slice = createSlice({
     },
   },
 
-  
+
   extraReducers: builder => {
     builder
       .addCase(fetchInitialListProductRecommend.fulfilled, (state, action) => {
@@ -84,7 +90,7 @@ const Slice = createSlice({
           state.listProductFilter = action.payload;
         })
   },
-  
+
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, addItem, removeItem, updateQuantity } = Slice.actions
+export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, addItem, removeItem, updateQuantity,deleteAddress, addAddress} = Slice.actions
 export default Slice.reducer;
