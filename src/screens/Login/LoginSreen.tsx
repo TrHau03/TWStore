@@ -14,7 +14,7 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import Realm from 'realm';
 import { AccessToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
 import { useDispatch } from 'react-redux';
-import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../Redux/silces/Silces';
+import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../redux/silces/Silces';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 interface Login {

@@ -7,7 +7,7 @@ import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeItem, updateQuantity } from '../../Redux/silces/Silces'
+import { removeItem, updateQuantity } from '../../redux/silces/Silces'
 import AxiosInstance from '../../Axios/Axios'
 
 

@@ -58,7 +58,7 @@ const Slice = createSlice({
     },    
     updateName: (state, action) => {
       const value = action.payload
-      state.user.email = value;
+      state.user.userName = value;
     },
 
     removeItem: (state, action: PayloadAction<number>) => {

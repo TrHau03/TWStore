@@ -1,12 +1,24 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, } from 'react-native'
+import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '../../component/Header/Header'
 import ButtonBottom from '../../component/Button/Button'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateName } from '../../redux/silces/Silces'
+import AxiosInstance from '../../Axios/Axios'
 
 const ChangeName = (props: any) => {
     const { setModalVisible } = props.action;
+    const [name, setName] = useState<string>()
+    const dispatch = useDispatch();
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+    const handleSaveName = async () => {
+        setModalVisible(false)
+        dispatch(updateName(name))
+        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, name: name });
+    }
+
     return (
         <View style={styles.container}>
             <Header hideBack title='Name' />
@@ -14,20 +26,13 @@ const ChangeName = (props: any) => {
 
             <View style={styles.content}>
                 <View style={styles.Name}>
-                    <Text style={styles.txtName}>First Name</Text>
+                    <Text style={styles.txtName}>Full Name</Text>
                     <View style={styles.input}>
-                        <TextInput style={styles.txtInput} placeholder="Maximus" />
-                    </View>
-                </View>
-
-                <View style={styles.Name}>
-                    <Text style={styles.txtName}>Last Name</Text>
-                    <View style={styles.input}>
-                        <TextInput style={styles.txtInput} placeholder="Gold" />
+                        <TextInput onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setName(e.nativeEvent.text) }} style={styles.txtInput} defaultValue={user.username} />
                     </View>
                 </View>
             </View>
-            <Pressable style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable onPress={handleSaveName} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
             </Pressable>
         </View>

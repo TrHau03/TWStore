@@ -5,7 +5,7 @@ import Header from '../../component/Header/Header'
 import ButtonBottom from '../../component/Button/Button'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateGender } from '../../Redux/silces/Silces'
+import { updateGender } from '../../redux/silces/Silces'
 import AxiosInstance from '../../Axios/Axios'
 
 

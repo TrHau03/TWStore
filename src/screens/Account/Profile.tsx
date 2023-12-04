@@ -24,7 +24,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
     const [nameModal, setNameModal] = useState<string>('');
     const user = useSelector((state: any) => state.SlicesReducer.user);
     const checkLogin = useSelector((state: any) => state.SlicesReducer.LoginGoogle || state.SlicesReducer.LoginGoogle ? true : false);
-
+    
     return (
         <Provider>
             <Modal

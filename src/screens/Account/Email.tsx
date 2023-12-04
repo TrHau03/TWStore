@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { HEIGHT, WIDTH } from '../../utilities/utility'
 import { useDispatch, useSelector } from 'react-redux'
 import AxiosInstance from '../../Axios/Axios'
-import { updateEmail } from '../../Redux/silces/Silces'
+import { updateEmail } from '../../redux/silces/Silces'
 
 const Email = (props: any) => {
     const { setModalVisible } = props.action;

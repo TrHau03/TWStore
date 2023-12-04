@@ -6,7 +6,7 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
-import { updateBirthDay } from '../../Redux/silces/Silces';
+import { updateBirthDay } from '../../redux/silces/Silces';
 import { useDispatch, useSelector } from 'react-redux';
 import AxiosInstance from '../../Axios/Axios';
 

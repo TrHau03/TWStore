@@ -6,7 +6,7 @@ import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 import { useDispatch, useSelector } from 'react-redux'
-import { updatePhone, updateUser } from '../../Redux/silces/Silces'
+import { updatePhone, updateUser } from '../../redux/silces/Silces'
 import AxiosInstance from '../../Axios/Axios'
 
 const Phone = (props: any) => {
