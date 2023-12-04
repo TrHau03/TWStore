@@ -15,13 +15,12 @@ const Phone = (props: any) => {
     const dispatch = useDispatch();
     const user = useSelector((state: any) => state.SlicesReducer.user);
     
-    const handleChangePhone = () => {
-        dispatch(updatePhone(phone));
-    }
 
-    const fetchPhone = async () => {
-        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._id, phone: phone });
-    };
+    const handleSavephone = async () => {
+        setModalVisible(false)
+        dispatch(updatePhone(phone))
+        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, phone: phone });
+    }
 
     return (
         <View style={styles.container}>
@@ -37,7 +36,7 @@ const Phone = (props: any) => {
                 </View>
             </View>
 
-            <Pressable onPress={() => { setModalVisible(false), handleChangePhone(), fetchPhone() }} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable onPress={handleSavephone} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
             </Pressable>
         </View>

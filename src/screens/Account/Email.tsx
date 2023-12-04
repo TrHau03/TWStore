@@ -1,12 +1,24 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, } from 'react-native'
+import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
 import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { HEIGHT, WIDTH } from '../../utilities/utility'
+import { useDispatch, useSelector } from 'react-redux'
+import AxiosInstance from '../../Axios/Axios'
+import { updateEmail } from '../../Redux/silces/Silces'
 
-const Email = () => {
+const Email = (props: any) => {
+    const { setModalVisible } = props.action;
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+    const [email, setEmail] = useState<string>('');
+    const dispatch = useDispatch();
+    const handleSaveEmail = async () => {
+        setModalVisible(false)
+        dispatch(updateEmail(email))
+        // const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, email: email });
+    }
     return (
         <View style={styles.container}>
             <Header hideBack title='Email' />
@@ -17,14 +29,14 @@ const Email = () => {
                 <Text style={styles.txtEmail}>Change Email</Text>
                 <View style={styles.input}>
                     <Icon name='mail' size={30} />
-                    <TextInput style={styles.txtInput} keyboardType='email-address' placeholder="leducminh@gmail.com" />
+                    <TextInput defaultValue={user.email} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setEmail(e.nativeEvent.text) }} style={styles.txtInput} keyboardType='email-address' placeholder="leducminh@gmail.com" />
                 </View>
                 <Text style={styles.verifi}>We Will Send verification to your New Email</Text>
             </View>
 
-            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
-                <ButtonBottom title='Change Email' />
-            </View>
+            <Pressable onPress={handleSaveEmail} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+                <ButtonBottom title='Save' />
+            </Pressable>
         </View>
     )
 }

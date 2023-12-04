@@ -14,24 +14,25 @@ const Gender = (props: any) => {
     const dispatch = useDispatch();
     const { setModalVisible } = props.action;
     const [gender, setGender] = useState<string>('');
-
+    
     const user = useSelector((state: any) => state.SlicesReducer.user);
-    
-    
+
+
+
     const listGender = [
         { key: '1', value: 'Male' },
         { key: '2', value: 'Female' },
         { key: '3', value: 'Other' },
     ]
-
-    const handleChangeGenders = () => {
-        dispatch(updateGender(gender))
-    }
-    const fetchGender = async () => {
-        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._id, gender: gender });
-        console.log(response.data)
-    };
     
+
+    const handleSaveGender = async () => {
+        setModalVisible(false)
+        dispatch(updateGender(gender))
+        const response = await AxiosInstance().post(`/users/updateInfoUser/`, { _id: user._idUser, gender: gender });
+    }
+
+
     return (
         <View style={styles.container}>
             <Header hideBack={true} title='Gender' />
@@ -45,7 +46,7 @@ const Gender = (props: any) => {
                     data={listGender}
                     save="value"
                     boxStyles={{ borderRadius: 5 }}
-                    defaultOption={{key: user.gender, value: user.gender}}
+                    defaultOption={{ key: user.gender, value: user.gender }}
                     search={false}
                     inputStyles={{ width: '95%', fontSize: 16 }}
                     dropdownTextStyles={{ fontSize: 16 }}
@@ -56,7 +57,7 @@ const Gender = (props: any) => {
             </View>
 
 
-            <Pressable onPress={() => { setModalVisible(false), handleChangeGenders(), fetchGender()}} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable onPress={handleSaveGender} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
             </Pressable>
         </View>

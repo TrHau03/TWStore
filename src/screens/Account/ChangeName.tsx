@@ -5,7 +5,8 @@ import Header from '../../component/Header/Header'
 import ButtonBottom from '../../component/Button/Button'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 
-const ChangeName = () => {
+const ChangeName = (props: any) => {
+    const { setModalVisible } = props.action;
     return (
         <View style={styles.container}>
             <Header hideBack title='Name' />
@@ -26,9 +27,9 @@ const ChangeName = () => {
                     </View>
                 </View>
             </View>
-            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
-            </View>
+            </Pressable>
         </View>
     )
 }

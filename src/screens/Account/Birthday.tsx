@@ -19,13 +19,13 @@ const Birthday = (props: any) => {
     const birthDay = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
 
     const dispatch = useDispatch();
-    const handleChangeBirthDay = () => {
-        dispatch(updateBirthDay(birthDay));
-    }
 
-    const fetchBirthDay = async () => {
-        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._id, birthDay: birthDay });
-    };
+    const handleSaveBirthDay = async () => {
+        dispatch(updateBirthDay(birthDay));
+        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, birthDay: birthDay });
+        setModalVisible(false)
+    }
+    
     return (
         <View style={styles.container}>
             <Header hideBack title='BirthDay' />
@@ -56,7 +56,7 @@ const Birthday = (props: any) => {
                 />
             </View>
 
-            <Pressable onPress={()=> {setModalVisible(false), handleChangeBirthDay(), fetchBirthDay()}} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable onPress={handleSaveBirthDay} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
             </Pressable>
         </View>

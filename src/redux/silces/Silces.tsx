@@ -51,6 +51,14 @@ const Slice = createSlice({
     updateBirthDay: (state, action) => {
       const value = action.payload
       state.user.birthDay = value;
+    },    
+    updateEmail: (state, action) => {
+      const value = action.payload
+      state.user.email = value;
+    },    
+    updateName: (state, action) => {
+      const value = action.payload
+      state.user.email = value;
     },
 
     removeItem: (state, action: PayloadAction<number>) => {
@@ -96,5 +104,5 @@ const Slice = createSlice({
         })
   },
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity, updateGender, updatePhone, updateBirthDay } = Slice.actions
+export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity, updateGender, updatePhone, updateBirthDay, updateEmail, updateName } = Slice.actions
 export default Slice.reducer;

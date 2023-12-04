@@ -23,7 +23,6 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [nameModal, setNameModal] = useState<string>('');
     const user = useSelector((state: any) => state.SlicesReducer.user);
-    
     const checkLogin = useSelector((state: any) => state.SlicesReducer.LoginGoogle || state.SlicesReducer.LoginGoogle ? true : false);
 
     return (
@@ -41,12 +40,12 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                             (nameModal == 'ChangeBirthDay') ?
                                 <Birthday action={{ setModalVisible }} /> :
                                 (nameModal == 'ChangeEmail') ?
-                                    <Email /> :
+                                    <Email action={{ setModalVisible }}/> :
                                     (nameModal == 'ChangePhone') ?
                                         <Phone action={{ setModalVisible }} /> :
                                         (nameModal == 'ChangePassword') ?
                                             <ChangePass /> :
-                                            <ChangeName />
+                                            <ChangeName action={{ setModalVisible }}/>
                     }
                     <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
