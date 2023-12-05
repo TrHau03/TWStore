@@ -19,7 +19,7 @@ import { NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
 import { useNavigation } from '@react-navigation/core';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { useIsFocused } from '@react-navigation/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useDispatch, useSelector } from 'react-redux';
@@ -65,7 +65,6 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const { navigation } = props
   const [product, setProduct] = useState<Product>();
   const [handleAdd, setHandleAdd] = useState<boolean>(false);
-  const isFocused = useIsFocused();
   const dispatch = useDispatch();
 
   const data = useSelector((state: any) => {
@@ -76,16 +75,8 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     return state.SlicesReducer.user;
   });
 
-  useEffect(() => {
-    const fetchProductByID = async () => {
-      const response = await AxiosInstance().get(`product/getProductById/${id}`);
-      setProduct(response.data);
-    }
-    if (isFocused) {
-      fetchProductByID();
-    }
-  }, [isFocused])
 
+  const isFocus = useIsFocused();
   // Định nghĩa kiểu dữ liệu cho đánh giá (Review)
 
   //đánh giá sản phẩm
@@ -95,8 +86,8 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
 
   //chọn màu chọn size
-  const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<{ _id: string, code: string, name: string }>();
+  const [selectedSize, setSelectedSize] = useState<{ _id: string, name: string }>();
 
   //sản phẩm yêu thích
   const sortedSizes = product?.size.slice().sort((a, b) => a - b);
@@ -108,20 +99,26 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     ? reviewsData.filter((review) => review.stars === selectedStar)
     : reviewsData;
 
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-  const handleConfirm = () => {
-    // Xử lý logic khi người dùng xác nhận
-    setModalVisible(false);
-  };
 
-  const handleOpenModal = () => {
-    setModalVisible(true);
-  };
 
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
+  useFocusEffect(
+    React.useCallback(() => {
+      // Do something when the screen is focused
+      const fetchProductByID = async () => {
+        const response = await AxiosInstance().get(`product/getProductById/${id}`);
+        setProduct(response.data);
+      }
+
+      isFocus && fetchProductByID();
+      return () => {
+        // Do something when the screen is unfocused
+        // Useful for cleanup functions
+        setSelectedColor(undefined);
+        setSelectedSize(undefined);
+      };
+    }, [isFocus]))
+
 
 
   const CustomRatingBar: React.FC<CustomRatingBarProps> = ({ numberOfRatings }) => (
@@ -147,11 +144,21 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   };
 
   const handle = ({ productID, sizeProduct, colorProduct }: any) => {
-    dispatch(addItem({ productID: productID, sizeProduct: sizeProduct, colorProduct: colorProduct, quantity: 1 }));
-    setHandleAdd(true);
+    const checkAddProduct = data.map((item: any) => {
+      return item.productID._id;
+    }
+    )
+    console.log(checkAddProduct, productID._id);
+    if (checkAddProduct.includes(productID._id)) {
+      Alert.alert('Notification', 'Product already in cart!', [
+        { text: 'OK' }
+      ]);
+    } else {
+      dispatch(addItem({ productID: productID, sizeProduct: sizeProduct, colorProduct: colorProduct, quantity: 1 }));
+      setHandleAdd(true);
+    }
   }
 
-  //next screen
 
   const handleAddTocart = async () => {
     const cart: { productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
@@ -227,14 +234,14 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                     key={index}
                     style={[
                       styles.sizeCircle,
-                      { borderColor: selectedSize === size?._id ? '#1C1C1C' : '#EBF0FF' },
+                      { borderColor: selectedSize?._id === size?._id ? '#1C1C1C' : '#EBF0FF' },
                     ]}
-                    onPress={() => setSelectedSize(size._id)}
+                    onPress={() => setSelectedSize(size)}
                   >
                     <Text
                       style={[
                         styles.sizeText,
-                        { color: selectedSize === size._id ? '#223263' : '#223263' },
+                        { color: selectedSize?._id === size._id ? '#223263' : '#223263' },
                       ]}
                     >
                       {size.name}
@@ -258,9 +265,9 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                       styles.colorCircle,
                       { backgroundColor: color.code },
                     ]}
-                    onPress={() => setSelectedColor(color._id)}
+                    onPress={() => setSelectedColor(color)}
                   >
-                    {selectedColor === color._id && <View style={styles.selectedColorDot}></View>}
+                    {selectedColor?._id === color._id && <View style={styles.selectedColorDot}></View>}
                   </TouchableOpacity>
                 ))}
               </ScrollView>

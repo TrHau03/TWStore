@@ -171,13 +171,10 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             </View>
             <View style={styles.line}></View>
             <ScrollView
-                style={{ marginTop: 15, height: 'auto' }}
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ flexGrow: 1 }}
-                nestedScrollEnabled={true}
             >
                 {listData.map((item: any) => (
-                    <RenderItem keyExtractor={item.id} item={item} />
+                    <RenderItem keyExtractor={item.productID._id} item={item} />
                 ))}
 
                 <View style={styles.itemTotalPrice}>
@@ -210,7 +207,6 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                     />
                     <View>
                         <SelectList
-
                             setSelected={setSelectedAddress}
                             data={address.map((address: any, index: any) => {
                                 const value = `${address.street}, ${address.ward}, ${address.district}, ${address.city}`
@@ -238,7 +234,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
                 </View>
             </ScrollView>
-            <View style={{ position: 'absolute', bottom: 20, width: '100%', alignSelf: 'center' }}>
+            <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
                 <Pressable onPress={() => handleOrderSubmit()}>
                     <ButtonBottom title='Check Out' />
                 </Pressable>

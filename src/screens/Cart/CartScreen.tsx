@@ -21,7 +21,6 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const listData = useSelector((state: any) => {
         return state.SlicesReducer.user.cartItem;
     });
-
     const user = useSelector((state: any) => {
         return state.SlicesReducer.user;
     });
@@ -129,9 +128,12 @@ const CartScreen = ({ navigation }: PropsCart) => {
                 <View>
                     <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
                 </View>
-                <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
+                <View style={{ flexDirection: 'column', height: '100%' }}>
                     <View style={styles.topItem}>
-                        <Text style={styles.textTitleItem}>{item.productID.productName.length < 15 ? item.productID.productName : item.productID.productName.substring(0, 15) + "..."}</Text>
+                        <View style={{ width: '65%', gap: 10 }}>
+                            <Text style={styles.textTitleItem}>{item.productID.productName.length < 25 ? item.productID.productName : item.productID.productName.substring(0, 25) + "..."}</Text>
+                            <Text style={styles.textTitleItem}>Size: {item.sizeProduct.name}  Color:{item.colorProduct.name} </Text>
+                        </View>
                         <Pressable onPress={() => handleRemoveItem(item.productID._id)}>
                             <Icon name='trash-outline' color='#9e9e9e' size={25} />
                         </Pressable>
@@ -316,6 +318,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.50,
     },
     topItem: {
+        width: '100%',
         flexDirection: 'row',
         columnGap: 25,
         paddingLeft: 20,
@@ -354,7 +357,6 @@ const styles = StyleSheet.create({
         letterSpacing: 0.50,
     },
     textTitleItem: {
-        width: '65%',
         color: '#223263',
         fontSize: 15,
         fontFamily: 'Poppins',
