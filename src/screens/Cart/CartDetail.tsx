@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Alert, TextInput } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -11,9 +11,6 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import AxiosInstance from '../../Axios/Axios'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount'
-import Add_Address from '../Account/Add_Address'
-import { Modal, Provider } from '@ant-design/react-native'
-import * as Animatable from 'react-native-animatable';
 
 
 type CartDetailRouteParams = {
@@ -34,7 +31,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const [voucher, setVoucher] = useState<string>('');
     const [totalAfterShipping, setTotalAfterShipping] = useState<number>(0);
     const discountLevel = route.params?.Level ?? '';
-    const [modalVisible, setModalVisible] = useState<boolean>(false);
+
     const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
     const [isReceiverNameValid, setIsReceiverNameValid] = useState(true);
     const [paymentMethods, setPaymentMethods] = useState<{ _id: number, name: string }[]>([]);
@@ -53,7 +50,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const handleReceiverNameChange = (text: string) => {
         setReceiverName(text);
         setIsReceiverNameValid(text.trim() !== '');
-    }, [receiverName]);
+    };
 
     const handlePhoneNumberChange = (text: string) => {
         setPhoneNumber(text);
@@ -248,67 +245,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                         <RenderPaymentItem key={paymentMethod._id} paymentMethod={paymentMethod} />
                     ))}
 
-                    <View style={styles.itemTotalPrice}>
-                        <Text style={styles.textBottomTotalLeft}>Total Price (+ shipping)</Text>
-                        <Text style={styles.textBottomTotalRight}>${totalAfterShipping}</Text>
-                    </View>
-                    <View style={styles.item}>
-                        <TextInput
-                            style={[
-                                styles.textinput,
-                                {
-                                    borderColor: receiverName.trim() !== '' || isReceiverNameValid ? '#E5E5E5' : 'red',
-                                },
-                            ]}
-                            value={receiverName}
-                            onChangeText={handleReceiverNameChange}
-                            placeholder="Tên người nhận hàng"
-                        />
-                        <TextInput
-                            style={[
-                                styles.textinput,
-                                {
-                                    borderColor: phoneNumber.trim() !== '' || isPhoneNumberValid ? '#E5E5E5' : 'red',
-                                },
-                            ]}
-                            value={phoneNumber}
-                            onChangeText={handlePhoneNumberChange}
-                            placeholder="Số điện thoại"
-                            keyboardType="numeric"
-                        />
-                        <View>
-                            <SelectList
-                                setSelected={setSelectedAddress}
-                                data={address.map((address: any, index: any) => {
-                                    const value = `${address.street}, ${address.ward}, ${address.district}, ${address.city}`
-                                    return { key: index, value: value }
-                                })}
-                                save="value"
-                                placeholder={selectedAddress}
-                                defaultOption={{ key: 1, value: 'Select an address' }}
-                                boxStyles={{ borderRadius: 5, borderWidth: 0.5 }}
-                                search={false}
-                                inputStyles={{ width: '95%', fontSize: 15 }}
-                                dropdownTextStyles={{ fontSize: 16 }}
-                                dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
-                                dropdownStyles={{ height: 150, borderWidth: 0.5 }}
-                            />
-                            <Pressable onPress={() => setModalVisible(true)}>
-                                <Text>Thêm địa chỉ</Text>
-                            </Pressable>
-                        </View>
-                        <Text>Chọn phương thức thanh toán:</Text>
-                        {paymentMethods && paymentMethods.map((paymentMethod) => (
-                            <RenderPaymentItem key={paymentMethod._id} paymentMethod={paymentMethod} />
-                        ))}
 
-
-                    </View>
-                </ScrollView>
-                <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
-                    <Pressable onPress={() => handleOrderSubmit()}>
-                        <ButtonBottom title='Check Out' />
-                    </Pressable>
                 </View>
                 <View style={styles.itemTotalPrice}>
                     <Text style={styles.textBottomTotalLeft}>Total Price (+ shipping)</Text>
@@ -553,4 +490,3 @@ const styles = StyleSheet.create({
         right: 30,
     },
 })
-

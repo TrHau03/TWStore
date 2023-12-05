@@ -123,10 +123,14 @@ const CartScreen = ({ navigation }: PropsCart) => {
             setQuantity(newQuantity);
             dispatch(updateQuantity({ id: item.productID._id, quantity: newQuantity }));
         };
+
+
         return (
             <View style={styles.itemCart}>
                 <View>
-                    <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
+                    {item.productID.image[0] !== null && (
+                        <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
+                    )}
                 </View>
                 <View style={{ flexDirection: 'column', height: '100%' }}>
                     <View style={styles.topItem}>
