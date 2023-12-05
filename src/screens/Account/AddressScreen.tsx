@@ -1,15 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Pressable } from 'react-native'
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import Button from '../../component/Button/Button';
 import { PropsAccount } from '../../component/Navigation/Props';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { HEIGHT, WIDTH } from '../../utilities/utility';
+import { HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
 import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteAddress } from '../../redux/silces/Silces';
 import AxiosInstance from '../../Axios/Axios';
+import { Modal, Provider } from '@ant-design/react-native';
+import Add_Address from './Add_Address';
+import * as Animatable from 'react-native-animatable';
+import ButtonBottom from '../../component/Button/Button';
 
 interface Account {
     id: number;
@@ -21,6 +25,9 @@ interface Account {
 
 
 const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
+
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+
     const listData = useSelector((state: any) => {
         return state.SlicesReducer.user.address;
     });
@@ -53,19 +60,37 @@ const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
         </View >;
     };
     return (
-        <View style={styles.container}>
-            <Header title='Address' navigation={navigation} />
-            <View style={styles.line}></View>
-            <FlatList
-                style={{ maxHeight: '80%' }}
-                data={listData}
-                renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
-                showsVerticalScrollIndicator={false}
-            />
-            <TouchableOpacity style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 20 }} onPress={() => navigation?.navigate(RootStackScreenEnumAccount.Add_Address)}>
-                <Button title='Add Address' />
-            </TouchableOpacity>
-        </View>
+        <Provider>
+            <View style={styles.container}>
+                <Modal
+
+                    transparent={false}
+                    visible={modalVisible}
+                    animationType="slide-up"
+                    onRequestClose={() => true}
+                >
+                    <View style={{ height: '100%' }}>
+                        <Add_Address action={setModalVisible} />
+                        <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
+                            <Pressable onPress={() => { setModalVisible(false) }}>
+                                <ButtonBottom title='Cancel' />
+                            </Pressable>
+                        </Animatable.View>
+                    </View>
+                </Modal>
+                <Header title='Address' navigation={navigation} />
+                <View style={styles.line}></View>
+                <FlatList
+                    style={{ maxHeight: '80%' }}
+                    data={listData}
+                    renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
+                    showsVerticalScrollIndicator={false}
+                />
+                <TouchableOpacity style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 20 }} onPress={() => setModalVisible(true)}>
+                    <Button title='Add Address' />
+                </TouchableOpacity>
+            </View>
+        </Provider>
     )
 }
 
