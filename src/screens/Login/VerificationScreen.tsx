@@ -8,13 +8,32 @@ import {
 } from 'react-native-confirmation-code-field';
 import { InputItem } from '@ant-design/react-native';
 import { BG_COLOR, PADDING_HORIZONTAL } from '../../utilities/utility';
-const VerificationScreen = () => {
+import AxiosInstance from '../../Axios/Axios';
+import { UserState } from 'realm/dist/bundle';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
+const VerificationScreen = (props: any) => {
     const [value, setValue] = useState<string>('');
     const [verify, setVerify] = useState<boolean>(false);
     const [codeFieldProps, getCellOnLayout] = useClearByFocusCell({
         value,
         setValue,
     });
+
+    const [email, setEmail] = useState<string>('')
+    const [OTP, setOTP] = useState<number>()
+    console.log(OTP)
+    const { navigation }: NativeStackHeaderProps = props;
+    const fetchSendMail = async () => {
+        const response = await AxiosInstance().post(`/usersInfo/VerifyEmail`, {email: email});
+        setOTP(response.data.random);
+        
+        if (OTP === parseInt(value)){
+            navigation.navigate(RootStackScreenEnumLogin.ForgotPass, {email: email});
+        }else{
+            setValue('');
+        }
+    }
     return (
         <KeyboardAwareScrollView>
             <View style={{ paddingHorizontal: PADDING_HORIZONTAL, alignItems: 'center', backgroundColor: BG_COLOR }}>
@@ -29,8 +48,8 @@ const VerificationScreen = () => {
                         <InputItem
                             style={{ borderBottomWidth: 1, borderBottomColor: '#5F98DC', fontSize: 20 }}
                             type='email-address'
-                            onChange={(value: any) => {
-                            }}
+                            onChangeText={setEmail}
+                            value={email}
                             placeholder="Email">
                         </InputItem>
                     </View>
@@ -57,7 +76,7 @@ const VerificationScreen = () => {
                         />
                     </View>}
                 <View style={{ width: '100%' }}>
-                    <TouchableOpacity onPress={() => !verify && setVerify(true)}>
+                    <TouchableOpacity onPress={() => {!verify && setVerify(true); fetchSendMail()} }>
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
                             <Text style={styles.textLogin}>{!verify ? 'Get OTP' : 'Verify'}</Text>
                         </LinearGradient>

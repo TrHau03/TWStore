@@ -50,17 +50,21 @@ const LoginScreen = (props: any) => {
 
   const handleSubmit = (data: User) => {
     dispatch(isLogin(true));
-    dispatch(updateUser({ _id:data._id, _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address, phone: data.phone }))
+    dispatch(updateUser({ _id: data._id, _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address, phone: data.phone }))
   }
   const login = async (user: Login) => {
     try {
-      const result = await AxiosInstance().post('/users/LoginUser', { email: user.email, password: user.password });
+      const result = await AxiosInstance().post('/usersInfo/LoginUser', { email: user.email, password: user.password });
       const userInfo = result?.data.user;
       if (result.data.status) {
         const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
         const user = response.data.data;
         if (user.active) {
-          handleSubmit({ _id:user._id ,_idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
+          if (userInfo.role === 'user') {
+            handleSubmit({ _id: user._id, _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
+          } else {
+            console.warn("Tài khoản không có quyền đăng nhập !");
+          }
         } else {
           console.warn("Tài khoản đã bị khóa !");
         }
@@ -98,7 +102,7 @@ const LoginScreen = (props: any) => {
         const user = response.data.data;
         console.log("Info user Google", user);
         if (user.active) {
-          handleSubmit({_id:user._id,  _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartItem: user.cartItem, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone})
+          handleSubmit({ _id: user._id, _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartItem: user.cartItem, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
           dispatch(LoginGoogle(true));
         } else {
           dispatch(LoginGoogle(false));
