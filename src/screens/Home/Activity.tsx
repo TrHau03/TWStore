@@ -13,9 +13,9 @@ import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 import { useDispatch, useSelector } from 'react-redux';
-import { listRecommended } from '../../Redux/silces/HomeSelector';
+import { listProductRecommend } from '../../redux/silces/HomeSelector';
 import { useIsFocused } from '@react-navigation/native';
-import { fetchInitialListProductRecommend } from '../../Redux/silces/Silces';
+import { fetchInitialListProductRecommend } from '../../redux/silces/Silces';
 
 interface Product_Notifi {
   id: number;
@@ -30,7 +30,7 @@ interface Product_Notifi {
 const ActivityScreen = ({ navigation }: PropsHome) => {
   const [checkProduct, setcheckProduct] = useState<boolean>(false);
   const [checkActivity, setcheckActivity] = useState<boolean>(false);
-  const listProduct = useSelector(listRecommended);
+  const listProduct = useSelector(listProductRecommend);
   const [reversedListProduct, setReversedListProduct] = useState<Product_Notifi[]>([]);
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
