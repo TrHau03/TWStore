@@ -14,8 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { listProducts, listRecommended } from '../../Redux/silces/HomeSelector';
-import { fetchInitialListProductRecommend } from '../../Redux/silces/Silces';
+import { listProductRecommend, listProducts } from '../../redux/silces/HomeSelector';
+import { fetchInitialListProductRecommend } from '../../redux/silces/Silces';
 
 
 
@@ -31,7 +31,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
 
     const [images, setImages] = useState<[]>([]);
     const [brand, setBrand] = useState<[]>([]);
-    const listProduct = useSelector(listRecommended);
+    const listProduct = useSelector(listProductRecommend);
 
 
     const dispatch = useDispatch();
@@ -46,7 +46,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
             setBrand(response.data)
         }
         if (isFocused) {
-            dispatch(fetchInitialListProductRecommend('product/getAllProduct'));
+            dispatch(fetchInitialListProductRecommend('product/getRecommendProduct'));
             fetchBrand();
             fetchBanner();
         }

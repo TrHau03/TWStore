@@ -8,7 +8,8 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import SelectDropdown from 'react-native-select-dropdown'
 import { useDispatch, useSelector } from 'react-redux'
-import { addAddress } from '../../Redux/silces/Silces'
+import { addAddress } from '../../redux/silces/Silces'
+import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 
 interface TinhThanh {
     code: string;
@@ -26,13 +27,16 @@ const renderItem = ({ item }: any): React.JSX.Element => {
     </View>
 };
 
-const Add_Address = ({ navigation }: NativeStackHeaderProps) => {
+const Add_Address = (props: any) => {
+
     const user = useSelector((state: any) => {
         return state.SlicesReducer.user;
     });
     const listAddress = useSelector((state: any) => {
         return state.SlicesReducer.user.address;
     });
+
+    const setModalVisible = props.action;
     const dispatch = useDispatch();
 
     const [tinhThanhs, setTinhThanhs] = useState<TinhThanh[]>([]);
@@ -72,7 +76,7 @@ const Add_Address = ({ navigation }: NativeStackHeaderProps) => {
             ward: tenPhuongSelected,
             street: street
         }));
-        navigation.goBack();
+        setModalVisible(false);
     }
     useEffect(() => {
         const layDuLieu = async () => {
@@ -140,7 +144,7 @@ const Add_Address = ({ navigation }: NativeStackHeaderProps) => {
 
     return (
         <View style={styles.container}>
-            <Header title='Add Address' navigation={navigation} />
+            <Header title='Add Address' hideBack />
             <View style={styles.line}></View>
             <Text style={styles.txtTitle}>Provine</Text>
             <SelectList
@@ -193,7 +197,7 @@ const Add_Address = ({ navigation }: NativeStackHeaderProps) => {
             <View style={styles.input}>
                 <TextInput style={styles.txtInput} placeholder='Đường' onChangeText={setStreet} />
             </View>
-            <Pressable style={{ paddingTop: 30 }} onPress={handleAddAddress}>
+            <Pressable style={{ position: 'absolute', bottom: 20, width: '100%', alignSelf: 'center' }} onPress={handleAddAddress}>
                 <Button title='Add Address' />
             </Pressable>
         </View>
@@ -247,9 +251,10 @@ const styles = StyleSheet.create({
         right: 20
     },
     container: {
-        width: '100%',
-        paddingTop: 20,
-        paddingHorizontal: 20
+        height: HEIGHT * 0.8,
+        width: WIDTH,
+        paddingHorizontal: PADDING_HORIZONTAL,
+        paddingTop: PADDING_TOP,
     }
 })
 
