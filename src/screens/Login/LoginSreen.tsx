@@ -8,6 +8,18 @@ import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
+<<<<<<< Updated upstream
+=======
+import { RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
+import AxiosInstance from '../../Axios/Axios';
+import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import Realm from 'realm';
+import { AccessToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
+import { useDispatch } from 'react-redux';
+import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../Redux/silces/Silces';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+>>>>>>> Stashed changes
 
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';

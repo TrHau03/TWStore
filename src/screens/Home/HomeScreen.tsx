@@ -11,11 +11,11 @@ import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavig
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { COLORS } from '../../utilities';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchInitialListProduct } from '../../redux/silces/Silces';
+import { fetchInitialListProduct } from '../../Redux/silces/Silces';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { listRecommended } from '../../redux/silces/HomeSelector';
+import { listRecommended } from '../../Redux/silces/HomeSelector';
 
 
 
@@ -72,6 +72,8 @@ const HomeScreen = () => {
         const fetchBanner = async () => {
             const response = await AxiosInstance().get(`banner/getAllBanner`);
             setImages(response.data.banner);
+ 
+            
         }
         const fetchBrand = async () => {
             const response = await AxiosInstance().get(`brand/getAllBrand`);
@@ -185,6 +187,8 @@ const HomeScreen = () => {
                                 </Pressable>
                             )
                         }
+                    
+                        
                     </ScrollView>
 
                     <View style={styles.warpdot}>

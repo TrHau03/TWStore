@@ -10,6 +10,14 @@ import {
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
+<<<<<<< Updated upstream
+=======
+import Header from '../../component/Header/Header'
+import { useDispatch, useSelector } from 'react-redux';
+import HomeScreenSlice from '../../Redux/silces/HomeScreenSlice';
+import { COLORS } from '../../utilities';
+import Button from '../../component/Button/Button';
+>>>>>>> Stashed changes
 
 const FilterScreen = ({navigation}: any) => {
   const [sliderValues, setSliderValues] = useState([25, 75]);
