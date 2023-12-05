@@ -13,9 +13,9 @@ import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 import { useDispatch, useSelector } from 'react-redux';
-import { listRecommended } from '../../redux/silces/HomeSelector';
+import { listRecommended } from '../../Redux/silces/HomeSelector';
 import { useIsFocused } from '@react-navigation/native';
-import { fetchInitialListProductRecommend } from '../../redux/silces/Silces';
+import { fetchInitialListProductRecommend } from '../../Redux/silces/Silces';
 
 interface Product_Notifi {
   id: number;

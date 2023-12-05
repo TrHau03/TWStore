@@ -23,7 +23,7 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem } from '../../redux/silces/Silces';
+import { addItem } from '../../Redux/silces/Silces';
 
 
 

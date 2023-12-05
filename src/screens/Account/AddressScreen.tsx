@@ -8,7 +8,7 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { HEIGHT, WIDTH } from '../../utilities/utility';
 import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteAddress } from '../../redux/silces/Silces';
+import { deleteAddress } from '../../Redux/silces/Silces';
 import AxiosInstance from '../../Axios/Axios';
 
 interface Account {
