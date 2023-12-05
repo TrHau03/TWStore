@@ -17,6 +17,7 @@ const initialState = {
   LoginGoogle: false,
   LoginFaceBook: false,
   user: {
+    _id: '',
     _idUser: '',
     email: '',
     userName: '',
@@ -25,6 +26,7 @@ const initialState = {
     gender: '',
     birthDay: '',
     address: [],
+    phone: '',
   },
   listProductRecommend: [],
   listProductFilter: [],
@@ -38,6 +40,27 @@ const Slice = createSlice({
       const value = action.payload;
       state.user = value;
     },
+    updateGender: (state, action) => {
+      const value = action.payload
+      state.user.gender = value;
+    },
+    updatePhone: (state, action) => {
+      const value = action.payload
+      state.user.phone = value;
+    },
+    updateBirthDay: (state, action) => {
+      const value = action.payload
+      state.user.birthDay = value;
+    },    
+    updateEmail: (state, action) => {
+      const value = action.payload
+      state.user.email = value;
+    },    
+    updateName: (state, action) => {
+      const value = action.payload
+      state.user.userName = value;
+    },
+
     removeItem: (state, action: PayloadAction<number>) => {
       state.user.cartItem = state.user.cartItem.filter((item: any) => item.productID._id !== action.payload);
     },
@@ -92,5 +115,5 @@ const Slice = createSlice({
   },
 
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, addItem, removeItem, updateQuantity,deleteAddress, addAddress} = Slice.actions
+export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity, updateGender, updatePhone, updateBirthDay, updateEmail, updateName } = Slice.actions
 export default Slice.reducer;

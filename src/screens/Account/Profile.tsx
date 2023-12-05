@@ -15,16 +15,16 @@ import Phone from './Phone'
 import Gender from './Gender'
 import ChangeName from './ChangeName';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import AxiosInstance from '../../Axios/Axios';
 
 
 const ProfileScreen = ({ navigation }: PropsAccount) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [nameModal, setNameModal] = useState<string>('');
     const user = useSelector((state: any) => state.SlicesReducer.user);
-
     const checkLogin = useSelector((state: any) => state.SlicesReducer.LoginGoogle || state.SlicesReducer.LoginGoogle ? true : false);
-
+    
     return (
         <Provider>
             <Modal
@@ -36,16 +36,16 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                 <View style={{ height: '100%' }}>
                     {
                         (nameModal == 'ChangeGender') ?
-                            <Gender /> :
+                            <Gender action={{ setModalVisible }}/> :
                             (nameModal == 'ChangeBirthDay') ?
-                                <Birthday /> :
+                                <Birthday action={{ setModalVisible }} /> :
                                 (nameModal == 'ChangeEmail') ?
-                                    <Email /> :
+                                    <Email action={{ setModalVisible }}/> :
                                     (nameModal == 'ChangePhone') ?
-                                        <Phone /> :
+                                        <Phone action={{ setModalVisible }} /> :
                                         (nameModal == 'ChangePassword') ?
                                             <ChangePass /> :
-                                            <ChangeName />
+                                            <ChangeName action={{ setModalVisible }}/>
                     }
                     <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>

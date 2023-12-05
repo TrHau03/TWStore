@@ -14,8 +14,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { listProductRecommend, listProducts } from '../../Redux/silces/HomeSelector';
-import { fetchInitialListProductRecommend } from '../../Redux/silces/Silces';
+import { listRecommended } from '../../redux/silces/HomeSelector';
+import { fetchInitialListProductRecommend } from '../../redux/silces/Silces';
 
 
 

@@ -1,22 +1,37 @@
 import { StyleSheet, Text, View, Pressable, Image, TextInput } from 'react-native'
-import React from 'react'
-import LinearGradient from 'react-native-linear-gradient'
+import React, { useState } from 'react'
 import { SelectList } from 'react-native-dropdown-select-list'
 import Header from '../../component/Header/Header'
 import ButtonBottom from '../../component/Button/Button'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
+import { useDispatch, useSelector } from 'react-redux'
+import { updateGender } from '../../redux/silces/Silces'
+import AxiosInstance from '../../Axios/Axios'
 
 
 
-const Gender = () => {
+const Gender = (props: any) => {
+    const dispatch = useDispatch();
+    const { setModalVisible } = props.action;
+    const [gender, setGender] = useState<string>('');
+    
+    const user = useSelector((state: any) => state.SlicesReducer.user);
 
-    const gender = [
+
+
+    const listGender = [
         { key: '1', value: 'Male' },
         { key: '2', value: 'Female' },
         { key: '3', value: 'Other' },
     ]
+    
 
-    const [selected, setSelected] = React.useState<string>('');
+    const handleSaveGender = async () => {
+        setModalVisible(false)
+        dispatch(updateGender(gender))
+        const response = await AxiosInstance().post(`/users/updateInfoUser/`, { _id: user._idUser, gender: gender });
+    }
+
 
     return (
         <View style={styles.container}>
@@ -27,24 +42,24 @@ const Gender = () => {
             <View style={styles.Gender}>
                 <Text style={styles.txtGender}>Choose Gender</Text>
                 <SelectList
-                    setSelected={setSelected}
-                    data={gender}
+                    setSelected={setGender}
+                    data={listGender}
                     save="value"
-                    placeholder={selected}
-                    defaultOption={{ key: 1, value: 'Male' }}
                     boxStyles={{ borderRadius: 5 }}
+                    defaultOption={{ key: user.gender, value: user.gender }}
                     search={false}
                     inputStyles={{ width: '95%', fontSize: 16 }}
                     dropdownTextStyles={{ fontSize: 16 }}
                     dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
                     dropdownStyles={{ height: 150 }}
+
                 />
             </View>
 
 
-            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable onPress={handleSaveGender} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
-            </View>
+            </Pressable>
         </View>
     )
 }
