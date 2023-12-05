@@ -8,7 +8,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import SelectDropdown from 'react-native-select-dropdown'
 import { useDispatch, useSelector } from 'react-redux'
-import { addAddress } from '../../redux/silces/Silces'
+import { addAddress } from '../../Redux/silces/Silces'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 
 interface TinhThanh {

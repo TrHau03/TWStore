@@ -147,15 +147,24 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     const checkAddProduct = data.map((item: any) => {
       return item.productID._id;
     }
-    )
+    )    
     console.log(checkAddProduct, productID._id);
     if (checkAddProduct.includes(productID._id)) {
       Alert.alert('Notification', 'Product already in cart!', [
         { text: 'OK' }
       ]);
     } else {
-      dispatch(addItem({ productID: productID, sizeProduct: sizeProduct, colorProduct: colorProduct, quantity: 1 }));
-      setHandleAdd(true);
+      if(sizeProduct == undefined || colorProduct == undefined){
+        setHandleAdd(false);
+
+        Alert.alert('Notification', 'Product has not been added yet!', [
+          { text: 'OK' }
+        ]);
+      }else{
+        dispatch(addItem({ productID: productID, sizeProduct: sizeProduct, colorProduct: colorProduct, quantity: 1 }));
+        setHandleAdd(true);
+      }
+
     }
   }
 
