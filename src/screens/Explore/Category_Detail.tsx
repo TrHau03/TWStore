@@ -106,7 +106,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
               <View style={styles.star}>
                 <AirbnbRating count={5} size={15} showRating={false} />
               </View>
-              {(offer > 0) ? <Text style={styles.PricePD}>{price}</Text> : <></>}
+              {(offer > 0) ? <Text style={styles.PricePD}>{price - price * (offer / 100)}</Text> : <></>}
             </View>
             <View style={styles.sale}>
               <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>${price}</Text>

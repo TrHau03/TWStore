@@ -37,7 +37,7 @@ export const todoRemainingProducts = createSelector(listProducts, searchFilterCh
             } else if (color === 'All') {
                 return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (size === 'All') {
-                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+                return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.name.includes(brand) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             } else if (brand === 'All') {
                 return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice) && Number(minPrice) < todo.price && todo.price < Number(maxPrice)
             } else if (size === 'All') {
@@ -45,7 +45,7 @@ export const todoRemainingProducts = createSelector(listProducts, searchFilterCh
             } else if (color === 'All') {
                 return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && todo.brand.includes(brand) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
             }
-            return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.includes(brand) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
+            return todo.productName.toLowerCase().includes(search.toLowerCase()) && todo.brand.name.includes(brand) && todo.colorID.some((colorID: { code: string | any[]; }) => colorID.code === color) && todo.size.some((sizeData: { name: string | any[]; }) => sizeData.name === size) && Number(minPrice) < todo.price && todo.price < Number(maxPrice);
         })
     } else {
         return [];
