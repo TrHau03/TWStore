@@ -33,7 +33,6 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
     const [brand, setBrand] = useState<[]>([]);
     const listProduct = useSelector(listProductRecommend);
 
-
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -46,7 +45,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
             setBrand(response.data)
         }
         if (isFocused) {
-            dispatch(fetchInitialListProductRecommend('product/getRecommendProduct'));
+            dispatch(fetchInitialListProductRecommend('product/getAllProduct'));
             fetchBrand();
             fetchBanner();
         }

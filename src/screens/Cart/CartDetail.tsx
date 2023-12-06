@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Alert, TextInput } from 'react-native'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -11,9 +11,6 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import AxiosInstance from '../../Axios/Axios'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount'
-import Add_Address from '../Account/Add_Address'
-import { Modal, Provider } from '@ant-design/react-native'
-import * as Animatable from 'react-native-animatable';
 
 
 type CartDetailRouteParams = {
@@ -34,7 +31,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const [voucher, setVoucher] = useState<string>('');
     const [totalAfterShipping, setTotalAfterShipping] = useState<number>(0);
     const discountLevel = route.params?.Level ?? '';
-    const [modalVisible, setModalVisible] = useState<boolean>(false);
+
     const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
     const [isReceiverNameValid, setIsReceiverNameValid] = useState(true);
     const [paymentMethods, setPaymentMethods] = useState<{ _id: number, name: string }[]>([]);
@@ -50,11 +47,10 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const address = useSelector((state: any) => state.SlicesReducer.user.address);
 
 
-
-    const handleReceiverNameChange = useCallback((text: string) => {
+    const handleReceiverNameChange = (text: string) => {
         setReceiverName(text);
         setIsReceiverNameValid(text.trim() !== '');
-    }, [receiverName]);
+    };
 
     const handlePhoneNumberChange = (text: string) => {
         setPhoneNumber(text);
@@ -102,7 +98,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         const fetchPayment = async () => {
             try {
                 const response = await AxiosInstance().get(`payment/getAllPaymentMethod`);
-                const paymentMethods = response.data.data;  // Thay đổi tên trường nếu cần thiết
+                const paymentMethods = response.data.data;
                 setPaymentMethods(paymentMethods && Array.isArray(paymentMethods) ? paymentMethods : []);
             } catch (error) {
                 console.error('Error fetching payment methods:', error);
@@ -114,7 +110,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
     const RenderItem = ({ item }: any) => {
         return (
-            <View style={styles.itemCart}>
+            <View style={styles.itemCart} key={item.id}>
                 <View>
                     <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
                 </View>
@@ -157,51 +153,44 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         };
 
         return (
-            <TouchableOpacity onPress={handlePress}>
+            <Pressable onPress={handlePress}>
                 <View style={styles.paymentItemContainer}>
-                    <Text>{paymentMethod.name}</Text>
                     <RadioButton selected={paymentMethod.isSelected} />
+                    {paymentMethod.linkIcon ? (
+                        <Image source={{ uri: paymentMethod.linkIcon }} style={styles.imagePayment} />
+                    ) : null}
+                    <Text style={{ marginLeft: 10 }}>{paymentMethod.name}</Text>
                 </View>
-            </TouchableOpacity>
+            </Pressable>
         );
     };
 
 
     return (
-        <Provider>
-            <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR, height: '100%' }}>
+        <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR, height: '100%' }}>
+            <View style={{ marginTop: 17 }}>
+                <Text style={styles.txtTitlePage}>Your Cart</Text>
+            </View>
+            <View style={styles.line}></View>
+            <View style={{ height: HEIGHT * 0.25, marginTop: '11%' }}>
+                {listData.length > 0 ?
+                    <FlatList
+                        showsVerticalScrollIndicator={false}
+                        renderItem={(object) => <RenderItem item={object.item} />}
+                        data={listData}
+                        keyExtractor={(item: any) => item?.productID?._id?.toString()}
+                    /> : <Text style={{ fontSize: 20 }}>No data</Text>}
+            </View>
+            <ScrollView
+                style={{ marginTop: 15, height: 'auto' }}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+                nestedScrollEnabled={true}
 
-                <Modal
-                    transparent={false}
-                    visible={modalVisible}
-                    animationType="slide-up"
-                    onRequestClose={() => true}
-                >
-                    <View style={{ height: '100%' }}>
-                        <Add_Address action={setModalVisible} />
-                        <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
-                            <Pressable onPress={() => { setModalVisible(false) }}>
-                                <ButtonBottom title='Cancel' />
-                            </Pressable>
-                        </Animatable.View>
-                    </View>
-                </Modal>
-                <View style={{ marginTop: 17 }}>
-                    <Text style={styles.txtTitlePage}>Your Cart</Text>
-                </View>
-                <View style={styles.line}></View>
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                >
-                    {listData.map((item: any) => (
-                        <RenderItem keyExtractor={item.productID._id} item={item} />
-                    ))}
+            >
 
-                    <View style={styles.itemTotalPrice}>
-                        <Text style={styles.textBottomTotalLeft}>Total Price (+ shipping)</Text>
-                        <Text style={styles.textBottomTotalRight}>${totalAfterShipping}</Text>
-                    </View>
-                    <View style={styles.item}>
+                <View style={styles.itema}>
+                    <View style={{ flexDirection: 'row' }}>
                         <TextInput
                             style={[
                                 styles.textinput,
@@ -225,56 +214,79 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                             placeholder="Số điện thoại"
                             keyboardType="numeric"
                         />
-                        <View>
-                            <SelectList
-                                setSelected={setSelectedAddress}
-                                data={address.map((address: any, index: any) => {
-                                    const value = `${address.street}, ${address.ward}, ${address.district}, ${address.city}`
-                                    return { key: index, value: value }
-                                })}
-                                save="value"
-                                placeholder={selectedAddress}
-                                defaultOption={{ key: 1, value: 'Select an address' }}
-                                boxStyles={{ borderRadius: 5, borderWidth: 0.5 }}
-                                search={false}
-                                inputStyles={{ width: '95%', fontSize: 15 }}
-                                dropdownTextStyles={{ fontSize: 16 }}
-                                dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
-                                dropdownStyles={{ height: 150, borderWidth: 0.5 }}
-                            />
-                            <Pressable onPress={() => setModalVisible(true)}>
-                                <Text>Thêm địa chỉ</Text>
+                    </View>
+
+                    <View>
+                        <SelectList
+                            setSelected={setSelectedAddress}
+                            data={address.map((address: any, index: any) => {
+                                const value = `${address.street}, ${address.ward}, ${address.district}, ${address.city}`
+                                return { key: index, value: value }
+                            })}
+                            save="value"
+                            placeholder={selectedAddress}
+                            defaultOption={{ key: 1, value: 'Select an address' }}
+                            boxStyles={{ borderRadius: 5, borderWidth: 0.5, marginTop: 10 }}
+                            search={false}
+                            inputStyles={{ width: '95%', fontSize: 15 }}
+                            dropdownTextStyles={{ fontSize: 16 }}
+                            dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
+                            dropdownStyles={{ height: 150, borderWidth: 0.5 }}
+                        />
+                        <View style={styles.addAdress}>
+                            <Pressable onPress={() => navigation?.navigate('Account', { screen: RootStackScreenEnumAccount.Add_Address })} >
+                                <Text style={styles.textDetail}>Thêm địa chỉ</Text>
                             </Pressable>
                         </View>
-                        <Text>Chọn phương thức thanh toán:</Text>
-                        {paymentMethods && paymentMethods.map((paymentMethod) => (
-                            <RenderPaymentItem key={paymentMethod._id} paymentMethod={paymentMethod} />
-                        ))}
-
 
                     </View>
-                </ScrollView>
-                <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
-                    <Pressable onPress={() => handleOrderSubmit()}>
-                        <ButtonBottom title='Check Out' />
-                    </Pressable>
+                    <Text style={{ fontSize: 15, fontFamily: 'Poppins', fontWeight: '700', }}>Chọn phương thức thanh toán:</Text>
+                    {paymentMethods && paymentMethods.map((paymentMethod) => (
+                        <RenderPaymentItem key={paymentMethod._id} paymentMethod={paymentMethod} />
+                    ))}
+
+
                 </View>
-            </SafeAreaView>
-        </Provider>
+                <View style={styles.itemTotalPrice}>
+                    <Text style={styles.textBottomTotalLeft}>Total Price (+ shipping)</Text>
+                    <Text style={styles.textBottomTotalRight}>${totalAfterShipping}</Text>
+                </View>
+            </ScrollView>
+            <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
+                <Pressable onPress={() => handleOrderSubmit()}>
+                    <ButtonBottom title='Check Out' />
+                </Pressable>
+            </View>
+            <View style={{ height: HEIGHT * 0.09 }} />
+        </SafeAreaView>
     );
 };
 
 export default CartDetail;
 
 const styles = StyleSheet.create({
+    imagePayment: {
+        width: 30,
+        height: 30,
+        marginLeft: 15,
+        borderRadius: 20,
+    },
+    textDetail: {
+        color: '#40a0d1',
+        fontSize: 15,
+        fontFamily: 'Poppins',
+        fontWeight: '700',
+        margin: 5,
+    },
+    addAdress: {
+        alignSelf: 'flex-end',
+    },
     paymentItemContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
-        borderWidth: 0.5,
-        borderRadius: 5,
         marginTop: 10,
+        width: '100%',
     },
     radioButton: {
         width: 20,
@@ -301,14 +313,16 @@ const styles = StyleSheet.create({
     },
 
     textinput: {
+        flex: 1,
         margin: 5,
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#E5E5E5',
         height: 40,
-        width: '90%',
+        width: '100%',
         padding: 10,
         fontSize: 15,
+        alignSelf: 'center',
     },
 
     btnCheckOut: {
@@ -367,16 +381,16 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     itemTotalPrice: {
-        padding: 10, // giảm padding xuống 10
+        padding: 10, 
         borderWidth: 0.5,
         borderColor: '#9098B1',
         borderRadius: 5,
-        marginTop: 20,
+        marginTop: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
     },
-    item: {
-        padding: 10, // giảm padding xuống 10
+    itema: {
+        padding: 10, 
         borderWidth: 0.5,
         borderColor: '#9098B1',
         borderRadius: 5,
@@ -384,14 +398,14 @@ const styles = StyleSheet.create({
     },
     topItem: {
         flexDirection: 'row',
-        columnGap: 15, // giảm khoảng cách giữa các cột xuống 15
-        paddingLeft: 10, // giảm padding xuống 10
+        columnGap: 15, 
+        paddingLeft: 10,
     },
     bottomItem: {
         flexDirection: 'row',
         height: '50%',
         alignItems: 'center',
-        paddingLeft: 10, // giảm padding xuống 10
+        paddingLeft: 10,
     },
     btnNumberCountMinus: {
         backgroundColor: '#EBF0FF',
@@ -405,7 +419,7 @@ const styles = StyleSheet.create({
     },
     textNumberCount: {
         color: '#223263',
-        fontSize: 16, // giảm font size xuống 16
+        fontSize: 16, 
         fontFamily: 'Poppins',
         fontWeight: '400',
         lineHeight: 18,
@@ -414,7 +428,7 @@ const styles = StyleSheet.create({
     },
     textPrice: {
         color: '#40BFFF',
-        fontSize: 13, // giảm font size xuống 13
+        fontSize: 13,
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 16,
@@ -423,31 +437,31 @@ const styles = StyleSheet.create({
     textTitleItem: {
         width: '65%',
         color: '#223263',
-        fontSize: 13, // giảm font size xuống 13
+        fontSize: 13,
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 16,
         letterSpacing: 0.50,
     },
     itemCart: {
-        height: 90, // giảm chiều cao xuống 90
+        height: 90,
         backgroundColor: '#E5E5E5',
         borderRadius: 10,
         alignItems: 'center',
         flexDirection: 'row',
-        padding: 10, // giảm padding xuống 10
-        marginBottom: 12 // giảm marginBottom xuống 12
+        padding: 10, 
+        marginBottom: 12 
     },
     line: {
         position: 'absolute',
         width: WIDTH,
         height: 1,
         backgroundColor: '#E5E5E5',
-        marginTop: 50, // giảm marginTop xuống 50
+        marginTop: 50, 
     },
     txtTitlePage: {
         color: '#223263',
-        fontSize: 18, // giảm font size xuống 18
+        fontSize: 18, 
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 22,
@@ -476,4 +490,3 @@ const styles = StyleSheet.create({
         right: 30,
     },
 })
-
