@@ -1,6 +1,6 @@
 
 import { configStack } from '../Root/RootStack';
-import {  RootStackScreenHome } from '../Root/RootStackHome';
+import { RootStackScreenHome } from '../Root/RootStackHome';
 import { Stack } from './Props';
 import React from 'react';
 

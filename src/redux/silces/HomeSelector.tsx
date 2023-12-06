@@ -11,9 +11,6 @@ export const filterMaxPrice = (state: any) => state.HomeScreenSlice.filterPrice.
 export const listOrder = (state: any) => state.HomeScreenSlice.order;
 
 export const todoRemainingProducts = createSelector(listProducts, searchFilterChange, filterBrand, filterColor, filterSize, filterMinPrice, filterMaxPrice, (product, search, brand, color, size, minPrice, maxPrice) => {
-
-    console.log("product", product);
-
     if (product) {
         return product.filter((todo: any) => {
             if (brand === 'All' && color === 'All' && size === 'All') {

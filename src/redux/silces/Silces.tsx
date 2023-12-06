@@ -7,7 +7,11 @@ export const fetchInitialListProductRecommend: any = createAsyncThunk('Slice/fet
   return response.data;
 })
 export const fetchInitialListProductFilter: any = createAsyncThunk('Slice/fetchInitialListProductFilter', async (url: any) => {
-  const response = await AxiosInstance().get(`product/getProductByIdCategory/${url}`);
+
+  const { brandID, categoryID } = url;
+  const response = await AxiosInstance().get(categoryID ? `product/getProductByIdCategory/${categoryID}` : `product/getProductByIdBrand/${brandID}`);
+  console.log(response.data);
+  
   return response.data;
 })
 
@@ -51,11 +55,11 @@ const Slice = createSlice({
     updateBirthDay: (state, action) => {
       const value = action.payload
       state.user.birthDay = value;
-    },    
+    },
     updateEmail: (state, action) => {
       const value = action.payload
       state.user.email = value;
-    },    
+    },
     updateName: (state, action) => {
       const value = action.payload
       state.user.userName = value;

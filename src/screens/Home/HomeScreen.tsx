@@ -1,13 +1,10 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity, Animated } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { CompositeNavigationProp, NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
-import { RootTabParamList, RootTabScreenENum } from '../../component/BottomNavigation/RootTab/RootTab';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { COLORS } from '../../utilities';
 import { useDispatch, useSelector } from 'react-redux';
@@ -32,7 +29,6 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
     const [images, setImages] = useState<[]>([]);
     const [brand, setBrand] = useState<[]>([]);
     const listProduct = useSelector(listProductRecommend);
-
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -45,7 +41,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
             setBrand(response.data)
         }
         if (isFocused) {
-            dispatch(fetchInitialListProductRecommend('product/getAllProduct'));
+            dispatch(fetchInitialListProductRecommend('product/getRecommendProduct'));
             fetchBrand();
             fetchBanner();
         }
@@ -60,13 +56,13 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
     }
 
 
-    const renderItem = ({ item }: { item: { name: string, linkIcon: string } }) => (
-        <View style={styles.item}>
+    const renderItem = ({ item }: { item: { _id: string, name: string, linkIcon: string } }) => (
+        <Pressable style={styles.item} onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Category_Detail_Screen, params: { brandID: item._id } })}>
             <View style={styles.bodericon}>
                 <Image style={{ width: 50, height: 50 }} source={{ uri: item.linkIcon }} />
             </View>
             <Text style={styles.textname}>{item.name}</Text>
-        </View>
+        </Pressable>
     );
 
 
@@ -74,7 +70,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
         return (
             <Pressable style={styles.itemsale2} onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })}>
                 <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
-                <View style={{ marginTop: 20, rowGap: 15 }}>
+                <View style={{ marginTop: 20, rowGap: 15, alignSelf: 'center', width: '95%' }}>
                     <Text style={styles.nameproduct}>{item.productName}</Text>
                 </View>
                 <View style={styles.stylesaleoff}>
@@ -102,7 +98,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                     />
                     {(textInputStatus) ?
                         <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
-                            onPress={() => setTextInputSearch('')}
+                            onPress={() => { setTextInputSearch('') }}
                         >
                             <Icon name='close' size={14} />
                         </Pressable>
@@ -164,7 +160,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                         />
                     </View>
                 </View>
-                <View style={styles.listgrid}>
+                <View >
                     <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
                 </View>
                 <FlatList
@@ -336,9 +332,10 @@ const styles = StyleSheet.create({
     },
     nameproduct: {
         fontWeight: 'bold',
-        fontSize: 13,
+        fontSize: 16,
         color: '#223263',
-        width: 110,
+        width: '100%',
+        textAlign: 'center'
     },
 
     price: {
@@ -349,8 +346,9 @@ const styles = StyleSheet.create({
 
     stylesaleoff: {
         position: 'absolute',
-        bottom: 10,
-        alignItems: 'center'
+        bottom: 25,
+        alignItems: 'center',
+        rowGap: 10
     },
 
     strikethrough: {
@@ -378,18 +376,10 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
 
-    imga: {
-        marginLeft: 15
-    },
-
-
-    listgrid: {
-    },
-
     itemsale2: {
         paddingVertical: 10,
         paddingHorizontal: 10,
-        height: 240,
+        height: 220,
         width: WIDTH / 2.5,
         borderWidth: 1,
         borderRadius: 6,
