@@ -16,7 +16,7 @@ const ChangeName = (props: any) => {
     const handleSaveName = async () => {
         setModalVisible(false)
         dispatch(updateName(name))
-        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, name: name });
+        const response = await AxiosInstance().post(`/usersInfo/ChangeUserName/`, { _id: user._idUser, name: name });
     }
 
     return (
