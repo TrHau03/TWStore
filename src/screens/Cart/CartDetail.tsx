@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Alert, TextInput } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Alert, TextInput, Linking } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
@@ -11,6 +11,9 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import AxiosInstance from '../../Axios/Axios'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount'
+import axios from 'axios';
+import moment from 'moment';
+import crypto from 'crypto-js';
 
 
 type CartDetailRouteParams = {
@@ -22,6 +25,12 @@ type CartDetailRouteParams = {
     };
 };
 
+type OrderType = {
+    app_id: string;
+    app_trans_id: string;
+    // Thêm các thuộc tính khác của đơn hàng vào đây
+    mac?: string; // Thêm thuộc tính mac và đặt kiểu dữ liệu của nó (có thể là string hoặc undefined)
+};
 
 const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const listData = useSelector((state: any) => {
@@ -107,7 +116,47 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
         fetchPayment();
     }, []);
-
+    const config = {
+        app_id: "2553",
+        key1: "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL",
+        key2: "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz",
+        endpoint: "https://sb-openapi.zalopay.vn/v2/create"
+        
+    };
+    const embed_data = {};
+    const items = [{}];
+    const transID = Math.floor(Math.random() * 1000000);
+    const order = {
+        app_id: config.app_id,
+        app_trans_id: `${moment().format('YYMMDD')}_${transID}`,
+        app_user: "user123",
+        app_time: Date.now(),
+        item: JSON.stringify(items),
+        embed_data: JSON.stringify(embed_data),
+        amount: totalAfterShipping,
+        description: `tui m tuoi lol #${transID}`,
+        bank_code: "zalopayapp",
+        mac: "",
+    };
+    const data = config.app_id + "|"
+        + order.app_trans_id + "|"
+        + order.app_user + "|"
+        + order.amount + "|"
+        + order.app_time + "|"
+        + order.embed_data + "|"
+        + order.item;
+    order.mac = crypto.HmacSHA256(data, config.key1).toString();
+    
+    const checkOutZaloPay = async () => {
+        try {
+            const res = await axios.post(config.endpoint, null, { params: order });
+            const linkk = res.data.order_url;
+            Linking.openURL(linkk);
+            console.log(res.data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
     const RenderItem = ({ item }: any) => {
         return (
             <View style={styles.itemCart} key={item.id}>
@@ -137,6 +186,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             </View>
         );
     };
+
     const RenderPaymentItem = ({ paymentMethod }: { paymentMethod: any }) => {
         const [isSelected, setIsSelected] = useState(false);
 
@@ -145,8 +195,12 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 const updatedMethods = prevMethods.map((method) => ({
                     ...method,
                     isSelected: method === paymentMethod,
+                    
                 }));
+                console.log(paymentMethod.name);
+
                 return updatedMethods;
+                
             });
             setIsSelected(true);
             setSelectedPaymentMethod(paymentMethod);
@@ -225,7 +279,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                             })}
                             save="value"
                             placeholder={selectedAddress}
-                            defaultOption={{ key: 1, value: 'Select an address' }}
+                            defaultOption={{ key: 1, value: 'Chọn địa chỉ giao hàng' }}
                             boxStyles={{ borderRadius: 5, borderWidth: 0.5, marginTop: 10 }}
                             search={false}
                             inputStyles={{ width: '95%', fontSize: 15 }}
@@ -253,7 +307,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
             </ScrollView>
             <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
-                <Pressable onPress={() => handleOrderSubmit()}>
+                <Pressable onPress={() => {handleOrderSubmit(); checkOutZaloPay()}}>
                     <ButtonBottom title='Check Out' />
                 </Pressable>
             </View>
