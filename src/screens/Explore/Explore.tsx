@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     fontStyle: 'normal',
     fontFamily: 'Helvetica Neue',
     position: 'absolute',
-    margin:5,
+    margin: 5,
     top: '0%',
     left: 0,
     color: '#223263',

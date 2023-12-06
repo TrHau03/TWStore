@@ -64,6 +64,9 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const { id } = props?.route.params as { id: string | undefined };
   const { navigation } = props
   const [product, setProduct] = useState<Product>();
+  const [listProductByBrand, setListProductByBrand] = useState<[]>();
+  console.log(listProductByBrand);
+
   const [handleAdd, setHandleAdd] = useState<boolean>(false);
   const dispatch = useDispatch();
 
@@ -108,9 +111,15 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       const fetchProductByID = async () => {
         const response = await AxiosInstance().get(`product/getProductById/${id}`);
         setProduct(response.data);
+        response && fetchProductByBrand(response.data.brand._id);
       }
-
-      isFocus && fetchProductByID();
+      const fetchProductByBrand = async (id: string) => {
+        const response = await AxiosInstance().get(`product/getProductByIdBrand/${id}`);
+        setListProductByBrand(response.data);
+      }
+      if (isFocus) {
+        fetchProductByID();
+      }
       return () => {
         // Do something when the screen is unfocused
         // Useful for cleanup functions
@@ -147,20 +156,20 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     const checkAddProduct = data.map((item: any) => {
       return item.productID._id;
     }
-    )    
+    )
     console.log(checkAddProduct, productID._id);
     if (checkAddProduct.includes(productID._id)) {
       Alert.alert('Notification', 'Product already in cart!', [
         { text: 'OK' }
       ]);
     } else {
-      if(sizeProduct == undefined || colorProduct == undefined){
+      if (sizeProduct == undefined || colorProduct == undefined) {
         setHandleAdd(false);
 
         Alert.alert('Notification', 'Product has not been added yet!', [
           { text: 'OK' }
         ]);
-      }else{
+      } else {
         dispatch(addItem({ productID: productID, sizeProduct: sizeProduct, colorProduct: colorProduct, quantity: 1 }));
         setHandleAdd(true);
       }
@@ -172,7 +181,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const handleAddTocart = async () => {
     const cart: { productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
     data.map((item: any) =>
-      cart.push({ productID: item.productID._id, sizeProduct: item.sizeProduct, colorProduct: item.colorProduct, quantity: 1 })
+      cart.push({ productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
     )
     await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart })
   };
@@ -230,7 +239,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
             <View>
               <CustomRatingBar numberOfRatings={10} />
             </View>
-            <Text style={styles.price}>${product?.price}</Text>
+            <Text style={styles.price}>{product ? `$${product.price - (product.price * (product.offer / 100))}` : ''}</Text>
             <Text style={styles.textsize}>Select Size</Text>
             <View style={styles.sizeContainer}>
               <ScrollView
@@ -333,14 +342,14 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                   contentContainerStyle={styles.sizeScrollViewContent}
                   showsHorizontalScrollIndicator={false}
                 >
-                  {products.map((product) => (
-                    <TouchableOpacity key={product.id} style={styles.productItem}>
-                      <Image source={product.image} style={styles.productImage} />
-                      <Text style={styles.productName}>{product.name}</Text>
-                      <Text style={styles.productPrice}>${product.price}</Text>
+                  {listProductByBrand?.map((product: any) => (
+                    <TouchableOpacity key={product._id} style={styles.productItem}>
+                      <Image source={{ uri: product.image[0] }} style={styles.productImage} />
+                      <Text style={styles.productName}>{product.productName}</Text>
+                      <Text style={styles.productPrice}>${product.price - product.price * product.offer}</Text>
                       <View style={styles.sale}>
-                        <Text style={styles.productOldPrice}>${product.oldPrice}</Text>
-                        <Text style={styles.textsale}> 24% Off</Text>
+                        <Text style={styles.productOldPrice}>${product.price}</Text>
+                        <Text style={styles.textsale}> {product.offer}% Off</Text>
                       </View>
                     </TouchableOpacity>
 

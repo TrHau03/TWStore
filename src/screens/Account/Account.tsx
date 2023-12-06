@@ -13,8 +13,8 @@ import { LoginManager } from 'react-native-fbsdk-next'
 const AccountScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
 
-  const handleLogin = async ({navigation}: any) => {
-    navigation.navigate('HomeScreen');
+  const handleLogin = async ({ navigation }: any) => {
+    navigation.navigate('Home', { screen: 'HomesScreen' });
     dispatch(isLogin(false));
     await GoogleSignin.signOut();
     await LoginManager.logOut();
@@ -45,7 +45,7 @@ const AccountScreen = ({ navigation }: any) => {
         )}
 
       </View>
-      <Pressable onPress={() => { handleLogin({navigation}) }} style={{ width: '100%', position: 'absolute', bottom: 120, alignSelf: 'center' }}>
+      <Pressable onPress={() => { handleLogin({ navigation }) }} style={{ width: '100%', position: 'absolute', bottom: 120, alignSelf: 'center' }}>
         <ButtonBottom title='Logout' />
       </Pressable>
     </View>
