@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import React, { useEffect, useRef, useState } from 'react';
-import { ROUTES } from '../../component/constants';
+import { COLORS, ROUTES } from '../../component/constants';
 import { AirbnbRating } from 'react-native-ratings';
 import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -27,6 +27,7 @@ import FilterScreen from './Filter';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { fetchInitialListProductFilter } from '../../redux/silces/Silces';
+import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 interface Product {
   id: number;
   img: any;
@@ -39,7 +40,7 @@ interface ArrayProduct {
 }
 type NavigationProps = StackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
 const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
-  const { categoryID }: any = props.route.params;
+  const { categoryID, brandID }: any = props.route.params;
 
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
@@ -47,11 +48,11 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(fetchInitialListProductFilter(categoryID))
+      dispatch(fetchInitialListProductFilter({ categoryID, brandID }))
     }
   }, [isFocused])
 
-  const [click, setClick] = useState<boolean>(false);
+  const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
   const [dataFilter, setdataFilter] = useState<any>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [highLightBrand, setHighLightBrand] = useState<string>('');
@@ -70,6 +71,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
   //redux
   const [textInputSearch, setTextInputSearch] = useState<string>('');
   const todoListProducts = useSelector(todoRemainingProducts);
+
   const handleSearch = (e: any) => {
     setTextInputSearch(e);
     dispatch(
@@ -106,7 +108,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
               <View style={styles.star}>
                 <AirbnbRating count={5} size={15} showRating={false} />
               </View>
-              {(offer > 0) ? <Text style={styles.PricePD}>{price}</Text> : <></>}
+              {(offer > 0) ? <Text style={styles.PricePD}>${price - price * (offer / 100)}</Text> : <></>}
             </View>
             <View style={styles.sale}>
               <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>${price}</Text>
@@ -135,17 +137,26 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
         </View>
       </Modal>
       <View style={styles.group}>
-        <View
-          style={!click ? styles.right : [styles.right, { borderColor: 'blue' }]}>
-          <Icon name='search' size={20} />
+        <Pressable onPress={() => navigation.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
+          <Icon name='chevron-back-outline' size={25} color={'#696969'} />
+        </Pressable>
+        <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: COLORS.gray }]}>
+          <Icon name='search' size={22} />
           <TextInput
             placeholder="Search here"
-            style={styles.TextSearch}
-            onFocus={() => setClick(!click)}
-            onBlur={() => setClick(!click)}
+            style={[styles.TextSearch]}
+            onFocus={() => setTextInputStatus(true)}
+            onBlur={() => setTextInputStatus(false)}
             onChangeText={handleSearch}
             value={textInputSearch}
           />
+          {(textInputStatus) ?
+            <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
+              onPress={() => { setTextInputSearch('') }}
+            >
+              <Icon name='close' size={14} />
+            </Pressable>
+            : null}
         </View>
         <View style={styles.left}>
           <TouchableOpacity onPress={() => setSort(!sort)}>
@@ -175,7 +186,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
           </View>
         </View>
         <FlatList
-          style={{ marginTop: 10 }}
+          style={{ marginTop: 10, marginBottom: 50 }}
           data={dataFilter}
           renderItem={renderItem}
           keyExtractor={item => item._id.toString()}
@@ -215,14 +226,23 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     textAlign: 'left',
   },
-
+  headerLeft: {
+    borderWidth: 1,
+    padding: 5,
+    borderRadius: 5,
+    borderColor: '#e1dede',
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: '70%',
+    height: '85%'
+  },
   product_Item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   product: {
     width: '100%',
-    height: '90%',
+    height: '100%',
   },
   txtSale: {
     color: 'red',
@@ -242,7 +262,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   star: {
-    width: '65%',
+    width: '80%',
     marginTop: 5,
   },
 
@@ -301,8 +321,11 @@ const styles = StyleSheet.create({
   },
 
   TextSearch: {
+    width: WIDTH / 2,
     justifyContent: 'center',
-    marginLeft: 20,
+    marginLeft: 10,
+    paddingVertical: 2,
+
   },
   imageSearch: {
     width: 20,
@@ -310,7 +333,7 @@ const styles = StyleSheet.create({
   },
   left: {
     flexDirection: 'row',
-    marginLeft: 10,
+    marginLeft: 5,
     gap: 10,
     width: '20%',
     height: '100%',
@@ -329,15 +352,15 @@ const styles = StyleSheet.create({
   },
   group: {
     flexDirection: 'row',
-    width: '100%',
-    height: 50,
+    alignItems: 'center',
+    marginBottom: 5,
+    columnGap: 10
   },
   container: {
-    height: 'auto',
-    marginTop: 10,
-    padding: 15,
+    height: '100%',
+    paddingTop: PADDING_TOP,
+    paddingHorizontal: PADDING_HORIZONTAL,
     backgroundColor: '#fff',
-    bottom: 10,
   },
 });
 

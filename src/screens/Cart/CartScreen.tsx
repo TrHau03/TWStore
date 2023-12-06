@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Dimensions, } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Dimensions, Alert, } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { InputItem, Stepper } from '@ant-design/react-native'
@@ -9,22 +9,34 @@ import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/uti
 import { useDispatch, useSelector } from 'react-redux';
 import { removeItem, updateQuantity } from '../../redux/silces/Silces'
 import AxiosInstance from '../../Axios/Axios'
+import { useNavigation } from '@react-navigation/native'
 
 
 const CartScreen = ({ navigation }: PropsCart) => {
+    const navigations = useNavigation<{
+        navigate: (screen: string, params?: { totalAfterShipping?: number; Level?: any; generalPriceAfterShipping: number, shipping: number }) => void;
+    }>();
 
-    const data = useSelector((state: any) => {
+
+    const listData = useSelector((state: any) => {
         return state.SlicesReducer.user.cartItem;
     });
-
     const user = useSelector((state: any) => {
         return state.SlicesReducer.user;
     });
 
-
-    const [listData, setListData] = useState<[]>(data ? data : []);
-
+    const [voucher, setVoucher] = useState()
+    const [discountLevel, setDiscountLevel] = useState<number>(0);
+    const [discountedPrice, setDiscountedPrice] = useState<number>(0);
+    const [isVoucherApplied, setIsVoucherApplied] = useState(false);
+    const [inputBorderColor, setInputBorderColor] = useState('#9098B1');
     const [coupon, setCoupon] = useState<string>('');
+    const [isInvalidCoupon, setIsInvalidCoupon] = useState<boolean>(false);
+
+    const shippingFee = 40;
+
+
+    const [checkRemoveItem, setCheckRemoveItem] = useState<boolean>(false);
 
     const dispatch = useDispatch();
 
@@ -32,16 +44,71 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const generalPrice = listData.reduce((previousValue: number, currentItem: any) => previousValue + currentItem.productID?.price * currentItem.quantity, 0);
 
+    const cart: { productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
 
+    const generalPriceAfterShipping = generalPrice + shippingFee;
 
     useEffect(() => {
-        setListData(data);
-    }, [data]);
+        const fetchVoucher = async () => {
+            try {
+                const response = await AxiosInstance().get('promotion/getAllPromotion');
+                setVoucher(response.data);
+            } catch (error) {
+                console.error('Error fetching voucher:', error);
+            }
+        };
+
+        fetchVoucher();
+    }, []);
+
+    const handleApplyCoupon = async () => {
+        try {
+            const response = await AxiosInstance().get(`promotion/getAllPromotion`);
+            console.log("data voucher :" + response.data.discountCode);
+            const appliedPromotion = response.data.find((promo: { discountCode: string }) => promo.discountCode === coupon);
+
+            if (appliedPromotion) {
+                const discountLevelValue = appliedPromotion.discountLevel;
+                const discountAmount = (generalPriceAfterShipping * discountLevelValue) / 100;
+                const discountedPriceValue = generalPriceAfterShipping - discountAmount;
+
+                // Cập nhật giá trị discountLevel và discountedPrice vào state
+                setDiscountLevel(discountLevelValue);
+                setDiscountedPrice(discountedPriceValue);
+                setIsVoucherApplied(true);
+                setIsInvalidCoupon(false); // Không có lỗi nữa
+                setInputBorderColor('#9098B1'); // Màu sắc khi có voucher
+                console.log(`Applied discount: ${discountLevelValue}%`);
+            } else {
+                console.log('Invalid coupon code');
+                setIsVoucherApplied(false);
+                setIsInvalidCoupon(true); // Có lỗi khi mã giảm giá không hợp lệ
+                setInputBorderColor('red'); // Màu sắc khi mã giảm giá không hợp lệ
+            }
+        } catch (error) {
+            console.error('Error applying coupon:', error);
+        }
+    };
+
+    const createTwoButtonAlert = () =>
+        Alert.alert('Notification', 'Not product in your Cart ! ', [
+            { text: 'OK' }
+        ]);
+
 
     const handleRemoveItem = async (id: number) => {
-        const check = dispatch(removeItem(id))
-        check && await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: data.cartItem })
+        dispatch(removeItem(id));
+        setCheckRemoveItem(true);
     }
+    const handlRemoveData = async () => {
+        listData.map((item: any) => {
+            cart.push({ productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
+        }
+        )
+        await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart });
+        setCheckRemoveItem(false);
+    }
+    checkRemoveItem && handlRemoveData();
     const RenderItem = ({ item }: { item: any }) => {
         const [quantity, setQuantity] = useState<number>(item.quantity);
 
@@ -56,14 +123,27 @@ const CartScreen = ({ navigation }: PropsCart) => {
             setQuantity(newQuantity);
             dispatch(updateQuantity({ id: item.productID._id, quantity: newQuantity }));
         };
+
+
         return (
             <View style={styles.itemCart}>
                 <View>
-                    <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
+                    {item.productID.image[0] !== null && (
+                        <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
+                    )}
                 </View>
-                <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
+                <View style={{ flexDirection: 'column', height: '100%' }}>
                     <View style={styles.topItem}>
-                        <Text style={styles.textTitleItem}>{item.productID.productName.length < 15 ? item.productID.productName : item.productID.productName.substring(0, 15) + "..."}</Text>
+                        <View style={{ width: '65%', gap: 10 }}>
+                            <Text style={styles.textTitleItem}>{item.productID.productName.length < 15 ? item.productID.productName : item.productID.productName.substring(0, 15) + "..."}</Text>
+                            <View style={{ flexDirection: 'row', columnGap: 20 }}>
+                                <Text style={styles.textTitleItem}>Size: {item.sizeProduct.name}</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.textTitleItem}>Size: </Text>
+                                    <View style={{ width: 20, height: 20, backgroundColor: `${item.colorProduct.code}` }}></View>
+                                </View>
+                            </View>
+                        </View>
                         <Pressable onPress={() => handleRemoveItem(item.productID._id)}>
                             <Icon name='trash-outline' color='#9e9e9e' size={25} />
                         </Pressable>
@@ -87,49 +167,76 @@ const CartScreen = ({ navigation }: PropsCart) => {
                 <Text style={styles.txtTitlePage}>Your Cart</Text>
             </View>
             <View style={styles.line}></View>
-            <View style={{ height: HEIGHT * 0.4, marginTop: '11%' }}>
+            <View style={{ height: HEIGHT * 0.35, marginTop: '11%' }}>
                 {listData.length > 0 ?
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
-                        onContentSizeChange={() => {
-                        }}
-                        keyExtractor={(item: any) => item.productID._id.toString()}
+                        keyExtractor={(item: any) => item?.productID?._id?.toString()}
                     /> : <Text style={{ fontSize: 20 }}>No data</Text>}
             </View>
-            <View style={{ borderWidth: 1, borderColor: '#9098B1', borderRadius: 5, marginTop: 25 }}>
-                <InputItem
-                    style={{ fontSize: 16 }}
-                    value={coupon}
-                    onChange={(value: any) => {
-                        setCoupon(value)
-                    }}
-                    placeholder="Enter Cupon Code"
-                    extra={
-                        <Pressable style={styles.btnApply}>
-                            <Text style={styles.textApply}>Apply</Text>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+            >
+
+                <View style={{ height: HEIGHT * 0.8 }}>
+
+
+                    <View style={{ borderWidth: 1, borderColor: isInvalidCoupon ? 'red' : inputBorderColor, borderRadius: 5, marginTop: 25 }}>
+                        <InputItem
+                            style={{ fontSize: 16 }}
+                            value={coupon}
+                            onChange={(value: any) => {
+                                setCoupon(value);
+                                setIsVoucherApplied(false);
+                                setIsInvalidCoupon(false); // Ẩn lỗi khi người dùng bắt đầu nhập lại
+                            }}
+                            placeholder={isInvalidCoupon ? "Invalid Coupon Code" : "Enter Coupon Code"}
+                            extra={
+                                <Pressable onPress={handleApplyCoupon} style={styles.btnApply}>
+                                    <Text style={styles.textApply}>Apply</Text>
+                                </Pressable>
+                            }
+                        />
+                    </View>
+
+                    <View style={styles.itemTotalPrice}>
+                        <View style={styles.headerTotalPrice}>
+                            <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
+                            <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
+                        </View>
+                        <View style={styles.headerTotalPrice}>
+                            <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
+                            <Text style={styles.textHeaderTotalRight}>{shippingFee}$</Text>
+                        </View>
+                        <View style={styles.headerTotalPrice}>
+                            <Text style={styles.textHeaderTotalLeft}>Voucher</Text>
+                            <Text style={styles.textHeaderTotalRight}>{isVoucherApplied ? `${discountLevel}%` : '0%'}</Text>
+                        </View>
+                        <View style={styles.bottomTotalPrice}>
+                            <Text style={styles.textBottomTotalLeft}>Total Price</Text>
+                            <Text style={styles.textBottomTotalRight}>{isVoucherApplied ? `$${discountedPrice}` : `$${generalPriceAfterShipping}`}</Text>
+                        </View>
+
+                    </View>
+                    <View style={{ marginTop: 15 }}>
+                        <Pressable onPress={() => listData.length > 0 ? navigations.navigate('CartDetail', {
+                            Level: isVoucherApplied ? discountLevel : '0',
+                            totalAfterShipping: isVoucherApplied ? discountedPrice : generalPriceAfterShipping,
+                            generalPriceAfterShipping,
+                            shipping: shippingFee
+
+                        }) : createTwoButtonAlert()}>
+                            <ButtonBottom title='Check Out' />
                         </Pressable>
-                    }
-                />
-            </View>
-            <View style={styles.itemTotalPrice}>
-                <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
-                    <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
+                    </View>
                 </View>
-                <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
-                    <Text style={styles.textHeaderTotalRight}>$0.0</Text>
-                </View>
-                <View style={styles.bottomTotalPrice}>
-                    <Text style={styles.textBottomTotalLeft}>Total Price</Text>
-                    <Text style={styles.textBottomTotalRight}>${generalPrice}</Text>
-                </View>
-            </View>
-            <View style={{ marginTop: 15 }}>
-                <ButtonBottom title='Check Out' />
-            </View>
+
+            </ScrollView>
+
+
         </SafeAreaView >
     )
 }
@@ -221,6 +328,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.50,
     },
     topItem: {
+        width: '100%',
         flexDirection: 'row',
         columnGap: 25,
         paddingLeft: 20,
@@ -259,7 +367,6 @@ const styles = StyleSheet.create({
         letterSpacing: 0.50,
     },
     textTitleItem: {
-        width: '65%',
         color: '#223263',
         fontSize: 15,
         fontFamily: 'Poppins',

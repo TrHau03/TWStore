@@ -81,7 +81,6 @@ const FilterScreen = (props: any) => {
     dispatch(HomeScreenSlice.actions.filterColor(color));
     dispatch(HomeScreenSlice.actions.filterSize(size));
     dispatch(HomeScreenSlice.actions.filterPrice({ minPrice, maxPrice }))
-    console.log(brand, color, size, minPrice, maxPrice);
 
   }
 

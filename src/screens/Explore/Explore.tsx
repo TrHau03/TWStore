@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  ImageBackground,
   Pressable,
   StyleSheet,
   Text,
@@ -14,7 +15,7 @@ import { CompositeNavigationProp, NavigationProp, useIsFocused, useNavigation } 
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootTabParamList } from '../../component/BottomNavigation/RootTab/RootTab';
-import { PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { COLORS } from '../../utilities';
 import AxiosInstance from '../../Axios/Axios';
 import { AirbnbRating } from 'react-native-ratings';
@@ -51,18 +52,21 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
 
   const renderItem = ({ item }: any): React.JSX.Element => {
     return (
-      <TouchableOpacity onPress={() => { navigation.navigate(RootStackScreenEnumExplore.Category_Detail_Screen, { categoryID: item._id }) }} style={styles.containerItemPD}>
-        <View style={styles.content}>
-
-          <View style={styles.in4PD}>
-            <View style={styles.in4Text}>
-              <Text style={styles.NamePD} >{item.name}</Text>
-            </View>
-          </View>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(RootStackScreenEnumExplore.Category_Detail_Screen, { categoryID: item._id });
+        }}
+        style={styles.containerItemPD}
+      >
+        <View>
+          <ImageBackground source={{ uri: item.linkIcon }} style={styles.imageStyle} >
+            <Text style={styles.NamePD}>{item.name}</Text>
+          </ImageBackground>
         </View>
       </TouchableOpacity>
     );
   };
+
 
 
 
@@ -108,86 +112,39 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
 export default ExploreScreen;
 
 const styles = StyleSheet.create({
-  imgIc: {
-    width: '20%',
-    marginLeft: 10,
-  },
-  txtSale: {
-    color: 'red',
-    fontSize: 17,
-    marginLeft: 20,
-    fontWeight: 'bold',
-  },
-  txtOldPrice: {
-    textDecorationLine: 'line-through', // Gạch ngang văn bản
-    fontSize: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    fontWeight: 'bold',
-  },
-  sale: {
-    width: '80%',
-    flexDirection: 'row',
-  },
-  star: {
-    width: '70%',
-    marginTop: 5,
-  },
-
-  content: {
-    padding: 5,
+  imageStyle: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 5,
   },
   NamePD: {
     fontSize: 16,
     fontWeight: '700',
     fontStyle: 'normal',
     fontFamily: 'Helvetica Neue',
-    color: 'black',
-    margin: 1,
+    position: 'absolute',
+    margin: 5,
+    top: '0%',
+    left: 0,
+    color: '#223263',
   },
-  PricePD: {
-    marginTop: 5,
+  overlayText: {
+    color: 'white',
     fontSize: 16,
     fontWeight: '700',
-    fontStyle: 'normal',
-    fontFamily: 'Helvetica Neue',
-    lineHeight: 24,
-    color: '#4464C4',
-  },
-  in4Text: {
-    marginTop: 5,
-    width: '100%',
-  },
-  ImgContainerPD: {
-    backgroundColor: '#FFFFFF',
-    width: '100%',
-    height: '50%',
-    borderRadius: 20,
   },
 
-  in4PD: {
-    justifyContent: 'space-between',
-    width: '100%',
-    height: '50%',
-    borderRadius: 5,
-  },
   containerItemPD: {
-    borderWidth: 0.5,
-    width: WIDTH * 0.44,
-    height: 280,
-    backgroundColor: '#FFFFFF',
+    borderWidth: 0.2,
+    width: WIDTH * 0.45,
+    alignSelf: 'center',
+    height: HEIGHT * 0.1,
+    overflow: 'hidden',
     borderRadius: 5,
-    shadowColor: '#C4C4C4',
-    shadowOffset: {
-      width: 1,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    marginLeft: 5,
-    marginBottom: 5
+    margin: 10,
   },
+
+  // thanh trên
 
   TextSearch: {
     width: WIDTH / 2,
@@ -226,68 +183,3 @@ const styles = StyleSheet.create({
   }
 });
 
-const DataMan: Category[] = [
-  {
-    id: 1,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Red Apple',
-  },
-  {
-    id: 2,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
-  },
-  {
-    id: 3,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Avocado',
-  },
-  {
-    id: 4,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Strawberry',
-  },
-  {
-    id: 5,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
-  },
-  {
-    id: 6,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Red Apple',
-  },
-];
-
-const DataWoman: Category[] = [
-  {
-    id: 1,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Red Apple',
-  },
-  {
-    id: 2,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
-  },
-  {
-    id: 3,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Avocado',
-  },
-  {
-    id: 4,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Strawberry',
-  },
-  {
-    id: 5,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Orginal',
-  },
-  {
-    id: 6,
-    img: require('../../asset/image/iconCategory.png'),
-    name: 'Red Apple',
-  },
-];

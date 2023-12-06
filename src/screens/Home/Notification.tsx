@@ -1,104 +1,142 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Pressable } from 'react-native'
+import * as React from 'react';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
-import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
-import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
+import { useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import AxiosInstance from '../../Axios/Axios';
+import Clipboard from '@react-native-clipboard/clipboard';
+
+const Notification = () => (
+  <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
+);
+
+
+
+const renderItem = ({ item }: { item: { title: string, content: string, discountCode: string, discountLevel: string, startDay: string, endDay: string } }) => {
+  return (
+    <TouchableOpacity style={styles.containervoucher} onPress={() => copyVoucher(item.discountCode)}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text style={styles.content}>{item.content}</Text>
+
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+        <Text style={styles.textbottom}>Giảm lên đến {item.discountLevel}%</Text>
+        <Text style={styles.textbottom}>Mã giảm giá : {item.discountCode}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const copyVoucher = (discountCode : string) => {
+  Clipboard.setString(discountCode);
+  console.log(`Mã giảm giá ${discountCode} đã được sao chép vào clipboard.`);
+};
+
+
+
+
+const Voucher = () => {
+  const [voucher, setVoucher] = useState<[]>([]);
+
+  useEffect(() => {
+    const fetchEvent = async () => {
+      const response = await AxiosInstance().get(`promotion/getAllPromotion`);
+      setVoucher(response.data);
+    };
+    fetchEvent();
+
+  }, []);
+  return (
+    <View>
+      <FlatList
+        style={{ marginTop: 20 }}
+        data={voucher}
+        renderItem={renderItem}
+        numColumns={1}
+        showsVerticalScrollIndicator={false}
+      />
+
+
+    </View>
+  );
+
+};
+
+const renderScene = SceneMap({
+  first: Notification,
+  second: Voucher,
+});
+
+const renderTabBar = (props: any) => (
+  <TabBar
+    {...props}
+    indicatorStyle={{ backgroundColor: 'black' }}
+    style={{ backgroundColor: 'white' }}
+    labelStyle={{ color: '#223263' }}
+  />
+);
+
 const NotificationScreen = ({ navigation }: PropsHome) => {
-
-
+  const [index, setIndex] = React.useState(0);
+  const [routes] = React.useState([
+    { key: 'first', title: 'Notification' },
+    { key: 'second', title: 'Voucher' },
+  ]);
 
   return (
     <View style={styles.container}>
-      <View>
+      <View style={{ paddingHorizontal: PADDING_HORIZONTAL, }}>
         <Header title='Notification' navigation={navigation} />
       </View>
-      <View >
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => navigation?.navigate(RootStackScreenEnumHome.OfferNorifiScreen)}
-        >
-          <View
-            style={styles.btnOffer}
-          >
-            <Image source={require('../../asset/image/Offer.png')} />
-            <Text style={styles.txtOffer}>Offer</Text>
-          </View>
-          <View style={styles.tvCount}>
-            <Text style={styles.txtCount}>2</Text>
-          </View>
-
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => navigation?.navigate(RootStackScreenEnumHome.ActivityScreen)}
-        >
-          <View style={styles.btnActivity}>
-            <Image source={require('../../asset/image/Activity.png')} />
-            <Text style={styles.txtActivity}>Activity</Text>
-          </View>
-
-          <View style={styles.tvCount}>
-            <Text style={styles.txtCount}>2</Text>
-          </View>
-        </TouchableOpacity>
-      </View>
-
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: WIDTH }}
+        renderTabBar={renderTabBar}
+      />
     </View>
-  )
-}
+  );
+};
 
 export default NotificationScreen
 
 const styles = StyleSheet.create({
-  txtCount: {
-
-    fontSize: 18,
-
-    color: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  tvCount: {
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'red',
-    borderRadius: 12
-  },
-  txtActivity: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 5,
-    color: 'black'
-  },
-  txtOffer: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 5,
-    color: 'black'
-  },
-  btnActivity: {
-    alignItems: 'center',
-    height: 40,
-    flexDirection: 'row'
-  },
-  btnOffer: {
-    flexDirection: 'row'
-  },
-  btn: {
-    alignItems: 'center',
-    marginLeft: 10,
-    height: 40,
-    flexDirection: 'row',
-    justifyContent: 'space-between'
-  },
-
   container: {
     flex: 1,
-    paddingHorizontal: PADDING_HORIZONTAL,
     paddingTop: PADDING_TOP,
     backgroundColor: BG_COLOR,
-  }
+  },
+  title: {
+    fontSize: 19,
+    fontWeight: 'bold',
+    color: 'black',
+    paddingHorizontal: PADDING_HORIZONTAL,
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  content: {
+    margin: 5,
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#686361',
+  },
+  textbottom: {
+    margin: 5,
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: '#3E3C3B',
+  },
+  containervoucher: {
+    margin: 10,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    borderColor: '#ADD8E6',
+    borderWidth: 1
+  },
+
+
 })

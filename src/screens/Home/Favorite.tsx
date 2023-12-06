@@ -15,19 +15,16 @@ import { AirbnbRating } from 'react-native-ratings';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { configTab } from '../../component/BottomNavigation/RootTab/RootTab';
-import { useDispatch, useSelector } from 'react-redux';
-import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 
 
-  //redux
+//redux
 
 
-  
+
 
 const renderItem = ({ item }: any): React.JSX.Element => {
   const { id, image, name, price, strikeThrough, saleOff } = item;
-  
+
 
   return (
     <TouchableOpacity style={styles.containerItemPD} >
@@ -47,7 +44,7 @@ const renderItem = ({ item }: any): React.JSX.Element => {
             <Text style={styles.txtOldPrice}>${strikeThrough}</Text>
             <Text style={styles.txtSale}>{saleOff}% Off</Text>
             <TouchableOpacity >
-              <Icon  name="trash-outline" size={25} />
+              <Icon name="trash-outline" size={25} />
             </TouchableOpacity>
           </View>
         </View>

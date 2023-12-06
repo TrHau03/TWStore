@@ -35,7 +35,6 @@ interface User {
 }
 
 const LoginScreen = (props: any) => {
-  console.log(WIDTH, HEIGHT);
   const { navigation }: NativeStackHeaderProps = props
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -189,7 +188,7 @@ const LoginScreen = (props: any) => {
   }
   return (
     <KeyboardAwareScrollView>
-      <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, width: WIDTH, backgroundColor: BG_COLOR }}>
+      <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, width: WIDTH, backgroundColor: BG_COLOR, height: HEIGHT }}>
         <View style={styles.header}>
           <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
           <Text style={styles.textHeader}>The Wonder</Text>

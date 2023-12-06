@@ -7,9 +7,14 @@ export const fetchInitialListProductRecommend: any = createAsyncThunk('Slice/fet
   return response.data;
 })
 export const fetchInitialListProductFilter: any = createAsyncThunk('Slice/fetchInitialListProductFilter', async (url: any) => {
-  const response = await AxiosInstance().get(`product/getProductByIdCategory/${url}`);
+
+  const { brandID, categoryID } = url;
+  const response = await AxiosInstance().get(categoryID ? `product/getProductByIdCategory/${categoryID}` : `product/getProductByIdBrand/${brandID}`);
+  console.log(response.data);
+  
   return response.data;
 })
+
 const initialState = {
   isLogin: false,
   isLoading: false,
@@ -31,13 +36,12 @@ const initialState = {
   listProductFilter: [],
 };
 
-
 const Slice = createSlice({
   name: 'Slice',
   initialState,
   reducers: {
     updateUser: (state, action) => {
-      const value = action.payload
+      const value = action.payload;
       state.user = value;
     },
     updateGender: (state, action) => {
@@ -51,11 +55,11 @@ const Slice = createSlice({
     updateBirthDay: (state, action) => {
       const value = action.payload
       state.user.birthDay = value;
-    },    
+    },
     updateEmail: (state, action) => {
       const value = action.payload
       state.user.email = value;
-    },    
+    },
     updateName: (state, action) => {
       const value = action.payload
       state.user.userName = value;
@@ -64,6 +68,9 @@ const Slice = createSlice({
     removeItem: (state, action: PayloadAction<number>) => {
       state.user.cartItem = state.user.cartItem.filter((item: any) => item.productID._id !== action.payload);
     },
+    addItem: (state, action) => {
+      state.user.cartItem.push(action.payload as never);
+    },
     updateQuantity: (state, action) => {
       const { id, quantity } = action.payload;
       const quantityToUpdate: any = state.user.cartItem.find((item: any) => item.productID._id === id);
@@ -71,29 +78,36 @@ const Slice = createSlice({
         quantityToUpdate.quantity = quantity;
       }
     },
+    addAddress: (state, action) => {
+      state.user.address.push(action.payload as never);
+    },
+    deleteAddress: (state, action) => {
+      state.user.address = state.user.address.filter((item: any) => item.position !== action.payload);
+    },
     isLogin: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.isLogin = value;
     },
     isLoading: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.isLoading = value;
     },
     LoginGoogle: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.LoginGoogle = value;
     },
     LoginFacebook: (state, action) => {
-      console.log("login", action.payload);
+      console.log('login', action.payload);
       const value = action.payload;
       state.LoginFaceBook = value;
     },
-
   },
-  extraReducers: (builder) => {
+
+
+  extraReducers: builder => {
     builder
       .addCase(fetchInitialListProductRecommend.fulfilled, (state, action) => {
         state.listProductRecommend = action.payload;
@@ -103,6 +117,7 @@ const Slice = createSlice({
           state.listProductFilter = action.payload;
         })
   },
+
 });
-export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity, updateGender, updatePhone, updateBirthDay, updateEmail, updateName } = Slice.actions
+export const { updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity, updateGender, updatePhone, updateBirthDay, updateEmail, updateName, deleteAddress, addItem, addAddress } = Slice.actions
 export default Slice.reducer;

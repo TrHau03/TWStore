@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { configStack } from '../Root/RootStack';
-
 import { RootStackScreenAccount } from '../Root/RootStackAccount';
 import { Stack } from './Props';
 
