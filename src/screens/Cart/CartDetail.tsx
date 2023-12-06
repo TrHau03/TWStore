@@ -116,7 +116,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
                 <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
                     <View style={styles.topItem}>
-                        <Text style={styles.textTitleItem}>{item.productID.productName.length < 25 ? item.productID.productName : item.productID.productName.substring(0, 25) + "..."}</Text>
+                        <Text style={styles.textTitleItem}>{item.productID.productName.length < 15 ? item.productID.productName : item.productID.productName.substring(0, 15) + "..."}</Text>
                     </View>
                     <View style={styles.bottomItem}>
                         <Text style={styles.textPrice}>${item.productID.price}</Text>
@@ -234,7 +234,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                             dropdownStyles={{ height: 150, borderWidth: 0.5 }}
                         />
                         <View style={styles.addAdress}>
-                            <Pressable onPress={() => navigation?.navigate('Account', { screen: RootStackScreenEnumAccount.Add_Address })} >
+                            <Pressable onPress={() => navigation?.navigate('Account', { screen: RootStackScreenEnumAccount.AddressScreen })} >
                                 <Text style={styles.textDetail}>Thêm địa chỉ</Text>
                             </Pressable>
                         </View>

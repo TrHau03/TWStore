@@ -135,7 +135,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                 <View style={{ flexDirection: 'column', height: '100%' }}>
                     <View style={styles.topItem}>
                         <View style={{ width: '65%', gap: 10 }}>
-                            <Text style={styles.textTitleItem}>{item.productID.productName.length < 25 ? item.productID.productName : item.productID.productName.substring(0, 25) + "..."}</Text>
+                            <Text style={styles.textTitleItem}>{item.productID.productName.length < 15 ? item.productID.productName : item.productID.productName.substring(0, 15) + "..."}</Text>
                             <View style={{ flexDirection: 'row', columnGap: 20 }}>
                                 <Text style={styles.textTitleItem}>Size: {item.sizeProduct.name}</Text>
                                 <View style={{ flexDirection: 'row' }}>

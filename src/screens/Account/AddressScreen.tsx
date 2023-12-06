@@ -63,14 +63,13 @@ const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
         <Provider>
             <View style={styles.container}>
                 <Modal
-
                     transparent={false}
                     visible={modalVisible}
                     animationType="slide-up"
                     onRequestClose={() => true}
                 >
                     <View style={{ height: '100%' }}>
-                        <Add_Address action={setModalVisible} />
+                        <Add_Address action={{setModalVisible}} />
                         <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
                             <Pressable onPress={() => { setModalVisible(false) }}>
                                 <ButtonBottom title='Cancel' />
