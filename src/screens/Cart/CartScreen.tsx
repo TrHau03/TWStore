@@ -109,6 +109,8 @@ const CartScreen = ({ navigation }: PropsCart) => {
         setCheckRemoveItem(false);
     }
     checkRemoveItem && handlRemoveData();
+
+    
     const RenderItem = ({ item }: { item: any }) => {
         const [quantity, setQuantity] = useState<number>(item.quantity);
 
