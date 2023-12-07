@@ -66,6 +66,7 @@
     "@react-native/metro-config": "^0.72.11",
     "@tsconfig/react-native": "^3.0.0",
     "@types/crypto-js": "^4.2.1",
+    "@types/node": "^20.10.3",
     "@types/react": "^18.0.24",
     "@types/react-native-star-rating": "^1.1.2",
     "@types/react-native-vector-icons": "^6.4.14",
