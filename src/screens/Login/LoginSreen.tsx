@@ -14,7 +14,7 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import Realm from 'realm';
 import { AccessToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
 import { useDispatch } from 'react-redux';
-import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../redux/silces/Silces';
+import { LoginFacebook, LoginGoogle, isLogin, updatePass, updateUser } from '../../redux/silces/Silces';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 interface Login {
@@ -51,6 +51,10 @@ const LoginScreen = (props: any) => {
     dispatch(isLogin(true));
     dispatch(updateUser({ _id: data._id, _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address, phone: data.phone }))
   }
+  const handlePass = () => {
+    dispatch(updatePass(password))
+  }
+
   const login = async (user: Login) => {
     try {
       const result = await AxiosInstance().post('/usersInfo/LoginUser', { email: user.email, password: user.password });
@@ -61,6 +65,7 @@ const LoginScreen = (props: any) => {
         if (user.active) {
           if (userInfo.role === 'user') {
             handleSubmit({ _id: user._id, _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
+            handlePass()
           } else {
             console.warn("Tài khoản không có quyền đăng nhập !");
           }
@@ -186,6 +191,7 @@ const LoginScreen = (props: any) => {
       }
     );
   }
+
   return (
     <KeyboardAwareScrollView>
       <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, width: WIDTH, backgroundColor: BG_COLOR, height: HEIGHT }}>

@@ -13,10 +13,11 @@ const ChangeName = (props: any) => {
     const [name, setName] = useState<string>()
     const dispatch = useDispatch();
     const user = useSelector((state: any) => state.SlicesReducer.user);
+    
     const handleSaveName = async () => {
         setModalVisible(false)
         dispatch(updateName(name))
-        const response = await AxiosInstance().post(`/usersInfo/ChangeUserName/`, { _id: user._idUser, name: name });
+        const response = await AxiosInstance().post(`/users/updateInfoUser/`, { _id: user._idUser, name: name });
     }
 
     return (

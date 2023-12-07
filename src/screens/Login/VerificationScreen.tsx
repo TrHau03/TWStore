@@ -24,16 +24,18 @@ const VerificationScreen = (props: any) => {
     const [OTP, setOTP] = useState<number>()
     console.log(OTP)
     const { navigation }: NativeStackHeaderProps = props;
+
     const fetchSendMail = async () => {
         const response = await AxiosInstance().post(`/usersInfo/VerifyEmail`, {email: email});
         setOTP(response.data.random);
-        
+
         if (OTP === parseInt(value)){
             navigation.navigate(RootStackScreenEnumLogin.ForgotPass, {email: email});
         }else{
             setValue('');
         }
     }
+
     return (
         <KeyboardAwareScrollView>
             <View style={{ paddingHorizontal: PADDING_HORIZONTAL, alignItems: 'center', backgroundColor: BG_COLOR }}>
