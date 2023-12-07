@@ -1,26 +1,33 @@
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import React, { useState } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
+import { HEIGHT } from '../../utilities/utility';
+import routes from '../../component/constants/routes';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import AxiosInstance from '../../Axios/Axios';
 
-
-
+// Định nghĩa kiểu dữ liệu cho đánh giá (Review)
+interface Review {
+  id: number;
+  stars: number;
+  user: {
+    name: string;
+    image: string;
+  };
+  date: string;
+  time: string;
+  comment: string;
+  commentImage: string[] | null;
+}
 const windowWidth = Dimensions.get('window').width;
 
 export default function ProductReviews() {
 
-  // Định nghĩa kiểu dữ liệu cho đánh giá (Review)
-  interface Review {
-    id: number;
-    stars: number;
-    user: {
-      name: string;
-      image: string;
-    };
-    date: string;
-    time: string;
-    comment: string;
-    commentImage: string[] | null;
-  }
+  const route = useRoute();
+  const [listComment, setlistComment] = useState<[]>();
+  const { id } = route.params as { id: any };
+
 
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
 
@@ -45,9 +52,8 @@ export default function ProductReviews() {
     });
   };
   const sortedReviews = sortReviewsByDateTime(filteredReviews);
-  const handleAddComment = () => {
-    console.log('nhấn được rồi nè !')
-  };
+
+
 
   const starFilterButtons = [
     { label: 'All Review', star: null },
@@ -57,14 +63,53 @@ export default function ProductReviews() {
     { label: ' 4', star: 4 },
     { label: ' 5', star: 5 },
   ];
+
+
+  const fetchCommentbyIdProduct = async (id: string) => {
+    const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
+    setlistComment(response.data);
+  }
+  const handleAddComment = () => {
+    console.log('nhấn được rồi nè !')
+  };
+
+
+  const RenderItem = ({ item }: { item: any }) => (
+    <View style={styles.reviewContainer}>
+      <View style={styles.reviewHeader}>
+        <Image source={{ uri: item.user.image }} style={styles.userImage} />
+        <View style={styles.userInfo}>
+          <Text style={styles.userName}>{item.user.name}</Text>
+          <View style={styles.starRating}>
+            <Text style={styles.reviewStars}>{'⭐'.repeat(item.stars)}</Text>
+          </View>
+        </View>
+      </View>
+      {item.comment && <Text style={styles.reviewComment}>{item.comment}</Text>}
+      {item.commentImage && (
+        <View style={styles.commentImagesContainer}>
+          {Array.isArray(item.commentImage) && item.commentImage.map((imageURL: string, index: any) => (
+            <Image
+              key={index}
+              source={{ uri: imageURL }}
+              style={styles.CommentImage}
+            />
+          ))}
+        </View>
+      )}
+      <View style={styles.reviewFooter}>
+        <Text style={styles.reviewDateTime}>{`${item.date} at ${item.time}`}</Text>
+      </View>
+    </View>
+  )
+  
   return (
     <View style={{ height: '100%' }}>
 
-      <ScrollView>
+      <ScrollView style={{ marginBottom: HEIGHT * 0.09 }}>
 
         <View>
           <View style={styles.header}>
-            <Image style={styles.icon} source={require('../asset/image/back.png')} />
             <Text style={styles.name}>{reviewCount} Reviews</Text>
           </View>
 
@@ -93,34 +138,16 @@ export default function ProductReviews() {
 
 
           <View style={{ height: 'auto', alignItems: 'center' }}>
-            {filteredReviews.map((review) => (
-              <View key={review.id} style={styles.reviewContainer}>
-                <View style={styles.reviewHeader}>
-                  <Image source={{ uri: review.user.image }} style={styles.userImage} />
-                  <View style={styles.userInfo}>
-                    <Text style={styles.userName}>{review.user.name}</Text>
-                    <View style={styles.starRating}>
-                      <Text style={styles.reviewStars}>{'⭐'.repeat(review.stars)}</Text>
-                    </View>
-                  </View>
-                </View>
-                {review.comment && <Text style={styles.reviewComment}>{review.comment}</Text>}
-                {review.commentImage && (
-                  <View style={styles.commentImagesContainer}>
-                    {Array.isArray(review.commentImage) && review.commentImage.map((imageURL, index) => (
-                      <Image
-                        key={index}
-                        source={{ uri: imageURL }}
-                        style={styles.CommentImage}
-                      />
-                    ))}
-                  </View>
-                )}
-                <View style={styles.reviewFooter}>
-                  <Text style={styles.reviewDateTime}>{`${review.date} at ${review.time}`}</Text>
-                </View>
-              </View>
-            ))}
+            {listComment && listComment.length > 0 ? (
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                renderItem={(object) => <RenderItem item={object.item} />}
+                data={listComment}
+                keyExtractor={(item: any) => item?.productID?._id?.toString()}
+              />
+            ) : (
+              <Text style={{ fontSize: 20 }}>No data</Text>
+            )}
           </View>
         </View>
       </ScrollView>

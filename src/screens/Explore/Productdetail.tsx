@@ -7,16 +7,12 @@ import {
   Dimensions,
   ScrollView,
   TouchableOpacity,
-  Button,
-  ImageSourcePropType,
   Pressable,
   Alert,
-  Modal
+  FlatList
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import Productreviews from './Productreviews';
 import { NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
-import { useNavigation } from '@react-navigation/core';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
@@ -24,6 +20,7 @@ import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../redux/silces/Silces';
+import { HEIGHT } from '../../utilities/utility';
 
 
 
@@ -31,20 +28,9 @@ const windowWidth = Dimensions.get('window').width;
 
 type CustomRatingBarProps = {
   numberOfRatings: number;
+  
 };
 
-interface Review {
-  id: number;
-  stars: number;
-  user: {
-    name: string;
-    image: string;
-  };
-  date: string;
-  time: string;
-  comment: string;
-  commentImage: string[] | null;
-}
 interface Product {
   _id: string;
   brand: any;
@@ -65,7 +51,9 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const { navigation } = props
   const [product, setProduct] = useState<Product>();
   const [listProductByBrand, setListProductByBrand] = useState<[]>();
-  console.log(listProductByBrand);
+  const [listComment, setlistComment] = useState<[]>();
+  const [commentCount, setCommentCount] = useState<number>(0);
+  const [totalStars, setTotalStars] = useState<number>(0);
 
   const [handleAdd, setHandleAdd] = useState<boolean>(false);
   const dispatch = useDispatch();
@@ -80,10 +68,8 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
 
   const isFocus = useIsFocused();
-  // Định nghĩa kiểu dữ liệu cho đánh giá (Review)
 
   //đánh giá sản phẩm
-  const [defaultRating, setDefaultRating] = useState(4);
   const [maxRating] = useState([1, 2, 3, 4, 5]);
   const starImgFilled = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
   const starImgCorner = 'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
@@ -94,15 +80,6 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
   //sản phẩm yêu thích
   const sortedSizes = product?.size.slice().sort((a, b) => a - b);
-
-
-  const [selectedStar, setSelectedStar] = useState<number | null>(null);
-
-  const filteredReviews = selectedStar
-    ? reviewsData.filter((review) => review.stars === selectedStar)
-    : reviewsData;
-
-
 
 
   useFocusEffect(
@@ -117,6 +94,20 @@ const Productdetail = (props: NativeStackHeaderProps) => {
         const response = await AxiosInstance().get(`product/getProductByIdBrand/${id}`);
         setListProductByBrand(response.data);
       }
+      const fetchCommentbyIdProduct = async (id: string) => {
+        const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
+        setlistComment(response.data);
+      
+        let stars = 0;
+        response.data.forEach((comment: any) => {
+          // Đảm bảo giá trị số sao luôn trong khoảng từ 1 đến 5
+          stars += comment.stars > 5 ? 5 : comment.stars;
+        });
+      
+        setTotalStars(stars);
+        setCommentCount(response.data.length);
+      };
+      
       if (isFocus) {
         fetchProductByID();
       }
@@ -136,11 +127,11 @@ const Productdetail = (props: NativeStackHeaderProps) => {
         <View key={item}>
           <Image
             style={styles.starImaStyle}
-            source={item <= defaultRating ? { uri: starImgFilled } : { uri: starImgCorner }}
+            source={item <= totalStars ? { uri: starImgFilled } : { uri: starImgCorner }}
           />
         </View>
       ))}
-      <Text style={styles.ratingCountText}>{defaultRating}</Text>
+      <Text style={styles.ratingCountText}>{totalStars}</Text>
       <Text style={styles.ratingCountText}>({numberOfRatings} Review)</Text>
 
     </View>
@@ -196,6 +187,38 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     setHandleAdd(false);
   }
 
+
+
+
+  const RenderItem = ({ item }: { item: any }) => (
+    <View style={styles.reviewContainer}>
+      <View style={styles.reviewHeader}>
+        <Image source={{ uri: item.user.image }} style={styles.userImage} />
+        <View style={styles.userInfo}>
+          <Text style={styles.userName}>{item.user.name}</Text>
+          <View style={styles.starRating}>
+            <Text style={styles.reviewStars}>{'⭐'.repeat(item.stars)}</Text>
+          </View>
+        </View>
+      </View>
+      {item.comment && <Text style={styles.reviewComment}>{item.comment}</Text>}
+      {item.commentImage && (
+        <View style={styles.commentImagesContainer}>
+          {Array.isArray(item.commentImage) && item.commentImage.map((imageURL: string, index: any) => (
+            <Image
+              key={index}
+              source={{ uri: imageURL }}
+              style={styles.CommentImage}
+            />
+          ))}
+        </View>
+      )}
+      <View style={styles.reviewFooter}>
+        <Text style={styles.reviewDateTime}>{`${item.date} at ${item.time}`}</Text>
+      </View>
+    </View>
+  )
+
   return (
     <View style={{ height: '100%' }}>
       <ScrollView>
@@ -237,7 +260,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
           </View>
           <View style={styles.marginlefft}>
             <View>
-              <CustomRatingBar numberOfRatings={10} />
+              <CustomRatingBar numberOfRatings={commentCount} />
             </View>
             <Text style={styles.price}>{product ? `$${product.price - (product.price * (product.offer / 100))}` : ''}</Text>
             <Text style={styles.textsize}>Select Size</Text>
@@ -291,47 +314,27 @@ const Productdetail = (props: NativeStackHeaderProps) => {
               </ScrollView>
             </View>
             <Text style={styles.textsize}>Specification</Text>
-            <View>
-              <Text style={styles.comment}>Style:</Text>
-              <Text style={styles.comment2}>The Nike Air Max 270 React ENG combines a full-length React foam midsole with a 270 Max Air unit for unrivaled comfort and a striking visual experience.</Text>
-            </View>
+              <Text style={styles.comment2}>{product?.description}</Text>
             <View style={{ flexDirection: 'row', width: windowWidth }}>
               <Text style={styles.textsize}>Review Product</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Productreviews' as never)}>
+              <TouchableOpacity onPress={() => navigation.navigate('Productreviews', { id: id })}>
                 <Text style={styles.textsize2}>See More</Text>
               </TouchableOpacity>
 
             </View>
-            <CustomRatingBar numberOfRatings={10} />
-            <View style={{ height: 'auto', alignItems: 'center' }}>
-              {filteredReviews.map((review) => (
-                <View key={review.id} style={styles.reviewContainer}>
-                  <View style={styles.reviewHeader}>
-                    <Image source={{ uri: review.user.image }} style={styles.userImage} />
-                    <View style={styles.userInfo}>
-                      <Text style={styles.userName}>{review.user.name}</Text>
-                      <View style={styles.starRating}>
-                        <Text style={styles.reviewStars}>{'⭐'.repeat(review.stars)}</Text>
-                      </View>
-                    </View>
-                  </View>
-                  {review.comment && <Text style={styles.reviewComment}>{review.comment}</Text>}
-                  {review.commentImage && (
-                    <View style={styles.commentImagesContainer}>
-                      {Array.isArray(review.commentImage) && review.commentImage.map((imageURL, index) => (
-                        <Image
-                          key={index}
-                          source={{ uri: imageURL }}
-                          style={styles.CommentImage}
-                        />
-                      ))}
-                    </View>
-                  )}
-                  <View style={styles.reviewFooter}>
-                    <Text style={styles.reviewDateTime}>{`${review.date} at ${review.time}`}</Text>
-                  </View>
-                </View>
-              ))}
+            <CustomRatingBar numberOfRatings={commentCount} />
+            <View style={{ height: HEIGHT * 0.35, marginTop: '11%', alignItems: 'center' }}>
+              {listComment && listComment.length > 0 ? (
+                <FlatList
+                  showsVerticalScrollIndicator={false}
+                  renderItem={(object) => <RenderItem item={object.item} />}
+                  data={listComment}
+                  keyExtractor={(item: any) => item?.productID?._id?.toString()}
+                />
+              ) : (
+                <Text style={{ fontSize: 20 }}>No data</Text>
+              )}
+
             </View>
 
             <View>
@@ -730,92 +733,3 @@ const styles = StyleSheet.create({
   },
 
 });
-const products = [
-  {
-    id: 1,
-    image: require('../../asset/image/hong.png'),
-    name: 'FS - Nike Air Max 270 React...',
-    price: '299,43',
-    oldPrice: '534,33',
-  },
-  {
-    id: 2,
-    image: require('../../asset/image/trang.png'),
-    name: 'FS - QUILTED MAXI CROS...',
-    price: '299,43',
-    oldPrice: '534,33',
-  },
-  {
-    id: 3,
-    image: require('../../asset/image/trang.png'),
-    name: 'FS - Nike Air Max 270 React...',
-    price: '299,43',
-    oldPrice: '534,33',
-  },
-  {
-    id: 4,
-    image: require('../../asset/image/xanhbien.png'),
-    name: 'FS - Nike Air Max 270 React...',
-    price: '299,43',
-    oldPrice: '534,33',
-  },
-  {
-    id: 5,
-    image: require('../../asset/image/den.png'),
-    name: 'FS - Nike Air Max 270 React...',
-    price: '299,43',
-    oldPrice: '534,33',
-  },
-];
-const slideshow = [
-  {
-    id: '1',
-    img: require('../../asset/image/do.png'),
-    mau: 'do',
-  },
-  {
-    id: '2',
-    img: require('../../asset/image/den.png'),
-    mau: 'den',
-  },
-  {
-    id: '3',
-    img: require('../../asset/image/hong.png'),
-    mau: 'hong',
-  },
-  {
-    id: '4',
-    img: require('../../asset/image/trang.png'),
-    mau: 'trang',
-  },
-  {
-    id: '5',
-    img: require('../../asset/image/xanhbien.png'),
-    mau: 'xanhbien',
-  },
-  {
-    id: '6',
-    img: require('../../asset/image/xanhbien.png'),
-    mau: 'xanhbien',
-  },
-  {
-    id: '7',
-    img: require('../../asset/image/xanhbien.png'),
-    mau: 'xanhbien',
-  },
-];
-
-const reviewsData = [
-  {
-    id: 1,
-    stars: 5,
-    user: {
-      name: 'James Lawson',
-      image: 'https://bom.so/BIMgHb', // User's profile image URL
-    },
-    date: '2023-08-24',
-    time: '14:30',
-    comment: 'air max are always very comfortable fit, clean and just perfect in every way. just the box was too small and scrunched the sneakers up a little bit, not sure if the box was always this small but the 90s are and will always be one of my favorites.',
-    commentImage: ['https://bom.so/BIMgHb'], // Comment image URL (optional)
-  },
-];
