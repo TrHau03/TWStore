@@ -47,7 +47,7 @@ const RegisterScreen = (props: any) => {
             }
             const result = await AxiosInstance().post('/usersInfo/RegisterUser', { username: user.name, email: user.email, password: user.password });
             if (result) {
-                navigation.navigate(RootStackScreenEnumLogin.LoginScreen)
+                navigation.navigate(RootStackScreenEnumLogin.LoginScreen);
             }
 
         } catch (error) {

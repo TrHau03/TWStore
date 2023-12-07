@@ -1,11 +1,11 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Alert, TextInput, Linking } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Alert, TextInput, Linking, AppState } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
 import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
 import { useSelector } from 'react-redux';
-import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
 import AxiosInstance from '../../Axios/Axios'
@@ -14,7 +14,7 @@ import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccoun
 import axios from 'axios';
 import moment from 'moment';
 import crypto from 'crypto-js';
-
+import qs from 'qs'
 
 type CartDetailRouteParams = {
     CartDetail: {
@@ -25,35 +25,31 @@ type CartDetailRouteParams = {
     };
 };
 
-type OrderType = {
-    app_id: string;
-    app_trans_id: string;
-    // Thêm các thuộc tính khác của đơn hàng vào đây
-    mac?: string; // Thêm thuộc tính mac và đặt kiểu dữ liệu của nó (có thể là string hoặc undefined)
-};
 
 const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const listData = useSelector((state: any) => {
         return state.SlicesReducer.user.cartItem;
     });
+
+    const address = useSelector((state: any) => state.SlicesReducer.user.address);
+
+    const appState = useRef(AppState.currentState);
+    const [checkOrder, setCheckOrder] = useState<any>();
+    const [focusScreen, setFocusScreen] = useState<boolean>(false);
+
+
     const route = useRoute<RouteProp<CartDetailRouteParams, 'CartDetail'>>();
-    const [voucher, setVoucher] = useState<string>('');
     const [totalAfterShipping, setTotalAfterShipping] = useState<number>(0);
-    const discountLevel = route.params?.Level ?? '';
 
     const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
     const [isReceiverNameValid, setIsReceiverNameValid] = useState(true);
     const [paymentMethods, setPaymentMethods] = useState<{ _id: number, name: string }[]>([]);
-    const [addressList, setAddressList] = useState<string[]>([]);
-
-
 
     const [receiverName, setReceiverName] = useState<string>('');
     const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [selectedAddress, setSelectedAddress] = useState<string>('');
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
-    const address = useSelector((state: any) => state.SlicesReducer.user.address);
 
 
     const handleReceiverNameChange = (text: string) => {
@@ -93,12 +89,11 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
 
     const isValidPhoneNumber = (number: string) => {
-        const phoneNumberRegex = /^\d{10,12}$/;
+        const phoneNumberRegex = /^\d{9,12}$/;
         return phoneNumberRegex.test(number);
     };
 
     useEffect(() => {
-        setVoucher(route.params?.Level ?? '');
         setTotalAfterShipping(route.params?.totalAfterShipping ?? 0);
     }, [route.params]);
 
@@ -120,43 +115,90 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         app_id: "2553",
         key1: "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL",
         key2: "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz",
-        endpoint: "https://sb-openapi.zalopay.vn/v2/create"
-        
+        endpoint: "https://sb-openapi.zalopay.vn/v2/create",
+        endpoint2: "https://sb-openapi.zalopay.vn/v2/query"
     };
+
     const embed_data = {};
     const items = [{}];
     const transID = Math.floor(Math.random() * 1000000);
-    const order = {
-        app_id: config.app_id,
-        app_trans_id: `${moment().format('YYMMDD')}_${transID}`,
-        app_user: "user123",
-        app_time: Date.now(),
-        item: JSON.stringify(items),
-        embed_data: JSON.stringify(embed_data),
-        amount: totalAfterShipping,
-        description: `tui m tuoi lol #${transID}`,
-        bank_code: "zalopayapp",
-        mac: "",
-    };
-    const data = config.app_id + "|"
-        + order.app_trans_id + "|"
-        + order.app_user + "|"
-        + order.amount + "|"
-        + order.app_time + "|"
-        + order.embed_data + "|"
-        + order.item;
-    order.mac = crypto.HmacSHA256(data, config.key1).toString();
-    
+
+
     const checkOutZaloPay = async () => {
         try {
+            const order = {
+                app_id: config.app_id,
+                app_trans_id: `${moment().format('YYMMDD')}_${transID}`,
+                app_user: "user123",
+                app_time: Date.now(),
+                item: JSON.stringify(items),
+                embed_data: JSON.stringify(embed_data),
+                amount: totalAfterShipping.toString(),
+                description: `tui m tuoi lol #${transID}`,
+                bank_code: "zalopayapp",
+                mac: "",
+            };
+            const data = config.app_id + "|"
+                + order.app_trans_id + "|"
+                + order.app_user + "|"
+                + order.amount + "|"
+                + order.app_time + "|"
+                + order.embed_data + "|"
+                + order.item;
+            order.mac = crypto.HmacSHA256(data, config.key1).toString();
+            const postData = {
+                app_id: order.app_id,
+                app_trans_id: order.app_trans_id,
+                mac: "",
+            }
+            const data2 = postData.app_id + "|" + postData.app_trans_id + "|" + config.key1;
+            postData.mac = crypto.HmacSHA256(data2, config.key1).toString();
             const res = await axios.post(config.endpoint, null, { params: order });
             const linkk = res.data.order_url;
             Linking.openURL(linkk);
-            console.log(res.data);
+            setCheckOrder(postData);
+
         } catch (err) {
             console.error(err);
         }
     };
+    const getStatusPayment = async () => {
+        const postConfig = {
+            method: 'post',
+            url: config.endpoint2,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            data: qs.stringify(checkOrder)
+        };
+
+        try {
+            const response = await axios(postConfig);
+            console.log(JSON.stringify(response.data));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    if (focusScreen === true) {
+        getStatusPayment();
+        setFocusScreen(false);
+    }
+    useFocusEffect(
+        React.useCallback(() => {
+            const subscription = AppState.addEventListener('change', nextAppState => {
+                if (
+                    appState.current.match(/inactive|background/) &&
+                    nextAppState === 'active'
+                ) {
+                    setFocusScreen(true);
+                }
+                appState.current = nextAppState;
+            });
+            return () => {
+                subscription.remove();
+            };
+        }, [])
+    );
     const RenderItem = ({ item }: any) => {
         return (
             <View style={styles.itemCart} key={item.id}>
@@ -168,7 +210,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                         <Text style={styles.textTitleItem}>{item.productID.productName.length < 15 ? item.productID.productName : item.productID.productName.substring(0, 15) + "..."}</Text>
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>${item.productID.price}</Text>
+                        <Text style={styles.textPrice}>${item.productID.price - item.productID.price * (item.productID.offer / 100)}</Text>
                         <View style={{ backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'center', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
                             <Text style={styles.textNumberCount}>{item.quantity}</Text>
                         </View>
@@ -195,12 +237,12 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 const updatedMethods = prevMethods.map((method) => ({
                     ...method,
                     isSelected: method === paymentMethod,
-                    
+
                 }));
                 console.log(paymentMethod.name);
 
                 return updatedMethods;
-                
+
             });
             setIsSelected(true);
             setSelectedPaymentMethod(paymentMethod);
@@ -307,7 +349,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
             </ScrollView>
             <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
-                <Pressable onPress={() => {handleOrderSubmit(); checkOutZaloPay()}}>
+                <Pressable onPress={() => { handleOrderSubmit(); checkOutZaloPay() }}>
                     <ButtonBottom title='Check Out' />
                 </Pressable>
             </View>
@@ -435,7 +477,7 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     itemTotalPrice: {
-        padding: 10, 
+        padding: 10,
         borderWidth: 0.5,
         borderColor: '#9098B1',
         borderRadius: 5,
@@ -444,7 +486,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     itema: {
-        padding: 10, 
+        padding: 10,
         borderWidth: 0.5,
         borderColor: '#9098B1',
         borderRadius: 5,
@@ -452,7 +494,7 @@ const styles = StyleSheet.create({
     },
     topItem: {
         flexDirection: 'row',
-        columnGap: 15, 
+        columnGap: 15,
         paddingLeft: 10,
     },
     bottomItem: {
@@ -473,7 +515,7 @@ const styles = StyleSheet.create({
     },
     textNumberCount: {
         color: '#223263',
-        fontSize: 16, 
+        fontSize: 16,
         fontFamily: 'Poppins',
         fontWeight: '400',
         lineHeight: 18,
@@ -503,19 +545,19 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         flexDirection: 'row',
-        padding: 10, 
-        marginBottom: 12 
+        padding: 10,
+        marginBottom: 12
     },
     line: {
         position: 'absolute',
         width: WIDTH,
         height: 1,
         backgroundColor: '#E5E5E5',
-        marginTop: 50, 
+        marginTop: 50,
     },
     txtTitlePage: {
         color: '#223263',
-        fontSize: 18, 
+        fontSize: 18,
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 22,

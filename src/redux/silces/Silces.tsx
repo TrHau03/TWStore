@@ -10,8 +10,6 @@ export const fetchInitialListProductFilter: any = createAsyncThunk('Slice/fetchI
 
   const { brandID, categoryID } = url;
   const response = await AxiosInstance().get(categoryID ? `product/getProductByIdCategory/${categoryID}` : `product/getProductByIdBrand/${brandID}`);
-  console.log(response.data);
-  
   return response.data;
 })
 

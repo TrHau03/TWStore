@@ -132,7 +132,7 @@ const FilterScreen = (props: any) => {
             <View style={styles.Price}>
               <Text style={styles.textPrice}>{priceMin}$</Text>
             </View>
-            <View style={styles.Price}>
+            <View style={[styles.Price, { width: 130 }]}>
               <Text style={styles.textPrice}>{priceMax}$</Text>
             </View>
           </View>
@@ -148,8 +148,8 @@ const FilterScreen = (props: any) => {
             values={[0, 5000]}
             sliderLength={300}
             min={0}
-            max={5000}
-            step={50}
+            max={5000000}
+            step={100000}
             allowOverlap={false}
             snapped
             onValuesChangeFinish={(e) => { setpriceMin(e[0].toString()); setpriceMax(e[1].toString()) }}

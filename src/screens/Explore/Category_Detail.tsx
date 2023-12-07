@@ -66,12 +66,12 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
   const [brand, setBrand] = useState<string>('All');
   const [size, setSize] = useState<string>('All');
   const [priceMin, setpriceMin] = useState<string>('0')
-  const [priceMax, setpriceMax] = useState<string>('5000');
+  const [priceMax, setpriceMax] = useState<string>('5000000');
 
   //redux
   const [textInputSearch, setTextInputSearch] = useState<string>('');
   const todoListProducts = useSelector(todoRemainingProducts);
-
+  
   const handleSearch = (e: any) => {
     setTextInputSearch(e);
     dispatch(
