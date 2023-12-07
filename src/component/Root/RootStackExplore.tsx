@@ -5,6 +5,7 @@ import Category_Detail_Screen from '../../screens/Explore/Category_Detail';
 import FilterScreen from '../../screens/Explore/Filter';
 import { FadeExploreScreen } from '../BottomNavigation/AniScreenBottomTab';
 import Productdetail from '../../screens/Explore/Productdetail';
+import Productreviews from '../../screens/Explore/Productreviews';
 
 
 
@@ -14,13 +15,17 @@ import Productdetail from '../../screens/Explore/Productdetail';
 export enum RootStackScreenEnumExplore {
     ExploreScreen = 'ExploreScreen',
     Category_Detail_Screen = 'Category_Detail_Screen',
-    Productdetail = 'Productdetail'
+    Productdetail = 'Productdetail',
+    Productreviews = 'Productreviews',
+
 }
 
 export type RootStackParamListExplore = {
     ExploreScreen: undefined,
     Category_Detail_Screen: undefined,
     Productdetail: any,
+    Productreviews: any,
+
 }
 
 
@@ -29,6 +34,8 @@ export const RootStackScreenExplore = () => {
         { id: uid(), name: RootStackScreenEnumExplore.ExploreScreen, component: FadeExploreScreen, options: {} },
         { id: uid(), name: RootStackScreenEnumExplore.Category_Detail_Screen, component: Category_Detail_Screen, options: {} },
         { id: uid(), name: RootStackScreenEnumExplore.Productdetail, component: Productdetail, options: {} },
+        { id: uid(), name: RootStackScreenEnumExplore.Productreviews, component: Productreviews, options: {} },
+
 
     ]
     return Screen;
