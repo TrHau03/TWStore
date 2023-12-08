@@ -142,7 +142,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                                 <Text style={styles.textTitleItem}>Size: {item.sizeProduct.name}</Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Text style={styles.textTitleItem}>Size: </Text>
-                                    <View style={{ width: 20, height: 20, backgroundColor: `${item.colorProduct.code}` }}></View>
+                                    <View style={{ width: 20, height: 20, backgroundColor: `${item.colorProduct.code}` ,borderRadius: 50}}></View>
                                 </View>
                             </View>
                         </View>

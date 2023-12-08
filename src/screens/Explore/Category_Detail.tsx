@@ -12,7 +12,6 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { COLORS, ROUTES } from '../../component/constants';
 import { AirbnbRating } from 'react-native-ratings';
-import SelectDropdown from 'react-native-select-dropdown';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { PropsExplore } from '../../component/Navigation/Props';
 import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
@@ -187,14 +186,13 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
         </View>
         <FlatList
           scrollEnabled={false}
-          contentContainerStyle={{ alignItems: 'center' }}
           style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
           showsVerticalScrollIndicator={false}
           data={dataFilter}
           renderItem={renderItem}
           keyExtractor={(item: any) => item._id.toString()}
           numColumns={2}
-          columnWrapperStyle={{ columnGap: 10 }}
+          columnWrapperStyle={{ columnGap: 10, justifyContent: 'center' }}
         />
       </View>
     </View >
@@ -288,7 +286,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     lineHeight: 24,
     color: '#4464C4',
-    marginTop: 10
   },
   in4Text: {
     marginTop: 5,
@@ -309,7 +306,7 @@ const styles = StyleSheet.create({
   },
   containerItemPD: {
     borderWidth: 0.5,
-    maxWidth: '50%',
+    width: '48%',
     height: 270,
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
@@ -321,6 +318,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    marginBottom: 10
   },
 
   TextSearch: {
