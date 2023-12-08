@@ -120,7 +120,8 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         app_id: "2553",
         key1: "PcY4iZIKFCIdgZvA6ueMcMHHUbRLYjPL",
         key2: "kLtgPl8HHhfvMuDHPwKfgfsY4Ydm9eIz",
-        endpoint: "https://sb-openapi.zalopay.vn/v2/create"
+        endpoint: "https://sb-openapi.zalopay.vn/v2/create",
+        endpoint2: "https://sb-openapi.zalopay.vn/v2/query"
         
     };
     const embed_data = {};
@@ -146,7 +147,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         + order.embed_data + "|"
         + order.item;
     order.mac = crypto.HmacSHA256(data, config.key1).toString();
-    
+
     const checkOutZaloPay = async () => {
         try {
             const res = await axios.post(config.endpoint, null, { params: order });
@@ -157,6 +158,8 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             console.error(err);
         }
     };
+
+
     const RenderItem = ({ item }: any) => {
         return (
             <View style={styles.itemCart} key={item.id}>
