@@ -28,7 +28,7 @@ const windowWidth = Dimensions.get('window').width;
 
 type CustomRatingBarProps = {
   numberOfRatings: number;
-  
+
 };
 
 interface Product {
@@ -97,17 +97,17 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       const fetchCommentbyIdProduct = async (id: string) => {
         const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
         setlistComment(response.data);
-      
+
         let stars = 0;
         response.data.forEach((comment: any) => {
           // Đảm bảo giá trị số sao luôn trong khoảng từ 1 đến 5
           stars += comment.stars > 5 ? 5 : comment.stars;
         });
-      
+
         setTotalStars(stars);
         setCommentCount(response.data.length);
       };
-      
+
       if (isFocus) {
         fetchProductByID();
       }
@@ -314,7 +314,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
               </ScrollView>
             </View>
             <Text style={styles.textsize}>Specification</Text>
-              <Text style={styles.comment2}>{product?.description}</Text>
+            <Text style={styles.comment2}>{product?.description}</Text>
             <View style={{ flexDirection: 'row', width: windowWidth }}>
               <Text style={styles.textsize}>Review Product</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Productreviews', { id: id })}>
@@ -349,10 +349,12 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                     <TouchableOpacity key={product._id} style={styles.productItem}>
                       <Image source={{ uri: product.image[0] }} style={styles.productImage} />
                       <Text style={styles.productName}>{product.productName}</Text>
-                      <Text style={styles.productPrice}>${product.price - product.price * product.offer}</Text>
                       <View style={styles.sale}>
-                        <Text style={styles.productOldPrice}>${product.price}</Text>
-                        <Text style={styles.textsale}> {product.offer}% Off</Text>
+                        <Text style={styles.productPrice}>${product.price - product.price * (product.offer / 100)}</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                          <Text style={styles.productOldPrice}>${product.price}</Text>
+                          <Text style={styles.textsale}> {product.offer}% Off</Text>
+                        </View>
                       </View>
                     </TouchableOpacity>
 
@@ -635,18 +637,15 @@ const styles = StyleSheet.create({
   productItem: {
     width: 150,
     height: 250,
-    padding: 10,
+    paddingHorizontal: 10,
     marginBottom: 20,
     backgroundColor: 'white',
     borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
     margin: 10,
   },
   productImage: {
     width: 130,
     height: 120,
-    resizeMode: 'cover',
     borderRadius: 20,
     padding: 8,
   },
@@ -655,7 +654,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: '#223263',
     marginBottom: 8,
-    fontWeight: "700"
+    fontWeight: "700",
+    textAlign: 'center'
   },
   productPrice: {
     fontSize: 18,
@@ -687,7 +687,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   sale: {
-    flexDirection: 'row',
+    position: 'absolute',
+    bottom: 5,
+    paddingHorizontal: 10
   },
   textsale: {
     fontSize: 14,

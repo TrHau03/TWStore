@@ -71,7 +71,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
   //redux
   const [textInputSearch, setTextInputSearch] = useState<string>('');
   const todoListProducts = useSelector(todoRemainingProducts);
-  
+
   const handleSearch = (e: any) => {
     setTextInputSearch(e);
     dispatch(
@@ -108,8 +108,8 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
               <View style={styles.star}>
                 <AirbnbRating count={5} size={15} showRating={false} />
               </View>
-              {(offer > 0) ? <Text style={styles.PricePD}>${price - price * (offer / 100)}</Text> : <></>}
             </View>
+            {(offer > 0) ? <Text style={styles.PricePD}>${price - price * (offer / 100)}</Text> : <></>}
             <View style={styles.sale}>
               <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>${price}</Text>
               <Text style={styles.txtSale}>{offer}% Off</Text>
@@ -186,12 +186,15 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
           </View>
         </View>
         <FlatList
-          style={{ marginTop: 10, marginBottom: 50 }}
+          scrollEnabled={false}
+          contentContainerStyle={{ alignItems: 'center' }}
+          style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
+          showsVerticalScrollIndicator={false}
           data={dataFilter}
           renderItem={renderItem}
-          keyExtractor={item => item._id.toString()}
+          keyExtractor={(item: any) => item._id.toString()}
           numColumns={2}
-          showsVerticalScrollIndicator={false}
+          columnWrapperStyle={{ columnGap: 10 }}
         />
       </View>
     </View >
@@ -262,13 +265,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   star: {
-    width: '80%',
+    width: '75%',
     marginTop: 5,
   },
 
   content: {
     width: '100%',
-    padding: 15,
+    padding: 5,
   },
   NamePD: {
     fontSize: 16,
@@ -285,6 +288,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     lineHeight: 24,
     color: '#4464C4',
+    marginTop: 10
   },
   in4Text: {
     marginTop: 5,
@@ -305,10 +309,9 @@ const styles = StyleSheet.create({
   },
   containerItemPD: {
     borderWidth: 0.5,
-    width: '47%',
-    height: 300,
+    maxWidth: '50%',
+    height: 270,
     backgroundColor: '#FFFFFF',
-    margin: 5,
     borderRadius: 5,
     shadowColor: '#C4C4C4',
     shadowOffset: {
