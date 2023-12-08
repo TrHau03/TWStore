@@ -70,14 +70,14 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
         return (
             <Pressable style={styles.itemsale2} onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })}>
                 <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
-                <View style={{ marginTop: 20, rowGap: 15, alignSelf: 'center', width: '95%' }}>
+                <View style={{ rowGap: 15, alignSelf: 'center', width: '95%' }}>
                     <Text style={styles.nameproduct}>{item.productName}</Text>
                 </View>
                 <View style={styles.stylesaleoff}>
-                    <Text style={styles.price}>${item.price}</Text>
-                    <View style={{ flexDirection: "row" }}>
-                        <Text style={styles.strikethrough}>$534,33</Text>
-                        <Text style={styles.saleoff}>24% Off</Text>
+                    <Text style={styles.price}>${item.price - item.price * (item.offer / 100)}</Text>
+                    <View style={{ flexDirection: "row", justifyContent: 'center', width: '100%' }}>
+                        <Text style={styles.strikethrough}>${item.price}</Text>
+                        <Text style={styles.saleoff}>{item.offer}% Off</Text>
                     </View>
                 </View>
             </Pressable>
@@ -327,12 +327,12 @@ const styles = StyleSheet.create({
 
     imageproduct: {
         alignSelf: 'center',
-        width: 72,
-        height: 72,
+        width: 92,
+        height: 92,
     },
     nameproduct: {
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 18,
         color: '#223263',
         width: '100%',
         textAlign: 'center'
@@ -340,15 +340,17 @@ const styles = StyleSheet.create({
 
     price: {
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 20,
         color: '#4464C4',
     },
 
     stylesaleoff: {
         position: 'absolute',
-        bottom: 25,
+        bottom: 10,
+        alignSelf: 'center',
         alignItems: 'center',
-        rowGap: 10
+        rowGap: 10,
+        width: '100%'
     },
 
     strikethrough: {
@@ -379,8 +381,8 @@ const styles = StyleSheet.create({
     itemsale2: {
         paddingVertical: 10,
         paddingHorizontal: 10,
-        height: 220,
-        width: WIDTH / 2.5,
+        height: 240,
+        width: WIDTH / 2.3,
         borderWidth: 1,
         borderRadius: 6,
         borderColor: 'black',
