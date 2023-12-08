@@ -2,7 +2,6 @@
 import { uid } from 'uid';
 import OfferScreen from '../../screens/Offer/OfferScreen';
 import { FadeOfferScreen } from '../BottomNavigation/AniScreenBottomTab';
-import OfferHome from '../../screens/Offer/OfferHome';
 
 
 

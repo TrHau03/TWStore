@@ -36,7 +36,7 @@ const Add_Address = (props: any) => {
         return state.SlicesReducer.user.address;
     });
 
-    const setModalVisible = props.action;
+    const {setModalVisible} = props.action;
     const dispatch = useDispatch();
 
     const [tinhThanhs, setTinhThanhs] = useState<TinhThanh[]>([]);

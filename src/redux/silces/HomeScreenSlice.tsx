@@ -57,11 +57,8 @@ interface Order {
 }
 
 interface InitialState {
-    banner: Array<Banner>,
-    recommenProduct: Array<RecomnenProduct>,
     filters: Filters,
     offer: Array<Offer>,
-    product: Array<Product>,
     filterPrice: FilterPrice,
     order: Array<Order>,
 }
@@ -69,7 +66,7 @@ interface InitialState {
 const initialState: InitialState = {
     filterPrice: {
         minPrice: '0',
-        maxPrice: '5000',
+        maxPrice: '5000000',
     },
 
     filters: {
@@ -151,51 +148,10 @@ const initialState: InitialState = {
         },
     ],
 
-    banner:
-        [{
-            id: 1,
-            image: 'https://thietke6d.com/wp-content/uploads/2021/03/Mau-banner-quang-cao-dep-1.png',
-            nameScreen: 'OfferScreen'
-        },
-        {
-            id: 2,
-            image: 'https://intphcm.com/data/upload/banner-thoi-trang-tuoi.jpg',
-            nameScreen: 'CartScreen'
-        },
-        {
-            id: 3,
-            image: 'https://dojeannam.com/wp-content/uploads/2017/09/BANNER-KHAI-TRUONG-DOJEANNAM.jpg',
-            nameScreen: 'PaymentScreen'
-        },
-        {
-            id: 4,
-            image: 'https://intphcm.com/data/upload/banner-thoi-trang.jpg',
-            nameScreen: 'BankTransferScreen'
-        },
-        ],
 
-    recommenProduct: [
-        { id: 1, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FS - Nike Air Max 270 React...', price: 299, strikeThrough: 50, saleOff: 24 },
-        { id: 2, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FE - QUILTED MAXI CROS...', price: 300, strikeThrough: 70, saleOff: 27 },
-        { id: 3, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 24 },
-        { id: 4, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 450, strikeThrough: 10, saleOff: 28 },
-        { id: 5, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 100, strikeThrough: 50, saleOff: 24 },
-        { id: 6, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30 },
-    ],
 
-    product: [
-        { id: 1, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FS - Nike Air Max 270 React...', price: 2000, strikeThrough: 50, saleOff: 24, sex: 'women', brand: 'Nike', category: 'Sneakers', color: 'Black', size: '44' },
-        { id: 2, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FE - QUILTED MAXI CROS...', price: 3000, strikeThrough: 70, saleOff: 27, sex: 'women', brand: 'Nike', category: 'Sneakers', color: 'Black', size: '44' },
-        { id: 3, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 2500, strikeThrough: 50, saleOff: 24, sex: 'women', brand: 'Adidas', category: 'Sneakers', color: 'Black', size: '40' },
-        { id: 4, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 4500, strikeThrough: 10, saleOff: 28, sex: 'women', brand: 'Adidas', category: 'Sneakers', color: 'Black', size: '41' },
-        { id: 5, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 1000, strikeThrough: 50, saleOff: 24, sex: 'women', brand: 'Nike', category: 'Lifestyle', color: 'White', size: '40' },
-        { id: 6, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 2500, strikeThrough: 50, saleOff: 30, sex: 'women', brand: 'Nike', category: 'Lifestyle', color: 'White', size: '42' },
-        { id: 7, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30, sex: 'man', brand: 'Nike', category: 'Lifestyle', color: 'Blue', size: '42' },
-        { id: 8, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30, sex: 'man', brand: 'Adidas', category: 'Sneakers', color: 'Blue', size: '41' },
-        { id: 9, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 2500, strikeThrough: 50, saleOff: 30, sex: 'man', brand: 'Nike', category: 'Sports', color: 'Yellow', size: '44' },
-        { id: 10, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - adidas Air Max 350 React...', price: 2500, strikeThrough: 50, saleOff: 30, sex: 'man', brand: 'Adidas', category: 'Sports', color: 'Yellow', size: '39' },
-        { id: 11, image: 'http://dummyimage.com/72x72.png/dddddd/000000', name: 'FA - Nike Air Max 350 React...', price: 250, strikeThrough: 50, saleOff: 30, sex: 'man', brand: 'Nike', category: 'Sports', color: 'Yellow', size: '45' },
-    ],
+
+
 };
 
 const HomeScreenSlice = createSlice({
@@ -210,7 +166,7 @@ const HomeScreenSlice = createSlice({
         },
         filterColor: (state, action) => {
             console.log(action.payload);
-            
+
             state.filters.color = action.payload;
         },
         filterSize: (state, action) => {

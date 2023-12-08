@@ -35,11 +35,27 @@ interface User {
 }
 
 const LoginScreen = (props: any) => {
-  const { navigation }: NativeStackHeaderProps = props
+  const { navigation }: NativeStackHeaderProps = props;
+
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [pictureURL, setPictureURL] = useState<any>(null);
+  const [checkBoxRemember, setCheckBoxRemember] = useState<any>(null);
+  console.log(checkBoxRemember);
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getDataStorage = async () => {
+      const emailStorage = await AsyncStorage.getItem('email');
+      const passwordStorage = await AsyncStorage.getItem('password');
+      if (emailStorage && passwordStorage) {
+        setEmail(emailStorage);
+        setPassword(passwordStorage);
+      }
+    }
+    getDataStorage()
+  }, [])
   useEffect(() => {
     const setData = async () => {
       await AsyncStorage.setItem('checkSlide', 'true');
@@ -51,15 +67,19 @@ const LoginScreen = (props: any) => {
     dispatch(isLogin(true));
     dispatch(updateUser({ _id: data._id, _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address, phone: data.phone }))
   }
-  const login = async (user: Login) => {
+  const login = async (info: Login) => {
     try {
-      const result = await AxiosInstance().post('/usersInfo/LoginUser', { email: user.email, password: user.password });
+      const result = await AxiosInstance().post('/usersInfo/LoginUser', { email: info.email, password: info.password });
       const userInfo = result?.data.user;
       if (result.data.status) {
         const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
         const user = response.data.data;
         if (user.active) {
           if (userInfo.role === 'user') {
+            if (checkBoxRemember) {
+              await AsyncStorage.setItem('email', info.email);
+              await AsyncStorage.setItem('password', info.password);
+            }
             handleSubmit({ _id: user._id, _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
           } else {
             console.warn("Tài khoản không có quyền đăng nhập !");
@@ -224,7 +244,7 @@ const LoginScreen = (props: any) => {
           </View>
         </View>
         <View style={{ flexDirection: 'row', marginTop: 17 }}>
-          <Checkbox style={{ width: 150 }}><Text style={styles.checkBox}>Remember me</Text></Checkbox>
+          <Checkbox checked onChange={(e: any) => setCheckBoxRemember(e.target.checked)} style={{ width: 150 }}><Text style={styles.checkBox}>Remember me</Text></Checkbox>
           <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumLogin.VerificationScreen)} style={{ position: 'absolute', right: 0 }}>
             <Text style={styles.checkBox}>Forgot Password?</Text>
           </TouchableOpacity>

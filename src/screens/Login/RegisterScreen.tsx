@@ -11,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 import AxiosInstance from '../../Axios/Axios';
-import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
 
 
 
@@ -47,7 +47,7 @@ const RegisterScreen = (props: any) => {
             }
             const result = await AxiosInstance().post('/usersInfo/RegisterUser', { username: user.name, email: user.email, password: user.password });
             if (result) {
-                navigation.navigate(RootStackScreenEnumLogin.LoginScreen)
+                navigation.navigate(RootStackScreenEnumLogin.LoginScreen);
             }
 
         } catch (error) {
@@ -56,7 +56,7 @@ const RegisterScreen = (props: any) => {
     }
     return (
         <KeyboardAwareScrollView enableOnAndroid={true}>
-            <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
+            <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR, height: HEIGHT }}>
                 <View style={styles.header}>
                     <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
                     <Text style={styles.textHeader}>The Wonder</Text>
