@@ -51,7 +51,7 @@ const ForgotPass = (props: any) => {
         }
     }
     return (
-        <KeyboardAwareScrollView enableOnAndroid={true}>
+        <View>
             <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR , height: HEIGHT }}>
                 <View style={styles.header}>
                     <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
@@ -96,7 +96,7 @@ const ForgotPass = (props: any) => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAwareScrollView>
+        </View>
     )
 }
 
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 55,
         borderRadius: 5,
-        marginTop: 34
+        marginTop: 50,
     },
     textLogin: {
         color: 'white',

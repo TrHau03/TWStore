@@ -17,7 +17,6 @@ const ChangePass = (props: any) => {
     const [againPass, setAgainPass] = useState<string>('');
     const user = useSelector((state: any) => state.SlicesReducer.user);
     const dispatch = useDispatch();
-    console.log(user.password);
 
     const handleSaveChangePass = async () => {
         if(user.password === oldPass){
