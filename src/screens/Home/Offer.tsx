@@ -17,7 +17,6 @@ import {
   PADDING_TOP,
 } from '../../utilities/utility';
 import {useDispatch, useSelector} from 'react-redux';
-import {listRecommended} from '../../redux/silces/HomeSelector';
 import AxiosInstance from '../../Axios/Axios';
 import { ObjectId } from 'mongoose';
 import { useIsFocused } from '@react-navigation/native';
