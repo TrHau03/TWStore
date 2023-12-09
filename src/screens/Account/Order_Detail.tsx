@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   },
   container: {
     width: '100%',
-    height: '93%',
+    height: '100%',
     paddingTop: 20,
   }
 })

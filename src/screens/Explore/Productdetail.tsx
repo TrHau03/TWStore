@@ -21,6 +21,7 @@ import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplor
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../redux/silces/Silces';
 import { HEIGHT } from '../../utilities/utility';
+import { uid } from 'uid';
 
 
 
@@ -144,12 +145,14 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   };
 
   const handle = ({ productID, sizeProduct, colorProduct }: any) => {
-    const checkAddProduct = data.map((item: any) => {
-      return item.productID._id;
+    const checkAddProductSize = data.map((item: any) => {
+      return item.sizeProduct._id;
     }
     )
-    console.log(checkAddProduct, productID._id);
-    if (checkAddProduct.includes(productID._id)) {
+    const checkAddProductColor = data.map((item: any) => {
+      return item.colorProduct._id;
+    })
+    if (checkAddProductSize.includes(sizeProduct._id) && checkAddProductColor.includes(colorProduct._id)) {
       Alert.alert('Notification', 'Product already in cart!', [
         { text: 'OK' }
       ]);
@@ -161,7 +164,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
           { text: 'OK' }
         ]);
       } else {
-        dispatch(addItem({ productID: productID, sizeProduct: sizeProduct, colorProduct: colorProduct, quantity: 1 }));
+        dispatch(addItem({ key: uid(3), productID: productID, sizeProduct: sizeProduct, colorProduct: colorProduct, quantity: 1 }));
         setHandleAdd(true);
       }
 
@@ -170,9 +173,9 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
 
   const handleAddTocart = async () => {
-    const cart: { productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
+    const cart: { key: any, productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
     data.map((item: any) =>
-      cart.push({ productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
+      cart.push({ key: item.key, productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
     )
     await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart })
   };

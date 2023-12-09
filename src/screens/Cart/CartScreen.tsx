@@ -44,7 +44,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const generalPrice = listData.reduce((previousValue: number, currentItem: any) => previousValue + currentItem.productID?.price * currentItem.quantity, 0);
 
-    const cart: { productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
+    const cart: { key: any, productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
 
     const generalPriceAfterShipping = generalPrice + shippingFee;
 
@@ -96,13 +96,13 @@ const CartScreen = ({ navigation }: PropsCart) => {
         ]);
 
 
-    const handleRemoveItem = async (id: number) => {
-        dispatch(removeItem(id));
+    const handleRemoveItem = async (key: number) => {
+        dispatch(removeItem(key));
         setCheckRemoveItem(true);
     }
     const handlRemoveData = async () => {
         listData.map((item: any) => {
-            cart.push({ productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
+            cart.push({ key: item.key, productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
         }
         )
         await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart });
@@ -110,7 +110,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
     }
     checkRemoveItem && handlRemoveData();
 
-    
+
     const RenderItem = ({ item }: { item: any }) => {
         const [quantity, setQuantity] = useState<number>(item.quantity);
 
@@ -142,11 +142,11 @@ const CartScreen = ({ navigation }: PropsCart) => {
                                 <Text style={styles.textTitleItem}>Size: {item.sizeProduct.name}</Text>
                                 <View style={{ flexDirection: 'row' }}>
                                     <Text style={styles.textTitleItem}>Size: </Text>
-                                    <View style={{ width: 20, height: 20, backgroundColor: `${item.colorProduct.code}` ,borderRadius: 50}}></View>
+                                    <View style={{ width: 20, height: 20, backgroundColor: `${item.colorProduct.code}`, borderRadius: 50 }}></View>
                                 </View>
                             </View>
                         </View>
-                        <Pressable onPress={() => handleRemoveItem(item.productID._id)}>
+                        <Pressable onPress={() => handleRemoveItem(item.key)}>
                             <Icon name='trash-outline' color='#9e9e9e' size={25} />
                         </Pressable>
                     </View>
@@ -175,7 +175,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         showsVerticalScrollIndicator={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
-                        keyExtractor={(item: any) => item?.productID?._id?.toString()}
+                        keyExtractor={(item: any) => item?.key}
                     /> : <Text style={{ fontSize: 20 }}>No data</Text>}
             </View>
             <ScrollView

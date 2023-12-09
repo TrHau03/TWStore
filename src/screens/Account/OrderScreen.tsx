@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, Modal, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../../component/Header/Header'
 import { PropsAccount } from '../../component/Navigation/Props';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,30 +10,43 @@ import { listOrder } from '../../redux/silces/HomeSelector';
 import { HEIGHT, WIDTH } from '../../utilities/utility';
 import { RootStackScreenAccount, RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
 import StatusDeliver from './StatusDeliver';
+import AxiosInstance from '../../Axios/Axios';
+import { useIsFocused } from '@react-navigation/native';
 
 
 
 const OrderScreen = ({ navigation }: PropsAccount) => {
+    const isFocus = useIsFocused();
     const [date, setDate] = useState<string>('');
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const Order = useSelector(listOrder);
     const [status, setStatus] = useState<string>('');
+    const user = useSelector((state: any) => state.SlicesReducer.user);
 
+    const [listOrder, setListOrder] = useState<[]>()
+    useEffect(() => {
+        const fetchListCategory = async () => {
+            const response = await AxiosInstance().get(`order/getOrderByIdUser/${user._id}`);
+            setListOrder(response.data);
+        }
+        if (isFocus) {
+            fetchListCategory();
+        }
+    }, [isFocus])
     const RenderItem = (props: any) => {
         const { data } = props;
         const { item } = data;
 
         return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate(RootStackScreenEnumAccount.Order_Detail)}>
             <View>
-                <Text style={styles.MaCode}>{item.code}</Text>
-                <Text style={styles.title}>Order at Lafyuu : {item.date}</Text>
+                <Text style={styles.MaCode}>{item.orderCode}</Text>
+                <Text style={styles.title}>Order at Lafyuu : {item.bookingDate}</Text>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Items</Text>
-                    <Text style={styles.content}>{item.items} Items purchased</Text>
+                    <Text style={styles.content}>{listOrder?.length} Items purchased</Text>
                 </View>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Price</Text>
-                    <Text style={styles.price}>${item.price}</Text>
+                    <Text style={styles.price}>${item.totalPrice}</Text>
                 </View>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Order Status</Text>
@@ -66,7 +79,7 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
             <FlatList
                 showsVerticalScrollIndicator={false}
                 style={{ marginBottom: 100 }}
-                data={Order}
+                data={listOrder}
                 renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
             />
         </View>

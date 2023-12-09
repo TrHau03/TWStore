@@ -99,7 +99,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
         </View>
       </View>
       <FlatList
-        data={listCategory}
+        data={listCategory.filter((item: any) => item.name.toLowerCase().includes(textInputSearch.toLowerCase()))}
         renderItem={renderItem}
         numColumns={2}
         keyExtractor={(item: any) => item?._id.toString()} />
