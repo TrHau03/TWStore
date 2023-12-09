@@ -1,116 +1,122 @@
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, Dimensions, FlatList } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import { HEIGHT } from '../../utilities/utility';
+import { HEIGHT, WIDTH } from '../../utilities/utility';
 import routes from '../../component/constants/routes';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import AxiosInstance from '../../Axios/Axios';
 
 // Định nghĩa kiểu dữ liệu cho đánh giá (Review)
-interface Review {
-  id: number;
-  stars: number;
-  user: {
-    name: string;
-    image: string;
-  };
-  date: string;
-  time: string;
-  comment: string;
-  commentImage: string[] | null;
+interface Comment {
+  iduser: string;
+  content: string;
+  image: [];
+  star: number;
 }
 const windowWidth = Dimensions.get('window').width;
 
 export default function ProductReviews() {
-
   const route = useRoute();
-  const [listComment, setlistComment] = useState<[]>();
+  const [listComment, setlistComment] = useState<Comment[]>([]);
+  const [commentCount, setCommentCount] = useState<number>(0);
   const { id } = route.params as { id: any };
-
-
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
+  const [filteredComments, setFilteredComments] = useState<Comment[]>([]);
+
 
   const handleStarFilter = (star: number | null) => {
     setSelectedStar(star);
   };
 
-  const filteredReviews = selectedStar
-    ? reviewsData.filter((review) => review.stars === selectedStar)
-    : reviewsData;
-
-  const reviewCount = filteredReviews.length;
-  const sortReviewsByDateTime = (reviews: Review[]) => {
-    return reviews.sort((a: Review, b: Review) => {
-      const dateTimeA = new Date(
-        `${a.date} ${a.time}`
-      ).getTime();
-      const dateTimeB = new Date(
-        `${b.date} ${b.time}`
-      ).getTime();
-      return dateTimeA - dateTimeB;
-    });
-  };
-  const sortedReviews = sortReviewsByDateTime(filteredReviews);
-
-
-
   const starFilterButtons = [
     { label: 'All Review', star: null },
-    { label: ' 1', star: 1 },
-    { label: ' 2', star: 2 },
-    { label: ' 3', star: 3 },
-    { label: ' 4', star: 4 },
     { label: ' 5', star: 5 },
+    { label: ' 4', star: 4 },
+    { label: ' 3', star: 3 },
+    { label: ' 2', star: 2 },
+    { label: ' 1', star: 1 },
   ];
 
+  useEffect(() => {
+    const fetchCommentbyIdProduct = async (id: string) => {
+      const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
+      setlistComment(response.data);
+      setCommentCount(response.data.length);
+      setFilteredComments(response.data);
+    };
+    fetchCommentbyIdProduct(id);
+  }, [id]);
+  
+  useEffect(() => {
+    const filtered = selectedStar !== null
+      ? listComment.filter(comment => comment.star === selectedStar)
+      : listComment;
+    setFilteredComments(filtered);
+    setCommentCount(filtered.length);
+  }, [selectedStar, listComment]);
+  
 
-  const fetchCommentbyIdProduct = async (id: string) => {
-    const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
-    setlistComment(response.data);
-  }
+
+
   const handleAddComment = () => {
     console.log('nhấn được rồi nè !')
   };
 
 
-  const RenderItem = ({ item }: { item: any }) => (
-    <View style={styles.reviewContainer}>
-      <View style={styles.reviewHeader}>
-        <Image source={{ uri: item.user.image }} style={styles.userImage} />
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>{item.user.name}</Text>
-          <View style={styles.starRating}>
-            <Text style={styles.reviewStars}>{'⭐'.repeat(item.stars)}</Text>
+  const RenderItem = ({ item }: { item: any }) => {
+    return (
+      <View style={styles.reviewContainer}>
+        <View style={styles.reviewHeader}>
+          <Image
+            source={{ uri: item.avatar ? item.avatar : 'https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg' }}
+            style={styles.userImage}
+          />
+          <View style={styles.userInfo}>
+            {item.userID.name ? (
+              <Text style={styles.userName}>{item.userID.name}</Text>
+            ) : (
+              <Text style={styles.userName}>{item.userID.username}</Text>
+            )}
+
+            <View style={styles.starRating}>
+              {Array.from({ length: item.star }, (_, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png' }}
+                  style={styles.starImaStyle}
+                />
+              ))}
+            </View>
           </View>
         </View>
-      </View>
-      {item.comment && <Text style={styles.reviewComment}>{item.comment}</Text>}
-      {item.commentImage && (
-        <View style={styles.commentImagesContainer}>
-          {Array.isArray(item.commentImage) && item.commentImage.map((imageURL: string, index: any) => (
-            <Image
-              key={index}
-              source={{ uri: imageURL }}
-              style={styles.CommentImage}
-            />
-          ))}
+        {item.content && <Text style={styles.reviewComment}>{item.content}</Text>}
+        {item.image && (
+          <View style={styles.commentImagesContainer}>
+            {Array.isArray(item.image) && item.image.map((imageURL: string, index: any) => (
+              <Image
+                key={index}
+                source={{ uri: imageURL }}
+                style={styles.CommentImage}
+              />
+            ))}
+          </View>
+        )}
+        <View style={styles.reviewFooter}>
+          <Text style={styles.reviewDateTime}>{item.createAt}</Text>
         </View>
-      )}
-      <View style={styles.reviewFooter}>
-        <Text style={styles.reviewDateTime}>{`${item.date} at ${item.time}`}</Text>
       </View>
-    </View>
-  )
+    );
+  }
   
   return (
     <View style={{ height: '100%' }}>
 
-      <ScrollView style={{ marginBottom: HEIGHT * 0.09 }}>
+      <View style={{ marginBottom: HEIGHT * 0.09 }}>
 
         <View>
           <View style={styles.header}>
-            <Text style={styles.name}>{reviewCount} Reviews</Text>
+            <Text style={styles.name}>{commentCount} Reviews</Text>
           </View>
 
           <ScrollView horizontal
@@ -142,7 +148,7 @@ export default function ProductReviews() {
               <FlatList
                 showsVerticalScrollIndicator={false}
                 renderItem={(object) => <RenderItem item={object.item} />}
-                data={listComment}
+                data={filteredComments}
                 keyExtractor={(item: any) => item?.productID?._id?.toString()}
               />
             ) : (
@@ -150,7 +156,7 @@ export default function ProductReviews() {
             )}
           </View>
         </View>
-      </ScrollView>
+      </View>
       <View style={styles.addCommentButtonContainer}>
         <TouchableOpacity
           style={styles.addCommentButton}
@@ -168,6 +174,11 @@ export default function ProductReviews() {
 }
 
 const styles = StyleSheet.create({
+  starImaStyle: {
+    width: 25,
+    height: 25,
+    resizeMode: 'cover'
+  },
   addCommentButtonContainer: {
     position: 'absolute',
     bottom: 10,
@@ -206,7 +217,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#EAEAEA',
-    width: '96%',
+    width: WIDTH * 0.9,
     height: 'auto',
     backgroundColor: 'white',
     marginBottom: 16,
@@ -221,12 +232,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginRight: 10,
+    marginLeft: 10,
+    marginTop: 5,
   },
   userInfo: {
     flex: 1,
   },
   userName: {
+    marginLeft: 10,
     fontSize: 18,
     fontWeight: '700',
     fontFamily: 'poppins',
@@ -236,6 +249,7 @@ const styles = StyleSheet.create({
   starRating: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 10,
   },
   reviewContent: {
     marginBottom: 5,
@@ -252,6 +266,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   reviewDateTime: {
+    marginLeft: 10,
     color: '#888',
   },
   name: {
@@ -317,56 +332,7 @@ const styles = StyleSheet.create({
 });
 
 
-const reviewsData = [
-  {
-    id: 1,
-    stars: 5,
-    user: {
-      name: 'James Lawson',
-      image: 'https://bom.so/BIMgHb', // User's profile image URL
-    },
-    date: '2023-08-24',
-    time: '14:30',
-    comment: 'air max are always very comfortable fit, clean and just perfect in every way. just the box was too small and scrunched the sneakers up a little bit, not sure if the box was always this small but the 90s are and will always be one of my favorites.',
-    commentImage: ['https://bom.so/BIMgHb'], // Comment image URL (optional)
-  },
-  {
-    id: 2,
-    stars: 4,
-    user: {
-      name: 'Laura Octavian',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Love_Heart_symbol.svg/2250px-Love_Heart_symbol.svg.png', // User's profile image URL
-    },
-    date: '2023-08-25',
-    time: '14:30',
-    comment: 'Great product!',
-    commentImage: ['https://giaymt.com.vn/wp-content/uploads/2022/10/giay-the-thao-nu-MY861-3.jpg', 'https://bom.so/BIMgHb'] // Comment image URL (optional)
-  },
-  {
-    id: 4,
-    stars: 4,
-    user: {
-      name: 'Laura Octavian',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Love_Heart_symbol.svg/2250px-Love_Heart_symbol.svg.png', // User's profile image URL
-    },
-    date: '2023-08-27',
-    time: '15:30',
-    comment: 'Great product!',
-    commentImage: ['https://giaymt.com.vn/wp-content/uploads/2022/10/giay-the-thao-nu-MY861-3.jpg', 'https://bom.so/BIMgHb'] // Comment image URL (optional)
-  },
-  {
-    id: 5,
-    stars: 3,
-    user: {
-      name: 'Jhonson Bridge',
-      image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Love_Heart_symbol.svg/2250px-Love_Heart_symbol.svg.png', // User's profile image URL
-    },
-    date: '2023-08-27',
-    time: '14:30',
-    comment: 'Great product!',
-    commentImage: null, // Comment image URL (optional)
-  },
-];
+
 const starImages = [
   'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png', // 0 Stars
   'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png', // 1 Star

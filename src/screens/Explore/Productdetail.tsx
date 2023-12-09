@@ -9,7 +9,8 @@ import {
   TouchableOpacity,
   Pressable,
   Alert,
-  FlatList
+  FlatList,
+  SectionList
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
@@ -20,7 +21,7 @@ import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../redux/silces/Silces';
-import { HEIGHT } from '../../utilities/utility';
+import { HEIGHT, WIDTH } from '../../utilities/utility';
 import { uid } from 'uid';
 
 
@@ -29,8 +30,12 @@ const windowWidth = Dimensions.get('window').width;
 
 type CustomRatingBarProps = {
   numberOfRatings: number;
-
 };
+
+interface AverageStarsResult {
+  averageStars: number;
+  starCounts: { [key: number]: number };
+}
 
 interface Product {
   _id: string;
@@ -46,18 +51,26 @@ interface Product {
   description: string;
 }
 
+interface Comment {
+  iduser: string;
+  content: string;
+  image: [];
+  star: number;
+}
+
 
 const Productdetail = (props: NativeStackHeaderProps) => {
   const { id } = props?.route.params as { id: string | undefined };
   const { navigation } = props
   const [product, setProduct] = useState<Product>();
   const [listProductByBrand, setListProductByBrand] = useState<[]>();
-  const [listComment, setlistComment] = useState<[]>();
+  const [listComment, setListComment] = useState<Comment[]>([]);
   const [commentCount, setCommentCount] = useState<number>(0);
   const [totalStars, setTotalStars] = useState<number>(0);
-
   const [handleAdd, setHandleAdd] = useState<boolean>(false);
   const dispatch = useDispatch();
+
+
 
   const data = useSelector((state: any) => {
     return state.SlicesReducer.user.cartItem;
@@ -79,13 +92,38 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const [selectedColor, setSelectedColor] = useState<{ _id: string, code: string, name: string }>();
   const [selectedSize, setSelectedSize] = useState<{ _id: string, name: string }>();
 
-  //sản phẩm yêu thích
   const sortedSizes = product?.size.slice().sort((a, b) => a - b);
 
+  const calculateAverageStars = (comments: Comment[]): AverageStarsResult => {
+    if (!comments || comments.length === 0) {
+      return { averageStars: 0, starCounts: {} };
+    }
+
+    let totalStars = 0;
+    const starCounts: { [key: number]: number } = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+    comments.forEach((comment) => {
+      const stars = comment.star;
+      totalStars += stars;
+      starCounts[stars]++;
+    });
+
+    const averageStars = totalStars / comments.length;
+
+    // Làm tròn số trung bình lên hoặc xuống
+    const roundedAverageStars = Math.round(averageStars);
+
+    // Đảm bảo roundedAverageStars là số từ 1 đến 5
+    const finalAverageStars = Math.min(5, Math.max(1, roundedAverageStars));
+
+    return {
+      averageStars: finalAverageStars,
+      starCounts,
+    };
+  };
 
   useFocusEffect(
     React.useCallback(() => {
-      // Do something when the screen is focused
       const fetchProductByID = async () => {
         const response = await AxiosInstance().get(`product/getProductById/${id}`);
         setProduct(response.data);
@@ -95,22 +133,27 @@ const Productdetail = (props: NativeStackHeaderProps) => {
         const response = await AxiosInstance().get(`product/getProductByIdBrand/${id}`);
         setListProductByBrand(response.data);
       }
-      const fetchCommentbyIdProduct = async (id: string) => {
-        const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
-        setlistComment(response.data);
-
-        let stars = 0;
-        response.data.forEach((comment: any) => {
-          // Đảm bảo giá trị số sao luôn trong khoảng từ 1 đến 5
-          stars += comment.stars > 5 ? 5 : comment.stars;
-        });
-
-        setTotalStars(stars);
-        setCommentCount(response.data.length);
+      const fetchCommentbyIdProduct = async () => {
+        try {
+          const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
+          if (response.data && Array.isArray(response.data)) {
+            const { averageStars, starCounts } = calculateAverageStars(response.data);
+            setListComment(response.data);
+            setTotalStars(averageStars);
+            setCommentCount(response.data.length);
+          } else {
+            console.error('Invalid data format:', response.data);
+          }
+        } catch (error) {
+          console.error('Error fetching comments:', error);
+        }
       };
+
 
       if (isFocus) {
         fetchProductByID();
+        fetchCommentbyIdProduct();
+
       }
       return () => {
         // Do something when the screen is unfocused
@@ -121,6 +164,9 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     }, [isFocus]))
 
 
+  const topTwoComments = listComment
+    .sort((a, b) => b.star - a.star) // Sắp xếp giảm dần theo số sao
+    .slice(0, 2);
 
   const CustomRatingBar: React.FC<CustomRatingBarProps> = ({ numberOfRatings }) => (
     <View style={styles.customRatingBarStyle}>
@@ -192,35 +238,51 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
 
 
+  const RenderItem = ({ item }: { item: any }) => {
+    return (
+      <View style={styles.reviewContainer}>
+        <View style={styles.reviewHeader}>
+          <Image
+            source={{ uri: item.avatar ? item.avatar : 'https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg' }}
+            style={styles.userImage}
+          />
+          <View style={styles.userInfo}>
+            {item.userID.name ? (
+              <Text style={styles.userName}>{item.userID.name}</Text>
+            ) : (
+              <Text style={styles.userName}>{item.userID.username}</Text>
+            )}
 
-  const RenderItem = ({ item }: { item: any }) => (
-    <View style={styles.reviewContainer}>
-      <View style={styles.reviewHeader}>
-        <Image source={{ uri: item.user.image }} style={styles.userImage} />
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>{item.user.name}</Text>
-          <View style={styles.starRating}>
-            <Text style={styles.reviewStars}>{'⭐'.repeat(item.stars)}</Text>
+            <View style={styles.starRating}>
+              {Array.from({ length: item.star }, (_, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png' }}
+                  style={styles.starImaStyle}
+                />
+              ))}
+            </View>
           </View>
         </View>
-      </View>
-      {item.comment && <Text style={styles.reviewComment}>{item.comment}</Text>}
-      {item.commentImage && (
-        <View style={styles.commentImagesContainer}>
-          {Array.isArray(item.commentImage) && item.commentImage.map((imageURL: string, index: any) => (
-            <Image
-              key={index}
-              source={{ uri: imageURL }}
-              style={styles.CommentImage}
-            />
-          ))}
+        {item.content && <Text style={styles.reviewComment}>{item.content}</Text>}
+        {item.image && (
+          <View style={styles.commentImagesContainer}>
+            {Array.isArray(item.image) && item.image.map((imageURL: string, index: any) => (
+              <Image
+                key={index}
+                source={{ uri: imageURL }}
+                style={styles.CommentImage}
+              />
+            ))}
+          </View>
+        )}
+        <View style={styles.reviewFooter}>
+          <Text style={styles.reviewDateTime}>{item.createAt}</Text>
         </View>
-      )}
-      <View style={styles.reviewFooter}>
-        <Text style={styles.reviewDateTime}>{`${item.date} at ${item.time}`}</Text>
       </View>
-    </View>
-  )
+    );
+  }
+
 
   return (
     <View style={{ height: '100%' }}>
@@ -318,22 +380,20 @@ const Productdetail = (props: NativeStackHeaderProps) => {
             </View>
             <Text style={styles.textsize}>Specification</Text>
             <Text style={styles.comment2}>{product?.description}</Text>
-            <View style={{ flexDirection: 'row', width: windowWidth }}>
+            <View style={{ flexDirection: 'row', width: WIDTH * 0.5, alignItems: 'center' }}>
               <Text style={styles.textsize}>Review Product</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Productreviews', { id: id })}>
                 <Text style={styles.textsize2}>See More</Text>
               </TouchableOpacity>
-
             </View>
             <CustomRatingBar numberOfRatings={commentCount} />
-            <View style={{ height: HEIGHT * 0.35, marginTop: '11%', alignItems: 'center' }}>
+            <View style={{ height: HEIGHT * 0.35, alignItems: 'center' }}>
               {listComment && listComment.length > 0 ? (
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  renderItem={(object) => <RenderItem item={object.item} />}
-                  data={listComment}
-                  keyExtractor={(item: any) => item?.productID?._id?.toString()}
-                />
+                <View>
+                  {topTwoComments.map((comment, index) => (
+                    <RenderItem key={index} item={comment} />
+                  ))}
+                </View>
               ) : (
                 <Text style={{ fontSize: 20 }}>No data</Text>
               )}
@@ -403,7 +463,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#EAEAEA',
-    width: '96%',
+    width: WIDTH * 0.9,
     height: 'auto',
     backgroundColor: 'white',
     marginBottom: 16,
@@ -418,12 +478,14 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    marginRight: 10,
+    marginLeft: 10,
+    marginTop: 5,
   },
   userInfo: {
     flex: 1,
   },
   userName: {
+    marginLeft: 10,
     fontSize: 18,
     fontWeight: '700',
     fontFamily: 'poppins',
@@ -433,6 +495,7 @@ const styles = StyleSheet.create({
   starRating: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 10,
   },
   reviewContent: {
     marginBottom: 5,
@@ -449,6 +512,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   reviewDateTime: {
+    marginLeft: 10,
     color: '#888',
   },
 
@@ -544,7 +608,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#141414',
     marginTop: 20,
-    marginRight: 20,
     width: '300%',
     textAlign: 'right',
   },
