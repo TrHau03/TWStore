@@ -31,11 +31,11 @@ export default function ProductReviews() {
 
   const starFilterButtons = [
     { label: 'All Review', star: null },
-    { label: ' 1', star: 1 },
-    { label: ' 2', star: 2 },
-    { label: ' 3', star: 3 },
-    { label: ' 4', star: 4 },
     { label: ' 5', star: 5 },
+    { label: ' 4', star: 4 },
+    { label: ' 3', star: 3 },
+    { label: ' 2', star: 2 },
+    { label: ' 1', star: 1 },
   ];
 
   useEffect(() => {
