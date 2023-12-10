@@ -172,7 +172,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                     renderItem={renderItem3}
                     keyExtractor={(item: any) => item._id.toString()}
                     numColumns={2}
-                    columnWrapperStyle={{ columnGap: 10 }}
+                    columnWrapperStyle={{ columnGap: 5 }}
                 />
             </ScrollView>
         </SafeAreaView>

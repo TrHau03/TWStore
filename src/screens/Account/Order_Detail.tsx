@@ -38,7 +38,6 @@ const Order_Detail = ({ navigation }: NativeStackHeaderProps) => {
     <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}>
-
         <Header title='Order Detail' navigation={navigation} />
         <View style={styles.line}></View>
         <View style={{ paddingHorizontal: 20, }}>
@@ -91,7 +90,6 @@ const Order_Detail = ({ navigation }: NativeStackHeaderProps) => {
                 <Text style={styles.txtLeft}>Shipping</Text>
                 <Text style={styles.txtRight}>${item.price_ship}</Text>
               </View>
-
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                 <Text style={styles.txtLeft}>Import charges</Text>
                 <Text style={styles.txtRight}>${item.price_charges}</Text>
@@ -243,5 +241,5 @@ const Data2: Payment_Detail[] = [
     price_ship: '40.00',
     price_charges: '128.00',
     price: '766.86',
-  },
+  }
 ]
