@@ -36,7 +36,7 @@ const VerificationScreen = (props: any) => {
             setOTP(response.data.random);
             setVerify(true);
         } else {
-            console.warn('Email không tồn tại hoặc để trống!')
+            console.warn('Email không tồn tại và không được để trống !')
         }
     }
 
