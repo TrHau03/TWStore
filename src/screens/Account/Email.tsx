@@ -17,7 +17,8 @@ const Email = (props: any) => {
     const handleSaveEmail = async () => {
         setModalVisible(false)
         dispatch(updateEmail(email))
-        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, email: email });
+        const responseUser = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, email: email });
+        const responseUserInfor = await AxiosInstance().post(`/usersInfo/updateInfoUser`, { _id: user._idUser, email: email });
     }
     return (
         <View style={styles.container}>

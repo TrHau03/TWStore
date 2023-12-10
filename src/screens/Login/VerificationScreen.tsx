@@ -1,6 +1,7 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient'
 import {
     CodeField,
@@ -9,9 +10,10 @@ import {
 import { InputItem } from '@ant-design/react-native';
 import { BG_COLOR, PADDING_HORIZONTAL } from '../../utilities/utility';
 import AxiosInstance from '../../Axios/Axios';
-import { UserState } from 'realm/dist/bundle';
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import ForgotPass from './ForgotPass';
 import { RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+
 const VerificationScreen = (props: any) => {
     const { navigation }: NativeStackHeaderProps = props;
     const [value, setValue] = useState<string>('');
@@ -22,26 +24,26 @@ const VerificationScreen = (props: any) => {
     });
 
     const [email, setEmail] = useState<string>('');
-    const [emailAPI, setEmailAPI] = useState<number>();
-    console.log('<<<<<<<', emailAPI);
-
     const [OTP, setOTP] = useState<number>()
     console.log(OTP)
 
     const fetchSendMail = async () => {
-        const response = await AxiosInstance().post(`/usersInfo/VerifyEmail`, { email: email });
-        setOTP(response.data.random);
-        setVerify(true);
-    // if (OTP === undefined) {
-    //     console.warn('Email không tồn tại !')
-    // } else {
+        const resultUsersInfor = await AxiosInstance().get(`/usersInfo/getEmailAllUsersInfor`);
+        const checkEmail = resultUsersInfor.data.indexOf(email);    
 
-    // }
+        if (checkEmail >= 0) {
+            const response = await AxiosInstance().post(`/usersInfo/VerifyEmail`, { email: email });
+            setOTP(response.data.random);
+            setVerify(true);
+        } else {
+            console.warn('Email không tồn tại hoặc để trống!')
+        }
     }
 
-    const verifyOTP = () => {
+    const verifyOTP = async () => {
+ 
         if (OTP === parseInt(value)) {
-            navigation.navigate(RootStackScreenEnumLogin.ForgotPass, { email: email });
+            navigation.navigate('ForgotPass', {email: email});
         } else {
             setValue('');
             console.warn('Mã OTP không khớp !')
@@ -64,10 +66,11 @@ const VerificationScreen = (props: any) => {
                             onChangeText={setEmail}
                             value={email}
                             placeholder="Email">
+
                         </InputItem>
 
                         <View style={{ width: '100%' }}>
-                            <TouchableOpacity onPress={() =>  fetchSendMail() }>
+                            <TouchableOpacity onPress={() => fetchSendMail()}>
                                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
                                     <Text style={styles.textLogin}>Get OTP</Text>
                                 </LinearGradient>

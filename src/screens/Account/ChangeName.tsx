@@ -17,7 +17,8 @@ const ChangeName = (props: any) => {
     const handleSaveName = async () => {
         setModalVisible(false)
         dispatch(updateName(name))
-        const response = await AxiosInstance().post(`/users/updateInfoUser/`, { _id: user._idUser, name: name });
+        const responseUser = await AxiosInstance().post(`/users/updateInfoUser`, { _id: user._idUser, name: name });
+        const responseUserInfor = await AxiosInstance().post(`/usersInfo/updateInfoUser`, { _id: user._idUser, username: name });
     }
 
     return (
@@ -29,7 +30,7 @@ const ChangeName = (props: any) => {
                 <View style={styles.Name}>
                     <Text style={styles.txtName}>Full Name</Text>
                     <View style={styles.input}>
-                        <TextInput onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setName(e.nativeEvent.text) }} style={styles.txtInput} defaultValue={user.username} />
+                        <TextInput onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setName(e.nativeEvent.text) }} style={styles.txtInput} defaultValue={user.userName} />
                     </View>
                 </View>
             </View>

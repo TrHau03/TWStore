@@ -33,7 +33,6 @@ interface Payment_Detail {
 
 
 const Order_Detail = ({ navigation }: NativeStackHeaderProps) => {
-
   return (
     <View style={styles.container}>
       <ScrollView
@@ -58,8 +57,8 @@ const Order_Detail = ({ navigation }: NativeStackHeaderProps) => {
 
 
           <Text style={styles.txtTitle}>Shipping Details</Text>
-
-          {Data1.map((item) =>
+          
+          {Data1.map((item: any) =>
             <View key={item.id} style={styles.boxShipping}>
 
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
@@ -83,7 +82,7 @@ const Order_Detail = ({ navigation }: NativeStackHeaderProps) => {
           {Data2.map((item) =>
             <View key={item.id} style={styles.boxShipping}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Items ({item.quantity})</Text>
+                <Text style={styles.txtLeft}>Items({item.quantity})</Text>
                 <Text style={styles.txtRight}>${item.price_item}</Text>
               </View>
 
@@ -220,9 +219,6 @@ const Data: Product[] = [
     name: 'Nike Air Zoom Pegasus 36 Miami',
     price: '299,43'
   },
-
-
-
 ]
 
 const Data1: Shipping_Detail[] = [
