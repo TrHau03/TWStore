@@ -1,6 +1,7 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient'
 import {
     CodeField,
@@ -9,10 +10,12 @@ import {
 import { InputItem } from '@ant-design/react-native';
 import { BG_COLOR, PADDING_HORIZONTAL } from '../../utilities/utility';
 import AxiosInstance from '../../Axios/Axios';
-import { UserState } from 'realm/dist/bundle';
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import ForgotPass from './ForgotPass';
 import { RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+
 const VerificationScreen = (props: any) => {
+    const { navigation }: NativeStackHeaderProps = props;
     const [value, setValue] = useState<string>('');
     const [verify, setVerify] = useState<boolean>(false);
     const [codeFieldProps, getCellOnLayout] = useClearByFocusCell({
@@ -20,18 +23,30 @@ const VerificationScreen = (props: any) => {
         setValue,
     });
 
-    const [email, setEmail] = useState<string>('')
+    const [email, setEmail] = useState<string>('');
     const [OTP, setOTP] = useState<number>()
     console.log(OTP)
-    const { navigation }: NativeStackHeaderProps = props;
+
     const fetchSendMail = async () => {
-        const response = await AxiosInstance().post(`/usersInfo/VerifyEmail`, {email: email});
-        setOTP(response.data.random);
-        
-        if (OTP === parseInt(value)){
-            navigation.navigate(RootStackScreenEnumLogin.ForgotPass, {email: email});
-        }else{
+        const resultUsersInfor = await AxiosInstance().get(`/usersInfo/getEmailAllUsersInfor`);
+        const checkEmail = resultUsersInfor.data.indexOf(email);    
+
+        if (checkEmail >= 0) {
+            const response = await AxiosInstance().post(`/usersInfo/VerifyEmail`, { email: email });
+            setOTP(response.data.random);
+            setVerify(true);
+        } else {
+            console.warn('Email không tồn tại hoặc để trống!')
+        }
+    }
+
+    const verifyOTP = async () => {
+ 
+        if (OTP === parseInt(value)) {
+            navigation.navigate('ForgotPass', {email: email});
+        } else {
             setValue('');
+            console.warn('Mã OTP không khớp !')
         }
     }
     return (
@@ -42,7 +57,7 @@ const VerificationScreen = (props: any) => {
                     <Text style={styles.textOTP}>OTP Verification</Text>
                 </View>
                 {(!verify) ?
-                    <View>
+                    <View style={{ width: '100%', alignItems: 'center' }}>
                         <Text style={styles.text}>We will send you a one-time verification password on this gmail</Text>
                         <Text style={styles.textEnterEmail}>Enter Email</Text>
                         <InputItem
@@ -51,7 +66,16 @@ const VerificationScreen = (props: any) => {
                             onChangeText={setEmail}
                             value={email}
                             placeholder="Email">
+
                         </InputItem>
+
+                        <View style={{ width: '100%' }}>
+                            <TouchableOpacity onPress={() => fetchSendMail()}>
+                                <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
+                                    <Text style={styles.textLogin}>Get OTP</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                     :
                     <View style={{ width: '100%', alignItems: 'center' }}>
@@ -74,14 +98,14 @@ const VerificationScreen = (props: any) => {
                                 </Text>
                             )}
                         />
+                        <View style={{ width: '100%' }}>
+                            <TouchableOpacity onPress={() => { verifyOTP() }}>
+                                <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
+                                    <Text style={styles.textLogin}>Verify</Text>
+                                </LinearGradient>
+                            </TouchableOpacity>
+                        </View>
                     </View>}
-                <View style={{ width: '100%' }}>
-                    <TouchableOpacity onPress={() => {!verify && setVerify(true); fetchSendMail()} }>
-                        <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
-                            <Text style={styles.textLogin}>{!verify ? 'Get OTP' : 'Verify'}</Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
-                </View>
             </View>
         </KeyboardAwareScrollView>
     )

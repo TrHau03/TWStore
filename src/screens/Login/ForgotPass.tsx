@@ -7,52 +7,51 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 import AxiosInstance from '../../Axios/Axios';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
-import VerificationScreen from './VerificationScreen';
 
 
-
-interface ForgotPass {
-    password: string,
-    passwordAgain: string
-}
+type EmailRouteParam = {
+    ForgotPass:{
+        email : string;
+    };
+};
 
 
 const ForgotPass = (props: any) => {
     const { navigation }: NativeStackHeaderProps = props;
     const [password, setPassword] = useState<string>('');
     const [passwordAgain, setPasswordAgain] = useState<string>('');
-    const route = useRoute();
-    console.log('pass:',password);
-    console.log('Again:',passwordAgain);
-    
-    const email = route.params;
-    console.log(email);
-    
+    const [Email, setEmail] = useState<string>('')
+    const route = useRoute<RouteProp<EmailRouteParam, 'ForgotPass'>>();
 
-    const forgotpass = async (user: ForgotPass) => {
+    useEffect(() => {
+        setEmail(route.params?.email);
+    }, [route.params]);
+
+    const forgotpass = async () => {
         try {
-            console.log('forgotpass', user);
-
-            if (user.password != user.passwordAgain) {
-                return console.log("Password not same!");
+            if (password != passwordAgain || passwordAgain == '' || password == '') {
+                return console.log("Mật khẩu mới và mặt khẩu cũ không khớp hoặc để trống!");
+            } else {
+                const result = await AxiosInstance().post('/usersInfo/ForgotPassword', {email: Email,  newPassword: password });
+                if (result) {
+                    navigation.navigate(RootStackScreenEnumLogin.LoginScreen)
+                } else {
+                    setPassword('');
+                    setPasswordAgain('');
+                }
             }
-            const result = await AxiosInstance().post('/usersInfo/ForgotPassword', {email: email ,newPassword: user.password });
-            if (result) {
-                navigation.navigate(RootStackScreenEnumLogin.LoginScreen)
-            }
-
         } catch (error) {
             console.log('getNews Error: ', error);
         }
     }
     return (
-        <KeyboardAwareScrollView enableOnAndroid={true}>
-            <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR , height: HEIGHT }}>
+        <View>
+            <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR, height: HEIGHT }}>
                 <View style={styles.header}>
                     <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
                     <Text style={styles.textHeader}>The Wonder</Text>
@@ -89,14 +88,14 @@ const ForgotPass = (props: any) => {
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity onPress={() => forgotpass({ password, passwordAgain })} >
+                    <TouchableOpacity onPress={() => forgotpass()} >
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
                             <Text style={styles.textLogin}>Lưu mật khẩu</Text>
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAwareScrollView>
+        </View>
     )
 }
 
@@ -149,7 +148,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 55,
         borderRadius: 5,
-        marginTop: 34
+        marginTop: 50,
     },
     textLogin: {
         color: 'white',

@@ -17,7 +17,8 @@ const Email = (props: any) => {
     const handleSaveEmail = async () => {
         setModalVisible(false)
         dispatch(updateEmail(email))
-        // const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, email: email });
+        const responseUser = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, email: email });
+        const responseUserInfor = await AxiosInstance().post(`/usersInfo/updateInfoUser`, { _id: user._idUser, email: email });
     }
     return (
         <View style={styles.container}>
@@ -29,7 +30,7 @@ const Email = (props: any) => {
                 <Text style={styles.txtEmail}>Change Email</Text>
                 <View style={styles.input}>
                     <Icon name='mail' size={30} />
-                    <TextInput defaultValue={user.email} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setEmail(e.nativeEvent.text) }} style={styles.txtInput} keyboardType='email-address' placeholder="leducminh@gmail.com" />
+                    <TextInput defaultValue={user.email} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setEmail(e.nativeEvent.text) }} style={styles.txtInput} keyboardType='email-address' />
                 </View>
                 <Text style={styles.verifi}>We Will Send verification to your New Email</Text>
             </View>

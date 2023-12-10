@@ -7,8 +7,6 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 
 
-
-
 interface Product {
   _id: string;
   image: any;
