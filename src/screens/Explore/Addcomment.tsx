@@ -13,23 +13,21 @@ import {
     FlatList,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { ImageLibraryOptions, ImagePickerResponse } from 'react-native-image-picker';
-import { CameraOptions } from 'react-native-image-picker';
-import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AxiosInstance from '../../Axios/Axios';
 import { useSelector } from 'react-redux';
 import storage from '@react-native-firebase/storage';
 import uuid from 'react-native-uuid';
 
 const windowWidth = Dimensions.get('window').width;
-
+let image: any = [];
+let imageURL: any = [];
 const Addcomment = () => {
     const user = useSelector((state: any) => state.SlicesReducer.user);
 
     const [content, setContent] = useState<string>('');
     const [star, setStar] = useState<number>()
-    let image: any = [];
-    let imageURL: any = [];
+   
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
     const [defaultRating, setDefaultRating] = useState<number>(5);
     const [maxRating] = useState([1, 2, 3, 4, 5]);
@@ -73,33 +71,27 @@ const Addcomment = () => {
     };
     const requestCameraPermission = async () => {
         try {
-            const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.CAMERA,
-            );
-            console.log('Camera permission granted:', granted);
-    
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                const result = await launchCamera({
-                    mediaType: 'photo',
-                    cameraType: 'front',
-                });
-                console.log('Captured image URI:', result.assets[0].uri);
-    
-                const object = { id: image.length + 1, img: result.assets[0].uri };
-                image.push(object);
-                console.log("Image url",image);
-                
-                setAddImage(!addImage);
-            } else {
-                console.log('Permission denied');
-            }
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            const result: any = await launchCamera({
+              mediaType: 'photo',
+              cameraType: 'front',
+            });
+            const object = { id: image.length + 1, img: result.assets[0].uri };
+            image.push(object);
+            setAddImage(!addImage);
+          } else {
+            console.log('Từ chối');
+          }
         } catch (error) {
-            console.log('Error in requestCameraPermission:', error);
+          console.log(error);
         }
-    };
+      };
       //Camera
     
-      const requestCameraPermissionPhoto = async () => {
+    const requestCameraPermissionPhoto = async () => {
         try {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.CAMERA,
@@ -107,13 +99,18 @@ const Addcomment = () => {
             console.log('Camera permission granted:', granted);
     
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                const result = await launchImageLibrary({ mediaType: 'photo' });
-                console.log('Selected image URI:', result.assets[0].uri);
-    
-                image.push(result ? { id: image.length + 1, img: result.assets[0].uri } : null);
-                console.log("Image url",image);
-
-                setAddImage(!addImage);
+                const result:any = await launchImageLibrary({ mediaType: 'photo' });
+                
+                if (result) {
+                    console.log('Selected image URI:', result.assets[0].uri);
+                
+                    image.push({ id: image.length + 1, img: result.assets[0].uri });
+                    console.log("Image url", image);
+                
+                    setAddImage(!addImage);
+                } else {
+                    console.log('No image selected');
+                }
             } else {
                 console.log('Permission denied');
             }
@@ -214,7 +211,7 @@ const Addcomment = () => {
                         keyExtractor={item => item.id}
                         renderItem={renderItem}
                     />
-        </View>
+                    </View>
 
                     <View style={styles.addCommentButtonContainer}>
                         <TouchableOpacity
