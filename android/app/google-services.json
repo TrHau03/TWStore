@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "321625714846",
+    "project_id": "twstore-977d8",
+    "storage_bucket": "twstore-977d8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321625714846:android:e65a7595634e3bc9d1cb8f",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWhXm3H9CjJ5wtmBKHFn4iLhBoqIPR-jo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:321625714846:android:e035bdd05b1ce92fd1cb8f",
+        "android_client_info": {
+          "package_name": "com.twstore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWhXm3H9CjJ5wtmBKHFn4iLhBoqIPR-jo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

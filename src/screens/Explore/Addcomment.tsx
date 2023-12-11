@@ -10,19 +10,38 @@ import {
     ScrollView,
     Alert,
     PermissionsAndroid,
+    FlatList,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { ImageLibraryOptions, ImagePickerResponse } from 'react-native-image-picker';
 import { CameraOptions } from 'react-native-image-picker';
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
+import AxiosInstance from '../../Axios/Axios';
+import { useSelector } from 'react-redux';
+import storage from '@react-native-firebase/storage';
+import uuid from 'react-native-uuid';
 
 const windowWidth = Dimensions.get('window').width;
 
 const Addcomment = () => {
-    const [text, onChangeText] = useState('');
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+
+    const [content, setContent] = useState<string>('');
+    const [star, setStar] = useState<number>()
+    let image: any = [];
+    let imageURL: any = [];
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
-    const [defaultRating, setDefaultRating] = useState(5);
+    const [defaultRating, setDefaultRating] = useState<number>(5);
     const [maxRating] = useState([1, 2, 3, 4, 5]);
+    const [addImage, setAddImage] = useState<boolean>(false);
+    const renderItem = ({ item }: any) => {
+        return (
+          <View style={{ paddingVertical: 10 }}>
+            <Image style={{ height: 100, width: 100 }} source={{ uri: item.img }} />
+          </View>
+        )
+      }
+    
     const starImgFilled =
         'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
     const starImgCorner =
@@ -31,12 +50,12 @@ const Addcomment = () => {
     const CustomRatingbar = () => {
         return (
             <View style={styles.customRatingbarStyle}>
-                {maxRating.map((item, key) => {
+                {maxRating.map((item, key) => {             
                     return (
                         <TouchableOpacity
                             activeOpacity={0.7}
                             key={item}
-                            onPress={() => setDefaultRating(item)}
+                            onPress={() => setStar(item)}
                         >
                             <Image
                                 style={styles.starImgStyle}
@@ -52,7 +71,56 @@ const Addcomment = () => {
             </View>
         );
     };
+    const requestCameraPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+            );
+            console.log('Camera permission granted:', granted);
+    
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                const result = await launchCamera({
+                    mediaType: 'photo',
+                    cameraType: 'front',
+                });
+                console.log('Captured image URI:', result.assets[0].uri);
+    
+                const object = { id: image.length + 1, img: result.assets[0].uri };
+                image.push(object);
+                console.log("Image url",image);
+                
+                setAddImage(!addImage);
+            } else {
+                console.log('Permission denied');
+            }
+        } catch (error) {
+            console.log('Error in requestCameraPermission:', error);
+        }
+    };
+      //Camera
+    
+      const requestCameraPermissionPhoto = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+            );
+            console.log('Camera permission granted:', granted);
+    
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                const result = await launchImageLibrary({ mediaType: 'photo' });
+                console.log('Selected image URI:', result.assets[0].uri);
+    
+                image.push(result ? { id: image.length + 1, img: result.assets[0].uri } : null);
+                console.log("Image url",image);
 
+                setAddImage(!addImage);
+            } else {
+                console.log('Permission denied');
+            }
+        } catch (error) {
+            console.log('Error in requestCameraPermissionPhoto:', error);
+        }
+    };
     const AddImage = async () => {
         if (selectedImages.length >= 6) {
             // Alert the user that they've reached the media limit (6 in this case)
@@ -65,63 +133,13 @@ const Addcomment = () => {
             [
                 {
                     text: 'Thư viện',
-                    onPress: async () => {
-                        const options: ImageLibraryOptions = {
-                            mediaType: 'photo',
-                            includeBase64: false,
-                        };
+                    onPress:async () => requestCameraPermissionPhoto()
 
-                        launchImageLibrary(options, (response: any) => {
-                            if (response.didCancel) {
-                                console.log('User cancelled image picker');
-                            } else {
-                                const newImages = [...selectedImages];
-                                const imageUri = response.uri || (response.assets && response.assets[0]?.uri);
-                                newImages.push(imageUri);
-                                setSelectedImages(newImages);
-                            }
-                        });
-                    }
+                    
                 },
                 {
                     text: 'Camera              ',
-                    onPress: async () => {
-                        const cameraOptions: CameraOptions = {
-                            mediaType: 'photo',
-                            includeBase64: false,
-                        };
-
-                        try {
-                            const granted = await PermissionsAndroid.request(
-                                PermissionsAndroid.PERMISSIONS.CAMERA,
-                                {
-                                    title: "App Camera Permission",
-                                    message: "App needs access to your camera ",
-                                    buttonNeutral: "Ask Me Later",
-                                    buttonNegative: "Cancel",
-                                    buttonPositive: "OK"
-                                }
-                            );
-
-                            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                console.log("Camera permission given");
-                                launchCamera(cameraOptions, (response: any) => {
-                                    if (response.didCancel) {
-                                        console.log('User cancelled camera picker');
-                                    } else {
-                                        const newImages = [...selectedImages];
-                                        const imageUri = response.uri || (response.assets && response.assets[0]?.uri);
-                                        newImages.push(imageUri);
-                                        setSelectedImages(newImages);
-                                    }
-                                });
-                            } else {
-                                console.log("Camera permission denied");
-                            }
-                        } catch (err) {
-                            console.warn(err);
-                        }
-                    }
+                    onPress: async () => requestCameraPermission()
                 },
                 {
                     text: 'Hủy',
@@ -133,14 +151,29 @@ const Addcomment = () => {
         );
     };
 
-    const handleAddComment = () => {
-        console.log('hehehe');
+    const handleAddComment = async () => {
+        try {
+            const uploadImages = async () => {
+              await Promise.all(image.map(async (element: any) => {
+                const reference = storage().ref(`${uuid.v4()}.jpg`);
+                await reference.putFile(element.img);
+                const url = await reference.getDownloadURL();
+                imageURL.push(url);
+              }));
+            };
+            await uploadImages();
+            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id,productID: '', content: content, image:  imageURL, star:star});
+            console.log(result.data);
+            
+        } catch (error) {
+              console.log('getNews Error: ', error);
+          }
     };
 
     return (
         <View>
             <View style={styles.header}>
-                <Image style={styles.icon} source={require('../asset/image/back.png')} />
+                <Image style={styles.icon} source={require('../../asset/image/icon_back.png')} />
                 <Text style={styles.name}>Write Review</Text>
             </View>
             <ScrollView style={{ height: '100%' }}>
@@ -160,34 +193,28 @@ const Addcomment = () => {
 
                     <TextInput
                         style={styles.input}
-                        onChangeText={onChangeText}
-                        value={text}
+                        onChangeText={setContent}
+                        value={content}
                         placeholder="Let us know what you think about our products"
                         multiline
                     />
-                    <Text style={[styles.textstyles, { marginTop: 20 }]}>Add Photo</Text>
-
-                    <ScrollView
-                        horizontal
-                        contentContainerStyle={styles.selectedImagesContainer}
-                        showsHorizontalScrollIndicator={false}
+                    <TouchableOpacity
+                        onPress={() => AddImage()}
+                        style={{ marginTop: 20}}
                     >
-                        {selectedImages.map((mediaUri, index) => (
-                            <Image key={index} source={{ uri: mediaUri }} style={styles.selectedImage} />
-                        ))}
-                        {selectedImages.length < 6 && (
-                            <View style={styles.addimgButton}>
-                                <TouchableOpacity onPress={AddImage}>
-                                    <LinearGradient
-                                        colors={['#46CAF3', '#68B1D9']}
-                                        style={{ borderRadius: 10 }}
-                                    >
-                                        <Text style={styles.textimgstyle}>+</Text>
-                                    </LinearGradient>
-                                </TouchableOpacity>
-                            </View>
-                        )}
-                    </ScrollView>
+                        <Text>Camera</Text>
+                     </TouchableOpacity>
+
+                    <View>
+                    <FlatList
+                        numColumns={2}
+                        scrollEnabled={false}
+                        columnWrapperStyle={{ columnGap: 5, justifyContent: 'center' }}
+                        data={image}
+                        keyExtractor={item => item.id}
+                        renderItem={renderItem}
+                    />
+        </View>
 
                     <View style={styles.addCommentButtonContainer}>
                         <TouchableOpacity
