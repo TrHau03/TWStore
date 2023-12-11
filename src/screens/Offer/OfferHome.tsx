@@ -4,6 +4,7 @@ import AxiosInstance from '../../Axios/Axios'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
 import { useIsFocused } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 
 
@@ -13,12 +14,16 @@ import { useIsFocused } from '@react-navigation/native';
 const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
 
   const [event, setEvent] = useState<[]>([]);
+  const [couponHighest, setCouponHighest] = useState<any>();
 
   const isFocused = useIsFocused();
+
 
   useEffect(() => {
     const fetchEvent = async () => {
       const response = await AxiosInstance().get(`event/getAllEvent`);
+      const coupon = await AxiosInstance().get(`promotion/getCouponHighest`);
+      setCouponHighest(coupon.data);
       setEvent(response.data.filter((item: any) => {
         return new Date(item.soNgayGiamgia).getTime() > new Date().getTime();
       }));
@@ -44,7 +49,7 @@ const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
     <View style={styles.container}>
       <Text style={styles.offer}>Offer</Text>
       <View style={styles.cupon}>
-        <Text style={styles.textcupon}>Use “MEGSL” Cupon For Get 90%off</Text>
+        <Text style={styles.textcupon}>Use “{couponHighest?.discountCode}” Coupon For Get {couponHighest?.discountLevel}%off</Text>
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}

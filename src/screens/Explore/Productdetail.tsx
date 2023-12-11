@@ -198,15 +198,13 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     const checkAddProductColor = data.map((item: any) => {
       return item.colorProduct._id;
     })
-    if (checkAddProductSize.includes(sizeProduct._id) && checkAddProductColor.includes(colorProduct._id)) {
-      Alert.alert('Notification', 'Product already in cart!', [
+    if (sizeProduct == undefined || colorProduct == undefined) {
+      Alert.alert('Notification', 'Product has not been added yet!', [
         { text: 'OK' }
       ]);
     } else {
-      if (sizeProduct == undefined || colorProduct == undefined) {
-        setHandleAdd(false);
-
-        Alert.alert('Notification', 'Product has not been added yet!', [
+      if (checkAddProductSize.includes(sizeProduct._id) && checkAddProductColor.includes(colorProduct._id)) {
+        Alert.alert('Notification', 'Product already in cart!', [
           { text: 'OK' }
         ]);
       } else {

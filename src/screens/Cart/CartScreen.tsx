@@ -64,7 +64,6 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const handleApplyCoupon = async () => {
         try {
             const response = await AxiosInstance().get(`promotion/getAllPromotion`);
-            console.log("data voucher :" + response.data.discountCode);
             const appliedPromotion = response.data.find((promo: { discountCode: string }) => promo.discountCode === coupon);
 
             if (appliedPromotion) {

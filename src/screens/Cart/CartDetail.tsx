@@ -201,22 +201,31 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     );
     const RenderItem = ({ item }: any) => {
         return (
-            <View style={styles.itemCart} key={item.id}>
+            <View style={styles.itemCart}>
                 <View>
-                    <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
+                    {item.productID.image[0] !== null && (
+                        <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
+                    )}
                 </View>
-                <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
+                <View style={{ flexDirection: 'column', height: '100%' }}>
                     <View style={styles.topItem}>
-                        <Text style={styles.textTitleItem}>{item.productID.productName.length < 15 ? item.productID.productName : item.productID.productName.substring(0, 15) + "..."}</Text>
+                        <View style={{ width: '80%', gap: 5 }}>
+                            <Text style={styles.textTitleItem}>{item.productID.productName.length < 20 ? item.productID.productName : item.productID.productName.substring(0, 20) + "..."}</Text>
+                            <View style={{ flexDirection: 'row', columnGap: 10, alignItems: 'center' }}>
+                                <Text style={styles.textTitleItem}>Size: {item.sizeProduct.name}</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.textTitleItem}>Size: </Text>
+                                    <View style={{ width: 20, height: 20, backgroundColor: `${item.colorProduct.code}`, borderRadius: 50 }}></View>
+                                </View>
+                            </View>
+                        </View>
+
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>${item.productID.price - item.productID.price * (item.productID.offer / 100)}</Text>
-                        <View style={{ backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'center', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
-                            <Text style={styles.textNumberCount}>{item.quantity}</Text>
-                        </View>
+                        <Text style={styles.textPrice}>${item.productID.price}</Text>
                     </View>
                 </View>
-            </View>
+            </View >
 
         );
     };
@@ -274,7 +283,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                         showsVerticalScrollIndicator={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
-                        keyExtractor={(item: any) => item?.productID?._id?.toString()}
+                        keyExtractor={(item: any) => item?.key}
                     /> : <Text style={{ fontSize: 20 }}>No data</Text>}
             </View>
             <ScrollView
@@ -524,19 +533,17 @@ const styles = StyleSheet.create({
     },
     textPrice: {
         color: '#40BFFF',
-        fontSize: 13,
+        fontSize: 16,
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 16,
         letterSpacing: 0.50,
     },
     textTitleItem: {
-        width: '65%',
         color: '#223263',
-        fontSize: 13,
+        fontSize: 16,
         fontFamily: 'Poppins',
         fontWeight: '700',
-        lineHeight: 16,
         letterSpacing: 0.50,
     },
     itemCart: {
