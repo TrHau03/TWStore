@@ -13,7 +13,7 @@ import {
     FlatList,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import AxiosInstance from '../../Axios/Axios';
 import { useSelector } from 'react-redux';
 import storage from '@react-native-firebase/storage';
@@ -27,30 +27,28 @@ const Addcomment = () => {
 
     const [content, setContent] = useState<string>('');
     const [star, setStar] = useState<number>(5)
-   
-    const [selectedImages, setSelectedImages] = useState<string[]>([]);
-    const [defaultRating, setDefaultRating] = useState<number>(5);
+
     const [maxRating] = useState([1, 2, 3, 4, 5]);
     const [addImage, setAddImage] = useState<boolean>(false);
     const renderItem = ({ item }: any) => {
         return (
-          <View style={{ paddingVertical: 10 }}>
-            <Image style={{ height: 100, width: 100 }} source={{ uri: item.img }} />
-          </View>
+            <View style={{ paddingVertical: 10 }}>
+                <Image style={{ height: 100, width: 100 }} source={{ uri: item.img }} />
+            </View>
         )
-      }
-    
+    }
+
     const starImgFilled =
         'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
     const starImgCorner =
         'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
-      console.log(star);
-      
+    console.log(star);
+
     const CustomRatingbar = () => {
         return (
             <View style={styles.customRatingbarStyle}>
-                {maxRating.map((item, key) => {    
-              
+                {maxRating.map((item, key) => {
+
                     return (
                         <TouchableOpacity
                             activeOpacity={0.7}
@@ -73,42 +71,42 @@ const Addcomment = () => {
     };
     const requestCameraPermission = async () => {
         try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            const result: any = await launchCamera({
-              mediaType: 'photo',
-              cameraType: 'front',
-            });
-            const object = { id: image.length + 1, img: result.assets[0].uri };
-            image.push(object);
-            setAddImage(!addImage);
-          } else {
-            console.log('Từ chối');
-          }
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                const result: any = await launchCamera({
+                    mediaType: 'photo',
+                    cameraType: 'front',
+                });
+                const object = { id: image.length + 1, img: result.assets[0].uri };
+                image.push(object);
+                setAddImage(!addImage);
+            } else {
+                console.log('Từ chối');
+            }
         } catch (error) {
-          console.log(error);
+            console.log(error);
         }
-      };
-      //Camera
-    
+    };
+    //Camera
+
     const requestCameraPermissionPhoto = async () => {
         try {
             const granted = await PermissionsAndroid.request(
                 PermissionsAndroid.PERMISSIONS.CAMERA,
             );
             console.log('Camera permission granted:', granted);
-    
+
             if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                const result:any = await launchImageLibrary({ mediaType: 'photo' });
-                
+                const result: any = await launchImageLibrary({ mediaType: 'photo' });
+
                 if (result) {
                     console.log('Selected image URI:', result.assets[0].uri);
-                
+
                     image.push({ id: image.length + 1, img: result.assets[0].uri });
                     console.log("Image url", image);
-                
+
                     setAddImage(!addImage);
                 } else {
                     console.log('No image selected');
@@ -127,9 +125,9 @@ const Addcomment = () => {
             [
                 {
                     text: 'Thư viện',
-                    onPress:async () => requestCameraPermissionPhoto()
+                    onPress: async () => requestCameraPermissionPhoto()
 
-                    
+
                 },
                 {
                     text: 'Camera              ',
@@ -149,22 +147,22 @@ const Addcomment = () => {
         try {
             const uploadImages = async () => {
                 await Promise.all(image.map(async (element: any) => {
-                    const uniqueFileName = `${uuid.v4()}.jpg`;  
+                    const uniqueFileName = `${uuid.v4()}.jpg`;
                     const reference = storage().ref(`comments/${uniqueFileName}`);
                     await reference.putFile(element.img);
                     const url = await reference.getDownloadURL();
                     imageURL.push(url);
                 }));
-              };
+            };
             await uploadImages();
-            console.log(user._id,content, imageURL, star);
-            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id,productID: null, content: content, image:  imageURL, star:star});
+            console.log(user._id, content, imageURL, star);
+            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id, productID: null, content: content, image: imageURL, star: star });
             imageURL = [];
             image = [];
             setAddImage(!addImage);
             //navigation.goBack();
             console.log(result.data);
-            
+
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -195,23 +193,31 @@ const Addcomment = () => {
                         placeholder="Let us know what you think about our products"
                         multiline
                     />
-                    <TouchableOpacity
-                        onPress={() => AddImage()}
-                        style={{ marginTop: 20}}
+                    <ScrollView
+                        horizontal
+                        contentContainerStyle={styles.selectedImagesContainer}
+                        showsHorizontalScrollIndicator={false}
                     >
-                        <Text>Camera</Text>
-                     </TouchableOpacity>
+                        {image.map((item: any) => (
+                            <View key={item?.id}>
+                                {item && item.img && <Image source={{ uri: item.img }} style={styles.selectedImage} />}
+                            </View>
+                        ))}
 
-                    <View>
-                    <FlatList
-                        numColumns={2}
-                        scrollEnabled={false}
-                        columnWrapperStyle={{ columnGap: 5, justifyContent: 'center' }}
-                        data={image}
-                        keyExtractor={item => item.id}
-                        renderItem={renderItem}
-                    />
-                    </View>
+                        {image.length < 6 && (
+                            <View style={styles.addimgButton}>
+                                <TouchableOpacity onPress={AddImage}>
+                                    <LinearGradient
+                                        colors={['#46CAF3', '#68B1D9']}
+                                        style={{ borderRadius: 10 }}
+                                    >
+                                        <Text style={styles.textimgstyle}>+</Text>
+                                    </LinearGradient>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                    </ScrollView>
+
 
                     <View style={styles.addCommentButtonContainer}>
                         <TouchableOpacity
