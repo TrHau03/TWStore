@@ -26,7 +26,7 @@ const Addcomment = () => {
     const user = useSelector((state: any) => state.SlicesReducer.user);
 
     const [content, setContent] = useState<string>('');
-    const [star, setStar] = useState<number>()
+    const [star, setStar] = useState<number>(5)
    
     const [selectedImages, setSelectedImages] = useState<string[]>([]);
     const [defaultRating, setDefaultRating] = useState<number>(5);
@@ -44,11 +44,13 @@ const Addcomment = () => {
         'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
     const starImgCorner =
         'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
-
+      console.log(star);
+      
     const CustomRatingbar = () => {
         return (
             <View style={styles.customRatingbarStyle}>
-                {maxRating.map((item, key) => {             
+                {maxRating.map((item, key) => {    
+              
                     return (
                         <TouchableOpacity
                             activeOpacity={0.7}
@@ -58,7 +60,7 @@ const Addcomment = () => {
                             <Image
                                 style={styles.starImgStyle}
                                 source={
-                                    item <= defaultRating
+                                    item <= star
                                         ? { uri: starImgFilled }
                                         : { uri: starImgCorner }
                                 }
@@ -119,11 +121,6 @@ const Addcomment = () => {
         }
     };
     const AddImage = async () => {
-        if (selectedImages.length >= 6) {
-            // Alert the user that they've reached the media limit (6 in this case)
-            Alert.alert('Media Limit', 'You can select up to 6 images/videos.');
-            return;
-        }
         Alert.alert(
             'Bạn muốn chọn ảnh từ đâu ?',
             '',
@@ -151,20 +148,26 @@ const Addcomment = () => {
     const handleAddComment = async () => {
         try {
             const uploadImages = async () => {
-              await Promise.all(image.map(async (element: any) => {
-                const reference = storage().ref(`${uuid.v4()}.jpg`);
-                await reference.putFile(element.img);
-                const url = await reference.getDownloadURL();
-                imageURL.push(url);
-              }));
-            };
+                await Promise.all(image.map(async (element: any) => {
+                    const uniqueFileName = `${uuid.v4()}.jpg`;  
+                    const reference = storage().ref(`comments/${uniqueFileName}`);
+                    await reference.putFile(element.img);
+                    const url = await reference.getDownloadURL();
+                    imageURL.push(url);
+                }));
+              };
             await uploadImages();
-            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id,productID: '', content: content, image:  imageURL, star:star});
+            console.log(user._id,content, imageURL, star);
+            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id,productID: null, content: content, image:  imageURL, star:star});
+            imageURL = [];
+            image = [];
+            setAddImage(!addImage);
+            //navigation.goBack();
             console.log(result.data);
             
         } catch (error) {
-              console.log('getNews Error: ', error);
-          }
+            console.log('Error: ', error);
+        }
     };
 
     return (
@@ -181,9 +184,6 @@ const Addcomment = () => {
                     </Text>
                     <View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 10 }}>
                         <CustomRatingbar />
-                        <Text style={[styles.textstyles, { lineHeight: 40, marginLeft: 20 }]}>
-                            {defaultRating + '/' + maxRating.length}
-                        </Text>
                     </View>
 
                     <Text style={[styles.textstyles, { marginTop: 20 }]}>Write Your Review</Text>
