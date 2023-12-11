@@ -14,7 +14,7 @@ const Phone = (props: any) => {
     const [phone, setPhone] = useState<string>()
     const dispatch = useDispatch();
     const user = useSelector((state: any) => state.SlicesReducer.user);
-    
+
 
     const handleSavephone = async () => {
         setModalVisible(false)

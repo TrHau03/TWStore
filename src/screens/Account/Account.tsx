@@ -16,6 +16,8 @@ const AccountScreen = ({ navigation }: any) => {
 
   const handleLogin = async ({ navigation }: any) => {
     dispatch(isLoading(true));
+    navigation.navigate('Home', { screen: 'HomesScreen' });
+    dispatch(isLogin(false));
     await GoogleSignin.signOut();
     await LoginManager.logOut();
     navigation.navigate('Home', { screen: 'HomesScreen' });

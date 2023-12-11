@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, } from 'react-native'
 import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -6,8 +6,32 @@ import { Modal, Provider } from '@ant-design/react-native'
 import ButtonBottom from '../../component/Button/Button'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility'
+import AxiosInstance from '../../Axios/Axios'
+import { useDispatch, useSelector } from 'react-redux'
+import { updatePass } from '../../redux/silces/Silces'
 
-const ChangePass = () => {
+const ChangePass = (props: any) => {
+    const { setModalVisible } = props.action;
+    const [oldPass, setOldPass] = useState<string>('');
+    const [newPass, setNewPass] = useState<string>('');
+    const [againPass, setAgainPass] = useState<string>('');
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+    const dispatch = useDispatch();
+
+    const handleSaveChangePass = async () => {
+        if(user.password === oldPass){
+            if (newPass === againPass) {
+                setModalVisible(false)
+                dispatch(updatePass(newPass))
+                const response = await AxiosInstance().post(`/usersInfo/ChangePassword/`, { email: user.email, oldPassword: oldPass, newPassword: newPass });
+            } else {
+                console.warn('Mật khẩu không khớp');
+            }
+        } else {
+            return console.warn('Mật khẩu cũ không đúng')
+        }
+    }
+
     return (
         <View style={styles.container}>
             <View style={styles.title}>
@@ -19,7 +43,7 @@ const ChangePass = () => {
                 <Text style={styles.txtEmail}>Old Password</Text>
                 <View style={styles.input}>
                     <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
-                    <TextInput secureTextEntry={true} style={styles.txtInput} value="0372711935" />
+                    <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setOldPass(e.nativeEvent.text) }} />
                 </View>
             </View>
 
@@ -27,7 +51,7 @@ const ChangePass = () => {
                 <Text style={styles.txtEmail}>New Password</Text>
                 <View style={styles.input}>
                     <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
-                    <TextInput secureTextEntry={true} style={styles.txtInput} value="0372711935" />
+                    <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setNewPass(e.nativeEvent.text) }} />
                 </View>
             </View>
 
@@ -35,12 +59,12 @@ const ChangePass = () => {
                 <Text style={styles.txtEmail}>New Password Again</Text>
                 <View style={styles.input}>
                     <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
-                    <TextInput secureTextEntry={true} style={styles.txtInput} value="0372711935" />
+                    <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setAgainPass(e.nativeEvent.text) }} />
                 </View>
             </View>
-            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable onPress={handleSaveChangePass} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
                 <ButtonBottom title='Save' />
-            </View>
+            </Pressable>
         </View>
 
     )

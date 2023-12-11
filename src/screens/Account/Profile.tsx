@@ -15,16 +15,15 @@ import Phone from './Phone'
 import Gender from './Gender'
 import ChangeName from './ChangeName';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
-import { useDispatch, useSelector } from 'react-redux';
-import AxiosInstance from '../../Axios/Axios';
+import {useSelector } from 'react-redux';
+import { LoginFacebook, LoginGoogle, isLogin } from '../../redux/silces/Silces';
 
 
 const ProfileScreen = ({ navigation }: PropsAccount) => {
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [nameModal, setNameModal] = useState<string>('');
     const user = useSelector((state: any) => state.SlicesReducer.user);
-    const checkLogin = useSelector((state: any) => state.SlicesReducer.LoginGoogle || state.SlicesReducer.LoginGoogle ? true : false);
-    
+    const checkLogin = useSelector((state: any) => (state.SlicesReducer.LoginGoogle || state.SlicesReducer.LoginFacebook) ? true : false);
     return (
         <Provider>
             <Modal
@@ -44,7 +43,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                                     (nameModal == 'ChangePhone') ?
                                         <Phone action={{ setModalVisible }} /> :
                                         (nameModal == 'ChangePassword') ?
-                                            <ChangePass /> :
+                                            <ChangePass action={{ setModalVisible }}/> :
                                             <ChangeName action={{ setModalVisible }}/>
                     }
                     <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>

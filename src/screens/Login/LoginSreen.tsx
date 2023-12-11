@@ -14,7 +14,7 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import Realm from 'realm';
 import { AccessToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
 import { useDispatch, useSelector } from 'react-redux';
-import { LoginFacebook, LoginGoogle, isLoading, isLogin, updateUser } from '../../redux/silces/Silces';
+import { LoginFacebook, LoginGoogle, isLoading, isLogin, updatePass, updateUser } from '../../redux/silces/Silces';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import Spinner from 'react-native-loading-spinner-overlay';
 import Loading from '../../component/Loading/Loading';
@@ -68,6 +68,9 @@ const LoginScreen = (props: any) => {
     dispatch(isLogin(true));
     dispatch(updateUser({ _id: data._id, _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address, phone: data.phone }))
   }
+  const handlePass = () => {
+    dispatch(updatePass(password))
+  }
   const login = async (info: Login) => {
     try {
       const result = await AxiosInstance().post('/usersInfo/LoginUser', { email: info.email, password: info.password });
@@ -84,6 +87,7 @@ const LoginScreen = (props: any) => {
               await AsyncStorage.setItem('password', info.password);
             }
             handleSubmit({ _id: user._id, _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
+            handlePass()
           } else {
             console.warn("Tài khoản không có quyền đăng nhập !");
           }
@@ -213,6 +217,7 @@ const LoginScreen = (props: any) => {
       }
     );
   }
+
   return (
     <KeyboardAwareScrollView>
       <Loading />
