@@ -6,6 +6,8 @@ import routes from '../../component/constants/routes';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import AxiosInstance from '../../Axios/Axios';
+import { PropsExplore } from '../../component/Navigation/Props';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 // Định nghĩa kiểu dữ liệu cho đánh giá (Review)
 interface Comment {
@@ -16,7 +18,10 @@ interface Comment {
 }
 const windowWidth = Dimensions.get('window').width;
 
-export default function ProductReviews() {
+export default function ProductReviews(props: NativeStackHeaderProps) {
+
+  const { navigation } = props
+
   const route = useRoute();
   const [listComment, setlistComment] = useState<Comment[]>([]);
   const [commentCount, setCommentCount] = useState<number>(0);
@@ -59,8 +64,12 @@ export default function ProductReviews() {
 
 
 
-  const handleAddComment = () => {
-    console.log('nhấn được rồi nè !')
+  const fetchCommentbyIdProduct = async (id: string) => {
+    const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
+    setlistComment(response.data);
+  }
+  const handleAddComment = async () => {
+
   };
 
 
@@ -160,9 +169,13 @@ export default function ProductReviews() {
       <View style={styles.addCommentButtonContainer}>
         <TouchableOpacity
           style={styles.addCommentButton}
-          onPress={() => handleAddComment()}
+          onPress={() => navigation.navigate('AddComment', { id: id })}
+
         >
-          <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
+          <LinearGradient 
+          colors={['#46CAF3', '#68B1D9']} 
+          style={{ borderRadius: 10 }}
+          >
             <Text style={styles.addCommentButtonText}>Write Review</Text>
           </LinearGradient>
         </TouchableOpacity>
