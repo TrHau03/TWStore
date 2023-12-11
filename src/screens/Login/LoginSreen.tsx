@@ -13,9 +13,11 @@ import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import Realm from 'realm';
 import { AccessToken, GraphRequest, GraphRequestManager, LoginButton, LoginManager, Profile } from 'react-native-fbsdk-next';
-import { useDispatch } from 'react-redux';
-import { LoginFacebook, LoginGoogle, isLogin, updateUser } from '../../redux/silces/Silces';
+import { useDispatch, useSelector } from 'react-redux';
+import { LoginFacebook, LoginGoogle, isLoading, isLogin, updateUser } from '../../redux/silces/Silces';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import Spinner from 'react-native-loading-spinner-overlay';
+import Loading from '../../component/Loading/Loading';
 
 interface Login {
   email: string;
@@ -41,7 +43,6 @@ const LoginScreen = (props: any) => {
   const [password, setPassword] = useState<string>('');
   const [pictureURL, setPictureURL] = useState<any>(null);
   const [checkBoxRemember, setCheckBoxRemember] = useState<any>(null);
-  console.log(checkBoxRemember);
 
   const dispatch = useDispatch();
 
@@ -71,9 +72,11 @@ const LoginScreen = (props: any) => {
     try {
       const result = await AxiosInstance().post('/usersInfo/LoginUser', { email: info.email, password: info.password });
       const userInfo = result?.data.user;
+      userInfo && dispatch(isLoading(true));
       if (result.data.status) {
         const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
         const user = response.data.data;
+        user && dispatch(isLoading(false));
         if (user.active) {
           if (userInfo.role === 'user') {
             if (checkBoxRemember) {
@@ -107,6 +110,7 @@ const LoginScreen = (props: any) => {
     // Check if your device supports Google Play
     try {
       // Sign into Google
+      dispatch(isLoading(true));
       await GoogleSignin.hasPlayServices();
       const { idToken }: any = await GoogleSignin.signIn();
       const userGoogle = await GoogleSignin.signIn();
@@ -120,6 +124,7 @@ const LoginScreen = (props: any) => {
         const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`, { name: userGoogle.user.name, email: userGoogle.user.email });
         const user = response.data.data;
         console.log("Info user Google", user);
+        user && dispatch(isLoading(false));
         if (user.active) {
           handleSubmit({ _id: user._id, _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartItem: user.cartItem, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
           dispatch(LoginGoogle(true));
@@ -150,55 +155,57 @@ const LoginScreen = (props: any) => {
         if (result.isCancelled) {
           console.log("==> Login cancelled");
         } else {
-          AccessToken.getCurrentAccessToken().then(
-            (data: any) => {
-              Profile.getCurrentProfile().then(
-                function (currentProfile) {
-                  console.log("Fb access token", data?.accessToken?.toString());
-                  const graphRequest = new GraphRequest('/me', {
-                    accessToken: data?.accessToken,
-                    parameters: {
-                      fields: {
-                        string: 'picture.type(large)',
+          dispatch(isLoading(true)),
+            AccessToken.getCurrentAccessToken().then(
+              (data: any) => {
+                Profile.getCurrentProfile().then(
+                  function (currentProfile) {
+                    console.log("Fb access token", data?.accessToken?.toString());
+                    const graphRequest = new GraphRequest('/me', {
+                      accessToken: data?.accessToken,
+                      parameters: {
+                        fields: {
+                          string: 'picture.type(large)',
+                        },
                       },
-                    },
-                  }, (error, result: any) => {
-                    if (error) {
-                      console.error(error)
-                    } else {
-                      setPictureURL(result?.picture.data.url);
-                    }
-                  })
-                  new GraphRequestManager().addRequest(graphRequest).start()
-                  if (currentProfile) {
-                    userFacebook = currentProfile;
-                  }
-                }
-              );
-              const credentials = Realm.Credentials.facebook(data?.accessToken?.toString());
-              app.logIn(credentials).then(async userFace => {
-                console.log(`Logged in with id: ${userFace.id}`);
-                if (userFace) {
-                  const response = await AxiosInstance().post(`/users/getUser/${userFace.id}`, { name: userFacebook.name, email: userFacebook.email });
-                  console.log(userFacebook);
-                  const user = response.data.data;
-                  if (user.active) {
-                    console.log("UserFacebook", user);
-                    handleSubmit({
-                      _id: user._id, _idUser: user._idUser, email: '', userName: userFacebook.name, cartItem: user.cartItem, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone,
+                    }, (error, result: any) => {
+                      if (error) {
+                        console.error(error)
+                      } else {
+                        setPictureURL(result?.picture.data.url);
+                      }
                     })
-                    dispatch(LoginFacebook(true));
-                  } else {
-                    dispatch(LoginFacebook(false));
-                    console.warn("Tài khoản không bị khóa !!")
+                    new GraphRequestManager().addRequest(graphRequest).start()
+                    if (currentProfile) {
+                      userFacebook = currentProfile;
+                    }
                   }
-                } else {
-                  console.log("Login failed");
-                }
-              });
+                );
+                const credentials = Realm.Credentials.facebook(data?.accessToken?.toString());
+                app.logIn(credentials).then(async userFace => {
+                  console.log(`Logged in with id: ${userFace.id}`);
+                  if (userFace) {
+                    const response = await AxiosInstance().post(`/users/getUser/${userFace.id}`, { name: userFacebook.name, email: userFacebook.email });
+                    console.log(userFacebook);
+                    const user = response.data.data;
+                    user && dispatch(isLoading(false));
+                    if (user.active) {
+                      console.log("UserFacebook", user);
+                      handleSubmit({
+                        _id: user._id, _idUser: user._idUser, email: '', userName: userFacebook.name, cartItem: user.cartItem, avatar: pictureURL, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone,
+                      })
+                      dispatch(LoginFacebook(true));
+                    } else {
+                      dispatch(LoginFacebook(false));
+                      console.warn("Tài khoản không bị khóa !!")
+                    }
+                  } else {
+                    console.log("Login failed");
+                  }
+                });
 
-            }
-          )
+              }
+            )
         }
       },
       function (error) {
@@ -208,6 +215,7 @@ const LoginScreen = (props: any) => {
   }
   return (
     <KeyboardAwareScrollView>
+      <Loading />
       <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, width: WIDTH, backgroundColor: BG_COLOR, height: HEIGHT }}>
         <View style={styles.header}>
           <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />

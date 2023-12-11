@@ -5,23 +5,29 @@ import { PropsAccount } from '../../component/Navigation/Props'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 import ButtonBottom from '../../component/Button/Button'
 import { useDispatch } from 'react-redux'
-import { isLogin } from '../../redux/silces/Silces'
+import { isLoading, isLogin } from '../../redux/silces/Silces'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { LoginManager } from 'react-native-fbsdk-next'
+import Loading from '../../component/Loading/Loading'
 
 
 const AccountScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
 
   const handleLogin = async ({ navigation }: any) => {
-    navigation.navigate('Home', { screen: 'HomesScreen' });
-    dispatch(isLogin(false));
+    dispatch(isLoading(true));
     await GoogleSignin.signOut();
     await LoginManager.logOut();
+    navigation.navigate('Home', { screen: 'HomesScreen' });
+    setTimeout(async () => {
+      dispatch(isLogin(false));
+      dispatch(isLoading(false));
+    }, 1000);
   }
 
   return (
     <View style={[styles.container,]}>
+      <Loading />
       <Text style={styles.title}>Account</Text>
       <View style={styles.line}></View>
       {/* <Portal>

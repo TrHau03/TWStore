@@ -10,6 +10,7 @@ import SplashSreen from './src/screens/Login/SplashSreen';
 import Navigation from './src/component/Navigation/Navigation';
 import { NavigationContainer } from '@react-navigation/native';
 import { DefaultTheme, PaperProvider } from 'react-native-paper';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 
 

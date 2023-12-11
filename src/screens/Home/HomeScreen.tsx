@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TextInput, Image, Pressable, ScrollView, FlatList, SectionList, TouchableOpacity, Animated } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { CompositeNavigationProp, NavigationProp, useIsFocused, useNavigation } from '@react-navigation/native';
 import { RootStackParamListHome, RootStackScreenEnumHome } from '../../component/Root/RootStackHome';
@@ -13,12 +13,14 @@ import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import { listProductRecommend } from '../../redux/silces/HomeSelector';
 import { fetchInitialListProductRecommend } from '../../redux/silces/Silces';
+import { RefreshControl } from 'react-native';
 
 
 
 const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
     const isFocused = useIsFocused();
 
+    const [refreshing, setRefreshing] = useState<boolean>(false);
 
     const [imgActive, setimgActive] = useState(0);
 
@@ -31,15 +33,16 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
     const listProduct = useSelector(listProductRecommend);
     const dispatch = useDispatch();
 
+
+    const fetchBanner = async () => {
+        const response = await AxiosInstance().get(`banner/getAllBanner`);
+        setImages(response.data.banner);
+    }
+    const fetchBrand = async () => {
+        const response = await AxiosInstance().get(`brand/getAllBrand`);
+        setBrand(response.data)
+    }
     useEffect(() => {
-        const fetchBanner = async () => {
-            const response = await AxiosInstance().get(`banner/getAllBanner`);
-            setImages(response.data.banner);
-        }
-        const fetchBrand = async () => {
-            const response = await AxiosInstance().get(`brand/getAllBrand`);
-            setBrand(response.data)
-        }
         if (isFocused) {
             dispatch(fetchInitialListProductRecommend('product/getRecommendProduct'));
             fetchBrand();
@@ -83,6 +86,15 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
             </Pressable>
         )
     }
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        dispatch(fetchInitialListProductRecommend('product/getRecommendProduct'));
+        fetchBrand();
+        fetchBanner();
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+    }, []);
     return (
         <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
             <View style={styles.top}>
@@ -112,7 +124,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
 
             </View>
-            <ScrollView horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]} scrollEventThrottle={16}>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]} scrollEventThrottle={16}>
                 <View style={styles.topslide}>
                     <ScrollView
                         nestedScrollEnabled={true}

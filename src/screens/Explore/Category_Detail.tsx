@@ -47,10 +47,10 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
 
   useEffect(() => {
     if (isFocused) {
-      dispatch(fetchInitialListProductFilter({ categoryID, brandID }))
+      dispatch(fetchInitialListProductFilter({ categoryID, brandID }));
     }
   }, [isFocused])
-
+  const [refresh, setRefresh] = useState<boolean>(false);
   const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
   const [dataFilter, setdataFilter] = useState<any>([]);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
@@ -118,7 +118,13 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
       </TouchableOpacity>
     );
   };
-
+  const onRefresh = React.useCallback(() => {
+    setRefresh(true);
+    dispatch(fetchInitialListProductFilter({ categoryID, brandID }));
+    setTimeout(() => {
+      setRefresh(false);
+    }, 2000);
+  }, []);
   return (
     <View style={styles.container}>
       <Modal
@@ -193,6 +199,8 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
           keyExtractor={(item: any) => item._id.toString()}
           numColumns={2}
           columnWrapperStyle={{ columnGap: 10, justifyContent: 'center' }}
+          refreshing={refresh}
+          onRefresh={onRefresh}
         />
       </View>
     </View >

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Image, StyleSheet, Text, View, Button, Pressable } from 'react-native';
+import { Image, StyleSheet, Text, View, Button, Pressable, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Checkbox, InputItem } from '@ant-design/react-native';
@@ -12,6 +12,9 @@ import { ScrollView } from 'react-native';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 import AxiosInstance from '../../Axios/Axios';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import Loading from '../../component/Loading/Loading';
+import { useDispatch } from 'react-redux';
+import { isLoading } from '../../redux/silces/Silces';
 
 
 
@@ -25,6 +28,8 @@ interface Register {
 
 const RegisterScreen = (props: any) => {
     const { navigation }: NativeStackHeaderProps = props;
+
+    const dispatch = useDispatch();
     useEffect(() => {
         const setData = async () => {
             await AsyncStorage.setItem('checkSlide', 'true');
@@ -43,10 +48,14 @@ const RegisterScreen = (props: any) => {
             console.log('register', user);
 
             if (user.password != user.passwordAgain) {
-                return console.log("Password not same!");
+                return Alert.alert('Notification', 'Password not same!', [
+                    { text: 'OK' }
+                ]);;
             }
+            dispatch(isLoading(true));
             const result = await AxiosInstance().post('/usersInfo/RegisterUser', { username: user.name, email: user.email, password: user.password });
             if (result) {
+                dispatch(isLoading(false));
                 navigation.navigate(RootStackScreenEnumLogin.LoginScreen);
             }
 
@@ -56,6 +65,7 @@ const RegisterScreen = (props: any) => {
     }
     return (
         <KeyboardAwareScrollView enableOnAndroid={true}>
+            <Loading />
             <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR, height: HEIGHT }}>
                 <View style={styles.header}>
                     <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />

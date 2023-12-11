@@ -5,6 +5,8 @@ import SlideNavigation from './SlideNavigation';
 import React, { useEffect, useState } from 'react';
 import BottomTab from '../BottomNavigation/BottomTabNavigator';
 import { useSelector } from 'react-redux';
+import { View } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 
 
@@ -22,7 +24,6 @@ const Navigation = () => {
         return <SlideNavigation />;
     } else {
         return isLogin ? <BottomTab /> : <LoginNavigation />
-        // return true ? <BottomTab /> : <LoginNavigation />
     }
 }
 
