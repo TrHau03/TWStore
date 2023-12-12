@@ -75,11 +75,11 @@ const LoginScreen = (props: any) => {
     try {
       const result = await AxiosInstance().post('/auth/login', { email: info.email, password: info.password });
       const userInfo = result?.data.user;
-      await AsyncStorage.setItem('token', result?.data.access_token);
       userInfo && dispatch(isLoading(true));
       if (result.data.status) {
         const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
         const user = response.data.data;
+        await AsyncStorage.setItem('token', response?.data.access_token);
         user && dispatch(isLoading(false));
         if (user.active) {
           if (userInfo.role === 'user') {
@@ -128,6 +128,8 @@ const LoginScreen = (props: any) => {
       if (userRealm) {
         const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`, { name: userGoogle.user.name, email: userGoogle.user.email });
         const user = response.data.data;
+        await AsyncStorage.setItem('token', response?.data.access_token);
+
         console.log("Info user Google", user);
         user && dispatch(isLoading(false));
         if (user.active) {
@@ -193,6 +195,7 @@ const LoginScreen = (props: any) => {
                     const response = await AxiosInstance().post(`/users/getUser/${userFace.id}`, { name: userFacebook.name, email: userFacebook.email });
                     console.log(userFacebook);
                     const user = response.data.data;
+                    await AsyncStorage.setItem('token', response?.data.access_token);
                     user && dispatch(isLoading(false));
                     if (user.active) {
                       console.log("UserFacebook", user);
