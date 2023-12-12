@@ -73,8 +73,9 @@ const LoginScreen = (props: any) => {
   }
   const login = async (info: Login) => {
     try {
-      const result = await AxiosInstance().post('/usersInfo/LoginUser', { email: info.email, password: info.password });
+      const result = await AxiosInstance().post('/auth/login', { email: info.email, password: info.password });
       const userInfo = result?.data.user;
+      await AsyncStorage.setItem('token', result?.data.access_token);
       userInfo && dispatch(isLoading(true));
       if (result.data.status) {
         const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
