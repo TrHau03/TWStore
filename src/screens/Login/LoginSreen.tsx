@@ -129,7 +129,6 @@ const LoginScreen = (props: any) => {
         const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`, { name: userGoogle.user.name, email: userGoogle.user.email });
         const user = response.data.data;
         await AsyncStorage.setItem('token', response?.data.access_token);
-
         console.log("Info user Google", user);
         user && dispatch(isLoading(false));
         if (user.active) {
