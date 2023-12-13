@@ -18,11 +18,13 @@ import AxiosInstance from '../../Axios/Axios';
 import { useSelector } from 'react-redux';
 import storage from '@react-native-firebase/storage';
 import uuid from 'react-native-uuid';
+import Header from '../../component/Header/Header'
+import { PropsExplore } from '../../component/Navigation/Props';
 
 const windowWidth = Dimensions.get('window').width;
 let image: any = [];
 let imageURL: any = [];
-const Addcomment = () => {
+const Addcomment = ({navigation} : PropsExplore) => {
     const user = useSelector((state: any) => state.SlicesReducer.user);
 
     const [content, setContent] = useState<string>('');
@@ -169,30 +171,28 @@ const Addcomment = () => {
     };
 
     return (
-        <View>
-            <View style={styles.header}>
-                <Image style={styles.icon} source={require('../../asset/image/icon_back.png')} />
-                <Text style={styles.name}>Write Review</Text>
-            </View>
+        <View style={{marginTop: 20, paddingHorizontal: 20}}>
+            <Header title='Viết Đánh Giá' navigation={navigation} />
+            <View style={styles.line}></View>
             <ScrollView style={{ height: '100%' }}>
                 <View style={styles.bodycontainer}>
                     <Text style={styles.textstyles}>
-                        Please write Overall level of satisfaction with your shipping /
-                        Delivery Service
+                        Xin cho chúng tôi biết về mức độ hài lòng của bạn với dịch vụ và sản phẩm của chúng tôi.
                     </Text>
                     <View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 10 }}>
                         <CustomRatingbar />
                     </View>
 
-                    <Text style={[styles.textstyles, { marginTop: 20 }]}>Write Your Review</Text>
+                    <Text style={[styles.textstyles, { marginTop: 20 }]}>Viết đánh giá của bạn</Text>
 
                     <TextInput
                         style={styles.input}
                         onChangeText={setContent}
                         value={content}
-                        placeholder="Let us know what you think about our products"
+                        placeholder="Hãy cho chúng tôi biết suy nghĩ của bạn về sản phẩm của chúng tôi"
                         multiline
                     />
+                    
                     <ScrollView
                         horizontal
                         contentContainerStyle={styles.selectedImagesContainer}
@@ -228,7 +228,7 @@ const Addcomment = () => {
                                 colors={['#46CAF3', '#68B1D9']}
                                 style={{ borderRadius: 10 }}
                             >
-                                <Text style={styles.addCommentButtonText}>Write Review</Text>
+                                <Text style={styles.addCommentButtonText}>Đăng Bài</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>
@@ -242,6 +242,15 @@ export default Addcomment;
 
 
 const styles = StyleSheet.create({
+    line: {
+        height: 0.5,
+        backgroundColor: '#ADA8A8',
+        width: '120%',
+        marginTop: 10,
+        position: 'relative',
+        right: 20
+    },
+
     imgnew: {
         width: 100,
         height: 100,
@@ -258,7 +267,7 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 10,
         margin: 10,
-        borderColor: 'black',
+        borderColor: '#9098B1',
         borderWidth: 1,
         marginLeft: 1,
     },
@@ -295,7 +304,7 @@ const styles = StyleSheet.create({
     },
     addCommentButtonContainer: {
         alignSelf: 'center',
-        width: windowWidth - 20,
+        width: windowWidth - 15,
         borderRadius: 20,
     },
     addCommentButton: {
@@ -321,7 +330,7 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
     },
     input: {
-        margin: 12,
+        marginTop: 10,
         borderWidth: 1,
         padding: 16,
         fontSize: 16,
@@ -329,21 +338,22 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         height: 150,
     },
+
     textstyles: {
         fontWeight: '700',
-        fontSize: 20,
+        fontSize: 18,
         color: '#223263',
         textAlign: 'justify',
         lineHeight: 20,
     },
     bodycontainer: {
-        margin: 10,
+        marginVertical: 15,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 16,
-        height: 80,
+        height: 50,
         backgroundColor: 'white',
     },
     icon: {

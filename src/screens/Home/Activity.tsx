@@ -82,9 +82,6 @@ const ActivityScreen = ({ navigation }: PropsHome) => {
     );
   };
 
-
-
-
   return (
     <View style={styles.container}>
       <Header title='Activity' navigation={navigation} />

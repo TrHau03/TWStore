@@ -72,12 +72,12 @@ const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
                         <Add_Address action={{setModalVisible}} />
                         <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
                             <Pressable onPress={() => { setModalVisible(false) }}>
-                                <ButtonBottom title='Cancel' />
+                                <ButtonBottom title='Hủy' />
                             </Pressable>
                         </Animatable.View>
                     </View>
                 </Modal>
-                <Header title='Address' navigation={navigation} />
+                <Header title='Địa Chỉ' navigation={navigation} />
                 <View style={styles.line}></View>
                 <FlatList
                     style={{ maxHeight: '80%' }}
@@ -86,7 +86,7 @@ const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
                     showsVerticalScrollIndicator={false}
                 />
                 <TouchableOpacity style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 20 }} onPress={() => setModalVisible(true)}>
-                    <Button title='Add Address' />
+                    <Button title='Thêm Địa Chỉ' />
                 </TouchableOpacity>
             </View>
         </Provider>

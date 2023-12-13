@@ -64,7 +64,7 @@ const RegisterScreen = (props: any) => {
         }
     }
     return (
-        <KeyboardAwareScrollView enableOnAndroid={true}>
+        <View>
             <Loading />
             <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR, height: HEIGHT }}>
                 <View style={styles.header}>
@@ -72,7 +72,7 @@ const RegisterScreen = (props: any) => {
                     <Text style={styles.textHeader}>The Wonder</Text>
                 </View>
                 <View>
-                    <Text style={styles.textWelcome}>Welcome to Register</Text>
+                    <Text style={styles.textWelcome}>ĐĂNG KÝ TÀI KHOẢN</Text>
                 </View>
                 <View style={styles.input}>
                     <View style={styles.textinput}>
@@ -83,7 +83,7 @@ const RegisterScreen = (props: any) => {
                                 setName(value)
                             }}
                             labelNumber={2}
-                            placeholder="Full Name">
+                            placeholder="Nhập đầy đủ họ và tên">
                             <Icon name="person-outline" size={25} color="#9098B1" />
                         </InputItem>
                     </View>
@@ -95,7 +95,7 @@ const RegisterScreen = (props: any) => {
                                 setEmail(value)
                             }}
                             labelNumber={2}
-                            placeholder="Your Email">
+                            placeholder="Nhập email">
                             <Icon name="mail-outline" size={25} color="#9098B1" />
                         </InputItem>
                     </View>
@@ -108,7 +108,7 @@ const RegisterScreen = (props: any) => {
                                 setPassword(value)
                             }}
                             labelNumber={2}
-                            placeholder="Password">
+                            placeholder="Nhập mật khẩu">
                             <Icon name="lock-closed-outline" size={25} color="#9098B1" />
                         </InputItem>
                     </View>
@@ -121,7 +121,7 @@ const RegisterScreen = (props: any) => {
                                 setPasswordAgain(value)
                             }}
                             labelNumber={2}
-                            placeholder="Password Again">
+                            placeholder="Nhập lại mật khẩu">
                             <Icon name="lock-closed-outline" size={25} color="#9098B1" />
                         </InputItem>
                     </View>
@@ -129,18 +129,18 @@ const RegisterScreen = (props: any) => {
                 <View>
                     <TouchableOpacity onPress={() => register({ name, email, password, passwordAgain })} >
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
-                            <Text style={styles.textLogin}>Register</Text>
+                            <Text style={styles.textLogin}>Đăng Ký</Text>
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
-                    <Text style={styles.textDontAcc}>Already a member? </Text>
+                    <Text style={styles.textDontAcc}>Bạn đã có tài khoản? </Text>
                     <Pressable onPress={() => navigation.navigate('LoginScreen')}>
-                        <Text style={styles.textRegister}>Log In</Text>
+                        <Text style={styles.textRegister}>Đăng Nhập</Text>
                     </Pressable>
                 </View>
             </View>
-        </KeyboardAwareScrollView>
+        </View>
     )
 }
 

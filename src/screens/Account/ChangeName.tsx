@@ -23,19 +23,19 @@ const ChangeName = (props: any) => {
 
     return (
         <View style={styles.container}>
-            <Header hideBack title='Name' />
+            <Header hideBack title='Tên' />
             <View style={styles.line}></View>
 
             <View style={styles.content}>
                 <View style={styles.Name}>
-                    <Text style={styles.txtName}>Full Name</Text>
+                    <Text style={styles.txtName}>Họ và Tên</Text>
                     <View style={styles.input}>
                         <TextInput onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setName(e.nativeEvent.text) }} style={styles.txtInput} defaultValue={user.userName} />
                     </View>
                 </View>
             </View>
             <Pressable onPress={handleSaveName} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
-                <ButtonBottom title='Save' />
+                <ButtonBottom title='Lưu' />
             </Pressable>
         </View>
     )

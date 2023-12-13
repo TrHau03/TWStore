@@ -24,12 +24,12 @@ const Phone = (props: any) => {
 
     return (
         <View style={styles.container}>
-            <Header hideBack title='PhoneNumber' />
+            <Header hideBack title='Số Điện Thoại' />
 
             <View style={styles.line}></View>
 
             <View style={styles.Email}>
-                <Text style={styles.txtEmail}>Phone Number</Text>
+                <Text style={styles.txtEmail}>Số điện thoại của bạn</Text>
                 <View style={styles.input}>
                     <Icon name='phone-portrait-outline' size={30} />
                     <TextInput defaultValue={user.phone} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setPhone(e.nativeEvent.text) }} keyboardType='numeric' maxLength={11} />
@@ -37,7 +37,7 @@ const Phone = (props: any) => {
             </View>
 
             <Pressable onPress={handleSavephone} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
-                <ButtonBottom title='Save' />
+                <ButtonBottom title='Lưu' />
             </Pressable>
         </View>
     )

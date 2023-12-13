@@ -7,10 +7,6 @@ import { useIsFocused } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 
-
-
-
-
 const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
 
   const [event, setEvent] = useState<[]>([]);

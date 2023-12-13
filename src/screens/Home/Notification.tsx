@@ -81,14 +81,14 @@ const renderTabBar = (props: any) => (
 const NotificationScreen = ({ navigation }: PropsHome) => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
-    { key: 'first', title: 'Notification' },
-    { key: 'second', title: 'Voucher' },
+    { key: 'first', title: 'Thông báo' },
+    { key: 'second', title: 'Phiếu giảm giá' },
   ]);
 
   return (
     <View style={styles.container}>
       <View style={{ paddingHorizontal: PADDING_HORIZONTAL, }}>
-        <Header title='Notification' navigation={navigation} />
+        <Header title='Thông báo' navigation={navigation} />
       </View>
       <TabView
         navigationState={{ index, routes }}

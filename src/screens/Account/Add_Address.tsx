@@ -144,9 +144,9 @@ const Add_Address = (props: any) => {
 
     return (
         <View style={styles.container}>
-            <Header title='Add Address' hideBack />
+            <Header title='Thêm Địa Chỉ' hideBack />
             <View style={styles.line}></View>
-            <Text style={styles.txtTitle}>Provine</Text>
+            <Text style={styles.txtTitle}>Tỉnh</Text>
             <SelectList
                 setSelected={(e: any) => {
                     const array = e.split(' ');
@@ -162,7 +162,7 @@ const Add_Address = (props: any) => {
                 dropdownTextStyles={styles.txtInput}
                 inputStyles={styles.txtInputSelect}
             />
-            <Text style={styles.txtTitle}>City</Text>
+            <Text style={styles.txtTitle}>Thành phố</Text>
             <SelectList
                 setSelected={(e: any) => {
                     const array = e.split(' ');
@@ -178,7 +178,7 @@ const Add_Address = (props: any) => {
                 dropdownTextStyles={styles.txtInput}
                 inputStyles={styles.txtInputSelect}
             />
-            <Text style={styles.txtTitle}>City</Text>
+            <Text style={styles.txtTitle}>Phường/Xã</Text>
             <SelectList
                 setSelected={(e: any) => {
                     const array = e.split(' ');
@@ -194,11 +194,12 @@ const Add_Address = (props: any) => {
                 dropdownTextStyles={styles.txtInput}
                 inputStyles={styles.txtInputSelect}
             />
+            <Text style={styles.txtTitle}>Địa chỉ</Text>
             <View style={styles.input}>
                 <TextInput style={styles.txtInput} placeholder='Đường' onChangeText={setStreet} />
             </View>
             <Pressable style={{ position: 'absolute', bottom: 20, width: '100%', alignSelf: 'center' }} onPress={handleAddAddress}>
-                <Button title='Add Address' />
+                <Button title='Thêm Địa Chỉ' />
             </Pressable>
         </View>
     )
@@ -213,7 +214,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#9098B1",
         borderRadius: 5,
-        marginTop: 30
+        marginTop: 5
     },
     txtInputSelect: {
         fontSize: 14,
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
 
     txtTitle: {
         color: '#223263',
-        fontSize: 14,
+        fontSize: 16,
         fontFamily: 'Poppins',
         fontWeight: '700',
         lineHeight: 21,

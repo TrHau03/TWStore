@@ -230,7 +230,7 @@ const LoginScreen = (props: any) => {
           <Text style={styles.textHeader}>The Wonder</Text>
         </View>
         <View>
-          <Text style={styles.textWelcome}>Welcome to Login</Text>
+          <Text style={styles.textWelcome}>CHÀO MỪNG TỚI TW-STORE</Text>
         </View>
         <View style={styles.input}>
           <View style={styles.email}>
@@ -241,7 +241,7 @@ const LoginScreen = (props: any) => {
                 setEmail(value)
               }}
               labelNumber={2}
-              placeholder="Your Email">
+              placeholder="Nhập email">
               <Icon name="mail-outline" size={25} color="#9098B1" />
             </InputItem>
           </View>
@@ -254,44 +254,44 @@ const LoginScreen = (props: any) => {
                 setPassword(value)
               }}
               labelNumber={2}
-              placeholder="Your Password">
+              placeholder="Nhập mật khẩu">
               <Icon name="lock-closed-outline" size={25} color="#9098B1" />
             </InputItem>
           </View>
         </View>
         <View style={{ flexDirection: 'row', marginTop: 17 }}>
-          <Checkbox checked onChange={(e: any) => setCheckBoxRemember(e.target.checked)} style={{ width: 150 }}><Text style={styles.checkBox}>Remember me</Text></Checkbox>
+          <Checkbox checked onChange={(e: any) => setCheckBoxRemember(e.target.checked)} style={{ width: 150 }}><Text style={styles.checkBox}>Nhớ tài khoản</Text></Checkbox>
           <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumLogin.VerificationScreen)} style={{ position: 'absolute', right: 0 }}>
-            <Text style={styles.checkBox}>Forgot Password?</Text>
+            <Text style={styles.checkBox}>Quên mật khẩu?</Text>
           </TouchableOpacity>
         </View>
         <View>
           <TouchableOpacity onPress={() => login({ email, password })}>
             <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
-              <Text style={styles.textLogin}>Login</Text>
+              <Text style={styles.textLogin}>Đăng Nhập</Text>
             </LinearGradient>
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 23, marginTop: 17 }}>
           <View style={{ width: '40%', backgroundColor: '#9098B1', height: 0.5 }} />
-          <Text style={styles.textOR}>OR</Text>
+          <Text style={styles.textOR}>HOẶC</Text>
           <View style={{ width: '40%', backgroundColor: '#9098B1', height: 0.5 }} />
         </View>
         <View style={{ marginTop: 17 }}>
           <TouchableOpacity onPress={onGoogleButtonPress} style={styles.btnLoginWith}>
             <Icon name='logo-google' size={20} style={{ position: 'absolute', left: 20 }} />
-            <Text style={styles.textLoginWith}>Log in with Google</Text>
+            <Text style={styles.textLoginWith}>Đăng nhập bằng Google</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={onFaceBookButtonPress} style={[styles.btnLoginWith, { marginTop: 17 }]}>
             <Icon name='logo-facebook' size={20} style={{ position: 'absolute', left: 20 }} />
-            <Text style={styles.textLoginWith}>Log in with FaceBook</Text>
+            <Text style={styles.textLoginWith}>Đăng nhập bằng FaceBook</Text>
           </TouchableOpacity>
 
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 17 }}>
-          <Text style={styles.textDontAcc}>Don’t have a account? </Text>
+          <Text style={styles.textDontAcc}>Bạn không có tài khoản? </Text>
           <Pressable onPress={() => navigation.navigate(RootStackScreenEnumLogin.RegisterScreen)}>
-            <Text style={styles.textRegister}>Register</Text>
+            <Text style={styles.textRegister}>Đăng ký</Text>
           </Pressable>
         </View>
       </View>
