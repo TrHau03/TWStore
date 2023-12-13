@@ -263,17 +263,23 @@ const Productdetail = (props: NativeStackHeaderProps) => {
           </View>
         </View>
         {item.content && <Text style={styles.reviewComment}>{item.content}</Text>}
-        {item.image && (
+        {item.image && Array.isArray(item.image) && item.image.filter((imageURL: string) => imageURL !== "").length > 0 && (
           <View style={styles.commentImagesContainer}>
-            {Array.isArray(item.image) && item.image.map((imageURL: string, index: any) => (
-              <Image
-                key={index}
-                source={{ uri: imageURL }}
-                style={styles.CommentImage}
-              />
-            ))}
+            {item.image.map((imageURL: string, index: number) => {
+              if (imageURL !== "") {
+                return (
+                  <Image
+                    key={index}
+                    source={{ uri: imageURL }}
+                    style={styles.CommentImage}
+                  />
+                );
+              }
+              return null;
+            })}
           </View>
         )}
+
         <View style={styles.reviewFooter}>
           <Text style={styles.reviewDateTime}>{item.createAt}</Text>
         </View>
@@ -378,14 +384,14 @@ const Productdetail = (props: NativeStackHeaderProps) => {
             </View>
             <Text style={styles.textsize}>Mô tả</Text>
             <Text style={styles.comment2}>{product?.description}</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center' , justifyContent: 'space-between'}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={styles.textsize}>Đánh giá sản phẩm</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Productreviews', { id: id })}>
                 <Text style={styles.textsize2}>Xem thêm</Text>
               </TouchableOpacity>
             </View>
             <CustomRatingBar numberOfRatings={commentCount} />
-            <View style={{ height: HEIGHT * 0.35, alignItems: 'center' }}>
+            <View style={{ height: 'auto', alignItems: 'center' }}>
               {listComment && listComment.length > 0 ? (
                 <View>
                   {topTwoComments.map((comment, index) => (
@@ -412,7 +418,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                       <Text style={styles.productName}>{product.productName}</Text>
                       <View style={styles.sale}>
                         <Text style={styles.productPrice}>{product.price - product.price * (product.offer / 100)} VND</Text>
-                        <View style={{ flexDirection: 'row'}}>
+                        <View style={{ flexDirection: 'row' }}>
                           <Text style={styles.productOldPrice}>{product.price} VND</Text>
                           <Text style={styles.textsale}> Giảm {product.offer}%</Text>
                         </View>

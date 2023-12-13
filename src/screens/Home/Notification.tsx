@@ -5,21 +5,80 @@ import { PropsHome } from '../../component/Navigation/Props';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import { useEffect, useState } from 'react';
-import { useIsFocused } from '@react-navigation/native';
 import AxiosInstance from '../../Axios/Axios';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { useSelector } from 'react-redux';
 
-const Notification = () => (
-  <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
-);
+const Notification = () => {
+  const user = useSelector((state: any) => state.SlicesReducer.user);
+  console.log(user._id);
+  const [notificaticon, setNotificaticon] = useState([]);
 
+  useEffect(() => {
+    const fetchNotifi = async () => {
+      const userId = user._id
+      const response = await AxiosInstance().get(`notifications/getAllNotification/${userId}`);
+      console.log(response , "notifi");
+      setNotificaticon(response.data);
+    };
+    fetchNotifi();
 
-
-const renderItem = ({ item }: { item: { title: string, content: string, discountCode: string, discountLevel: string, startDay: string, endDay: string } }) => {
+  }, []);
   return (
-    <TouchableOpacity style={styles.containervoucher} onPress={() => copyVoucher(item.discountCode)}>
+    <View>
+      <FlatList
+        style={{ marginTop: 20 }}
+        data={notificaticon}
+        renderItem={renderItemNotifi}
+        numColumns={1}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  );
+
+};
+
+const renderItemNotifi = ({ item }: { item: { title: string, content: string} }) => {
+  return (
+    <TouchableOpacity style={styles.containerItem}>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.content}>{item.content}</Text>
+    </TouchableOpacity>
+  );
+};
+
+const Voucher = () => {
+
+  
+  const [voucher, setVoucher] = useState<[]>([]);
+
+  useEffect(() => {
+    const fetchVoucher = async () => {
+      const response = await AxiosInstance().get(`promotion/getAllPromotion`);
+      setVoucher(response.data);
+    };
+    fetchVoucher();
+
+  }, []);
+  return (
+    <View>
+      <FlatList
+        style={{ marginTop: 20 }}
+        data={voucher}
+        renderItem={renderItemVoucher}
+        numColumns={1}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  );
+
+};
+
+const renderItemVoucher = ({ item }: { item: {titleVoucher : string ,contentVoucher : string , discountCode: string, discountLevel: string, startDay: string, endDay: string } }) => {
+  return (
+    <TouchableOpacity style={styles.containerItem} onPress={() => copyVoucher(item.discountCode)}>
+      <Text style={styles.title}>{item.titleVoucher}</Text>
+      <Text style={styles.content}>{item.contentVoucher}</Text>
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={styles.textbottom}>Giảm lên đến {item.discountLevel}%</Text>
@@ -31,37 +90,7 @@ const renderItem = ({ item }: { item: { title: string, content: string, discount
 
 const copyVoucher = (discountCode : string) => {
   Clipboard.setString(discountCode);
-  console.log(`Mã giảm giá ${discountCode} đã được sao chép vào clipboard.`);
-};
-
-
-
-
-const Voucher = () => {
-  const [voucher, setVoucher] = useState<[]>([]);
-
-  useEffect(() => {
-    const fetchEvent = async () => {
-      const response = await AxiosInstance().get(`promotion/getAllPromotion`);
-      setVoucher(response.data);
-    };
-    fetchEvent();
-
-  }, []);
-  return (
-    <View>
-      <FlatList
-        style={{ marginTop: 20 }}
-        data={voucher}
-        renderItem={renderItem}
-        numColumns={1}
-        showsVerticalScrollIndicator={false}
-      />
-
-
-    </View>
-  );
-
+  
 };
 
 const renderScene = SceneMap({
@@ -129,7 +158,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#3E3C3B',
   },
-  containervoucher: {
+  containerItem: {
     margin: 10,
     padding: 10,
     backgroundColor: 'white',
