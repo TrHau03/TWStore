@@ -18,11 +18,13 @@ import AxiosInstance from '../../Axios/Axios';
 import { useSelector } from 'react-redux';
 import storage from '@react-native-firebase/storage';
 import uuid from 'react-native-uuid';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 
 const windowWidth = Dimensions.get('window').width;
 let image: any = [];
 let imageURL: any = [];
-const Addcomment = () => {
+const Addcomment = (props: NativeStackHeaderProps) => {
+    const { id } = props?.route.params as { id: string | undefined };
     const user = useSelector((state: any) => state.SlicesReducer.user);
 
     const [content, setContent] = useState<string>('');
@@ -155,8 +157,8 @@ const Addcomment = () => {
                 }));
             };
             await uploadImages();
-            console.log(user._id, content, imageURL, star);
-            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id, productID: null, content: content, image: imageURL, star: star });
+            console.log(user._id,id, content, imageURL, star);
+            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id, productID: id, content: content, image: imageURL, star: star });
             imageURL = [];
             image = [];
             setAddImage(!addImage);

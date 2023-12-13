@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const AxiosInstance = (contentType = 'application/json') => {
     const axiosInstance = axios.create({
-        baseURL: 'http://192.168.1.7:3000/'
+        baseURL: 'https://twstore-97af27ad5b67.herokuapp.com'
     });
     axiosInstance.interceptors.request.use(
         async (config: any) => {
