@@ -172,7 +172,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                     </View>
                 </View>
                 <View >
-                    <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
+                    <Image style={styles.imgrecomended} source={require('../../asset/image/bannerRecomendedProduct.png')} />
                 </View>
                 <FlatList
                     scrollEnabled={false}
