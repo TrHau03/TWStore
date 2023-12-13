@@ -25,8 +25,8 @@ const SlideScreen = (props: any) => {
                     <Image style={styles.imageSlide1} source={step === 1 ? require('../../asset/image/IconSlide1.png') : step === 2 ? require('../../asset/image/IconSlide2.png') : require('../../asset/image/IconSlide3.png')} />
                 </View>
                 <View style={{ marginTop: 96 }}>
-                    <Text style={styles.textTitle}>{step === 1 ? 'Explore the world easily' : step === 2 ? 'Reach the unknown spot' : 'Make connects with explora'}</Text>
-                    <Text style={styles.textDescription}>{step === 1 ? 'To your desire' : step === 2 ? 'To your destination' : 'To your dream trip'}</Text>
+                    <Text style={styles.textTitle}>{step === 1 ? 'Khám phá thế giới' : step === 2 ? 'Tiếp cận điểm chưa biết' : 'The Wonder sẽ cùng bạn'}</Text>
+                    <Text style={styles.textDescription}>{step === 1 ? 'Theo mong muốn của bạn' : step === 2 ? 'Đến những nơi mới lạ' : 'Đến chuyến đi mơ ước của bạn'}</Text>
                 </View>
                 <View style={{ marginTop: 80 }}>
                     <TouchableOpacity style={styles.nextBTN} onPress={() => { step < 3 ? setStep(step + 1) : setloadLoginScreen(true) }}>

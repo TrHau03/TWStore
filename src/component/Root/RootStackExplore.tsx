@@ -19,8 +19,6 @@ export enum RootStackScreenEnumExplore {
     Productdetail = 'Productdetail',
     Productreviews = 'Productreviews',
     AddComment = 'AddComment',
-
-
 }
 
 export type RootStackParamListExplore = {

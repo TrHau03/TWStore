@@ -39,17 +39,17 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
         return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate(RootStackScreenEnumAccount.Order_Detail)}>
             <View>
                 <Text style={styles.MaCode}>{item.orderCode}</Text>
-                <Text style={styles.title}>Order at Lafyuu : {item.bookingDate}</Text>
+                <Text style={styles.title}>Ngày đặt hàng : {item.bookingDate}</Text>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Items</Text>
+                    <Text style={styles.title}>Sản Phẩm</Text>
                     <Text style={styles.content}>{listOrder?.length} Items purchased</Text>
                 </View>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Price</Text>
-                    <Text style={styles.price}>${item.totalPrice}</Text>
+                    <Text style={styles.title}>Giá</Text>
+                    <Text style={styles.price}>{item.totalPrice} VND</Text>
                 </View>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Order Status</Text>
+                    <Text style={styles.title}>Trạng thái giao hàng</Text>
                     <TouchableOpacity onPress={() => { setModalVisible(true); setDate(item.date); setStatus(item.status) }}>
                         <Icon name='chevron-forward-outline' size={25} color={'#525252'} />
                     </TouchableOpacity>
@@ -69,7 +69,7 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
                     <StatusDeliver action={{ setDate, setStatus }} state={{ date, status }} />
                     <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
-                            <ButtonBottom title='Cancel' />
+                            <ButtonBottom title='Thoát' />
                         </Pressable>
                     </Animatable.View>
                 </View>

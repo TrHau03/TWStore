@@ -37,10 +37,10 @@ const Order_Detail = ({ navigation }: NativeStackHeaderProps) => {
     <View style={styles.container}>
       <ScrollView
         showsVerticalScrollIndicator={false}>
-        <Header title='Order Detail' navigation={navigation} />
+        <Header title='Chi Tiết Đặt Hàng' navigation={navigation} />
         <View style={styles.line}></View>
         <View style={{ paddingHorizontal: 20, }}>
-          <Text style={styles.txtTitle}>Product</Text>
+          <Text style={styles.txtTitle}>Sản Phẩm</Text>
 
           {Data.map((item) =>
             <View key={item.id} style={styles.boxProduct}>
@@ -48,55 +48,55 @@ const Order_Detail = ({ navigation }: NativeStackHeaderProps) => {
 
               <View style={{ justifyContent: 'space-between', width: '60%' }}>
                 <Text style={styles.txtName_Product}>{item.name}</Text>
-                <Text style={styles.txtPrice_Product}>{item.price}</Text>
+                <Text style={styles.txtPrice_Product}>{item.price} VND</Text>
               </View>
               <Icon name='heart-outline' size={25} style={styles.icon_Heart} color={'#525252'} />
             </View>
           )}
 
 
-          <Text style={styles.txtTitle}>Shipping Details</Text>
+          <Text style={styles.txtTitle}>Thông tin giao hàng</Text>
           
           {Data1.map((item: any) =>
             <View key={item.id} style={styles.boxShipping}>
 
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Date Shipping</Text>
+                <Text style={styles.txtLeft}>Ngày giao hàng</Text>
                 <Text style={styles.txtRight}>{item.date}</Text>
               </View><View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Shipping</Text>
+                <Text style={styles.txtLeft}>Đơn vị giao hàng</Text>
                 <Text style={styles.txtRight}>{item.name}</Text>
               </View><View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>No. Ressi</Text>
+                <Text style={styles.txtLeft}>Mã giao hàng</Text>
                 <Text style={styles.txtRight}>{item.phone}</Text>
               </View><View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Address</Text>
+                <Text style={styles.txtLeft}>Địa chỉ</Text>
                 <Text style={styles.txtRight}>{item.address}</Text>
               </View>
 
             </View>
           )}
 
-          <Text style={styles.txtTitle}>Payment Details</Text>
+          <Text style={styles.txtTitle}>Thông tin thanh toán</Text>
           {Data2.map((item) =>
             <View key={item.id} style={styles.boxShipping}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Items({item.quantity})</Text>
-                <Text style={styles.txtRight}>${item.price_item}</Text>
+                <Text style={styles.txtLeft}>Tổng tiền sản phẩm({item.quantity})</Text>
+                <Text style={styles.txtRight}>{item.price_item} VND</Text>
               </View>
 
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtLeft}>Shipping</Text>
-                <Text style={styles.txtRight}>${item.price_ship}</Text>
+                <Text style={styles.txtLeft}>Phí giao hàng</Text>
+                <Text style={styles.txtRight}>{item.price_ship} VND</Text>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
                 <Text style={styles.txtLeft}>Import charges</Text>
-                <Text style={styles.txtRight}>${item.price_charges}</Text>
+                <Text style={styles.txtRight}>{item.price_charges} VND</Text>
               </View>
 
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 10 }}>
-                <Text style={styles.txtPrice_Product}>Total Price</Text>
-                <Text style={styles.txtPrice_Product}>${item.price}</Text>
+                <Text style={styles.txtPrice_Product}>Tổng tiền</Text>
+                <Text style={styles.txtPrice_Product}>{item.price} VND</Text>
               </View>
             </View>
           )}

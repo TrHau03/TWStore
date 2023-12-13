@@ -134,7 +134,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 item: JSON.stringify(items),
                 embed_data: JSON.stringify(embed_data),
                 amount: totalAfterShipping.toString(),
-                description: `tui m tuoi lol #${transID}`,
+                description: `Bạn đã thanh toán thành công đơn hàng #${transID}`,
                 bank_code: "zalopayapp",
                 mac: "",
             };
@@ -274,7 +274,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     return (
         <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR, height: '100%' }}>
             <View style={{ marginTop: 17 }}>
-                <Text style={styles.txtTitlePage}>Your Cart</Text>
+                <Text style={styles.txtTitlePage}>Giỏ Hàng</Text>
             </View>
             <View style={styles.line}></View>
             <View style={{ height: HEIGHT * 0.25, marginTop: '11%' }}>
@@ -284,7 +284,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
                         keyExtractor={(item: any) => item?.key}
-                    /> : <Text style={{ fontSize: 20 }}>No data</Text>}
+                    /> : <Text style={{ fontSize: 20 }}>Chưa có sản phẩm</Text>}
             </View>
             <ScrollView
                 style={{ marginTop: 15, height: 'auto' }}
@@ -353,13 +353,13 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
                 </View>
                 <View style={styles.itemTotalPrice}>
-                    <Text style={styles.textBottomTotalLeft}>Total Price (+ shipping)</Text>
+                    <Text style={styles.textBottomTotalLeft}>Tổng tiền (+ tiền giao hàng)</Text>
                     <Text style={styles.textBottomTotalRight}>${totalAfterShipping}</Text>
                 </View>
             </ScrollView>
             <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
                 <Pressable onPress={() => { handleOrderSubmit(); checkOutZaloPay() }}>
-                    <ButtonBottom title='Check Out' />
+                    <ButtonBottom title='Thanh Toán' />
                 </Pressable>
             </View>
             <View style={{ height: HEIGHT * 0.09 }} />

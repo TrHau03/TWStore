@@ -35,7 +35,7 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
   };
 
   const starFilterButtons = [
-    { label: 'All Review', star: null },
+    { label: 'Tất cả đánh giá', star: null },
     { label: ' 5', star: 5 },
     { label: ' 4', star: 4 },
     { label: ' 3', star: 3 },
@@ -125,7 +125,7 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
 
         <View>
           <View style={styles.header}>
-            <Text style={styles.name}>{commentCount} Reviews</Text>
+            <Text style={styles.name}>{commentCount} Đánh giá</Text>
           </View>
 
           <ScrollView horizontal
@@ -161,7 +161,7 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
                 keyExtractor={(item: any) => item?.productID?._id?.toString()}
               />
             ) : (
-              <Text style={{ fontSize: 20 }}>No data</Text>
+              <Text style={{ fontSize: 20 }}>Chưa có đánh giá</Text>
             )}
           </View>
         </View>
@@ -176,7 +176,7 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
           colors={['#46CAF3', '#68B1D9']} 
           style={{ borderRadius: 10 }}
           >
-            <Text style={styles.addCommentButtonText}>Write Review</Text>
+            <Text style={styles.addCommentButtonText}>Viết Đánh Giá</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>

@@ -26,9 +26,9 @@ const RenderItem = ({ item, offer }: { item: Product; offer: any }) => {
         <Text style={styles.NamePD}>{item.productName}</Text>
       </View>
       <View>
-        <Text style={styles.PricePD}>${item.price * (1 - (offer / 100))}</Text>
+        <Text style={styles.PricePD}>{item.price * (1 - (offer / 100))} VND</Text>
         <View style={styles.sale}>
-          <Text style={styles.txtOldPrice}>${item.price}</Text>
+          <Text style={styles.txtOldPrice}>{item.price} VND</Text>
           <Text style={styles.txtSale}>{offer}% Off</Text>
         </View>
       </View>

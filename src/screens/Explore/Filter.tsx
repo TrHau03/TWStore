@@ -72,10 +72,6 @@ const FilterScreen = (props: any) => {
   const { setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
 
 
-
-
-
-
   const handleFilter = (brand: string, color: string, size: string, minPrice: string, maxPrice: string) => {
     dispatch(HomeScreenSlice.actions.filterBrand(brand));
     dispatch(HomeScreenSlice.actions.filterColor(color));
@@ -126,14 +122,14 @@ const FilterScreen = (props: any) => {
               fontWeight: 'bold',
               color: 'black',
             }}>
-            Price Range
+            Lọc theo giá
           </Text>
           <View style={styles.input}>
             <View style={styles.Price}>
-              <Text style={styles.textPrice}>{priceMin}$</Text>
+              <Text style={styles.textPrice}>{priceMin} VND</Text>
             </View>
-            <View style={[styles.Price, { width: 130 }]}>
-              <Text style={styles.textPrice}>{priceMax}$</Text>
+            <View style={styles.Price}>
+              <Text style={styles.textPrice}>{priceMax} VND</Text>
             </View>
           </View>
         </View>
@@ -159,7 +155,7 @@ const FilterScreen = (props: any) => {
         <View style={styles.BuyingFormat}>
           {/*brand */}
           <View style={styles.Format}>
-            <Text style={styles.txtBuyingFormat}>Brand</Text>
+            <Text style={styles.txtBuyingFormat}>Hãng</Text>
             <Pressable onPress={() => setVisibleBrand(!visibleBrand)}>
               <Icon name={!visibleBrand ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
@@ -176,7 +172,7 @@ const FilterScreen = (props: any) => {
 
           {/*Color */}
           <View style={styles.Format}>
-            <Text style={styles.txtBuyingFormat}>Color</Text>
+            <Text style={styles.txtBuyingFormat}>Màu</Text>
             <Pressable onPress={() => setVisibleColor(!visibleColor)}>
               <Icon name={!visibleColor ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
@@ -193,7 +189,7 @@ const FilterScreen = (props: any) => {
 
           {/*Size */}
           <View style={styles.Format}>
-            <Text style={styles.txtBuyingFormat}>Size</Text>
+            <Text style={styles.txtBuyingFormat}>Kích cỡ</Text>
             <Pressable onPress={() => setVisibleSize(!visibleSize)}>
               <Icon name={!visibleSize ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
@@ -211,7 +207,7 @@ const FilterScreen = (props: any) => {
       </View>
 
       <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false), setVisibleBrand(false), setVisibleColor(false), setVisibleSize(false) }}>
-        <Button title='Apply' />
+        <Button title='Áp Dụng' />
       </Pressable>
     </View>
   );
@@ -222,7 +218,7 @@ export default FilterScreen;
 const styles = StyleSheet.create({
   Price: {
     borderWidth: 0.7,
-    width: 90,
+    width: 'auto',
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',

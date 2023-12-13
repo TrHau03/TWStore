@@ -27,16 +27,16 @@ const Email = (props: any) => {
             <View style={styles.line}></View>
 
             <View style={styles.Email}>
-                <Text style={styles.txtEmail}>Change Email</Text>
+                <Text style={styles.txtEmail}>Đổi Email</Text>
                 <View style={styles.input}>
                     <Icon name='mail' size={30} />
                     <TextInput defaultValue={user.email} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setEmail(e.nativeEvent.text) }} style={styles.txtInput} keyboardType='email-address' />
                 </View>
-                <Text style={styles.verifi}>We Will Send verification to your New Email</Text>
+                <Text style={styles.verifi}>Chúng tôi sẽ gửi xác minh đến Email mới của bạn</Text>
             </View>
 
             <Pressable onPress={handleSaveEmail} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
-                <ButtonBottom title='Save' />
+                <ButtonBottom title='Lưu' />
             </Pressable>
         </View>
     )

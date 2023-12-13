@@ -136,7 +136,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
           <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size, priceMin, priceMax }} />
           <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
             <Pressable onPress={() => { setModalVisible(false) }}>
-              <ButtonBottom title='Cancel' />
+              <ButtonBottom title='Hủy' />
             </Pressable>
           </Animatable.View>
         </View>
@@ -148,7 +148,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
         <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: COLORS.gray }]}>
           <Icon name='search' size={22} />
           <TextInput
-            placeholder="Search here"
+            placeholder="Tìm kiếm"
             style={[styles.TextSearch]}
             onFocus={() => setTextInputStatus(true)}
             onBlur={() => setTextInputStatus(false)}
@@ -186,7 +186,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
                 marginTop: 15,
                 marginLeft: 10,
               }}>
-              {dataFilter.length} result
+              {dataFilter.length} sản phẩm
             </Text>
           </View>
         </View>

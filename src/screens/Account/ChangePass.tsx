@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, Alert, } from 'react-native'
 import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -25,22 +25,22 @@ const ChangePass = (props: any) => {
                 dispatch(updatePass(newPass))
                 const response = await AxiosInstance().post(`/usersInfo/ChangePassword/`, { email: user.email, oldPassword: oldPass, newPassword: newPass });
             } else {
-                console.warn('Mật khẩu không khớp');
+                Alert.alert('Mật khẩu không khớp');
             }
         } else {
-            return console.warn('Mật khẩu cũ không đúng')
+            return Alert.alert('Mật khẩu cũ không đúng')
         }
     }
 
     return (
         <View style={styles.container}>
             <View style={styles.title}>
-                <Text style={styles.txtTitle}>Change Password</Text>
+                <Text style={styles.txtTitle}>Đổi Mật KHẩu</Text>
             </View>
             <View style={styles.line}></View>
 
             <View style={styles.Email}>
-                <Text style={styles.txtEmail}>Old Password</Text>
+                <Text style={styles.txtEmail}>Mật khẩu cũ</Text>
                 <View style={styles.input}>
                     <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
                     <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setOldPass(e.nativeEvent.text) }} />
@@ -48,7 +48,7 @@ const ChangePass = (props: any) => {
             </View>
 
             <View style={styles.Email}>
-                <Text style={styles.txtEmail}>New Password</Text>
+                <Text style={styles.txtEmail}>Mật khẩu mới</Text>
                 <View style={styles.input}>
                     <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
                     <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setNewPass(e.nativeEvent.text) }} />
@@ -56,14 +56,14 @@ const ChangePass = (props: any) => {
             </View>
 
             <View style={styles.Email}>
-                <Text style={styles.txtEmail}>New Password Again</Text>
+                <Text style={styles.txtEmail}>Nhập lại mật khẩu mới</Text>
                 <View style={styles.input}>
                     <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
                     <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setAgainPass(e.nativeEvent.text) }} />
                 </View>
             </View>
             <Pressable onPress={handleSaveChangePass} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
-                <ButtonBottom title='Save' />
+                <ButtonBottom title='Lưu' />
             </Pressable>
         </View>
 
