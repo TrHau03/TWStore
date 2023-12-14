@@ -30,7 +30,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const listData = useSelector((state: any) => {
         return state.SlicesReducer.user.cartItem;
     });
-
+    const user = useSelector((state: any) => state.SlicesReducer.user);
     const address = useSelector((state: any) => state.SlicesReducer.user.address);
 
     const appState = useRef(AppState.currentState);
@@ -123,18 +123,18 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const items = [{}];
     const transID = Math.floor(Math.random() * 1000000);
 
-
+    // tao don hang
     const checkOutZaloPay = async () => {
         try {
             const order = {
                 app_id: config.app_id,
                 app_trans_id: `${moment().format('YYMMDD')}_${transID}`,
-                app_user: "user123",
+                app_user: "Thewonder",
                 app_time: Date.now(),
                 item: JSON.stringify(items),
                 embed_data: JSON.stringify(embed_data),
                 amount: totalAfterShipping.toString(),
-                description: `Bạn đã thanh toán thành công đơn hàng #${transID}`,
+                description: `Zalopay - Thanh toán đơn hàng #${transID}`,
                 bank_code: "zalopayapp",
                 mac: "",
             };
@@ -162,6 +162,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             console.error(err);
         }
     };
+    // check trang thai don hang
     const getStatusPayment = async () => {
         const postConfig = {
             method: 'post',
@@ -175,10 +176,29 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         try {
             const response = await axios(postConfig);
             console.log(JSON.stringify(response.data));
+            if (response.data.return_code === 1) {
+                await AxiosInstance().post('/order/addOrder',
+                    {
+                        userID: user._id,
+                        voucher: null,
+                        phoneReceiver: phoneNumber,
+                        nameReceiver: receiverName,
+                        addressDelivery: selectedAddress,
+                        payment: 'Zalopay',
+                        totalPrice: totalAfterShipping.toString(),
+                    });
+                    Alert.alert('Thông báo', 'Thanh toán dc roi');
+            }
+            else{
+                Alert.alert('Thông báo', 'Thanh toán chưa được thực hiện');
+                return;
+            };
+
         } catch (error) {
             console.log(error);
         }
     }
+
     if (focusScreen === true) {
         getStatusPayment();
         setFocusScreen(false);
@@ -277,7 +297,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 <Text style={styles.txtTitlePage}>Giỏ Hàng</Text>
             </View>
             <View style={styles.line}></View>
-            <View style={{ height: HEIGHT * 0.25, marginTop: '11%' }}>
+            <View style={{ height: HEIGHT * 0.25, marginTop: '5%' }}>
                 {listData.length > 0 ?
                     <FlatList
                         showsVerticalScrollIndicator={false}
