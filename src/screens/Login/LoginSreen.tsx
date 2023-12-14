@@ -42,7 +42,7 @@ const LoginScreen = (props: any) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [pictureURL, setPictureURL] = useState<any>(null);
-  const [checkBoxRemember, setCheckBoxRemember] = useState<any>('');
+  const [checkBoxRemember, setCheckBoxRemember] = useState<boolean>(email && password ? true : false);
 
   const dispatch = useDispatch();
 
@@ -53,7 +53,7 @@ const LoginScreen = (props: any) => {
       if (emailStorage && passwordStorage) {
         setEmail(emailStorage);
         setPassword(passwordStorage);
-        
+
       }
     }
     getDataStorage()
@@ -84,8 +84,6 @@ const LoginScreen = (props: any) => {
         user && dispatch(isLoading(false));
         if (user.active) {
           if (userInfo.role === 'user') {
-            console.log(checkBoxRemember);
-            
             if (checkBoxRemember) {
               await AsyncStorage.setItem('email', email);
               await AsyncStorage.setItem('password', password);

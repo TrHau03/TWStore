@@ -35,11 +35,11 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
     const RenderItem = (props: any) => {
         const { data } = props;
         const { item } = data;
-
+        const date = new Date(item.bookingDate);
         return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate(RootStackScreenEnumAccount.Order_Detail)}>
             <View>
                 <Text style={styles.MaCode}>{item.orderCode}</Text>
-                <Text style={styles.title}>Ngày đặt hàng : {item.bookingDate}</Text>
+                <Text style={styles.title}>Ngày đặt hàng : {date.getDay() +'/' + (date.getMonth() + 1) + '/' + date.getFullYear()}</Text>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Sản Phẩm</Text>
                     <Text style={styles.content}>{listOrder?.length} Items purchased</Text>
@@ -79,7 +79,7 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
             <FlatList
                 showsVerticalScrollIndicator={false}
                 style={{ marginBottom: 100 }}
-                data={listOrder}
+                data={listOrder?.reverse()}
                 renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
             />
         </View>
