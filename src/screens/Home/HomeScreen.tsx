@@ -77,9 +77,9 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                     <Text style={styles.nameproduct}>{item.productName}</Text>
                 </View>
                 <View style={styles.stylesaleoff}>
-                    <Text style={styles.price}>${item.price - item.price * (item.offer / 100)}</Text>
+                    <Text style={styles.price}>{item.price - item.price * (item.offer / 100)} VND</Text>
                     <View style={{ flexDirection: "row", justifyContent: 'center', width: '100%' }}>
-                        <Text style={styles.strikethrough}>${item.price}</Text>
+                        <Text style={styles.strikethrough}>{item.price} VND</Text>
                         <Text style={styles.saleoff}>{item.offer}% Off</Text>
                     </View>
                 </View>

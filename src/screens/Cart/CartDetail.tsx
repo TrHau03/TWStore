@@ -237,6 +237,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: [] });
         navigation.navigate('Home', { screen: RootStackScreenEnumHome.HomeScreen })
     }
+    
     if (focusScreen === true) {
         getStatusPayment();
         setFocusScreen(false);

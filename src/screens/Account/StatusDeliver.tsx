@@ -6,14 +6,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../utilities';
 
 const StatusDeliver = (props: any) => {
-    const { date, status } = props.state;
-
+    const { dateStatus, status } = props.state;
     return (
         <View style={styles.container}>
             <Text style={styles.textTitle}>Trạng Thái Giao Hàng</Text>
             <View style={{ flexDirection: 'row', marginTop: 25 }}>
                 <Icon name='calendar-outline' size={22} color={'#223263'} />
-                <Text style={styles.textDate}>{date}</Text>
+                <Text style={styles.textDate}>{dateStatus}</Text>
             </View>
             <View style={styles.grpcontent}>
                 <View style={{ marginRight: '8%', gap: 110 }}>
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        width: '100%',
+        width: '99%',
         height: '90%',
         paddingTop: 20,
         paddingHorizontal: 20

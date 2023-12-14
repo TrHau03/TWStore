@@ -18,6 +18,11 @@ const initialState = {
   isLoading: false,
   LoginGoogle: false,
   LoginFaceBook: false,
+
+  order: {
+      orderCode: '',
+  },
+
   user: {
     _id: '',
     _idUser: '',
@@ -33,12 +38,17 @@ const initialState = {
   },
   listProductRecommend: [],
   listProductFilter: [],
+
 };
 
 const Slice = createSlice({
   name: 'Slice',
   initialState,
   reducers: {
+    updateOrderCode: (state, action) => {
+      const value = action.payload;
+      state.order.orderCode = value;
+    },
     updateUser: (state, action) => {
       const value = action.payload;
       state.user = value;
@@ -68,7 +78,7 @@ const Slice = createSlice({
       state.user.password = value;
     },
     cartEmpty: (state, action) => {
-      state.user.cartItem = action.payload
+      state.user.cartItem = action.payload;
     },
     removeItem: (state, action: PayloadAction<number>) => {
       state.user.cartItem = state.user.cartItem.filter((item: any) => item.key !== action.payload);
@@ -124,5 +134,5 @@ const Slice = createSlice({
   },
 
 });
-export const { cartEmpty, updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity, updateGender, updatePhone, updateBirthDay, updateEmail, updateName, deleteAddress, addItem, addAddress, updatePass } = Slice.actions
+export const { cartEmpty, updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity, updateGender, updatePhone, updateBirthDay, updateEmail, updateName, deleteAddress, addItem, addAddress, updatePass,updateOrderCode } = Slice.actions
 export default Slice.reducer;
