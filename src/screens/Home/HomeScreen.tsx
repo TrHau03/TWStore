@@ -136,7 +136,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                     >
                         {
                             images.map((e: any, index) =>
-                                <Pressable onPress={() => navigation.navigate(RootStackScreenEnumOffer.OfferScreen)} key={e._id}>
+                                <Pressable onPress={() => navigation.navigate('Offer',{screen:RootStackScreenEnumOffer.OfferHome})} key={e._id}>
                                     <Image
                                         resizeMode='stretch'
                                         style={styles.slide}

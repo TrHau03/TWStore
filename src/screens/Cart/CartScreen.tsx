@@ -171,7 +171,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
             <View style={{ height: HEIGHT * 0.35, marginTop: '11%' }}>
                 {listData.length > 0 ?
                     <FlatList
-                        showsVerticalScrollIndicator={false}
+                        scrollEnabled={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
                         keyExtractor={(item: any) => item?.key}

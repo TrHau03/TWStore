@@ -184,7 +184,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                         phoneReceiver: phoneNumber,
                         nameReceiver: receiverName,
                         addressDelivery: selectedAddress,
-                        payment: 'Zalopay',
+                        payment: selectedPaymentMethod,
                         totalPrice: totalAfterShipping.toString(),
                     });
                     Alert.alert('Thông báo', 'Thanh toán dc roi');
@@ -197,6 +197,23 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const checkPaymentMethod = () =>{
+        selectedPaymentMethod === 'ZaloPay' ? checkOutZaloPay() : cod()
+    }
+
+    const cod = async () =>{
+        await AxiosInstance().post('/order/addOrder',
+        {
+            userID: user._id,
+            voucher: null,
+            phoneReceiver: phoneNumber,
+            nameReceiver: receiverName,
+            addressDelivery: selectedAddress,
+            payment: selectedPaymentMethod,
+            totalPrice: totalAfterShipping.toString(),
+        });
     }
 
     if (focusScreen === true) {
@@ -311,7 +328,6 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1 }}
                 nestedScrollEnabled={true}
-
             >
 
                 <View style={styles.itema}>
@@ -378,7 +394,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
             </ScrollView>
             <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
-                <Pressable onPress={() => { handleOrderSubmit(); checkOutZaloPay() }}>
+                <Pressable onPress={() => { handleOrderSubmit();checkPaymentMethod()}}>
                     <ButtonBottom title='Thanh Toán' />
                 </Pressable>
             </View>
