@@ -1,25 +1,112 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Pressable } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Pressable, RefreshControl } from 'react-native'
 import * as React from 'react';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
-import { useEffect, useState } from 'react';
-import { useIsFocused } from '@react-navigation/native';
+import { useCallback, useEffect, useState } from 'react';
 import AxiosInstance from '../../Axios/Axios';
 import Clipboard from '@react-native-clipboard/clipboard';
+import { useSelector } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
-const Notification = () => (
-  <View style={{ flex: 1, backgroundColor: '#ff4081' }} />
-);
+const Notification = () => {
+  const user = useSelector((state: any) => state.SlicesReducer.user);
+  const [refreshingNotifications, setRefreshingNotifications] = useState<boolean>(false);
+  const [notificaticon, setNotificaticon] = useState([]);
+  const isFocused = useIsFocused();
 
 
+  const fetchNotifi = async () => {
+    const userId = user._id
+    const response = await AxiosInstance().get(`notifications/getAllNotification/${userId}`);
+    console.log(response, "notifi");
+    setNotificaticon(response.data);
+  };
 
-const renderItem = ({ item }: { item: { title: string, content: string, discountCode: string, discountLevel: string, startDay: string, endDay: string } }) => {
+  useEffect(() => {
+    if (isFocused) {
+      fetchNotifi();
+    }
+  }, [isFocused]);
+
+  const onRefreshNotifications = useCallback(() => {
+    setRefreshingNotifications(true);
+    fetchNotifi();
+    setTimeout(() => {
+      setRefreshingNotifications(false);
+    }, 2000);
+  }, []);
+
+  const renderItemNotifi = ({ item }: { item: { title: string, content: string } }) => {
+    return (
+      <TouchableOpacity style={styles.containerItem}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.content}>{item.content}</Text>
+      </TouchableOpacity>
+    );
+  };
   return (
-    <TouchableOpacity style={styles.containervoucher} onPress={() => copyVoucher(item.discountCode)}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.content}>{item.content}</Text>
+    <View>
+      <FlatList
+        refreshControl={<RefreshControl refreshing={refreshingNotifications} onRefresh={onRefreshNotifications} />}
+        style={{ marginTop: 20 }}
+        data={notificaticon}
+        renderItem={renderItemNotifi}
+        numColumns={1}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  );
+
+};
+
+
+
+const Voucher = () => {
+  const [refreshingVoucher, setRefreshingVoucher] = useState<boolean>(false);
+  const [voucher, setVoucher] = useState<[]>([]);
+  const isFocused = useIsFocused();
+
+
+  const fetchVoucher = async () => {
+    const response = await AxiosInstance().get(`promotion/getAllPromotion`);
+    setVoucher(response.data);
+  };
+  useEffect(() => {
+    if(isFocused){
+      fetchVoucher();
+
+    }
+
+  }, [isFocused]);
+
+  const onRefreshVoucher = useCallback(() => {
+    setRefreshingVoucher(true);
+    setTimeout(() => {
+      setRefreshingVoucher(false);
+    }, 2000);
+  }, []);
+  return (
+    <View>
+      <FlatList
+        refreshControl={<RefreshControl refreshing={refreshingVoucher} onRefresh={onRefreshVoucher} />}
+        style={{ marginTop: 20 }}
+        data={voucher}
+        renderItem={renderItemVoucher}
+        numColumns={1}
+        showsVerticalScrollIndicator={false}
+      />
+    </View>
+  );
+
+};
+
+const renderItemVoucher = ({ item }: { item: { titleVoucher: string, contentVoucher: string, discountCode: string, discountLevel: string, startDay: string, endDay: string } }) => {
+  return (
+    <TouchableOpacity style={styles.containerItem} onPress={() => copyVoucher(item.discountCode)}>
+      <Text style={styles.title}>{item.titleVoucher}</Text>
+      <Text style={styles.content}>{item.contentVoucher}</Text>
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <Text style={styles.textbottom}>Giảm lên đến {item.discountLevel}%</Text>
@@ -29,38 +116,8 @@ const renderItem = ({ item }: { item: { title: string, content: string, discount
   );
 };
 
-const copyVoucher = (discountCode : string) => {
+const copyVoucher = (discountCode: string) => {
   Clipboard.setString(discountCode);
-  console.log(`Mã giảm giá ${discountCode} đã được sao chép vào clipboard.`);
-};
-
-
-
-
-const Voucher = () => {
-  const [voucher, setVoucher] = useState<[]>([]);
-
-  useEffect(() => {
-    const fetchEvent = async () => {
-      const response = await AxiosInstance().get(`promotion/getAllPromotion`);
-      setVoucher(response.data);
-    };
-    fetchEvent();
-
-  }, []);
-  return (
-    <View>
-      <FlatList
-        style={{ marginTop: 20 }}
-        data={voucher}
-        renderItem={renderItem}
-        numColumns={1}
-        showsVerticalScrollIndicator={false}
-      />
-
-
-    </View>
-  );
 
 };
 
@@ -129,7 +186,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#3E3C3B',
   },
-  containervoucher: {
+  containerItem: {
     margin: 10,
     padding: 10,
     backgroundColor: 'white',
