@@ -35,21 +35,21 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
     const RenderItem = (props: any) => {
         const { data } = props;
         const { item } = data;
-
+        const date = new Date(item.bookingDate);
         return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate(RootStackScreenEnumAccount.Order_Detail)}>
             <View>
                 <Text style={styles.MaCode}>{item.orderCode}</Text>
-                <Text style={styles.title}>Order at Lafyuu : {item.bookingDate}</Text>
+                <Text style={styles.title}>Ngày đặt hàng : {date.getDay() +'/' + (date.getMonth() + 1) + '/' + date.getFullYear()}</Text>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Items</Text>
+                    <Text style={styles.title}>Sản Phẩm</Text>
                     <Text style={styles.content}>{listOrder?.length} Items purchased</Text>
                 </View>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Price</Text>
-                    <Text style={styles.price}>${item.totalPrice}</Text>
+                    <Text style={styles.title}>Giá</Text>
+                    <Text style={styles.price}>{item.totalPrice} VND</Text>
                 </View>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Order Status</Text>
+                    <Text style={styles.title}>Trạng thái giao hàng</Text>
                     <TouchableOpacity onPress={() => { setModalVisible(true); setDate(item.date); setStatus(item.status) }}>
                         <Icon name='chevron-forward-outline' size={25} color={'#525252'} />
                     </TouchableOpacity>
@@ -69,7 +69,7 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
                     <StatusDeliver action={{ setDate, setStatus }} state={{ date, status }} />
                     <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
-                            <ButtonBottom title='Cancel' />
+                            <ButtonBottom title='Thoát' />
                         </Pressable>
                     </Animatable.View>
                 </View>
@@ -79,7 +79,7 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
             <FlatList
                 showsVerticalScrollIndicator={false}
                 style={{ marginBottom: 100 }}
-                data={listOrder}
+                data={listOrder?.reverse()}
                 renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
             />
         </View>

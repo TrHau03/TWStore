@@ -28,7 +28,7 @@ const AccountScreen = ({ navigation }: any) => {
   return (
     <View style={[styles.container,]}>
       <Loading />
-      <Text style={styles.title}>Account</Text>
+      <Text style={styles.title}>Tài Khoản</Text>
       <View style={styles.line}></View>
       {/* <Portal>
         <Dialog visible={visible} onDismiss={hineDialog}>
@@ -52,7 +52,7 @@ const AccountScreen = ({ navigation }: any) => {
 
       </View>
       <Pressable onPress={() => { handleLogin({ navigation }) }} style={{ width: '100%', position: 'absolute', bottom: 120, alignSelf: 'center' }}>
-        <ButtonBottom title='Logout' />
+        <ButtonBottom title='Đăng Xuất' />
       </Pressable>
     </View>
   )
@@ -104,27 +104,27 @@ const styles = StyleSheet.create({
 const data = [
   {
     id: 1,
-    name: 'Profile',
+    name: 'Hồ sơ',
     icon: 'person-sharp',
     screen: 'ProfileScreen'
   },
   {
     id: 2,
-    name: 'Order',
+    name: 'Đơn hàng',
     icon: 'bag-check-sharp',
     screen: 'OrderScreen'
 
   },
   {
     id: 3,
-    name: 'Address',
+    name: 'Địa chỉ',
     icon: 'location-sharp',
     screen: 'AddressScreen'
 
   },
   {
     id: 4,
-    name: 'Payment',
+    name: 'Thanh toán',
     icon: 'wallet',
     screen: 'PaymentScreen'
   }

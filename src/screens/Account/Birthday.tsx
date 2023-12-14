@@ -28,11 +28,11 @@ const Birthday = (props: any) => {
     
     return (
         <View style={styles.container}>
-            <Header hideBack title='BirthDay' />
+            <Header hideBack title='Ngày Sinh' />
 
             <View style={styles.line}></View>
             <View style={styles.Birthday}>
-                <Text style={styles.txtBirthday}>Your Birthday</Text>
+                <Text style={styles.txtBirthday}>Chọn ngày sinh của bạn</Text>
 
                 <View style={styles.input}> 
                     <Text style={styles.txtInput}>{birthDay}</Text>

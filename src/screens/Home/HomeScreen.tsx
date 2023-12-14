@@ -101,7 +101,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                 <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: COLORS.gray }]}>
                     <Icon name='search' size={22} />
                     <TextInput
-                        placeholder="Search here"
+                        placeholder="Tìm kiếm"
                         style={[styles.TextSearch]}
                         onFocus={() => setTextInputStatus(true)}
                         onBlur={() => setTextInputStatus(false)}
@@ -136,7 +136,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                     >
                         {
                             images.map((e: any, index) =>
-                                <Pressable onPress={() => navigation.navigate(RootStackScreenEnumOffer.OfferScreen)} key={e._id}>
+                                <Pressable onPress={() => navigation.navigate('Offer',{screen:RootStackScreenEnumOffer.OfferHome})} key={e._id}>
                                     <Image
                                         resizeMode='stretch'
                                         style={styles.slide}
@@ -157,11 +157,10 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                             )
                         }
                     </View>
-
                 </View>
 
                 <View style={styles.category}>
-                    <Text style={styles.textcategory}>Brand</Text>
+                    <Text style={styles.textcategory}>Hãng</Text>
                     <View style={styles.listcategory}>
                         <FlatList
                             data={brand}
@@ -173,7 +172,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                     </View>
                 </View>
                 <View >
-                    <Image style={styles.imgrecomended} source={require('../../asset/image/recomendedProduct.png')} />
+                    <Image style={styles.imgrecomended} source={require('../../asset/image/bannerRecomendedProduct.png')} />
                 </View>
                 <FlatList
                     scrollEnabled={false}

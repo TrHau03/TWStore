@@ -4,7 +4,7 @@ import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RouteProp, useFocusEffect, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -15,22 +15,31 @@ import axios from 'axios';
 import moment from 'moment';
 import crypto from 'crypto-js';
 import qs from 'qs'
+import { cartEmpty } from '../../redux/silces/Silces'
+import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome'
 
 type CartDetailRouteParams = {
     CartDetail: {
         Level?: string;
         totalAfterShipping?: number;
         generalPriceAfterShipping: number;
-        shipping: number;
     };
 };
 
 
 const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
-    const listData = useSelector((state: any) => {
+    const listDataCart = useSelector((state: any) => {
         return state.SlicesReducer.user.cartItem;
     });
-
+    const listProduct = listDataCart.map((item: any) => {
+        return {
+            quantityProduct: item.quantity,
+            productID: item.productID._id,
+            sizeID: item.sizeProduct._id,
+            colorID: item.colorProduct._id,
+        }
+    });
+    const user = useSelector((state: any) => state.SlicesReducer.user);
     const address = useSelector((state: any) => state.SlicesReducer.user.address);
 
     const appState = useRef(AppState.currentState);
@@ -48,8 +57,8 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const [receiverName, setReceiverName] = useState<string>('');
     const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [selectedAddress, setSelectedAddress] = useState<string>('');
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<any>();
+    const dispatch = useDispatch();
 
 
     const handleReceiverNameChange = (text: string) => {
@@ -123,18 +132,18 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const items = [{}];
     const transID = Math.floor(Math.random() * 1000000);
 
-
+    // tao don hang
     const checkOutZaloPay = async () => {
         try {
             const order = {
                 app_id: config.app_id,
                 app_trans_id: `${moment().format('YYMMDD')}_${transID}`,
-                app_user: "user123",
+                app_user: "Thewonder",
                 app_time: Date.now(),
                 item: JSON.stringify(items),
                 embed_data: JSON.stringify(embed_data),
                 amount: totalAfterShipping.toString(),
-                description: `tui m tuoi lol #${transID}`,
+                description: `Zalopay - Thanh toán đơn hàng #${transID}`,
                 bank_code: "zalopayapp",
                 mac: "",
             };
@@ -162,6 +171,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             console.error(err);
         }
     };
+    // check trang thai don hang
     const getStatusPayment = async () => {
         const postConfig = {
             method: 'post',
@@ -175,9 +185,57 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         try {
             const response = await axios(postConfig);
             console.log(JSON.stringify(response.data));
+            if (response.data.return_code === 1) {
+                const check = await AxiosInstance().post('/order/addOrder',
+                    {
+                        listProduct: listProduct,
+                        userID: user._id,
+                        voucher: route.params.Level,
+                        phoneReceiver: phoneNumber,
+                        nameReceiver: receiverName,
+                        addressDelivery: selectedAddress,
+                        payment: selectedPaymentMethod.name,
+                        totalPrice: totalAfterShipping.toString(),
+                    });
+                if (check) {
+                    updateCart();
+                    Alert.alert('Thông báo', 'Thanh toán thành công');
+                }
+            }
+            else {
+                Alert.alert('Thông báo', 'Thanh toán chưa được thực hiện');
+                return;
+            };
+
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const checkPaymentMethod = () => {
+        selectedPaymentMethod.name === 'ZaloPay' ? checkOutZaloPay() : cod()
+    }
+    const cod = async () => {
+        const check = await AxiosInstance().post('/order/addOrder',
+            {
+                listProduct: listProduct,
+                userID: user._id,
+                voucher: route.params.Level,
+                phoneReceiver: phoneNumber,
+                nameReceiver: receiverName,
+                addressDelivery: selectedAddress,
+                payment: selectedPaymentMethod.name,
+                totalPrice: totalAfterShipping.toString(),
+            });
+        if (check) {
+            updateCart();
+            Alert.alert('Thông báo', 'Đặt hàng thành công');
+        }
+    }
+    const updateCart = async () => {
+        dispatch(cartEmpty([]));
+        await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: [] });
+        navigation.navigate('Home', { screen: RootStackScreenEnumHome.HomeScreen })
     }
     if (focusScreen === true) {
         getStatusPayment();
@@ -214,7 +272,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                             <View style={{ flexDirection: 'row', columnGap: 10, alignItems: 'center' }}>
                                 <Text style={styles.textTitleItem}>Size: {item.sizeProduct.name}</Text>
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={styles.textTitleItem}>Size: </Text>
+                                    <Text style={styles.textTitleItem}>Color: </Text>
                                     <View style={{ width: 20, height: 20, backgroundColor: `${item.colorProduct.code}`, borderRadius: 50 }}></View>
                                 </View>
                             </View>
@@ -274,24 +332,23 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     return (
         <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR, height: '100%' }}>
             <View style={{ marginTop: 17 }}>
-                <Text style={styles.txtTitlePage}>Your Cart</Text>
+                <Text style={styles.txtTitlePage}>Giỏ Hàng</Text>
             </View>
             <View style={styles.line}></View>
-            <View style={{ height: HEIGHT * 0.25, marginTop: '11%' }}>
-                {listData.length > 0 ?
+            <View style={{ height: HEIGHT * 0.25, marginTop: '5%' }}>
+                {listDataCart.length > 0 ?
                     <FlatList
                         showsVerticalScrollIndicator={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
-                        data={listData}
+                        data={listDataCart}
                         keyExtractor={(item: any) => item?.key}
-                    /> : <Text style={{ fontSize: 20 }}>No data</Text>}
+                    /> : <Text style={{ fontSize: 20 }}>Chưa có sản phẩm</Text>}
             </View>
             <ScrollView
                 style={{ marginTop: 15, height: 'auto' }}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1 }}
                 nestedScrollEnabled={true}
-
             >
 
                 <View style={styles.itema}>
@@ -353,13 +410,13 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
                 </View>
                 <View style={styles.itemTotalPrice}>
-                    <Text style={styles.textBottomTotalLeft}>Total Price (+ shipping)</Text>
+                    <Text style={styles.textBottomTotalLeft}>Tổng tiền (+ tiền giao hàng)</Text>
                     <Text style={styles.textBottomTotalRight}>${totalAfterShipping}</Text>
                 </View>
             </ScrollView>
             <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
-                <Pressable onPress={() => { handleOrderSubmit(); checkOutZaloPay() }}>
-                    <ButtonBottom title='Check Out' />
+                <Pressable onPress={() => { handleOrderSubmit(); checkPaymentMethod() }}>
+                    <ButtonBottom title='Thanh Toán' />
                 </Pressable>
             </View>
             <View style={{ height: HEIGHT * 0.09 }} />

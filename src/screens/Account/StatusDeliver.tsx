@@ -10,7 +10,7 @@ const StatusDeliver = (props: any) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.textTitle}>OnGoing</Text>
+            <Text style={styles.textTitle}>Trạng Thái Giao Hàng</Text>
             <View style={{ flexDirection: 'row', marginTop: 25 }}>
                 <Icon name='calendar-outline' size={22} color={'#223263'} />
                 <Text style={styles.textDate}>{date}</Text>
@@ -25,19 +25,19 @@ const StatusDeliver = (props: any) => {
                 <View style={styles.content}>
                     <View style={styles.item}>
                         <Image source={require('../../asset/image/ongoing1.png')} />
-                        <Text style={styles.textItem}>Placed order successfully</Text>
+                        <Text style={styles.textItem}>Đã đặt hàng thành công</Text>
                     </View>
                     <View style={styles.item}>
                         <Image source={require('../../asset/image/ongoing2.png')} />
-                        <Text style={styles.textItem}>Order confirmation successful</Text>
+                        <Text style={styles.textItem}>Đơn đã được xác nhận</Text>
                     </View>
                     <View style={styles.item}>
                         <Image source={require('../../asset/image/ongoing3.png')} />
-                        <Text style={styles.textItem}>Orders are being delivered</Text>
+                        <Text style={styles.textItem}>Đơn hàng đang được giao</Text>
                     </View>
                     <View style={styles.item}>
                         <Image source={require('../../asset/image/ongoing4.png')} />
-                        <Text style={styles.textItem}>Order has been delivered successfully</Text>
+                        <Text style={styles.textItem}>Đơn hàng đã được giao thành công</Text>
                     </View>
                 </View>
             </View>

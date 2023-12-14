@@ -179,7 +179,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
         </View>
       ))}
       <Text style={styles.ratingCountText}>{totalStars}</Text>
-      <Text style={styles.ratingCountText}>({numberOfRatings} Review)</Text>
+      <Text style={styles.ratingCountText}>({numberOfRatings} Đánh giá)</Text>
 
     </View>
   );
@@ -263,17 +263,23 @@ const Productdetail = (props: NativeStackHeaderProps) => {
           </View>
         </View>
         {item.content && <Text style={styles.reviewComment}>{item.content}</Text>}
-        {item.image && (
+        {item.image && Array.isArray(item.image) && item.image.filter((imageURL: string) => imageURL !== "").length > 0 && (
           <View style={styles.commentImagesContainer}>
-            {Array.isArray(item.image) && item.image.map((imageURL: string, index: any) => (
-              <Image
-                key={index}
-                source={{ uri: imageURL }}
-                style={styles.CommentImage}
-              />
-            ))}
+            {item.image.map((imageURL: string, index: number) => {
+              if (imageURL !== "") {
+                return (
+                  <Image
+                    key={index}
+                    source={{ uri: imageURL }}
+                    style={styles.CommentImage}
+                  />
+                );
+              }
+              return null;
+            })}
           </View>
         )}
+
         <View style={styles.reviewFooter}>
           <Text style={styles.reviewDateTime}>{item.createAt}</Text>
         </View>
@@ -325,8 +331,8 @@ const Productdetail = (props: NativeStackHeaderProps) => {
             <View>
               <CustomRatingBar numberOfRatings={commentCount} />
             </View>
-            <Text style={styles.price}>{product ? `$${product.price - (product.price * (product.offer / 100))}` : ''}</Text>
-            <Text style={styles.textsize}>Select Size</Text>
+            <Text style={styles.price}>{product ? `${product.price - (product.price * (product.offer / 100))} VND` : ''}</Text>
+            <Text style={styles.textsize}>Chọn kích cỡ</Text>
             <View style={styles.sizeContainer}>
               <ScrollView
                 horizontal
@@ -355,7 +361,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
               </ScrollView>
             </View>
 
-            <Text style={styles.textsize}>Select Color</Text>
+            <Text style={styles.textsize}>Chọn màu</Text>
             <View style={styles.colorContainer}>
               <ScrollView
                 horizontal
@@ -376,16 +382,16 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                 ))}
               </ScrollView>
             </View>
-            <Text style={styles.textsize}>Specification</Text>
+            <Text style={styles.textsize}>Mô tả</Text>
             <Text style={styles.comment2}>{product?.description}</Text>
-            <View style={{ flexDirection: 'row', width: WIDTH * 0.5, alignItems: 'center' }}>
-              <Text style={styles.textsize}>Review Product</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Text style={styles.textsize}>Đánh giá sản phẩm</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Productreviews', { id: id })}>
-                <Text style={styles.textsize2}>See More</Text>
+                <Text style={styles.textsize2}>Xem thêm</Text>
               </TouchableOpacity>
             </View>
             <CustomRatingBar numberOfRatings={commentCount} />
-            <View style={{ height: HEIGHT * 0.35, alignItems: 'center' }}>
+            <View style={{ height: 'auto', alignItems: 'center' }}>
               {listComment && listComment.length > 0 ? (
                 <View>
                   {topTwoComments.map((comment, index) => (
@@ -393,13 +399,13 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                   ))}
                 </View>
               ) : (
-                <Text style={{ fontSize: 20 }}>No data</Text>
+                <Text style={{ fontSize: 20 }}>Chưa có đánh giá</Text>
               )}
 
             </View>
 
             <View>
-              <Text style={styles.textsize}>You Might Also Like</Text>
+              <Text style={styles.textsize}>Bạn cũng có thể thích</Text>
               <View style={styles.productList}>
                 <ScrollView
                   horizontal
@@ -411,10 +417,10 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                       <Image source={{ uri: product.image[0] }} style={styles.productImage} />
                       <Text style={styles.productName}>{product.productName}</Text>
                       <View style={styles.sale}>
-                        <Text style={styles.productPrice}>${product.price - product.price * (product.offer / 100)}</Text>
+                        <Text style={styles.productPrice}>{product.price - product.price * (product.offer / 100)} VND</Text>
                         <View style={{ flexDirection: 'row' }}>
-                          <Text style={styles.productOldPrice}>${product.price}</Text>
-                          <Text style={styles.textsale}> {product.offer}% Off</Text>
+                          <Text style={styles.productOldPrice}>{product.price} VND</Text>
+                          <Text style={styles.textsale}> Giảm {product.offer}%</Text>
                         </View>
                       </View>
                     </TouchableOpacity>
@@ -432,7 +438,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
           onPress={() => { handle({ productID: product, sizeProduct: selectedSize, colorProduct: selectedColor }); }}
         >
           <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
-            <Text style={styles.addtocartButtonText}>Add to cart</Text>
+            <Text style={styles.addtocartButtonText}>Thêm Vào Giỏ Hàng</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -534,9 +540,6 @@ const styles = StyleSheet.create({
     lineHeight: 60,
   },
 
-
-
-
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -606,8 +609,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#141414',
     marginTop: 20,
-    width: '300%',
-    textAlign: 'right',
+    marginRight: 20,
   },
 
   size: {
@@ -699,7 +701,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -10, // Adjust as needed
   },
   productItem: {
-    width: 150,
+    width: 160,
     height: 250,
     paddingHorizontal: 10,
     marginBottom: 20,
@@ -758,7 +760,7 @@ const styles = StyleSheet.create({
   textsale: {
     fontSize: 14,
     fontWeight: "700",
-    color: '#FB7181'
+    color: '#FB7181',
   },
   slideshowcontainer: {
     flex: 1,

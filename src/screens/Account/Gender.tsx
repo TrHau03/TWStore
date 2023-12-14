@@ -20,9 +20,9 @@ const Gender = (props: any) => {
 
 
     const listGender = [
-        { key: '1', value: 'Male' },
-        { key: '2', value: 'Female' },
-        { key: '3', value: 'Other' },
+        { key: '1', value: 'Nam' },
+        { key: '2', value: 'Nữ' },
+        { key: '3', value: 'Khác' },
     ]
     
 
@@ -35,12 +35,12 @@ const Gender = (props: any) => {
 
     return (
         <View style={styles.container}>
-            <Header hideBack={true} title='Gender' />
+            <Header hideBack={true} title='Giới Tính' />
 
             <View style={styles.line}></View>
 
             <View style={styles.Gender}>
-                <Text style={styles.txtGender}>Choose Gender</Text>
+                <Text style={styles.txtGender}>Chọn giới tính</Text>
                 <SelectList
                     setSelected={setGender}
                     data={listGender}
@@ -58,7 +58,7 @@ const Gender = (props: any) => {
 
 
             <Pressable onPress={handleSaveGender} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
-                <ButtonBottom title='Save' />
+                <ButtonBottom title='Lưu' />
             </Pressable>
         </View>
     )

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Image, StyleSheet, Text, View, Button, Pressable } from 'react-native';
+import { Image, StyleSheet, Text, View, Button, Pressable, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Checkbox, InputItem } from '@ant-design/react-native';
@@ -35,7 +35,7 @@ const ForgotPass = (props: any) => {
     const forgotpass = async () => {
         try {
             if (password != passwordAgain || passwordAgain == '' || password == '') {
-                return console.log("Mật khẩu mới và mặt khẩu cũ không khớp hoặc để trống!");
+                return Alert.alert("Mật khẩu mới và mặt khẩu cũ không khớp hoặc để trống!");
             } else {
                 const result = await AxiosInstance().post('/usersInfo/ForgotPassword', {email: Email,  newPassword: password });
                 if (result) {
@@ -57,7 +57,7 @@ const ForgotPass = (props: any) => {
                     <Text style={styles.textHeader}>The Wonder</Text>
                 </View>
                 <View>
-                    <Text style={styles.textWelcome}>Đổi mật khẩu</Text>
+                    <Text style={styles.textWelcome}>ĐỔI MẬT KHẨU</Text>
                 </View>
                 <View style={styles.input}>
                     <View style={styles.textinput}>

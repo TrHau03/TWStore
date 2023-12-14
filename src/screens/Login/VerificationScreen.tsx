@@ -1,4 +1,4 @@
-import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as Animatable from 'react-native-animatable';
@@ -36,7 +36,7 @@ const VerificationScreen = (props: any) => {
             setOTP(response.data.random);
             setVerify(true);
         } else {
-            console.warn('Email không tồn tại và không được để trống !')
+            Alert.alert('Email không tồn tại và không được để trống !')
         }
     }
 
@@ -46,7 +46,7 @@ const VerificationScreen = (props: any) => {
             navigation.navigate('ForgotPass', {email: email});
         } else {
             setValue('');
-            console.warn('Mã OTP không khớp !')
+            Alert.alert('Mã OTP không khớp !')
         }
     }
     return (
@@ -54,12 +54,12 @@ const VerificationScreen = (props: any) => {
             <View style={{ paddingHorizontal: PADDING_HORIZONTAL, alignItems: 'center', backgroundColor: BG_COLOR }}>
                 <View style={{ marginTop: 100 }}>
                     <Image source={require('../../asset/image/Verification.png')} />
-                    <Text style={styles.textOTP}>OTP Verification</Text>
+                    <Text style={styles.textOTP}>Mã Xác Minh OTP</Text>
                 </View>
                 {(!verify) ?
                     <View style={{ width: '100%', alignItems: 'center' }}>
-                        <Text style={styles.text}>We will send you a one-time verification password on this gmail</Text>
-                        <Text style={styles.textEnterEmail}>Enter Email</Text>
+                        <Text style={styles.text}>Chúng tôi sẽ gửi cho bạn một mã xác minh tới email bạn nhập ở dưới</Text>
+                        <Text style={styles.textEnterEmail}>Nhập email</Text>
                         <InputItem
                             style={{ borderBottomWidth: 1, borderBottomColor: '#5F98DC', fontSize: 20 }}
                             type='email-address'
@@ -72,15 +72,15 @@ const VerificationScreen = (props: any) => {
                         <View style={{ width: '100%' }}>
                             <TouchableOpacity onPress={() => fetchSendMail()}>
                                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
-                                    <Text style={styles.textLogin}>Get OTP</Text>
+                                    <Text style={styles.textLogin}>Gửi OTP</Text>
                                 </LinearGradient>
                             </TouchableOpacity>
                         </View>
                     </View>
                     :
                     <View style={{ width: '100%', alignItems: 'center' }}>
-                        <Text style={styles.textEnterOTP}>Enter the OTP sent to</Text>
-                        <Text style={styles.textEmail}>******@gmail.com</Text>
+                        <Text style={styles.textEnterOTP}>Nhập mã OTP đã được gửi đến</Text>
+                        <Text style={styles.textEmail}>{email}</Text>
                         <CodeField
                             {...codeFieldProps}
                             keyboardType="numeric"
@@ -101,7 +101,7 @@ const VerificationScreen = (props: any) => {
                         <View style={{ width: '100%' }}>
                             <TouchableOpacity onPress={() => { verifyOTP() }}>
                                 <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
-                                    <Text style={styles.textLogin}>Verify</Text>
+                                    <Text style={styles.textLogin}>Xác Minh</Text>
                                 </LinearGradient>
                             </TouchableOpacity>
                         </View>

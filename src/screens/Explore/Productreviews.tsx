@@ -35,7 +35,7 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
   };
 
   const starFilterButtons = [
-    { label: 'All Review', star: null },
+    { label: 'Tất cả đánh giá', star: null },
     { label: ' 5', star: 5 },
     { label: ' 4', star: 4 },
     { label: ' 3', star: 3 },
@@ -52,7 +52,7 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
     };
     fetchCommentbyIdProduct(id);
   }, [id]);
-  
+
   useEffect(() => {
     const filtered = selectedStar !== null
       ? listComment.filter(comment => comment.star === selectedStar)
@@ -60,7 +60,7 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
     setFilteredComments(filtered);
     setCommentCount(filtered.length);
   }, [selectedStar, listComment]);
-  
+
 
 
 
@@ -117,18 +117,20 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
       </View>
     );
   }
-  
+
   return (
     <View style={{ height: '100%' }}>
 
-      <View style={{ marginBottom: HEIGHT * 0.09 }}>
+      <View style={{ }}>
 
         <View>
           <View style={styles.header}>
-            <Text style={styles.name}>{commentCount} Reviews</Text>
+            <Text style={styles.name}>{commentCount} Đánh giá</Text>
           </View>
 
-          <ScrollView horizontal
+          <ScrollView
+            style={{ height: '20%' }}
+            horizontal
             contentContainerStyle={styles.starfilter}
             showsHorizontalScrollIndicator={false}
           >
@@ -152,31 +154,37 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
 
 
 
-          <View style={{ height: 'auto', alignItems: 'center' }}>
+          <View style={{ height: '80%', alignItems: 'center' }}>
             {listComment && listComment.length > 0 ? (
               <FlatList
+                style={{ height: 'auto' , marginBottom: HEIGHT * 0.3 }}
                 showsVerticalScrollIndicator={false}
                 renderItem={(object) => <RenderItem item={object.item} />}
                 data={filteredComments}
-                keyExtractor={(item: any) => item?.productID?._id?.toString()}
+                keyExtractor={(item: any) => item?._id.toString()}
+                initialNumToRender={5}
+                maxToRenderPerBatch={5}
               />
             ) : (
-              <Text style={{ fontSize: 20 }}>No data</Text>
+              <Text style={{ fontSize: 20 }}>Chưa có đánh giá</Text>
             )}
           </View>
         </View>
       </View>
+
+
+
       <View style={styles.addCommentButtonContainer}>
         <TouchableOpacity
           style={styles.addCommentButton}
           onPress={() => navigation.navigate('AddComment', { id: id })}
 
         >
-          <LinearGradient 
-          colors={['#46CAF3', '#68B1D9']} 
-          style={{ borderRadius: 10 }}
+          <LinearGradient
+            colors={['#46CAF3', '#68B1D9']}
+            style={{ borderRadius: 10 }}
           >
-            <Text style={styles.addCommentButtonText}>Write Review</Text>
+            <Text style={styles.addCommentButtonText}>Viết Đánh Giá</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>

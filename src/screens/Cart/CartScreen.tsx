@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native'
 
 const CartScreen = ({ navigation }: PropsCart) => {
     const navigations = useNavigation<{
-        navigate: (screen: string, params?: { totalAfterShipping?: number; Level?: any; generalPriceAfterShipping: number, shipping: number }) => void;
+        navigate: (screen: string, params?: { totalAfterShipping?: number; Level?: any; generalPriceAfterShipping: number }) => void;
     }>();
 
 
@@ -33,7 +33,6 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const [coupon, setCoupon] = useState<string>('');
     const [isInvalidCoupon, setIsInvalidCoupon] = useState<boolean>(false);
 
-    const shippingFee = 40;
 
 
     const [checkRemoveItem, setCheckRemoveItem] = useState<boolean>(false);
@@ -46,7 +45,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const cart: { key: any, productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
 
-    const generalPriceAfterShipping = generalPrice + shippingFee;
+    const generalPriceAfterShipping = generalPrice + generalPrice * 0.05;
 
     useEffect(() => {
         const fetchVoucher = async () => {
@@ -90,7 +89,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
     };
 
     const createTwoButtonAlert = () =>
-        Alert.alert('Notification', 'Not product in your Cart ! ', [
+        Alert.alert('Thông báo', 'Không có sản phẩm trong giỏ hàng của bạn ! ', [
             { text: 'OK' }
         ]);
 
@@ -98,8 +97,9 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const handleRemoveItem = async (key: number) => {
         dispatch(removeItem(key));
         setCheckRemoveItem(true);
+
     }
-    const handlRemoveData = async () => {
+    const handleRemoveData = async () => {
         listData.map((item: any) => {
             cart.push({ key: item.key, productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
         }
@@ -107,7 +107,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
         await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart });
         setCheckRemoveItem(false);
     }
-    checkRemoveItem && handlRemoveData();
+    checkRemoveItem && handleRemoveData();
 
 
     const RenderItem = ({ item }: { item: any }) => {
@@ -165,17 +165,17 @@ const CartScreen = ({ navigation }: PropsCart) => {
     return (
         <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR }}  >
             <View style={{ marginTop: 17 }}>
-                <Text style={styles.txtTitlePage}>Your Cart</Text>
+                <Text style={styles.txtTitlePage}>Giỏ Hàng</Text>
             </View>
             <View style={styles.line}></View>
             <View style={{ height: HEIGHT * 0.35, marginTop: '11%' }}>
                 {listData.length > 0 ?
                     <FlatList
-                        showsVerticalScrollIndicator={false}
+                        scrollEnabled={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
                         keyExtractor={(item: any) => item?.key}
-                    /> : <Text style={{ fontSize: 20 }}>No data</Text>}
+                    /> : <Text style={{ fontSize: 20 }}>Chưa có sản phẩm được thêm vào</Text>}
             </View>
             <ScrollView
                 showsVerticalScrollIndicator={false}
@@ -194,10 +194,10 @@ const CartScreen = ({ navigation }: PropsCart) => {
                                 setIsVoucherApplied(false);
                                 setIsInvalidCoupon(false); // Ẩn lỗi khi người dùng bắt đầu nhập lại
                             }}
-                            placeholder={isInvalidCoupon ? "Invalid Coupon Code" : "Enter Coupon Code"}
+                            placeholder={isInvalidCoupon ? "Mã giảm giá không hợp lệ" : "Nhập mã giảm giá"}
                             extra={
                                 <Pressable onPress={handleApplyCoupon} style={styles.btnApply}>
-                                    <Text style={styles.textApply}>Apply</Text>
+                                    <Text style={styles.textApply}>Áp dụng</Text>
                                 </Pressable>
                             }
                         />
@@ -205,20 +205,20 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
                     <View style={styles.itemTotalPrice}>
                         <View style={styles.headerTotalPrice}>
-                            <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
-                            <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
+                            <Text style={styles.textHeaderTotalLeft}>Tổng giá sản phẩm ({totalItem})</Text>
+                            <Text style={styles.textHeaderTotalRight}>{generalPrice} VND</Text>
                         </View>
                         <View style={styles.headerTotalPrice}>
-                            <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
-                            <Text style={styles.textHeaderTotalRight}>{shippingFee}$</Text>
+                            <Text style={styles.textHeaderTotalLeft}>Phí giao hàng</Text>
+                            <Text style={styles.textHeaderTotalRight}>{generalPrice * 0.05} VND</Text>
                         </View>
                         <View style={styles.headerTotalPrice}>
-                            <Text style={styles.textHeaderTotalLeft}>Voucher</Text>
+                            <Text style={styles.textHeaderTotalLeft}>Giảm giá</Text>
                             <Text style={styles.textHeaderTotalRight}>{isVoucherApplied ? `${discountLevel}%` : '0%'}</Text>
                         </View>
                         <View style={styles.bottomTotalPrice}>
-                            <Text style={styles.textBottomTotalLeft}>Total Price</Text>
-                            <Text style={styles.textBottomTotalRight}>{isVoucherApplied ? `$${discountedPrice}` : `$${generalPriceAfterShipping}`}</Text>
+                            <Text style={styles.textBottomTotalLeft}>Tổng giá</Text>
+                            <Text style={styles.textBottomTotalRight}>{isVoucherApplied ? `${discountedPrice} VND` : `${generalPriceAfterShipping} VND`}</Text>
                         </View>
 
                     </View>
@@ -226,18 +226,15 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         <Pressable onPress={() => listData.length > 0 ? navigations.navigate('CartDetail', {
                             Level: isVoucherApplied ? discountLevel : '0',
                             totalAfterShipping: isVoucherApplied ? discountedPrice : generalPriceAfterShipping,
-                            generalPriceAfterShipping,
-                            shipping: shippingFee
+                            generalPriceAfterShipping
 
                         }) : createTwoButtonAlert()}>
-                            <ButtonBottom title='Check Out' />
+                            <ButtonBottom title='Xác Nhận' />
                         </Pressable>
                     </View>
                 </View>
 
             </ScrollView>
-
-
         </SafeAreaView >
     )
 }

@@ -48,14 +48,14 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                     }
                     <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
-                            <ButtonBottom title='Cancel' />
+                            <ButtonBottom title='Hủy' />
                         </Pressable>
                     </Animatable.View>
                 </View>
             </Modal>
             <View style={styles.container}>
                 <View>
-                    <Header title='Profile' navigation={navigation} />
+                    <Header title='Hồ Sơ' navigation={navigation} />
                 </View>
                 <View style={styles.line}></View>
 
@@ -75,7 +75,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                 <View style={styles.Content}>
                     <View style={styles.Content_left}>
                         <Icon name='male-female' size={30} color={'#444444'} />
-                        <Text style={styles.txtContent}>Gender</Text>
+                        <Text style={styles.txtContent}>Giới tính</Text>
                     </View>
                     <View style={styles.Content_right}>
                         <Text style={styles.txtHint}>{user.gender}</Text>
@@ -88,7 +88,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                 <View style={styles.Content}>
                     <View style={styles.Content_left}>
                         <Icon name='calendar-sharp' size={30} color={'#444444'} />
-                        <Text style={styles.txtContent}>Birthday</Text>
+                        <Text style={styles.txtContent}>Ngày sinh</Text>
                     </View>
                     <View style={styles.Content_right}>
                         <Text style={styles.txtHint}>{user.birthDay}</Text>
@@ -114,7 +114,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                 <View style={styles.Content}>
                     <View style={styles.Content_left}>
                         <Icon name='phone-portrait' size={30} color={'#444444'} />
-                        <Text style={styles.txtContent}>Phone Number</Text>
+                        <Text style={styles.txtContent}>Số điện thoại</Text>
                     </View>
                     <View style={styles.Content_right}>
                         <Text style={styles.txtHint}>{user.phone}</Text>
@@ -127,7 +127,7 @@ const ProfileScreen = ({ navigation }: PropsAccount) => {
                     <View style={styles.Content}>
                         <View style={styles.Content_left}>
                             <Icon name='keypad' size={30} color={'#444444'} />
-                            <Text style={styles.txtContent}>Change Password</Text>
+                            <Text style={styles.txtContent}>Đổi mật khẩu</Text>
                         </View>
                         <View style={styles.Content_right}>
                             <Text style={styles.txtHint}>*********</Text>

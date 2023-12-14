@@ -76,7 +76,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
         <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: COLORS.gray }]}>
           <Icon name='search' size={22} />
           <TextInput
-            placeholder="Search here"
+            placeholder="Tìm kiếm"
             style={[styles.TextSearch]}
             onFocus={() => setTextInputStatus(true)}
             onBlur={() => setTextInputStatus(false)}

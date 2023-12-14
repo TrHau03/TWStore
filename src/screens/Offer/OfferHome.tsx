@@ -7,10 +7,6 @@ import { useIsFocused } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 
-
-
-
-
 const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
 
   const [event, setEvent] = useState<[]>([]);
@@ -47,7 +43,6 @@ const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
   }
   return (
     <View style={styles.container}>
-      <Text style={styles.offer}>Offer</Text>
       <View style={styles.cupon}>
         <Text style={styles.textcupon}>Use “{couponHighest?.discountCode}” Coupon For Get {couponHighest?.discountLevel}%off</Text>
       </View>
@@ -73,7 +68,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   cupon: {
-    marginTop: 40,
+    marginTop: 15,
     width: '100%',
     height: 80,
     backgroundColor: '#00A9FF',
