@@ -98,8 +98,9 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const handleRemoveItem = async (key: number) => {
         dispatch(removeItem(key));
         setCheckRemoveItem(true);
+
     }
-    const handlRemoveData = async () => {
+    const handleRemoveData = async () => {
         listData.map((item: any) => {
             cart.push({ key: item.key, productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
         }
@@ -107,7 +108,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
         await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart });
         setCheckRemoveItem(false);
     }
-    checkRemoveItem && handlRemoveData();
+    checkRemoveItem && handleRemoveData();
 
 
     const RenderItem = ({ item }: { item: any }) => {

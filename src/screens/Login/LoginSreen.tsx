@@ -42,7 +42,7 @@ const LoginScreen = (props: any) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [pictureURL, setPictureURL] = useState<any>(null);
-  const [checkBoxRemember, setCheckBoxRemember] = useState<any>(null);
+  const [checkBoxRemember, setCheckBoxRemember] = useState<any>('');
 
   const dispatch = useDispatch();
 
@@ -53,6 +53,7 @@ const LoginScreen = (props: any) => {
       if (emailStorage && passwordStorage) {
         setEmail(emailStorage);
         setPassword(passwordStorage);
+        
       }
     }
     getDataStorage()
@@ -83,9 +84,11 @@ const LoginScreen = (props: any) => {
         user && dispatch(isLoading(false));
         if (user.active) {
           if (userInfo.role === 'user') {
+            console.log(checkBoxRemember);
+            
             if (checkBoxRemember) {
-              await AsyncStorage.setItem('email', info.email);
-              await AsyncStorage.setItem('password', info.password);
+              await AsyncStorage.setItem('email', email);
+              await AsyncStorage.setItem('password', password);
             }
             handleSubmit({ _id: user._id, _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
             handlePass()
@@ -139,17 +142,22 @@ const LoginScreen = (props: any) => {
           console.warn("Tài khoản đã bị khóa !!")
         }
       } else {
+        dispatch(isLoading(false));
         console.log("Login failed");
       }
     } catch (error: any) {
       // handle errors
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        dispatch(isLoading(false));
         // user cancelled the login flow
       } else if (error.code === statusCodes.IN_PROGRESS) {
+        dispatch(isLoading(false));
         // operation (e.g. sign in) is in progress already
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        dispatch(isLoading(false));
         // play services not available or outdated
       } else {
+        dispatch(isLoading(false));
         // some other error happened
       }
     }
@@ -260,7 +268,7 @@ const LoginScreen = (props: any) => {
           </View>
         </View>
         <View style={{ flexDirection: 'row', marginTop: 17 }}>
-          <Checkbox checked onChange={(e: any) => setCheckBoxRemember(e.target.checked)} style={{ width: 150 }}><Text style={styles.checkBox}>Nhớ tài khoản</Text></Checkbox>
+          <Checkbox onChange={(e: any) => setCheckBoxRemember(e.target.checked)} style={{ width: 150 }}><Text style={styles.checkBox}>Nhớ tài khoản</Text></Checkbox>
           <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumLogin.VerificationScreen)} style={{ position: 'absolute', right: 0 }}>
             <Text style={styles.checkBox}>Quên mật khẩu?</Text>
           </TouchableOpacity>

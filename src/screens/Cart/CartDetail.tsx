@@ -4,7 +4,7 @@ import { PropsCart } from '../../component/Navigation/Props'
 import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RouteProp, useFocusEffect, useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -15,6 +15,7 @@ import axios from 'axios';
 import moment from 'moment';
 import crypto from 'crypto-js';
 import qs from 'qs'
+import { cartEmpty } from '../../redux/silces/Silces'
 
 type CartDetailRouteParams = {
     CartDetail: {
@@ -48,8 +49,8 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const [receiverName, setReceiverName] = useState<string>('');
     const [phoneNumber, setPhoneNumber] = useState<string>('');
     const [selectedAddress, setSelectedAddress] = useState<string>('');
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<any>();
+    const dispatch = useDispatch();
 
 
     const handleReceiverNameChange = (text: string) => {
@@ -179,12 +180,13 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             if (response.data.return_code === 1) {
                 await AxiosInstance().post('/order/addOrder',
                     {
+                        listProduct: listData,
                         userID: user._id,
                         voucher: null,
                         phoneReceiver: phoneNumber,
                         nameReceiver: receiverName,
                         addressDelivery: selectedAddress,
-                        payment: selectedPaymentMethod,
+                        payment: selectedPaymentMethod.name,
                         totalPrice: totalAfterShipping.toString(),
                     });
                     Alert.alert('Thông báo', 'Thanh toán dc roi');
@@ -200,22 +202,30 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     }
 
     const checkPaymentMethod = () =>{
-        selectedPaymentMethod === 'ZaloPay' ? checkOutZaloPay() : cod()
+        selectedPaymentMethod.name === 'ZaloPay' ? checkOutZaloPay() : cod()
     }
 
     const cod = async () =>{
-        await AxiosInstance().post('/order/addOrder',
+        const check = await AxiosInstance().post('/order/addOrder',
         {
+            listProduct: listData,
             userID: user._id,
             voucher: null,
             phoneReceiver: phoneNumber,
             nameReceiver: receiverName,
             addressDelivery: selectedAddress,
-            payment: selectedPaymentMethod,
+            payment: selectedPaymentMethod.name,
             totalPrice: totalAfterShipping.toString(),
         });
+        if(check){
+            updateCart();
+            Alert.alert('Thông báo', 'Thanh toán thành công');
+        }
     }
-
+    const updateCart = async () =>{
+        dispatch(cartEmpty([]));
+        await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: []});
+    }
     if (focusScreen === true) {
         getStatusPayment();
         setFocusScreen(false);
