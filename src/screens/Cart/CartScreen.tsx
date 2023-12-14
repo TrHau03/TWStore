@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native'
 
 const CartScreen = ({ navigation }: PropsCart) => {
     const navigations = useNavigation<{
-        navigate: (screen: string, params?: { totalAfterShipping?: number; Level?: any; generalPriceAfterShipping: number, shipping: number }) => void;
+        navigate: (screen: string, params?: { totalAfterShipping?: number; Level?: any; generalPriceAfterShipping: number }) => void;
     }>();
 
 
@@ -33,7 +33,6 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const [coupon, setCoupon] = useState<string>('');
     const [isInvalidCoupon, setIsInvalidCoupon] = useState<boolean>(false);
 
-    const shippingFee = 40;
 
 
     const [checkRemoveItem, setCheckRemoveItem] = useState<boolean>(false);
@@ -46,7 +45,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const cart: { key: any, productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
 
-    const generalPriceAfterShipping = generalPrice + shippingFee;
+    const generalPriceAfterShipping = generalPrice + generalPrice * 0.05;
 
     useEffect(() => {
         const fetchVoucher = async () => {
@@ -98,8 +97,9 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const handleRemoveItem = async (key: number) => {
         dispatch(removeItem(key));
         setCheckRemoveItem(true);
+
     }
-    const handlRemoveData = async () => {
+    const handleRemoveData = async () => {
         listData.map((item: any) => {
             cart.push({ key: item.key, productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
         }
@@ -107,7 +107,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
         await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart });
         setCheckRemoveItem(false);
     }
-    checkRemoveItem && handlRemoveData();
+    checkRemoveItem && handleRemoveData();
 
 
     const RenderItem = ({ item }: { item: any }) => {
@@ -171,7 +171,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
             <View style={{ height: HEIGHT * 0.35, marginTop: '11%' }}>
                 {listData.length > 0 ?
                     <FlatList
-                        showsVerticalScrollIndicator={false}
+                        scrollEnabled={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
                         keyExtractor={(item: any) => item?.key}
@@ -210,7 +210,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         </View>
                         <View style={styles.headerTotalPrice}>
                             <Text style={styles.textHeaderTotalLeft}>Phí giao hàng</Text>
-                            <Text style={styles.textHeaderTotalRight}>{shippingFee} VND</Text>
+                            <Text style={styles.textHeaderTotalRight}>{generalPrice * 0.05} VND</Text>
                         </View>
                         <View style={styles.headerTotalPrice}>
                             <Text style={styles.textHeaderTotalLeft}>Giảm giá</Text>
@@ -226,11 +226,10 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         <Pressable onPress={() => listData.length > 0 ? navigations.navigate('CartDetail', {
                             Level: isVoucherApplied ? discountLevel : '0',
                             totalAfterShipping: isVoucherApplied ? discountedPrice : generalPriceAfterShipping,
-                            generalPriceAfterShipping,
-                            shipping: shippingFee
+                            generalPriceAfterShipping
 
                         }) : createTwoButtonAlert()}>
-                            <ButtonBottom title='Xác Nhận'/>
+                            <ButtonBottom title='Xác Nhận' />
                         </Pressable>
                     </View>
                 </View>
