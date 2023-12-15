@@ -27,6 +27,7 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { fetchInitialListProductFilter } from '../../redux/silces/Silces';
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { NumericFormat } from 'react-number-format';
 interface Product {
   id: number;
   img: any;
@@ -93,7 +94,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
   });
 
   const renderItem = ({ item }: any): React.JSX.Element => {
-    const { image, productName, price, strikeThrough, offer, brand } = item;
+    const { image, productName, price, offer } = item;
 
     return (
       <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Productdetail, { id: item._id })} style={styles.containerItemPD}>
@@ -110,8 +111,8 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
             </View>
             {(offer > 0) ? <Text style={styles.PricePD}>${price - price * (offer / 100)}</Text> : <></>}
             <View style={styles.sale}>
-              <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>${price}</Text>
-              <Text style={styles.txtSale}>{offer}% Off</Text>
+              <NumericFormat displayType={'text'} value={Number(price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>{formattedValue.substring(0, formattedValue.length - 4) + 'K VNĐ'}</Text>} />
+              {offer > 0 && <Text style={styles.txtSale}>{offer}% Off</Text>}
             </View>
           </View>
         </View>
@@ -255,7 +256,7 @@ const styles = StyleSheet.create({
   txtSale: {
     color: 'red',
     fontSize: 17,
-    marginLeft: 20,
+    marginLeft: 10,
     fontWeight: 'bold',
   },
   txtOldPrice: {
@@ -268,6 +269,8 @@ const styles = StyleSheet.create({
   sale: {
     width: '80%',
     flexDirection: 'row',
+    alignSelf: 'center',
+    justifyContent:'center',
   },
   star: {
     width: '75%',

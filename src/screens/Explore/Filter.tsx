@@ -141,7 +141,7 @@ const FilterScreen = (props: any) => {
 
           }}>
           <MultiSlider
-            values={[0, 5000]}
+            values={[0, 5000000]}
             sliderLength={300}
             min={0}
             max={5000000}
