@@ -109,10 +109,10 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
                 <AirbnbRating count={5} size={15} showRating={false} />
               </View>
             </View>
-            {(offer > 0) ? <Text style={styles.PricePD}>${price - price * (offer / 100)}</Text> : <></>}
+            {(offer > 0) ? <Text style={styles.PricePD}>{price - price * (offer / 100)}</Text> : <></>}
             <View style={styles.sale}>
-              <NumericFormat displayType={'text'} value={Number(price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>{formattedValue.substring(0, formattedValue.length - 4) + 'K VNĐ'}</Text>} />
-              {offer > 0 && <Text style={styles.txtSale}>{offer}% Off</Text>}
+              <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>{price} VND</Text>
+              <Text style={styles.txtSale}>{offer}% Off</Text>
             </View>
           </View>
         </View>
@@ -133,7 +133,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
         visible={modalVisible}
         animationType="slide"
         onRequestClose={() => true} >
-        <View style={{ height: '85%' }}>
+        <View style={{ height: '100%' }}>
           <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size, priceMin, priceMax }} />
           <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
             <Pressable onPress={() => { setModalVisible(false) }}>

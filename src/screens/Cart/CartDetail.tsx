@@ -240,6 +240,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         })
         navigation.navigate('Home', { screen: RootStackScreenEnumHome.HomeScreen })
     }
+    
     if (focusScreen === true) {
         getStatusPayment();
         setFocusScreen(false);

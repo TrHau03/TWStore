@@ -41,7 +41,6 @@ const VerificationScreen = (props: any) => {
     }
 
     const verifyOTP = async () => {
- 
         if (OTP === parseInt(value)) {
             navigation.navigate('ForgotPass', {email: email});
         } else {

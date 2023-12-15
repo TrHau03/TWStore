@@ -18,6 +18,7 @@ const initialState = {
   isLoading: false,
   LoginGoogle: false,
   LoginFaceBook: false,
+
   user: {
     _id: '',
     _idUser: '',
@@ -33,6 +34,7 @@ const initialState = {
   },
   listProductRecommend: [],
   listProductFilter: [],
+
 };
 
 const Slice = createSlice({
@@ -68,7 +70,7 @@ const Slice = createSlice({
       state.user.password = value;
     },
     cartEmpty: (state, action) => {
-      state.user.cartItem = action.payload
+      state.user.cartItem = action.payload;
     },
     removeItem: (state, action: PayloadAction<number>) => {
       state.user.cartItem = state.user.cartItem.filter((item: any) => item.key !== action.payload);

@@ -12,45 +12,54 @@ import { RootStackScreenAccount, RootStackScreenEnumAccount } from '../../compon
 import StatusDeliver from './StatusDeliver';
 import AxiosInstance from '../../Axios/Axios';
 import { useIsFocused } from '@react-navigation/native';
+import Order_Detail from './Order_Detail';
 
 
 
-const OrderScreen = ({ navigation }: PropsAccount) => {
+const OrderScreen = ({ navigation }: PropsAccount, props: any) => {
     const isFocus = useIsFocused();
-    const [date, setDate] = useState<string>('');
+    const [dateStatus, setDateStatus] = useState<string>('');
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [status, setStatus] = useState<string>('');
+    const [_idOrder, set_idOrder] = useState<string>('');
     const user = useSelector((state: any) => state.SlicesReducer.user);
+    const dispatch = useDispatch();
+    const [listOrder, setListOrder] = useState<[]>();
+    const [nameModal, setNameModal] = useState<string>('');
+    
 
-    const [listOrder, setListOrder] = useState<[]>()
     useEffect(() => {
         const fetchListCategory = async () => {
             const response = await AxiosInstance().get(`order/getOrderByIdUser/${user._id}`);
             setListOrder(response.data);
         }
+
         if (isFocus) {
             fetchListCategory();
         }
     }, [isFocus])
+
+
     const RenderItem = (props: any) => {
         const { data } = props;
         const { item } = data;
         const date = new Date(item.bookingDate);
-        return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate(RootStackScreenEnumAccount.Order_Detail)}>
+
+        return <TouchableOpacity style={styles.box} onPress={() => { setModalVisible(true), set_idOrder(item._id), setNameModal('Order_Detail') }}>
             <View>
                 <Text style={styles.MaCode}>{item.orderCode}</Text>
-                <Text style={styles.title}>Ngày đặt hàng : {date.getDay() +'/' + (date.getMonth() + 1) + '/' + date.getFullYear()}</Text>
+                <Text style={styles.title}>Ngày đặt hàng : {date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()}</Text>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Sản Phẩm</Text>
-                    <Text style={styles.content}>{listOrder?.length} Items purchased</Text>
+                    <Text style={styles.title}>Sản Phẩm : </Text>
+                    <Text style={styles.content}>{listOrder?.length} sản phẩm</Text>
                 </View>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Giá</Text>
+                    <Text style={styles.title}>Giá : </Text>
                     <Text style={styles.price}>{item.totalPrice} VND</Text>
                 </View>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Trạng thái giao hàng</Text>
-                    <TouchableOpacity onPress={() => { setModalVisible(true); setDate(item.date); setStatus(item.status) }}>
+                    <TouchableOpacity onPress={() => { setModalVisible(true), setStatus(item.status), setDateStatus(date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()), setNameModal('StatusDeliver') }}>
                         <Icon name='chevron-forward-outline' size={25} color={'#525252'} />
                     </TouchableOpacity>
                 </View>
@@ -66,8 +75,12 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
                 animationType="slide"
                 onRequestClose={() => true} >
                 <View style={{ height: '100%' }}>
-                    <StatusDeliver action={{ setDate, setStatus }} state={{ date, status }} />
-                    <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
+                    {
+                        (nameModal == 'StatusDeliver') ?
+                            <StatusDeliver state={{ dateStatus, status }} /> :
+                            <Order_Detail state={{_idOrder}} />
+                    }
+                    <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 10 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
                             <ButtonBottom title='Thoát' />
                         </Pressable>
@@ -153,6 +166,6 @@ const styles = StyleSheet.create({
         width: WIDTH,
         height: HEIGHT,
         paddingTop: 20,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
     }
 })

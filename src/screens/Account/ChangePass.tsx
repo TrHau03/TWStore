@@ -155,9 +155,7 @@ const styles = StyleSheet.create({
     },
     title: {
         flexDirection: 'row',
-
     },
-
     container: {
         height: HEIGHT * 0.8,
         alignItems: 'center',

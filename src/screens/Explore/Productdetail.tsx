@@ -199,12 +199,12 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       return item.colorProduct._id;
     })
     if (sizeProduct == undefined || colorProduct == undefined) {
-      Alert.alert('Notification', 'Product has not been added yet!', [
+      Alert.alert('Thông báo', 'Sản phẩm chưa được thêm vào!', [
         { text: 'OK' }
       ]);
     } else {
       if (checkAddProductSize.includes(sizeProduct._id) && checkAddProductColor.includes(colorProduct._id)) {
-        Alert.alert('Notification', 'Product already in cart!', [
+        Alert.alert('Thông báo', 'Sản phẩm đã có trong giỏ hàng!', [
           { text: 'OK' }
         ]);
       } else {
@@ -225,7 +225,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   };
 
   const createTwoButtonAlert = () =>
-    Alert.alert('Notification', 'Add to cart successfully!', [
+    Alert.alert('Thông báo', 'Thêm vào giỏ hàng thành công!', [
       { text: 'OK', onPress: () => handleAddTocart() }
     ]);
 

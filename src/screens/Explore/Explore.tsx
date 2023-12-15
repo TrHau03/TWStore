@@ -40,6 +40,7 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
 
   const [listCategory, setListCategory] = useState<[]>([]);
 
+  
   useEffect(() => {
     const fetchListCategory = async () => {
       const response = await AxiosInstance().get('category/getAllCategory');
@@ -83,12 +84,13 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
             onChangeText={setTextInputSearch}
             value={textInputSearch}
           />
-          {(textInputStatus) ?
+          {(textInputStatus) ?(
             <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
               onPress={() => setTextInputSearch('')}
             >
-              <Icon name='close' size={14} />
+              <Icon name='close' size={14}/>
             </Pressable>
+          )
             : null}
         </View>
 
@@ -103,7 +105,6 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
         renderItem={renderItem}
         numColumns={2}
         keyExtractor={(item: any) => item?._id.toString()} />
-
     </View>
 
   );

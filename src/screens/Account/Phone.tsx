@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, Alert, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
@@ -15,11 +15,19 @@ const Phone = (props: any) => {
     const dispatch = useDispatch();
     const user = useSelector((state: any) => state.SlicesReducer.user);
 
+    const isValidPhoneNumber = (number: string) => {
+        const phoneNumberRegex = /^\d{9,12}$/;
+        return phoneNumberRegex.test(number);
+    };
 
     const handleSavephone = async () => {
-        setModalVisible(false)
-        dispatch(updatePhone(phone))
-        const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, phone: phone });
+        if (phone?.trim() === '') {
+            Alert.alert('Thông báo', 'Vui lòng nhập số điện thoại hợp lệ');
+        } else {
+            setModalVisible(false)
+            dispatch(updatePhone(phone))
+            const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, phone: phone });
+        }
     }
 
     return (

@@ -19,6 +19,7 @@ import { COLORS } from '../../utilities';
 import Button from '../../component/Button/Button';
 import { useIsFocused } from '@react-navigation/native';
 import AxiosInstance from '../../Axios/Axios';
+import { HEIGHT } from '../../utilities/utility';
 
 interface Brand {
   _id: number;
@@ -111,8 +112,8 @@ const FilterScreen = (props: any) => {
 
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
+    <View>
+      <View style={styles.container}>
         <View style={styles.filterPrice}>
           <Text
             style={{
@@ -156,12 +157,13 @@ const FilterScreen = (props: any) => {
           {/*brand */}
           <View style={styles.Format}>
             <Text style={styles.txtBuyingFormat}>Hãng</Text>
-            <Pressable onPress={() => setVisibleBrand(!visibleBrand)}>
+            <Pressable onPress={() => {setVisibleBrand(!visibleBrand), setVisibleColor(false),setVisibleSize(false)}}>
               <Icon name={!visibleBrand ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
           {visibleBrand &&
             <FlatList
+              scrollEnabled={false}
               data={dataBrand}
               columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
               numColumns={3}
@@ -173,12 +175,13 @@ const FilterScreen = (props: any) => {
           {/*Color */}
           <View style={styles.Format}>
             <Text style={styles.txtBuyingFormat}>Màu</Text>
-            <Pressable onPress={() => setVisibleColor(!visibleColor)}>
+            <Pressable onPress={() => {setVisibleColor(!visibleColor), setVisibleBrand(false), setVisibleSize(false)}}>
               <Icon name={!visibleColor ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
           {visibleColor &&
             <FlatList
+              scrollEnabled={false}
               data={dataColor}
               columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
               numColumns={3}
@@ -190,12 +193,13 @@ const FilterScreen = (props: any) => {
           {/*Size */}
           <View style={styles.Format}>
             <Text style={styles.txtBuyingFormat}>Kích cỡ</Text>
-            <Pressable onPress={() => setVisibleSize(!visibleSize)}>
+            <Pressable onPress={() => {setVisibleSize(!visibleSize),setVisibleBrand(false),setVisibleColor(false)}}>
               <Icon name={!visibleSize ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
           {visibleSize &&
             <FlatList
+              scrollEnabled={false}
               data={dataSize}
               columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
               numColumns={3}
@@ -204,11 +208,10 @@ const FilterScreen = (props: any) => {
               style={{ top: 10 }}
             />}
         </View>
+        <Pressable style={{ position: 'absolute', width: '100%', bottom: 30, alignSelf: 'center' }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false), setVisibleBrand(false), setVisibleColor(false), setVisibleSize(false) }}>
+          <Button title='Áp Dụng' />
+        </Pressable>
       </View>
-
-      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false), setVisibleBrand(false), setVisibleColor(false), setVisibleSize(false) }}>
-        <Button title='Áp Dụng' />
-      </Pressable>
     </View>
   );
 };
@@ -284,17 +287,10 @@ const styles = StyleSheet.create({
   filterPrice: {
     width: '100%',
   },
-  content: {
-    width: '100%',
-    marginTop: 10,
-    height: '100%'
-  },
-  iconBack: {
-    width: '100%',
-    height: '5%',
-  },
   container: {
-    padding: 15,
     width: '100%',
-  },
+    marginTop: 20,
+    height: HEIGHT * 0.85,
+    paddingHorizontal: 20
+  }
 });

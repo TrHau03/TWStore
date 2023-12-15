@@ -48,3 +48,9 @@ export const todoRemainingProducts = createSelector(listProducts, searchFilterCh
         return [];
     }
 });
+
+export const searchProduct = createSelector(listProducts, searchFilterChange, (product, search) => {
+    return product.filter((todo: any) => {
+        return todo.productName.toLowerCase().includes(search.toLowerCase());
+    })
+});
