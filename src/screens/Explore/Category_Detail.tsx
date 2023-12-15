@@ -191,7 +191,6 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
           </View>
         </View>
         <FlatList
-          scrollEnabled={false}
           style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
           showsVerticalScrollIndicator={false}
           data={dataFilter}

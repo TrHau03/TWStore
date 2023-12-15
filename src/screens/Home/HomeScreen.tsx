@@ -125,39 +125,40 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
 
             </View>
             <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]} scrollEventThrottle={16}>
-                <View style={styles.topslide}>
-                    <ScrollView
-                        nestedScrollEnabled={true}
-                        onScroll={({ nativeEvent }) => onChange(nativeEvent)}
-                        showsHorizontalScrollIndicator={false}
-                        pagingEnabled
-                        horizontal
-                        style={styles.slide}
-                    >
-                        {
-                            images.map((e: any, index) =>
-                                <Pressable onPress={() => navigation.navigate('Offer',{screen:RootStackScreenEnumOffer.OfferHome})} key={e._id}>
-                                    <Image
-                                        resizeMode='stretch'
-                                        style={styles.slide}
-                                        source={{ uri: e.image }}
-                                    />
-                                </Pressable>
-                            )
-                        }
-                    </ScrollView>
+                {images.length > 0 ?
+                    <View style={styles.topslide}>
+                        <ScrollView
+                            nestedScrollEnabled={true}
+                            onScroll={({ nativeEvent }: any) => onChange(nativeEvent)}
+                            showsHorizontalScrollIndicator={false}
+                            pagingEnabled
+                            horizontal
+                            style={styles.slide}
+                        >
+                            {
+                                images.map((e: any, index) =>
+                                    <Pressable onPress={() => navigation.navigate('Offer', { screen: RootStackScreenEnumOffer.OfferHome })} key={e._id}>
+                                        <Image
+                                            resizeMode='stretch'
+                                            style={styles.slide}
+                                            source={{ uri: e.image }}
+                                        />
+                                    </Pressable>
+                                )
+                            }
+                        </ScrollView>
 
-                    <View style={styles.warpdot}>
-                        {
-                            images.map((e: any, index) =>
-                                <Text
-                                    key={e._id}
-                                    style={imgActive == index ? styles.dotactive : styles.dot}
-                                >●</Text>
-                            )
-                        }
-                    </View>
-                </View>
+                        <View style={styles.warpdot}>
+                            {
+                                images.map((e: any, index) =>
+                                    <Text
+                                        key={e._id}
+                                        style={imgActive == index ? styles.dotactive : styles.dot}
+                                    >●</Text>
+                                )
+                            }
+                        </View>
+                    </View> : <></>}
 
                 <View style={styles.category}>
                     <Text style={styles.textcategory}>Hãng</Text>

@@ -43,9 +43,9 @@ const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
   }
   return (
     <View style={styles.container}>
-      <View style={styles.cupon}>
+      {couponHighest ? <View style={styles.cupon}>
         <Text style={styles.textcupon}>Use “{couponHighest?.discountCode}” Coupon For Get {couponHighest?.discountLevel}%off</Text>
-      </View>
+      </View> : <Text style={{ fontSize: 20 }}>Chưa có sự kiện</Text>}
       <FlatList
         showsVerticalScrollIndicator={false}
         data={event}

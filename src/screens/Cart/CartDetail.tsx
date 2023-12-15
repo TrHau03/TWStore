@@ -235,6 +235,9 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const updateCart = async () => {
         dispatch(cartEmpty([]));
         await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: [] });
+        listProduct.map(async (item: any) => {
+            await AxiosInstance().put(`/product/updateQuantityProduct/${item.productID}`, { quantityOfOrder: item.quantityProduct });
+        })
         navigation.navigate('Home', { screen: RootStackScreenEnumHome.HomeScreen })
     }
     if (focusScreen === true) {

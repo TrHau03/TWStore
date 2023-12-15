@@ -175,7 +175,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
                         keyExtractor={(item: any) => item?.key}
-                    /> : <Text style={{ fontSize: 20 }}>Chưa có sản phẩm được thêm vào</Text>}
+                    /> : <Text style={{ fontSize: 20 }}>Chưa có sản phẩm</Text>}
             </View>
             <ScrollView
                 showsVerticalScrollIndicator={false}
