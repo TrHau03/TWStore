@@ -11,12 +11,13 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import AxiosInstance from '../../Axios/Axios'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount'
-import axios from 'axios';
+import axios from 'axios'
 import moment from 'moment';
 import crypto from 'crypto-js';
 import qs from 'qs'
 import { cartEmpty } from '../../redux/silces/Silces'
 import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome'
+
 
 type CartDetailRouteParams = {
     CartDetail: {
