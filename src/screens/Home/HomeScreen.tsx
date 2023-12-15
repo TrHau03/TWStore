@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumOffer } from '../../component/Root/RootStackOffer';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-import { listProductRecommend } from '../../redux/silces/HomeSelector';
+import { listProductRecommend, searchProduct } from '../../redux/silces/HomeSelector';
 import { fetchInitialListProductRecommend } from '../../redux/silces/Silces';
 import { RefreshControl } from 'react-native';
 
@@ -30,9 +30,9 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
 
     const [images, setImages] = useState<[]>([]);
     const [brand, setBrand] = useState<[]>([]);
+    const [productFilter, setProductFilter] = useState<[]>([]);
     const listProduct = useSelector(listProductRecommend);
     const dispatch = useDispatch();
-
 
     const fetchBanner = async () => {
         const response = await AxiosInstance().get(`banner/getAllBanner`);
@@ -42,11 +42,17 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
         const response = await AxiosInstance().get(`brand/getAllBrand`);
         setBrand(response.data)
     }
+    const fetchListProductsFilter = async () => {
+        const response = await AxiosInstance().get('product/getAllProduct');
+        setProductFilter(response.data);
+    }
+
     useEffect(() => {
         if (isFocused) {
             dispatch(fetchInitialListProductRecommend('product/getRecommendProduct'));
             fetchBrand();
             fetchBanner();
+            fetchListProductsFilter();
         }
     }, [isFocused])
     const onChange = (nativeEvent: any) => {
@@ -68,10 +74,16 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
         </Pressable>
     );
 
+    const renderItemSearch = ({ item }: any) => (
+        <TouchableOpacity onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })} style={{marginVertical: 5}}>
+            <Text style={{fontSize: 15, marginLeft: 15}}>{item.productName}</Text>
+        </TouchableOpacity>
+    );
+
 
     const renderItem3 = ({ item }: any) => {
         return (
-            <Pressable style={styles.itemsale2} onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })}>
+            <TouchableOpacity style={styles.itemsale2} onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })}>
                 <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
                 <View style={{ rowGap: 15, alignSelf: 'center', width: '95%' }}>
                     <Text style={styles.nameproduct}>{item.productName}</Text>
@@ -83,7 +95,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                         <Text style={styles.saleoff}>{item.offer}% Off</Text>
                     </View>
                 </View>
-            </Pressable>
+            </TouchableOpacity>
         )
     }
     const onRefresh = useCallback(() => {
@@ -108,14 +120,12 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                         onChangeText={setTextInputSearch}
                         value={textInputSearch}
                     />
-                    {(textInputStatus) ?
-                        <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
-                            onPress={() => { setTextInputSearch('') }}
-                        >
-                            <Icon name='close' size={14} />
-                        </Pressable>
-                        : null}
+                    <Pressable onPress={() => { setTextInputSearch('') }} style={{ position: 'absolute', right: 10, borderRadius: 5 }}>
+                        <Icon name='close' size={14} />
+                    </Pressable>
+
                 </View>
+
 
                 <View style={styles.headerRight}>
                     <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumHome.NotificationScreen)}>
@@ -124,68 +134,79 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
 
             </View>
-            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]} scrollEventThrottle={16}>
-                <View style={styles.topslide}>
-                    <ScrollView
-                        nestedScrollEnabled={true}
-                        onScroll={({ nativeEvent }) => onChange(nativeEvent)}
-                        showsHorizontalScrollIndicator={false}
-                        pagingEnabled
-                        horizontal
-                        style={styles.slide}
-                    >
-                        {
-                            images.map((e: any, index) =>
-                                <Pressable onPress={() => navigation.navigate('Offer',{screen:RootStackScreenEnumOffer.OfferHome})} key={e._id}>
-                                    <Image
-                                        resizeMode='stretch'
-                                        style={styles.slide}
-                                        source={{ uri: e.image }}
-                                    />
-                                </Pressable>
-                            )
-                        }
-                    </ScrollView>
-
-                    <View style={styles.warpdot}>
-                        {
-                            images.map((e: any, index) =>
-                                <Text
-                                    key={e._id}
-                                    style={imgActive == index ? styles.dotactive : styles.dot}
-                                >●</Text>
-                            )
-                        }
-                    </View>
-                </View>
-
-                <View style={styles.category}>
-                    <Text style={styles.textcategory}>Hãng</Text>
-                    <View style={styles.listcategory}>
+            {(textInputStatus) ?
+                (
+                    <View>
                         <FlatList
-                            data={brand}
-                            horizontal
-                            nestedScrollEnabled={true}
-                            renderItem={renderItem}
-                            keyExtractor={(item) => item.name}
-                        />
+                            data={productFilter.filter((item: any) => item.productName.toLowerCase().includes(textInputSearch.toLowerCase()))}
+                            renderItem={renderItemSearch}
+                            keyExtractor={(item: any) => item?._id.toString()} />
                     </View>
-                </View>
-                <View >
-                    <Image style={styles.imgrecomended} source={require('../../asset/image/bannerRecomendedProduct.png')} />
-                </View>
-                <FlatList
-                    scrollEnabled={false}
-                    contentContainerStyle={{ alignItems: 'center' }}
-                    style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
-                    showsVerticalScrollIndicator={false}
-                    data={listProduct}
-                    renderItem={renderItem3}
-                    keyExtractor={(item: any) => item._id.toString()}
-                    numColumns={2}
-                    columnWrapperStyle={{ columnGap: 5 }}
-                />
-            </ScrollView>
+                )
+                : (
+                    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />} horizontal={false} scrollEnabled={true} showsVerticalScrollIndicator={false} stickyHeaderIndices={[2]} scrollEventThrottle={16}>
+                        <View style={styles.topslide}>
+                            <ScrollView
+                                nestedScrollEnabled={true}
+                                onScroll={({ nativeEvent }) => onChange(nativeEvent)}
+                                showsHorizontalScrollIndicator={false}
+                                pagingEnabled
+                                horizontal
+                                style={styles.slide}
+                            >
+                                {
+                                    images.map((e: any, index) =>
+                                        <Pressable onPress={() => navigation.navigate('Offer', { screen: RootStackScreenEnumOffer.OfferHome })} key={e._id}>
+                                            <Image
+                                                resizeMode='stretch'
+                                                style={styles.slide}
+                                                source={{ uri: e.image }}
+                                            />
+                                        </Pressable>
+                                    )
+                                }
+                            </ScrollView>
+
+                            <View style={styles.warpdot}>
+                                {
+                                    images.map((e: any, index) =>
+                                        <Text
+                                            key={e._id}
+                                            style={imgActive == index ? styles.dotactive : styles.dot}
+                                        >●</Text>
+                                    )
+                                }
+                            </View>
+                        </View>
+
+                        <View style={styles.category}>
+                            <Text style={styles.textcategory}>Hãng</Text>
+                            <View style={styles.listcategory}>
+                                <FlatList
+                                    data={brand}
+                                    horizontal
+                                    nestedScrollEnabled={true}
+                                    renderItem={renderItem}
+                                    keyExtractor={(item) => item.name}
+                                />
+                            </View>
+                        </View>
+                        <View >
+                            <Image style={styles.imgrecomended} source={require('../../asset/image/bannerRecomendedProduct.png')} />
+                        </View>
+                        <FlatList
+                            scrollEnabled={false}
+                            contentContainerStyle={{ alignItems: 'center' }}
+                            style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
+                            showsVerticalScrollIndicator={false}
+                            data={listProduct}
+                            renderItem={renderItem3}
+                            keyExtractor={(item: any) => item._id.toString()}
+                            numColumns={2}
+                            columnWrapperStyle={{ columnGap: 5 }}
+                        />
+                    </ScrollView>
+                )}
         </SafeAreaView>
     )
 }
@@ -275,6 +296,7 @@ const styles = StyleSheet.create({
     },
 
     listcategory: {
+        marginTop: 10,
         height: 100,
     },
 

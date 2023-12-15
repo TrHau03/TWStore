@@ -10,128 +10,109 @@ import { useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 
 
-interface Product {
-  id: number;
-  image: string;
-  name: string;
-  price: string;
+
+interface Order_Details {
+  _id: string,
+  addressDelivery: string,
+  bookingDate: string,
+  deliveryDate: string,
+  listProduct: [{
+    colorID: [],
+    productID: {
+      productName: string,
+      price: string,
+      name: string,
+      image: [],
+    },
+    quantityProduct: number,
+    sizeID: [],
+  }],
+  nameReceiver: string,
+  orderCode: number,
+  payment: string,
+  phoneReceiver: string,
+  status: number,
+  totalPrice: string,
+  userID: string,
+  voucher: string,
 }
 
-interface Shipping_Detail {
-  id: number,
-  date: string,
-  name: string,
-  phone: string,
-  address: string,
-}
-
-interface Payment_Detail {
-  id: number,
-  quantity: number,
-  price_item: string,
-  price_ship: string,
-  price_charges: string,
-  price: string,
-}
 
 
-const Order_Detail = ({ navigation }: NativeStackHeaderProps, props: any) => {
-  
-  const user = useSelector((state: any) => state.SlicesReducer.user);
-  const order = useSelector((state: any) => state.SlicesReducer.order);
-  console.log(order);
-  
+const Order_Detail = (props: any) => {
+  const { _idOrder } = props.state;
+  const [listOrder, setListOrder] = useState<Order_Details>();
   const isFocus = useIsFocused();
-  useState
+
+
+  console.log(listOrder?.listProduct);
+
+
   useEffect(() => {
     const fetchListCategory = async () => {
-        const response = await AxiosInstance().get(`order/getOrderbyID/${user._id}`);
-        console.log(response.data);
-        
+      const response = await AxiosInstance().get(`order/getOrderByID/${_idOrder}`);
+      setListOrder(response.data)
     }
-    
     if (isFocus) {
-        fetchListCategory();
+      fetchListCategory();
     }
-}, [isFocus])
-    
+  }, [isFocus])
+
   return (
-    <View style={styles.container}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}>
-        <View style={{ paddingLeft: 20 }}>
-          <Header title='Chi Tiết Đặt Hàng' navigation={navigation} />
+    <ScrollView style={styles.container}
+      showsVerticalScrollIndicator={false}>
+      <View style={{ paddingLeft: 20, paddingTop: 40 }}>
+        <Text style={{ color: '#223263', fontSize: 19, fontFamily: 'Poppins', fontWeight: '700', lineHeight: 24, letterSpacing: 0.50, }}>Chi Tiết Đặt Hàng</Text>
+      </View>
+      <View style={styles.line}></View>
+      <View style={{ paddingHorizontal: 20, }}>
+        <Text style={styles.txtTitle}>Sản Phẩm</Text>
+        {listOrder?.listProduct.map((item: any) =>
+          <View key={item.productID._id} style={styles.boxProduct}>
+            <Image style={styles.product_Image} source={{ uri: item.productID.image[0] }} />
+
+            <View style={{ width: '70%' }}>
+              <Text style={styles.txtName_Product}>{item.productID.productName}</Text>
+              <Text style={styles.txtPrice_Product}>{item.productID.price} VND</Text>
+
+              <View style={{ flexDirection: 'row', gap: 20}}>
+                <Text style={styles.txtPrice_Product}>Màu : {item.colorID.name}</Text>
+                <Text style={styles.txtPrice_Product}>Size : {item.sizeID.name}</Text>
+              </View>
+            </View>
+          </View>
+        )}
+
+        < Text style={styles.txtTitle}>Thông tin giao hàng</Text>
+        <View style={styles.boxShipping}>
+
+          <View style={styles.content}>
+            <Text style={styles.txtLeft}>Ngày giao hàng</Text>
+            <Text style={styles.txtRight}>{listOrder?.deliveryDate}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.txtLeft}>Mã giao hàng</Text>
+            <Text style={styles.txtRight}>{listOrder?.orderCode}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.txtLeft}>Thanh toán</Text>
+            <Text style={styles.txtRight}>{listOrder?.payment}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.txtLeft}>Số điện thoại nhận hàng</Text>
+            <Text style={styles.txtRight}>{listOrder?.phoneReceiver}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.txtLeft}>Địa chỉ</Text>
+            <Text style={styles.txtRight}>{listOrder?.addressDelivery}</Text>
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.txtPrice_Product}>Tổng tiền</Text>
+            <Text style={styles.txtPrice_Product}>{listOrder?.totalPrice} VND</Text>
+          </View>
         </View>
-        <View style={styles.line}></View>
-        <View style={{ paddingHorizontal: 20, }}>
-          <Text style={styles.txtTitle}>Sản Phẩm</Text>
-
-          {Data.map((item) =>
-            <View key={item.id} style={styles.boxProduct}>
-              <Image style={styles.product_Image} source={{ uri: item.image }} />
-
-              <View style={{ width: '70%' }}>
-                <Text style={styles.txtName_Product}>{item.name}</Text>
-                <Text style={styles.txtPrice_Product}>{item.price} VND</Text>
-              </View>
-            </View>
-          )}
-
-
-          <Text style={styles.txtTitle}>Thông tin giao hàng</Text>
-
-          {Data1.map((item: any) =>
-            <View key={item.id} style={styles.boxShipping}>
-
-              <View style={styles.content}>
-                <Text style={styles.txtLeft}>Ngày giao hàng</Text>
-                <Text style={styles.txtRight}>{item.date}</Text>
-              </View>
-              <View style={styles.content}>
-                <Text style={styles.txtLeft}>Mã giao hàng</Text>
-                <Text style={styles.txtRight}>{order.orderCode}</Text>
-              </View>
-              <View style={styles.content}>
-                <Text style={styles.txtLeft}>Phương thức thanh toán</Text>
-                <Text style={styles.txtRight}>{item.phone}</Text>
-              </View>
-              <View style={styles.content}>
-                <Text style={styles.txtLeft}>Địa chỉ</Text>
-                <Text style={styles.txtRightAdress}>{item.address}</Text>
-              </View>
-
-            </View>
-          )}
-
-          <Text style={styles.txtTitle}>Thông tin thanh toán</Text>
-          {Data2.map((item) =>
-            <View key={item.id} style={styles.boxShipping}>
-              <View style={styles.content}>
-                <Text style={styles.txtLeft}>Tổng tiền sản phẩm({item.quantity})</Text>
-                <Text style={styles.txtRight}>{item.price_item} VND</Text>
-              </View>
-
-              <View style={styles.content}>
-                <Text style={styles.txtLeft}>Phí giao hàng</Text>
-                <Text style={styles.txtRight}>{item.price_ship} VND</Text>
-              </View>
-              <View style={styles.content}>
-                <Text style={styles.txtLeft}>Giảm giá</Text>
-                <Text style={styles.txtRight}>{item.price_charges}%</Text>
-              </View>
-
-              <View style={styles.content}>
-                <Text style={styles.txtPrice_Product}>Tổng tiền</Text>
-                <Text style={styles.txtPrice_Product}>{item.price} VND</Text>
-              </View>
-            </View>
-          )}
-
-
-          <Button style={{ marginVertical: 20 }} title='Notifi Me' />
-        </View>
-      </ScrollView>
-    </View>
+      </View>
+    </ScrollView >
   )
 }
 
@@ -139,8 +120,8 @@ export default Order_Detail
 
 const styles = StyleSheet.create({
   content: {
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 10
   },
   boxShipping: {
@@ -158,16 +139,8 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 21.60,
     letterSpacing: 0.50,
-  },
-
-  txtRightAdress: {
-    color: '#223263',
-    fontSize: 14,
-    fontFamily: 'Poppins',
-    fontWeight: '400',
-    lineHeight: 21.60,
-    letterSpacing: 0.50,
-    width: '40%'
+    width: '40%',
+    textAlign: 'right',
   },
 
   txtLeft: {
@@ -177,6 +150,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     lineHeight: 21.60,
     letterSpacing: 0.50,
+
   },
 
   txtPrice_Product: {
@@ -186,6 +160,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     lineHeight: 18,
     letterSpacing: 0.50,
+    marginTop: 5,
   },
 
   txtName_Product: {
@@ -241,42 +216,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     paddingTop: 20,
-
+    bottom: 50,
   }
 })
 
-const Data: Product[] = [
-  {
-    id: 1,
-    image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike1.png",
-    name: 'Nike Air Zoom Pegasus 36 Miami',
-    price: '299,43'
-  },
-  {
-    id: 2,
-    image: "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/nike/nike2.png",
-    name: 'Nike Air Zoom Pegasus 36 Miami',
-    price: '299,43'
-  },
-]
-
-const Data1: Shipping_Detail[] = [
-  {
-    id: 1,
-    date: 'January 16, 2015',
-    name: 'POS Reggular',
-    phone: '000192848573',
-    address: '2727 Lakeshore Rd undefined Nampa, Tennessee 78410',
-  },
-]
-
-const Data2: Payment_Detail[] = [
-  {
-    id: 1,
-    quantity: 3,
-    price_item: '598.86',
-    price_ship: '40.00',
-    price_charges: '128.00',
-    price: '766.86',
-  }
-]

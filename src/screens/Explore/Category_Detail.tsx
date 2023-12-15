@@ -108,9 +108,9 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
                 <AirbnbRating count={5} size={15} showRating={false} />
               </View>
             </View>
-            {(offer > 0) ? <Text style={styles.PricePD}>${price - price * (offer / 100)}</Text> : <></>}
+            {(offer > 0) ? <Text style={styles.PricePD}>{price - price * (offer / 100)}</Text> : <></>}
             <View style={styles.sale}>
-              <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>${price}</Text>
+              <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>{price} VND</Text>
               <Text style={styles.txtSale}>{offer}% Off</Text>
             </View>
           </View>
@@ -132,7 +132,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
         visible={modalVisible}
         animationType="slide"
         onRequestClose={() => true} >
-        <View style={{ height: '85%' }}>
+        <View style={{ height: '100%' }}>
           <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size, priceMin, priceMax }} />
           <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
             <Pressable onPress={() => { setModalVisible(false) }}>
@@ -191,7 +191,6 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
           </View>
         </View>
         <FlatList
-          scrollEnabled={false}
           style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
           showsVerticalScrollIndicator={false}
           data={dataFilter}
@@ -256,7 +255,7 @@ const styles = StyleSheet.create({
   txtSale: {
     color: 'red',
     fontSize: 17,
-    marginLeft: 20,
+    marginLeft: 10,
     fontWeight: 'bold',
   },
   txtOldPrice: {

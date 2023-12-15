@@ -19,10 +19,6 @@ const initialState = {
   LoginGoogle: false,
   LoginFaceBook: false,
 
-  order: {
-      orderCode: '',
-  },
-
   user: {
     _id: '',
     _idUser: '',
@@ -45,10 +41,6 @@ const Slice = createSlice({
   name: 'Slice',
   initialState,
   reducers: {
-    updateOrderCode: (state, action) => {
-      const value = action.payload;
-      state.order.orderCode = value;
-    },
     updateUser: (state, action) => {
       const value = action.payload;
       state.user = value;
@@ -134,5 +126,5 @@ const Slice = createSlice({
   },
 
 });
-export const { cartEmpty, updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity, updateGender, updatePhone, updateBirthDay, updateEmail, updateName, deleteAddress, addItem, addAddress, updatePass,updateOrderCode } = Slice.actions
+export const { cartEmpty, updateUser, isLogin, isLoading, LoginFacebook, LoginGoogle, removeItem, updateQuantity, updateGender, updatePhone, updateBirthDay, updateEmail, updateName, deleteAddress, addItem, addAddress, updatePass } = Slice.actions
 export default Slice.reducer;

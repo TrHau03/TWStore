@@ -16,19 +16,26 @@ const StatusDeliver = (props: any) => {
             </View>
             <View style={styles.grpcontent}>
                 <View style={{ marginRight: '8%', gap: 110 }}>
-                    <Icon name='checkmark-done-circle' size={25} color={status === 1 || status > 1 ? COLORS.green : COLORS.gray} />
-                    <Icon name='checkmark-done-circle' size={25} color={status === 2 || status > 2 ? COLORS.green : COLORS.gray} />
-                    <Icon name='checkmark-done-circle' size={25} color={status === 3 || status > 3 ? COLORS.green : COLORS.gray} />
-                    <Icon name='checkmark-done-circle' size={25} color={status === 4 ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={(status >= 2 && status < 6) ? COLORS.green : status === 6 ? COLORS.red : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status >= 3 && status < 6 ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status >= 4 && status < 6 ? COLORS.green : COLORS.gray} />
+                    <Icon name='checkmark-done-circle' size={25} color={status === 5 ? COLORS.green : COLORS.gray} />
                 </View>
                 <View style={styles.content}>
-                    <View style={styles.item}>
-                        <Image source={require('../../asset/image/ongoing1.png')} />
-                        <Text style={styles.textItem}>Đã đặt hàng thành công</Text>
-                    </View>
+                    {status === 6 ?
+                        <View style={styles.item}>
+                            <Image source={require('../../asset/image/ongoing1.png')} />
+                            <Text style={styles.textItem}>Đã đặt hàng thất bại</Text>
+                        </View>
+                        :
+                        <View style={styles.item}>
+                            <Image source={require('../../asset/image/ongoing1.png')} />
+                            <Text style={styles.textItem}>Đã xác nhận đơn hàng</Text>
+                        </View>
+                    }
                     <View style={styles.item}>
                         <Image source={require('../../asset/image/ongoing2.png')} />
-                        <Text style={styles.textItem}>Đơn đã được xác nhận</Text>
+                        <Text style={styles.textItem}>Đang đóng gói</Text>
                     </View>
                     <View style={styles.item}>
                         <Image source={require('../../asset/image/ongoing3.png')} />
@@ -95,7 +102,7 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        width: '99%',
+        width: '90%',
         height: '90%',
         paddingTop: 20,
         paddingHorizontal: 20
