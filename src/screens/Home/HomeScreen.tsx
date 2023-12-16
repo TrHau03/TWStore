@@ -91,10 +91,10 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
                 <View style={styles.stylesaleoff}>
                     {item.offer > 0 ?
-                        <NumericFormat displayType={'text'} value={Number(item.price - item.price * (item.offer / 100))} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.price}>{formattedValue.substring(0, formattedValue.length - 4) + 'K VNĐ'} </Text>} />
+                        <NumericFormat displayType={'text'} value={Number(item.price - item.price * (item.offer / 100))} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.price}>{formattedValue + 'đ'} </Text>} />
                         : <></>}
                     <View style={{ flexDirection: "row", justifyContent: 'center', width: '100%' }}>
-                        <NumericFormat displayType={'text'} value={Number(item.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={item.offer > 0 ? styles.strikethrough : styles.price}>{formattedValue.substring(0, formattedValue.length - 4) + 'K VNĐ'}</Text>} />
+                        <NumericFormat displayType={'text'} value={Number(item.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={item.offer > 0 ? styles.strikethrough : styles.price}>{formattedValue + 'đ'}</Text>} />
                         {item.offer > 0 && <Text style={styles.saleoff}>{item.offer}% Off</Text>}
                     </View>
                 </View>
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
 
     price: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 18,
         color: '#4464C4',
     },
 
