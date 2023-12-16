@@ -45,7 +45,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
 
     const cart: { key: any, productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
 
-    const generalPriceAfterShipping = generalPrice + generalPrice < 3000000 ? 0.05 : 0.02;
+    const generalPriceAfterShipping = generalPrice + generalPrice * 0.05;
 
     useEffect(() => {
         const fetchVoucher = async () => {
