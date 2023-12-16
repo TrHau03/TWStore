@@ -18,10 +18,11 @@ const Navigation = () => {
             const checkSlide = await AsyncStorage.getItem('checkSlide');
             setslide(checkSlide === null ? false : true);
         }
-        temp();
+        temp(); 
     }, [])
     if (!slide) {
         return <SlideNavigation />;
+        
     } else {
         console.log('isLogin', isLogin);
         
