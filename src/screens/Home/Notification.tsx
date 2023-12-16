@@ -76,6 +76,7 @@ const Voucher = () => {
 
   const onRefreshVoucher = React.useCallback(() => {
     setRefreshingVoucher(true);
+    fetchVoucher();
     setTimeout(() => {
       setRefreshingVoucher(false);
     }, 2000);

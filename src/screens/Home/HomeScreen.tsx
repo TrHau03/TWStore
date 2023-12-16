@@ -122,8 +122,9 @@ const HomeScreen = ({navigation}: NativeStackHeaderProps) => {
 
 
     const renderItemSearch = ({ item }: any) => (
-        <TouchableOpacity onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })} style={{ marginVertical: 5 }}>
-            <Text style={{ fontSize: 15, marginLeft: 15 }}>{item.productName}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })} style={{ marginVertical: 5, flexDirection: 'row', justifyContent: 'space-between', width: '100%', height: 'auto' }}>
+            <Text style={{ fontSize: 15, marginLeft: 15,alignSelf: 'center', color: 'black'}}>{item.productName}</Text>
+            <Image style={{width: 40, height: 40 , alignSelf: 'center'}} source={{uri: item.image[0]}}/>
         </TouchableOpacity>
     );
 

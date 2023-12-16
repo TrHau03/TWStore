@@ -19,50 +19,43 @@ const ChangePass = (props: any) => {
     const dispatch = useDispatch();
 
     const handleSaveChangePass = async () => {
-        if(user.password === oldPass){
-            if (newPass === againPass) {
-                setModalVisible(false)
-                dispatch(updatePass(newPass))
-                const response = await AxiosInstance().post(`/usersInfo/ChangePassword/`, { email: user.email, oldPassword: oldPass, newPassword: newPass });
-            } else {
-                Alert.alert('Mật khẩu không khớp');
-            }
+        if (oldPass.trim() === '' || newPass.trim() === '' || againPass.trim() === '') {
+            return Alert.alert('Xin vui lòng không để trống các ô')
         } else {
-            return Alert.alert('Mật khẩu cũ không đúng')
+            if (user.password === oldPass) {
+                if (newPass === againPass) {
+                    setModalVisible(false)
+                    dispatch(updatePass(newPass))
+                    const response = await AxiosInstance().post(`/usersInfo/ChangePassword/`, { email: user.email, oldPassword: oldPass, newPassword: newPass });
+                } else {
+                    Alert.alert('Mật khẩu không khớp');
+                }
+            } else {
+                return Alert.alert('Mật khẩu cũ không đúng')
+            }
         }
     }
 
     return (
         <View style={styles.container}>
-            <View style={styles.title}>
-                <Text style={styles.txtTitle}>Đổi Mật KHẩu</Text>
-            </View>
+            <Text style={styles.txtTitle}>Đổi Mật Khẩu</Text>
             <View style={styles.line}></View>
-
-            <View style={styles.Email}>
-                <Text style={styles.txtEmail}>Mật khẩu cũ</Text>
-                <View style={styles.input}>
-                    <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
-                    <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setOldPass(e.nativeEvent.text) }} />
-                </View>
+            <Text style={styles.txtEmail}>Mật khẩu cũ</Text>
+            <View style={styles.input}>
+                <Icon name='lock-closed-sharp' size={25} color={'#5c5c5c'} />
+                <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setOldPass(e.nativeEvent.text) }} />
             </View>
-
-            <View style={styles.Email}>
-                <Text style={styles.txtEmail}>Mật khẩu mới</Text>
-                <View style={styles.input}>
-                    <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
-                    <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setNewPass(e.nativeEvent.text) }} />
-                </View>
+            <Text style={styles.txtEmail}>Mật khẩu mới</Text>
+            <View style={styles.input}>
+                <Icon name='lock-closed-sharp' size={25} color={'#5c5c5c'} />
+                <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setNewPass(e.nativeEvent.text) }} />
             </View>
-
-            <View style={styles.Email}>
-                <Text style={styles.txtEmail}>Nhập lại mật khẩu mới</Text>
-                <View style={styles.input}>
-                    <Icon name='lock-closed-sharp' size={30} color={'#5c5c5c'} />
-                    <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setAgainPass(e.nativeEvent.text) }} />
-                </View>
+            <Text style={styles.txtEmail}>Nhập lại mật khẩu mới</Text>
+            <View style={styles.input}>
+                <Icon name='lock-closed-sharp' size={25} color={'#5c5c5c'} />
+                <TextInput secureTextEntry={true} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setAgainPass(e.nativeEvent.text) }} />
             </View>
-            <Pressable onPress={handleSaveChangePass} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+            <Pressable onPress={handleSaveChangePass} style={{ width: '100%', position: 'absolute', bottom: 15, alignSelf: 'center' }}>
                 <ButtonBottom title='Lưu' />
             </Pressable>
         </View>
@@ -97,7 +90,6 @@ const styles = StyleSheet.create({
     },
 
     input: {
-        width: '100%',
         height: 50,
         backgroundColor: "#FFFFFF",
         borderWidth: 1,
@@ -105,7 +97,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         flexDirection: 'row',
         paddingLeft: 10,
-        alignItems: 'center'
+        alignItems: 'center',
     },
 
     txtInput: {
@@ -116,6 +108,7 @@ const styles = StyleSheet.create({
         lineHeight: 21.60,
         letterSpacing: 0.50,
         marginLeft: 10,
+        width: '100%',
     },
 
     txtEmail: {
@@ -125,14 +118,9 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         lineHeight: 21,
         letterSpacing: 0.50,
-        marginBottom: 5,
-        alignSelf: 'flex-start'
-    },
-
-    Email: {
-        alignItems: 'center',
-        marginTop: 20,
-        width: '90%',
+        marginBottom: 10,
+        alignSelf: 'flex-start',
+        marginTop: 10,
     },
 
     line: {
@@ -152,13 +140,10 @@ const styles = StyleSheet.create({
         lineHeight: 24,
         letterSpacing: 0.08,
         paddingLeft: 10,
-    },
-    title: {
-        flexDirection: 'row',
+        alignSelf: 'center'
     },
     container: {
         height: HEIGHT * 0.8,
-        alignItems: 'center',
         paddingHorizontal: PADDING_HORIZONTAL,
         paddingTop: PADDING_TOP,
     }

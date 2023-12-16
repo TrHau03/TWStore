@@ -1,6 +1,7 @@
 import {
   FlatList,
   Image,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -49,15 +50,26 @@ const renderItem = ({ item }: { item: { _id: ObjectId, eventImage: string, event
 
 const OfferNorifiScreen = ({navigation}: PropsHome) => {
   const [event, setEvent] = useState<[]>([]);
+  const [refreshingOffer, setRefreshingOffer] = useState<boolean>(false);
+  
+  const isFocused = useIsFocused();
 
+  const fetchEvent = async () => {
+    const response = await AxiosInstance().get(`event/getAllEvent`);
+    setEvent(response.data);
+  };
   useEffect(() => {
-    const fetchEvent = async () => {
-      const response = await AxiosInstance().get(`event/getAllEvent`);
-      console.log("data event :" + response.data);
-      setEvent(response.data);
-    };
-    fetchEvent();
+    if (isFocused) {
+      fetchEvent();
+    }
+  }, [isFocused]);
 
+  const onRefreshOffer = React.useCallback(() => {
+    setRefreshingOffer(true);
+    fetchEvent();
+    setTimeout(() => {
+      setRefreshingOffer(false);
+    }, 2000);
   }, []);
 
   return (
@@ -70,6 +82,9 @@ const OfferNorifiScreen = ({navigation}: PropsHome) => {
         keyExtractor={(item) => item._id.toString()}
         numColumns={1}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshingOffer} onRefresh={onRefreshOffer} />
+        }
       />
     </View>
   );

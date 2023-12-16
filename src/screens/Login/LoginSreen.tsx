@@ -79,6 +79,7 @@ const LoginScreen = (props: any) => {
       const result = await AxiosInstance().post('/auth/login', { email: info.email, password: info.password });
       const userInfo = result?.data.user;
       userInfo && dispatch(isLoading(true));
+      console.log(userInfo);
       if (result.data.status) {
         const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
         const user = response.data.data;
