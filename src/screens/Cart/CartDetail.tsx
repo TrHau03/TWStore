@@ -285,7 +285,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>${item.productID.price}</Text>
+                        <Text style={styles.textPrice}>{item.productID.price} VND</Text>
                     </View>
                 </View>
             </View >

@@ -151,7 +151,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         </Pressable>
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>${item.productID.price}</Text>
+                        <Text style={styles.textPrice}>{item.productID.price} VND</Text>
                         <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'space-between', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
                             <Pressable onPress={() => changeQuantityDown()} style={quantity > 1 ? styles.btnNumberCountMinus : [styles.btnNumberCountMinus, { backgroundColor: '#E5E5E5' }]}><Icon name='remove-outline' size={25} /></Pressable>
                             <Text style={styles.textNumberCount}>{item.quantity}</Text>
