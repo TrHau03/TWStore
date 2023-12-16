@@ -1,5 +1,5 @@
 import { Animated, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 
@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import LoginNavigation from '../../component/Navigation/LoginNavigation';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -17,10 +18,24 @@ const SlideScreen = (props: any) => {
     const navigation = useNavigation<navigationProps>();
     const [loadLoginScreen, setloadLoginScreen] = useState<boolean>(false)
     const [step, setStep] = useState<number>(1);
+    const [slide, setSlide] = useState<boolean>();
+
+    useEffect(() => {
+        const temp = async () => {
+            const checkSlide = await AsyncStorage.getItem('checkSlide');
+            setSlide(checkSlide === null ? false : true);
+        }
+        temp();
+    }, [])
+    const setData = async () => {
+        await AsyncStorage.setItem('checkSlide', 'true');
+    }
+    step === 3 && setData();
+    console.log(loadLoginScreen, slide);
 
     return (
-        (!loadLoginScreen) ?
-            <View style={{paddingHorizontal: PADDING_HORIZONTAL, width: '100%', height: '100%', backgroundColor: BG_COLOR }}>
+        (!loadLoginScreen && !slide) ?
+            <View style={{ paddingHorizontal: PADDING_HORIZONTAL, width: '100%', height: '100%', backgroundColor: BG_COLOR }}>
                 <View style={{ marginTop: '40%' }}>
                     <Image style={styles.imageSlide1} source={step === 1 ? require('../../asset/image/IconSlide1.png') : step === 2 ? require('../../asset/image/IconSlide2.png') : require('../../asset/image/IconSlide3.png')} />
                 </View>
