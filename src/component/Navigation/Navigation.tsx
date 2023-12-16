@@ -23,6 +23,8 @@ const Navigation = () => {
     if (!slide) {
         return <SlideNavigation />;
     } else {
+        console.log('isLogin', isLogin);
+        
         return isLogin ? <BottomTab /> : <LoginNavigation />
     }
 }
