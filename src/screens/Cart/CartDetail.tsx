@@ -88,11 +88,13 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán');
             return;
         }
-
-        console.log('Tên người nhận hàng:', receiverName);
-        console.log('Số điện thoại:', phoneNumber);
-        console.log('Địa chỉ nhận hàng:', selectedAddress);
-        console.log('Phương thức thanh toán được chọn:', selectedPaymentMethod);
+        console.log(selectedAddress);
+        
+        if(Number(selectedAddress) == 1){
+            Alert.alert('Thông báo', 'Vui lòng chọn địa chỉ giao hàng');
+            return;
+        }
+        
         checkPaymentMethod();
         // Thêm các bước xử lý tiếp theo sau khi kiểm tra thành công
     };

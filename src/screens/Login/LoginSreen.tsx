@@ -61,6 +61,8 @@ const LoginScreen = (props: any) => {
 
 
   const handleSubmit = (data: User) => {
+    console.log('check');
+    
     dispatch(isLogin(true));
     dispatch(updateUser({ _id: data._id, _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address, phone: data.phone }))
   }
@@ -125,7 +127,6 @@ const LoginScreen = (props: any) => {
         const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`, { name: userGoogle.user.name, email: userGoogle.user.email });
         const user = response.data.data;
         await AsyncStorage.setItem('token', response?.data.access_token);
-        console.log("Info user Google", user);
         user && dispatch(isLoading(false));
         if (user.active) {
           handleSubmit({ _id: user._id, _idUser: user._idUser, email: userGoogle.user.email, userName: userGoogle?.user?.givenName, cartItem: user.cartItem, avatar: userGoogle?.user.photo, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
