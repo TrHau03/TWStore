@@ -92,7 +92,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         console.log('Số điện thoại:', phoneNumber);
         console.log('Địa chỉ nhận hàng:', selectedAddress);
         console.log('Phương thức thanh toán được chọn:', selectedPaymentMethod);
-
+        checkPaymentMethod();
         // Thêm các bước xử lý tiếp theo sau khi kiểm tra thành công
     };
 
@@ -241,7 +241,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         })
         navigation.navigate('Home', { screen: RootStackScreenEnumHome.HomeScreen })
     }
-    
+
     if (focusScreen === true) {
         getStatusPayment();
         setFocusScreen(false);
@@ -420,7 +420,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
             </ScrollView>
             <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
-                <Pressable onPress={() => { handleOrderSubmit(); checkPaymentMethod() }}>
+                <Pressable onPress={() => handleOrderSubmit()}>
                     <ButtonBottom title='Thanh Toán' />
                 </Pressable>
             </View>
