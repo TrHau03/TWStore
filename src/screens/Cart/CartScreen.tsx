@@ -25,6 +25,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const user = useSelector((state: any) => {
         return state.SlicesReducer.user;
     });
+    const isUser = useSelector((state: any) => state.SlicesReducer.user._idUser);
 
     const [voucher, setVoucher] = useState()
     const [discountLevel, setDiscountLevel] = useState<number>(0);
@@ -165,7 +166,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
     }
 
     return (
-        <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR }}  >
+        (isUser != '') ? <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR }}  >
             <View style={{ marginTop: 17 }}>
                 <Text style={styles.txtTitlePage}>Giỏ Hàng</Text>
             </View>
@@ -237,7 +238,10 @@ const CartScreen = ({ navigation }: PropsCart) => {
                 </View>
 
             </ScrollView>
-        </SafeAreaView >
+        </SafeAreaView > : <View>
+            <Image style={{ alignSelf: 'center', marginTop: '30%', width: 300, height: 300 }} source={require('../../asset/image/nodata.png')} />
+            <Text style={{ alignSelf: 'center', marginTop: 40, fontSize: 22, fontWeight: '500', color: '#1E4F5F', lineHeight: 24 }}>Vui lòng đăng nhập !</Text>
+        </View>
     )
 }
 
