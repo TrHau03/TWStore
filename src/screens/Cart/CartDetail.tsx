@@ -17,6 +17,7 @@ import crypto from 'crypto-js';
 import qs from 'qs'
 import { cartEmpty } from '../../redux/silces/Silces'
 import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome'
+import { NumericFormat } from 'react-number-format'
 
 
 type CartDetailRouteParams = {
@@ -241,7 +242,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
         })
         navigation.navigate('Home', { screen: RootStackScreenEnumHome.HomeScreen })
     }
-    
+
     if (focusScreen === true) {
         getStatusPayment();
         setFocusScreen(false);
@@ -285,7 +286,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>{item.productID.price} VND</Text>
+                        <NumericFormat displayType={'text'} value={Number(item.productID.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textPrice}>{formattedValue + 'đ'} </Text>} />
                     </View>
                 </View>
             </View >
@@ -416,7 +417,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
                 <View style={styles.itemTotalPrice}>
                     <Text style={styles.textBottomTotalLeft}>Tổng tiền (+ tiền giao hàng)</Text>
-                    <Text style={styles.textBottomTotalRight}>{totalAfterShipping} VND</Text>
+                    <NumericFormat displayType={'text'} value={Number(totalAfterShipping)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textBottomTotalRight}>{formattedValue + 'đ'} </Text>} />
                 </View>
             </ScrollView>
             <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>

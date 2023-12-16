@@ -13,6 +13,7 @@ import StatusDeliver from './StatusDeliver';
 import AxiosInstance from '../../Axios/Axios';
 import { useIsFocused } from '@react-navigation/native';
 import Order_Detail from './Order_Detail';
+import { NumericFormat } from 'react-number-format';
 
 
 
@@ -55,7 +56,7 @@ const OrderScreen = ({ navigation }: PropsAccount, props: any) => {
                 </View>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Giá : </Text>
-                    <Text style={styles.price}>{item.totalPrice} VND</Text>
+                    <NumericFormat displayType={'text'} value={Number(item.totalPrice )} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.price}>{formattedValue + 'đ'} </Text>} />
                 </View>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Trạng thái giao hàng</Text>
