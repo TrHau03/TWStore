@@ -104,14 +104,13 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
           </View>
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
-              <Text style={styles.NamePD}>{productName}</Text>
-              <View style={styles.star}>
-                <AirbnbRating count={5} size={15} showRating={false} />
-              </View>
+              <Text style={styles.NamePD}>{productName.length < 25 ? productName : productName.substring(0, 25) + "..."}</Text>
             </View>
-            {(offer > 0) ? <Text style={styles.PricePD}>${price - price * (offer / 100)}</Text> : <></>}
+            {(offer > 0) ?
+            <NumericFormat displayType={'text'} value={Number(price - price * (offer / 100))} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.PricePD}>{formattedValue + 'đ'} </Text>} />
+            : <></>}
             <View style={styles.sale}>
-              <NumericFormat displayType={'text'} value={Number(price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>{formattedValue.substring(0, formattedValue.length - 4) + 'K VNĐ'}</Text>} />
+              <NumericFormat displayType={'text'} value={Number(price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>{formattedValue + 'đ'}</Text>} />
               {offer > 0 && <Text style={styles.txtSale}>{offer}% Off</Text>}
             </View>
           </View>
@@ -255,7 +254,7 @@ const styles = StyleSheet.create({
   },
   txtSale: {
     color: 'red',
-    fontSize: 17,
+    fontSize: 15,
     marginLeft: 10,
     fontWeight: 'bold',
   },
@@ -271,6 +270,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     justifyContent:'center',
+    
   },
   star: {
     width: '75%',
@@ -288,6 +288,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     color: 'black',
     margin: 1,
+    textAlign: 'center',
+    paddingHorizontal: 10
   },
   PricePD: {
     fontSize: 16,
@@ -296,6 +298,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     lineHeight: 24,
     color: '#4464C4',
+    alignSelf: 'center',
+    paddingBottom: 10,
   },
   in4Text: {
     marginTop: 5,
