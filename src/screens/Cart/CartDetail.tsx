@@ -88,9 +88,8 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán');
             return;
         }
-        console.log(selectedAddress);
         
-        if(Number(selectedAddress) == 1){
+        if(Number(selectedAddress) == 1 || selectedAddress == null){
             Alert.alert('Thông báo', 'Vui lòng chọn địa chỉ giao hàng');
             return;
         }

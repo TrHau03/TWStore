@@ -62,17 +62,6 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
   }, [selectedStar, listComment]);
 
 
-
-
-  const fetchCommentbyIdProduct = async (id: string) => {
-    const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
-    setlistComment(response.data);
-  }
-  const handleAddComment = async () => {
-
-  };
-
-
   const RenderItem = ({ item }: { item: any }) => {
     return (
       <View style={styles.reviewContainer}>

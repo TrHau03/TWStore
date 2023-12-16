@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Pressable, RefreshControl, ScrollView } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Pressable, RefreshControl, ScrollView, Alert } from 'react-native'
 import * as React from 'react';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
@@ -107,23 +107,9 @@ const Voucher = () => {
 
 };
 
-const renderItemVoucher = ({ item }: { item: { titleVoucher: string, contentVoucher: string, discountCode: string, discountLevel: string, startDay: string, endDay: string } }) => {
-  return (
-    <TouchableOpacity style={styles.containerItem} onPress={() => copyVoucher(item.discountCode)}>
-      <Text style={styles.title}>{item.titleVoucher}</Text>
-      <Text style={styles.content}>{item.contentVoucher}</Text>
-
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={styles.textbottom}>Giảm lên đến {item.discountLevel}%</Text>
-        <Text style={styles.textbottom}>Mã giảm giá : {item.discountCode}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
 const copyVoucher = (discountCode: string) => {
   Clipboard.setString(discountCode);
-
+  Alert.alert('Thông báo', `Đã sao chép mã ${discountCode} thành công!`);
 };
 
 const renderScene = SceneMap({
