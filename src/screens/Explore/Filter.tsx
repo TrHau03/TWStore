@@ -20,6 +20,7 @@ import Button from '../../component/Button/Button';
 import { useIsFocused } from '@react-navigation/native';
 import AxiosInstance from '../../Axios/Axios';
 import { HEIGHT } from '../../utilities/utility';
+import { NumericFormat } from 'react-number-format';
 
 interface Brand {
   _id: number;
@@ -127,10 +128,10 @@ const FilterScreen = (props: any) => {
           </Text>
           <View style={styles.input}>
             <View style={styles.Price}>
-              <Text style={styles.textPrice}>{priceMin} VND</Text>
+              <NumericFormat displayType={'text'} value={Number(priceMin)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textPrice}>{formattedValue + 'đ'} </Text>} />
             </View>
             <View style={styles.Price}>
-              <Text style={styles.textPrice}>{priceMax} VND</Text>
+              <NumericFormat displayType={'text'} value={Number(priceMax)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textPrice}>{formattedValue + 'đ'} </Text>} />
             </View>
           </View>
         </View>
@@ -157,7 +158,7 @@ const FilterScreen = (props: any) => {
           {/*brand */}
           <View style={styles.Format}>
             <Text style={styles.txtBuyingFormat}>Hãng</Text>
-            <Pressable onPress={() => {setVisibleBrand(!visibleBrand), setVisibleColor(false),setVisibleSize(false)}}>
+            <Pressable onPress={() => { setVisibleBrand(!visibleBrand), setVisibleColor(false), setVisibleSize(false) }}>
               <Icon name={!visibleBrand ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
@@ -175,7 +176,7 @@ const FilterScreen = (props: any) => {
           {/*Color */}
           <View style={styles.Format}>
             <Text style={styles.txtBuyingFormat}>Màu</Text>
-            <Pressable onPress={() => {setVisibleColor(!visibleColor), setVisibleBrand(false), setVisibleSize(false)}}>
+            <Pressable onPress={() => { setVisibleColor(!visibleColor), setVisibleBrand(false), setVisibleSize(false) }}>
               <Icon name={!visibleColor ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
@@ -193,7 +194,7 @@ const FilterScreen = (props: any) => {
           {/*Size */}
           <View style={styles.Format}>
             <Text style={styles.txtBuyingFormat}>Kích cỡ</Text>
-            <Pressable onPress={() => {setVisibleSize(!visibleSize),setVisibleBrand(false),setVisibleColor(false)}}>
+            <Pressable onPress={() => { setVisibleSize(!visibleSize), setVisibleBrand(false), setVisibleColor(false) }}>
               <Icon name={!visibleSize ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
