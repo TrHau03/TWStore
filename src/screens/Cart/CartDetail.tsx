@@ -416,7 +416,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
                 <View style={styles.itemTotalPrice}>
                     <Text style={styles.textBottomTotalLeft}>Tổng tiền (+ tiền giao hàng)</Text>
-                    <Text style={styles.textBottomTotalRight}>${totalAfterShipping}</Text>
+                    <Text style={styles.textBottomTotalRight}>{totalAfterShipping} VND</Text>
                 </View>
             </ScrollView>
             <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>

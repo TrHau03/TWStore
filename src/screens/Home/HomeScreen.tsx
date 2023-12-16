@@ -120,65 +120,44 @@ const HomeScreen = ({navigation}: NativeStackHeaderProps) => {
     </Pressable>
   );
 
-  const renderItemSearch = ({item}: any) => {
-    return (
-      <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('Explore', {
-            screen: RootStackScreenEnumExplore.Productdetail,
-            params: {id: item._id},
-          })
-        }
-        style={{marginVertical: 5}}>
-        <Text style={{fontSize: 15, marginLeft: 15}}>{item.productName}</Text>
-      </TouchableOpacity>
-    );
-  };
 
-  const renderItem3 = ({item}: any) => {
-    return (
-      <TouchableOpacity
-        style={styles.itemsale2}
-        onPress={() =>
-          navigation.navigate('Explore', {
-            screen: RootStackScreenEnumExplore.Productdetail,
-            params: {id: item._id},
-          })
-        }>
-        <Image style={styles.imageproduct} source={{uri: item.image[0]}} />
-        <View style={{rowGap: 15, alignSelf: 'center', width: '95%'}}>
-          <Text style={styles.nameproduct}>
-            {item.productName.length < 20
-              ? item.productName
-              : item.productName.substring(0, 20) + '...'}
-          </Text>
-        </View>
-        <View style={styles.stylesaleoff}>
-          <Text style={styles.price}>
-            {item.price - item.price * (item.offer / 100)} VND
-          </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'center',
-              width: '100%',
-            }}>
-            <Text style={styles.strikethrough}>{item.price} VND</Text>
-            <Text style={styles.saleoff}>{item.offer}% Off</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
+    const renderItemSearch = ({ item }: any) => (
+        <TouchableOpacity onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })} style={{ marginVertical: 5 }}>
+            <Text style={{ fontSize: 15, marginLeft: 15 }}>{item.productName}</Text>
+        </TouchableOpacity>
     );
-  };
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    dispatch(fetchInitialListProductRecommend('product/getRecommendProduct'));
-    fetchBrand();
-    fetchBanner();
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
-  }, []);
+
+
+    const renderItem3 = ({ item }: any) => {
+        return (
+            <TouchableOpacity style={styles.itemsale2} onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })}>
+                <Image style={styles.imageproduct} source={{ uri: item.image[0] }} />
+                <View style={{ rowGap: 15, alignSelf: 'center', width: '95%' }}>
+                    <Text style={styles.nameproduct}>{item.productName.length < 20 ? item.productName : item.productName.substring(0, 20) + "..."}</Text>
+                </View>
+                <View style={styles.stylesaleoff}>
+                    {item.offer > 0 ?
+                        <NumericFormat displayType={'text'} value={Number(item.price - item.price * (item.offer / 100))} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.price}>{formattedValue.substring(0, formattedValue.length - 4) + 'K VNĐ'} </Text>} />
+                        : <></>}
+                    <View style={{ flexDirection: "row", justifyContent: 'center', width: '100%' }}>
+                        <NumericFormat displayType={'text'} value={Number(item.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={item.offer > 0 ? styles.strikethrough : styles.price}>{formattedValue.substring(0, formattedValue.length - 4) + 'K VNĐ'}</Text>} />
+                        {item.offer > 0 && <Text style={styles.saleoff}>{item.offer}% Off</Text>}
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        dispatch(fetchInitialListProductRecommend('product/getRecommendProduct'));
+        fetchBrand();
+        fetchBanner();
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+    }, []);
+    
+
   return (
     <SafeAreaView
       style={{
