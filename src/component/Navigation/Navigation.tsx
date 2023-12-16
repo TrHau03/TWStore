@@ -13,8 +13,21 @@ import Spinner from 'react-native-loading-spinner-overlay';
 const Navigation = () => {
     const isLogin = useSelector((state: any) => state.SlicesReducer.isLogin);
 
-        return isLogin ? <BottomTab /> : <SlideNavigation />
-    
+    const [slide, setSlide] = useState<boolean>();
+
+    useEffect(() => {
+        const temp = async () => {
+            const checkSlide = await AsyncStorage.getItem('checkSlide');
+            setSlide(checkSlide === null ? false : true);
+        }
+        temp();
+    })
+    if (!slide) {
+        return <SlideNavigation/>;
+    } else {
+        return !isLogin ? <BottomTab /> : <LoginNavigation />
+    }
+
 }
 
 
