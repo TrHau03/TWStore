@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { removeItem, updateQuantity } from '../../redux/silces/Silces'
 import AxiosInstance from '../../Axios/Axios'
 import { useNavigation } from '@react-navigation/native'
+import { NumericFormat } from 'react-number-format'
 
 
 const CartScreen = ({ navigation }: PropsCart) => {
@@ -151,7 +152,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         </Pressable>
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>{item.productID.price} VND</Text>
+                        <NumericFormat displayType={'text'} value={Number(item.productID.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textPrice}>{formattedValue + 'đ'} </Text>} />
                         <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'space-between', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
                             <Pressable onPress={() => changeQuantityDown()} style={quantity > 1 ? styles.btnNumberCountMinus : [styles.btnNumberCountMinus, { backgroundColor: '#E5E5E5' }]}><Icon name='remove-outline' size={25} /></Pressable>
                             <Text style={styles.textNumberCount}>{item.quantity}</Text>
@@ -207,11 +208,11 @@ const CartScreen = ({ navigation }: PropsCart) => {
                     <View style={styles.itemTotalPrice}>
                         <View style={styles.headerTotalPrice}>
                             <Text style={styles.textHeaderTotalLeft}>Tổng giá sản phẩm ({totalItem})</Text>
-                            <Text style={styles.textHeaderTotalRight}>{generalPrice} VND</Text>
+                            <NumericFormat displayType={'text'} value={Number(generalPrice)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textHeaderTotalRight}>{formattedValue + 'đ'} </Text>} />
                         </View>
                         <View style={styles.headerTotalPrice}>
                             <Text style={styles.textHeaderTotalLeft}>Phí giao hàng</Text>
-                            <Text style={styles.textHeaderTotalRight}>{shipping} VND</Text>
+                            <NumericFormat displayType={'text'} value={Number(shipping)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textHeaderTotalRight}>{formattedValue + 'đ'} </Text>} />
                         </View>
                         <View style={styles.headerTotalPrice}>
                             <Text style={styles.textHeaderTotalLeft}>Giảm giá</Text>
@@ -219,7 +220,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         </View>
                         <View style={styles.bottomTotalPrice}>
                             <Text style={styles.textBottomTotalLeft}>Tổng giá</Text>
-                            <Text style={styles.textBottomTotalRight}>{isVoucherApplied ? `${discountedPrice} VND` : `${generalPriceAfterShipping} VND`}</Text>
+                            <NumericFormat displayType={'text'} value={Number(isVoucherApplied ? discountedPrice : generalPriceAfterShipping)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textBottomTotalRight}>{formattedValue + 'đ'} </Text>} />
                         </View>
 
                     </View>

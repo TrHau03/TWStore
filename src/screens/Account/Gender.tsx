@@ -52,7 +52,6 @@ const Gender = (props: any) => {
                     dropdownTextStyles={{ fontSize: 16 }}
                     dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
                     dropdownStyles={{ height: 150 }}
-
                 />
             </View>
 

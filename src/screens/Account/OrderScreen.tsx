@@ -13,6 +13,7 @@ import StatusDeliver from './StatusDeliver';
 import AxiosInstance from '../../Axios/Axios';
 import { useIsFocused } from '@react-navigation/native';
 import Order_Detail from './Order_Detail';
+import { NumericFormat } from 'react-number-format';
 
 
 
@@ -26,6 +27,7 @@ const OrderScreen = ({ navigation }: PropsAccount, props: any) => {
     const dispatch = useDispatch();
     const [listOrder, setListOrder] = useState<[]>();
     const [nameModal, setNameModal] = useState<string>('');
+    console.log(listOrder);
     
 
     useEffect(() => {
@@ -51,11 +53,11 @@ const OrderScreen = ({ navigation }: PropsAccount, props: any) => {
                 <Text style={styles.title}>Ngày đặt hàng : {date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()}</Text>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Sản Phẩm : </Text>
-                    <Text style={styles.content}>{listOrder?.length} sản phẩm</Text>
+                    <Text style={styles.content}>{item?.listProduct.length} sản phẩm</Text>
                 </View>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Giá : </Text>
-                    <Text style={styles.price}>{item.totalPrice} VND</Text>
+                    <NumericFormat displayType={'text'} value={Number(item.totalPrice )} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.price}>{formattedValue + 'đ'} </Text>} />
                 </View>
                 <View style={styles.boxBottom}>
                     <Text style={styles.title}>Trạng thái giao hàng</Text>

@@ -8,6 +8,7 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import AxiosInstance from '../../Axios/Axios';
 import { useSelector } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
+import { NumericFormat } from 'react-number-format';
 
 
 
@@ -71,13 +72,24 @@ const Order_Detail = (props: any) => {
           <View key={item.productID._id} style={styles.boxProduct}>
             <Image style={styles.product_Image} source={{ uri: item.productID.image[0] }} />
 
-            <View style={{ width: '70%' }}>
+            <View style={{ width: '70%', rowGap: 5 }}>
               <Text style={styles.txtName_Product}>{item.productID.productName}</Text>
-              <Text style={styles.txtPrice_Product}>{item.productID.price} VND</Text>
+              <NumericFormat displayType={'text'} value={Number(item.productID.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.txtPrice_Product}>{formattedValue + 'đ'} </Text>} />
 
-              <View style={{ flexDirection: 'row', gap: 20}}>
-                <Text style={styles.txtPrice_Product}>Màu : {item.colorID.name}</Text>
-                <Text style={styles.txtPrice_Product}>Size : {item.sizeID.name}</Text>
+              <View style={{ flexDirection: 'row', gap: 15 }}>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.txtPrice_Product}>Màu : </Text>
+                  <Text style={styles.txtPrice_ProductName}>{item.colorID.name}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', gap: 5 }}>
+                  <Text style={styles.txtPrice_Product}>Size : </Text>
+                  <Text style={styles.txtPrice_ProductName}>{item.sizeID.name}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', gap: 5 }}>
+                  <Text style={styles.txtPrice_Product}>SL : </Text>
+                  <Text style={styles.txtPrice_ProductName}>{item.quantityProduct}</Text>
+                </View>
+
               </View>
             </View>
           </View>
@@ -108,7 +120,7 @@ const Order_Detail = (props: any) => {
           </View>
           <View style={styles.content}>
             <Text style={styles.txtPrice_Product}>Tổng tiền</Text>
-            <Text style={styles.txtPrice_Product}>{listOrder?.totalPrice} VND</Text>
+            <NumericFormat displayType={'text'} value={Number(listOrder?.totalPrice)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.txtPrice_Product}>{formattedValue + 'đ'} </Text>} />
           </View>
         </View>
       </View>
@@ -158,6 +170,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Poppins',
     fontWeight: '700',
+    lineHeight: 18,
+    letterSpacing: 0.50,
+    marginTop: 5,
+  },
+  txtPrice_ProductName: {
+    color: '#223263',
+    fontSize: 14,
+    fontFamily: 'Poppins',
+    fontWeight: '400',
     lineHeight: 18,
     letterSpacing: 0.50,
     marginTop: 5,
