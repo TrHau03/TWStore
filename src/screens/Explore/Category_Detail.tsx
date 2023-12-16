@@ -27,7 +27,6 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { fetchInitialListProductFilter } from '../../redux/silces/Silces';
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
-import { NumericFormat } from 'react-number-format';
 interface Product {
   id: number;
   img: any;
@@ -94,7 +93,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
   });
 
   const renderItem = ({ item }: any): React.JSX.Element => {
-    const { image, productName, price, offer } = item;
+    const { image, productName, price, strikeThrough, offer, brand } = item;
 
     return (
       <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Productdetail, { id: item._id })} style={styles.containerItemPD}>
@@ -256,7 +255,7 @@ const styles = StyleSheet.create({
   txtSale: {
     color: 'red',
     fontSize: 17,
-    marginLeft: 10,
+    marginLeft: 20,
     fontWeight: 'bold',
   },
   txtOldPrice: {
@@ -269,8 +268,6 @@ const styles = StyleSheet.create({
   sale: {
     width: '80%',
     flexDirection: 'row',
-    alignSelf: 'center',
-    justifyContent:'center',
   },
   star: {
     width: '75%',
