@@ -1,9 +1,19 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Pressable } from 'react-native'
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Header from '../../component/Header/Header';
 import Button from '../../component/Button/Button';
 import { PropsAccount } from '../../component/Navigation/Props';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import { HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
+import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteAddress } from '../../redux/silces/Silces';
+import AxiosInstance from '../../Axios/Axios';
+import { Modal, Provider } from '@ant-design/react-native';
+import Add_Address from './Add_Address';
+import * as Animatable from 'react-native-animatable';
+import ButtonBottom from '../../component/Button/Button';
 
 interface Account {
     id: number;
@@ -12,38 +22,74 @@ interface Account {
     phone: string;
 }
 
-const RenderItem = (props: any): React.JSX.Element => {
-    const { data, navigation } = props;
-    const { item } = data;
 
-    return <View style={styles.box}>
-        <View>
-            <Text style={styles.txtName}>{item.name}</Text>
-            <Text style={styles.txtContent}>{item.address}</Text>
-            <Text style={styles.txtContent}>+99 {item.phone}</Text>
-            <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
-                <TouchableOpacity onPress={() => navigation?.navigate('Edit_Address')} style={styles.btnEdit}><Text style={styles.txtEdit}>Edit</Text></TouchableOpacity>
-                <TouchableOpacity style={{ justifyContent: 'center' }}><Icon name='trash' size={25} /></TouchableOpacity>
+
+const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
+
+    const [modalVisible, setModalVisible] = useState<boolean>(false);
+
+    const listData = useSelector((state: any) => {
+        return state.SlicesReducer.user.address;
+    });
+    const user = useSelector((state: any) => {
+        return state.SlicesReducer.user;
+    });
+    const dispatch = useDispatch();
+    const handleRemove = async (position: number) => {
+        dispatch(deleteAddress(position))
+        const response = await AxiosInstance().post(`users/updateAddressUser`, {
+            _idUser: user._idUser,
+            typeUpdate: 'delete',
+            position: position,
+        });
+    }
+
+    const RenderItem = (props: any): React.JSX.Element => {
+        const { data, navigation } = props;
+        const { item } = data;
+
+        const address = `${item.street}, ${item.ward}, ${item.district}, ${item.city}`
+        return <View style={styles.box}>
+            <View>
+                <Text style={styles.txtName}>Địa chỉ số {item.position}</Text>
+                <Text style={styles.txtContent}>{address}</Text>
+                <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                    <TouchableOpacity onPress={() => handleRemove(item.position)} style={{ justifyContent: 'center' }}><Icon name='trash' size={25} /></TouchableOpacity>
+                </View>
             </View>
-        </View>
-    </View >;
-};
-
-const AddressScreen = ({ navigation }: PropsAccount) => {
+        </View >;
+    };
     return (
-        <View style={styles.container}>
-            <Header title='Address' />
-            <View style={styles.line}></View>
-
-            <FlatList
-                data={Data}
-                renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
-                showsVerticalScrollIndicator={false}
-            />
-            <TouchableOpacity style={{ paddingTop: 10 }} onPress={() => navigation?.navigate('Add_Address')}>
-                <Button title='Add Address' />
-            </TouchableOpacity>
-        </View>
+        <Provider>
+            <View style={styles.container}>
+                <Modal
+                    transparent={false}
+                    visible={modalVisible}
+                    animationType="slide-up"
+                    onRequestClose={() => true}
+                >
+                    <View style={{ height: '100%' }}>
+                        <Add_Address action={{setModalVisible}} />
+                        <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
+                            <Pressable onPress={() => { setModalVisible(false) }}>
+                                <ButtonBottom title='Hủy' />
+                            </Pressable>
+                        </Animatable.View>
+                    </View>
+                </Modal>
+                <Header title='Địa Chỉ' navigation={navigation} />
+                <View style={styles.line}></View>
+                <FlatList
+                    style={{ maxHeight: '80%' }}
+                    data={listData}
+                    renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
+                    showsVerticalScrollIndicator={false}
+                />
+                <TouchableOpacity style={{ position: 'absolute', width: '100%', alignSelf: 'center', bottom: 20 }} onPress={() => setModalVisible(true)}>
+                    <Button title='Thêm Địa Chỉ' />
+                </TouchableOpacity>
+            </View>
+        </Provider>
     )
 }
 
@@ -70,7 +116,7 @@ const styles = StyleSheet.create({
     },
     txtContent: {
         color: '#9098B1',
-        fontSize: 14,
+        fontSize: 16,
         fontFamily: 'Poppins',
         fontWeight: '400',
         lineHeight: 21.60,
@@ -106,8 +152,8 @@ const styles = StyleSheet.create({
     },
 
     container: {
-        height: '92%',
-        width: '100%',
+        height: '100%',
+        width: WIDTH,
         paddingTop: 20,
         paddingHorizontal: 20,
     }

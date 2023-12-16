@@ -5,24 +5,30 @@ import { PropsAccount } from '../../component/Navigation/Props'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 import ButtonBottom from '../../component/Button/Button'
 import { useDispatch } from 'react-redux'
-import { isLogin } from '../../redux/silces/Silces'
+import { isLoading, isLogin } from '../../redux/silces/Silces'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { LoginManager } from 'react-native-fbsdk-next'
+import Loading from '../../component/Loading/Loading'
 
 
 const AccountScreen = ({ navigation }: any) => {
   const dispatch = useDispatch();
 
-  const handleLogin = async ({navigation}: any) => {
-    navigation.navigate('HomeScreen');
-    dispatch(isLogin(false));
+  const handleLogin = async ({ navigation }: any) => {
+    dispatch(isLoading(true));
     await GoogleSignin.signOut();
     await LoginManager.logOut();
+    navigation.navigate('Home', { screen: 'HomesScreen' });
+    setTimeout(async () => {
+      dispatch(isLogin(false));
+      dispatch(isLoading(false));
+    }, 1000);
   }
 
   return (
     <View style={[styles.container,]}>
-      <Text style={styles.title}>Account</Text>
+      <Loading />
+      <Text style={styles.title}>Tài Khoản</Text>
       <View style={styles.line}></View>
       {/* <Portal>
         <Dialog visible={visible} onDismiss={hineDialog}>
@@ -45,8 +51,8 @@ const AccountScreen = ({ navigation }: any) => {
         )}
 
       </View>
-      <Pressable onPress={() => { handleLogin({navigation}) }} style={{ width: '100%', position: 'absolute', bottom: 120, alignSelf: 'center' }}>
-        <ButtonBottom title='Logout' />
+      <Pressable onPress={() => { handleLogin({ navigation }) }} style={{ width: '100%', position: 'absolute', bottom: 120, alignSelf: 'center' }}>
+        <ButtonBottom title='Đăng Xuất' />
       </Pressable>
     </View>
   )
@@ -98,28 +104,22 @@ const styles = StyleSheet.create({
 const data = [
   {
     id: 1,
-    name: 'Profile',
+    name: 'Hồ sơ',
     icon: 'person-sharp',
     screen: 'ProfileScreen'
   },
   {
     id: 2,
-    name: 'Order',
+    name: 'Đơn hàng',
     icon: 'bag-check-sharp',
     screen: 'OrderScreen'
 
   },
   {
     id: 3,
-    name: 'Address',
+    name: 'Địa chỉ',
     icon: 'location-sharp',
     screen: 'AddressScreen'
 
-  },
-  {
-    id: 4,
-    name: 'Payment',
-    icon: 'wallet',
-    screen: 'PaymentScreen'
   }
 ]

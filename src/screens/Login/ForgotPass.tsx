@@ -7,98 +7,59 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { TouchableOpacity } from 'react-native';
 import { NativeStackHeaderProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import { ScrollView } from 'react-native';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 import AxiosInstance from '../../Axios/Axios';
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
-import Loading from '../../component/Loading/Loading';
-import { useDispatch } from 'react-redux';
-import { isLoading } from '../../redux/silces/Silces';
 
 
-
-interface Register {
-    name: string,
-    email: string,
-    password: string,
-    passwordAgain: string
-}
+type EmailRouteParam = {
+    ForgotPass:{
+        email : string;
+    };
+};
 
 
-const RegisterScreen = (props: any) => {
+const ForgotPass = (props: any) => {
     const { navigation }: NativeStackHeaderProps = props;
-
-    const dispatch = useDispatch();
-    useEffect(() => {
-        const setData = async () => {
-            await AsyncStorage.setItem('checkSlide', 'true');
-        }
-        setData();
-    }, [])
-    const [name, setName] = useState<string>('');
-    const [phone, setPhone] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordAgain, setPasswordAgain] = useState<string>('');
+    const [Email, setEmail] = useState<string>('')
+    const route = useRoute<RouteProp<EmailRouteParam, 'ForgotPass'>>();
 
+    useEffect(() => {
+        setEmail(route.params?.email);
+    }, [route.params]);
 
-    const register = async (user: Register) => {
+    const forgotpass = async () => {
         try {
-            console.log('register', user);
-
-            if (user.password != user.passwordAgain) {
-                return Alert.alert('Notification', 'Password not same!', [
-                    { text: 'OK' }
-                ]);;
+            if (password != passwordAgain || passwordAgain == '' || password == '') {
+                return Alert.alert("Mật khẩu mới và mặt khẩu cũ không khớp hoặc để trống!");
+            } else {
+                const result = await AxiosInstance().post('/usersInfo/ForgotPassword', {email: Email,  newPassword: password });
+                if (result) {
+                    navigation.navigate(RootStackScreenEnumLogin.LoginScreen)
+                } else {
+                    setPassword('');
+                    setPasswordAgain('');
+                }
             }
-            dispatch(isLoading(true));
-            const result = await AxiosInstance().post('/usersInfo/RegisterUser', { username: user.name, email: user.email, password: user.password });
-            if (result) {
-                dispatch(isLoading(false));
-                navigation.navigate(RootStackScreenEnumLogin.LoginScreen);
-            }
-
         } catch (error) {
             console.log('getNews Error: ', error);
         }
     }
     return (
         <View>
-            <Loading />
             <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR, height: HEIGHT }}>
                 <View style={styles.header}>
                     <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
                     <Text style={styles.textHeader}>The Wonder</Text>
                 </View>
                 <View>
-                    <Text style={styles.textWelcome}>ĐĂNG KÝ TÀI KHOẢN</Text>
+                    <Text style={styles.textWelcome}>ĐỔI MẬT KHẨU</Text>
                 </View>
                 <View style={styles.input}>
-                    <View style={styles.textinput}>
-                        <InputItem
-                            style={{ fontSize: 16 }}
-                            value={name}
-                            onChange={(value: any) => {
-                                setName(value)
-                            }}
-                            labelNumber={2}
-                            placeholder="Nhập đầy đủ họ và tên">
-                            <Icon name="person-outline" size={25} color="#9098B1" />
-                        </InputItem>
-                    </View>
-                    <View style={styles.textinput}>
-                        <InputItem
-                            style={{ fontSize: 16 }}
-                            value={email}
-                            onChange={(value: any) => {
-                                setEmail(value)
-                            }}
-                            labelNumber={2}
-                            placeholder="Nhập email">
-                            <Icon name="mail-outline" size={25} color="#9098B1" />
-                        </InputItem>
-                    </View>
                     <View style={styles.textinput}>
                         <InputItem
                             type='password'
@@ -108,7 +69,7 @@ const RegisterScreen = (props: any) => {
                                 setPassword(value)
                             }}
                             labelNumber={2}
-                            placeholder="Nhập mật khẩu">
+                            placeholder="Nhập mật khẩu mới">
                             <Icon name="lock-closed-outline" size={25} color="#9098B1" />
                         </InputItem>
                     </View>
@@ -121,30 +82,24 @@ const RegisterScreen = (props: any) => {
                                 setPasswordAgain(value)
                             }}
                             labelNumber={2}
-                            placeholder="Nhập lại mật khẩu">
+                            placeholder="Nhập lại mật khẩu mới">
                             <Icon name="lock-closed-outline" size={25} color="#9098B1" />
                         </InputItem>
                     </View>
                 </View>
                 <View>
-                    <TouchableOpacity onPress={() => register({ name, email, password, passwordAgain })} >
+                    <TouchableOpacity onPress={() => forgotpass()} >
                         <LinearGradient start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} colors={['#46caf3', '#5cbae3', '#68b1d9']} style={styles.btnLogin} >
-                            <Text style={styles.textLogin}>Đăng Ký</Text>
+                            <Text style={styles.textLogin}>Lưu mật khẩu</Text>
                         </LinearGradient>
                     </TouchableOpacity>
-                </View>
-                <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 30 }}>
-                    <Text style={styles.textDontAcc}>Bạn đã có tài khoản? </Text>
-                    <Pressable onPress={() => navigation.navigate('LoginScreen')}>
-                        <Text style={styles.textRegister}>Đăng Nhập</Text>
-                    </Pressable>
                 </View>
             </View>
         </View>
     )
 }
 
-export default RegisterScreen
+export default ForgotPass
 
 const styles = StyleSheet.create({
     textRegister: {
@@ -193,7 +148,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 55,
         borderRadius: 5,
-        marginTop: 34
+        marginTop: 50,
     },
     textLogin: {
         color: 'white',

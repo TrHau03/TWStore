@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { configStack } from '../Root/RootStack';
 import { RootStackScreenCart } from '../Root/RootStackCart';
 import { Stack } from './Props';

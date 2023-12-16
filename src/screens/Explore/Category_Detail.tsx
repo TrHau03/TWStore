@@ -1,18 +1,33 @@
 import {
   FlatList,
   Image,
+  Modal,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
-import {AirbnbRating} from 'react-native-ratings';
-import SelectDropdown from 'react-native-select-dropdown';
+import React, { useEffect, useRef, useState } from 'react';
+import { COLORS, ROUTES } from '../../component/constants';
+import { AirbnbRating } from 'react-native-ratings';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { ROUTES } from '../../component/constants';
-
+import { PropsExplore } from '../../component/Navigation/Props';
+import { RootStackParamListExplore, RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useDispatch, useSelector } from 'react-redux';
+import { listProducts, todoRemainingProducts } from '../../redux/silces/HomeSelector';
+import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
+import ButtonBottom from '../../component/Button/Button';
+import * as Animatable from 'react-native-animatable';
+import FilterScreen from './Filter';
+import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import Octicons from 'react-native-vector-icons/Octicons';
+import { fetchInitialListProductFilter } from '../../redux/silces/Silces';
+import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { NumericFormat } from 'react-number-format';
 interface Product {
   id: number;
   img: any;
@@ -23,80 +38,137 @@ interface Product {
 interface ArrayProduct {
   category: string;
 }
-const dataArray: ArrayProduct[] = [
-  {category: 'All'},
-  {category: 'Man Shoes'},
-  {category: 'Women Shoes'},
-];
+type NavigationProps = StackNavigationProp<RootStackParamListExplore, RootStackScreenEnumExplore>
+const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
+  const { categoryID, brandID }: any = props.route.params;
 
-const Category_Detail_Screen = ({navigation}: any) => {
-  const [click, setClick] = useState<boolean>(false);
-  const [filter, setFilter] = useState<string>('All');
-  const [dataFilter, setdataFilter] = useState<any>([]);
+  const isFocused = useIsFocused();
+  const dispatch = useDispatch();
+  const navigation = useNavigation<NavigationProps>();
 
   useEffect(() => {
-    console.log('render');
-    if (filter == 'All') {
-      setdataFilter(DataProduct)
-    } else {
-      setdataFilter(
-        DataProduct.filter(product => {
-          return product.category == filter;
-        }),
-      );
+    if (isFocused) {
+      dispatch(fetchInitialListProductFilter({ categoryID, brandID }));
     }
-    console.log(dataFilter);
-  }, [filter]);
+  }, [isFocused])
+  const [refresh, setRefresh] = useState<boolean>(false);
+  const [textInputStatus, setTextInputStatus] = useState<boolean>(false);
+  const [dataFilter, setdataFilter] = useState<any>([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [highLightBrand, setHighLightBrand] = useState<string>('');
+  const [unEnableBrand, setUnEnableBrand] = useState<boolean>(false);
+  const [highLightColor, setHighLightColor] = useState<string>('');
+  const [unEnableColor, setUnEnableColor] = useState<boolean>(false);
+  const [highLightSize, setHighLightSize] = useState<string>('');
+  const [unEnableSize, setUnEnableSize] = useState<boolean>(false);
+  const [sort, setSort] = useState<boolean>(false);
+  const [color, setColor] = useState<string>('All');
+  const [brand, setBrand] = useState<string>('All');
+  const [size, setSize] = useState<string>('All');
+  const [priceMin, setpriceMin] = useState<string>('0')
+  const [priceMax, setpriceMax] = useState<string>('5000000');
 
-  const renderItem = ({item}: any): React.JSX.Element => {
-    const {id, img, name, price} = item;
+  //redux
+  const [textInputSearch, setTextInputSearch] = useState<string>('');
+  const todoListProducts = useSelector(todoRemainingProducts);
+
+  const handleSearch = (e: any) => {
+    setTextInputSearch(e);
+    dispatch(
+      HomeScreenSlice.actions.searchFilterChange(e)
+    )
+  }
+
+  useEffect(() => {
+    if (sort) {
+      const newArray = todoListProducts.sort(function (a: { price: string; }, b: { price: string; }) {
+        return parseFloat(a.price) - parseFloat(b.price);
+      });
+      setdataFilter(newArray);
+    } else {
+      const newArray = todoListProducts.sort(function (a: { price: string; }, b: { price: string; }) {
+        return parseFloat(b.price) - parseFloat(a.price);
+      });
+      setdataFilter(newArray);
+    }
+  });
+
+  const renderItem = ({ item }: any): React.JSX.Element => {
+    const { image, productName, price, strikeThrough, offer, brand } = item;
 
     return (
-      <TouchableOpacity style={styles.containerItemPD}>
+      <TouchableOpacity onPress={() => navigation.navigate(RootStackScreenEnumExplore.Productdetail, { id: item._id })} style={styles.containerItemPD}>
         <View style={styles.content}>
           <View style={styles.ImgContainerPD}>
-            <Image style={{width: '100%', height: '100%'}} source={img} />
+            <Image style={{ width: '100%', height: '100%' }} source={{ uri: image[0] }} />
           </View>
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
-              <Text style={styles.NamePD}>{name}</Text>
-              <View style={styles.star}>
-                <AirbnbRating count={5} size={15} showRating={false} />
-              </View>
-              <Text style={styles.PricePD}>{price}</Text>
+              <Text style={styles.NamePD}>{productName.length < 25 ? productName : productName.substring(0, 25) + "..."}</Text>
             </View>
+            {(offer > 0) ?
+            <NumericFormat displayType={'text'} value={Number(price - price * (offer / 100))} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.PricePD}>{formattedValue + 'đ'} </Text>} />
+            : <></>}
             <View style={styles.sale}>
-              <Text style={styles.txtOldPrice}>5000</Text>
-              <Text style={styles.txtSale}>24% Off</Text>
+              <NumericFormat displayType={'text'} value={Number(price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>{formattedValue + 'đ'}</Text>} />
+              {offer > 0 && <Text style={styles.txtSale}>{offer}% Off</Text>}
             </View>
           </View>
         </View>
       </TouchableOpacity>
     );
   };
-
+  const onRefresh = React.useCallback(() => {
+    setRefresh(true);
+    dispatch(fetchInitialListProductFilter({ categoryID, brandID }));
+    setTimeout(() => {
+      setRefresh(false);
+    }, 2000);
+  }, []);
   return (
     <View style={styles.container}>
+      <Modal
+        transparent={false}
+        visible={modalVisible}
+        animationType="slide"
+        onRequestClose={() => true} >
+        <View style={{ height: '100%' }}>
+          <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size, priceMin, priceMax }} />
+          <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
+            <Pressable onPress={() => { setModalVisible(false) }}>
+              <ButtonBottom title='Hủy' />
+            </Pressable>
+          </Animatable.View>
+        </View>
+      </Modal>
       <View style={styles.group}>
-        <View
-          style={!click ? styles.right : [styles.right, {borderColor: 'blue'}]}>
-          <Icon name='search' size={20}/>
+        <Pressable onPress={() => navigation.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
+          <Icon name='chevron-back-outline' size={25} color={'#696969'} />
+        </Pressable>
+        <View style={(!textInputStatus) ? styles.headerLeft : [styles.headerLeft, { borderColor: COLORS.gray }]}>
+          <Icon name='search' size={22} />
           <TextInput
-            placeholder="Search"
-            style={styles.TextSearch}
-            onFocus={() => setClick(true)}
-            onBlur={() => setClick(false)}
+            placeholder="Tìm kiếm"
+            style={[styles.TextSearch]}
+            onFocus={() => setTextInputStatus(true)}
+            onBlur={() => setTextInputStatus(false)}
+            onChangeText={handleSearch}
+            value={textInputSearch}
           />
+          {(textInputStatus) ?
+            <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
+              onPress={() => { setTextInputSearch('') }}
+            >
+              <Icon name='close' size={14} />
+            </Pressable>
+            : null}
         </View>
         <View style={styles.left}>
-          <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SHORTBY)}>
-            <Image
-              source={require('../../asset/image/Shorticon.png')}
-              style={{width: 25, height: 25}}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate(ROUTES.FILTER)}>
-          <Icon name='filter' size={20}/>
+          <TouchableOpacity onPress={() => setSort(!sort)}>
+            <Octicons name={!sort ? 'sort-asc' : 'sort-desc'} size={24} />
+          </TouchableOpacity >
+          <TouchableOpacity onPress={() => { setModalVisible(true) }}>
+            <Icon name='filter' size={24} />
           </TouchableOpacity>
         </View>
       </View>
@@ -114,55 +186,23 @@ const Category_Detail_Screen = ({navigation}: any) => {
                 marginTop: 15,
                 marginLeft: 10,
               }}>
-                {dataFilter.length} result
-            </Text>
-          </View>
-
-          <View>
-            <Text style={{}}>
-              <SelectDropdown
-                data={dataArray}
-                onSelect={(selectedItem, index) => {
-                  console.log(selectedItem, index);
-
-                  setFilter(selectedItem.category);
-                }}
-                defaultButtonText={filter}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return selectedItem.category;
-                }}
-                rowTextForSelection={(item, index) => {
-                  return item.category;
-                }}
-                buttonStyle={styles.dropdown1BtnStyle}
-                buttonTextStyle={styles.dropdown1BtnTxtStyle}
-                renderDropdownIcon={isOpened => {
-                  return (
-                    <Icon
-                      name={isOpened ? 'chevron-up' : 'chevron-down'}
-                      color={'#444'}
-                      size={18}
-                    />
-                  );
-                }}
-                dropdownIconPosition={'right'}
-                dropdownStyle={styles.dropdown1DropdownStyle}
-                rowStyle={styles.dropdown1RowStyle}
-                rowTextStyle={styles.dropdown1RowTxtStyle}
-              />
+              {dataFilter.length} sản phẩm
             </Text>
           </View>
         </View>
         <FlatList
-          style={{marginTop: 10}}
+          style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
+          showsVerticalScrollIndicator={false}
           data={dataFilter}
           renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item: any) => item._id.toString()}
           numColumns={2}
-          showsVerticalScrollIndicator={false}
+          columnWrapperStyle={{ columnGap: 10, justifyContent: 'center' }}
+          refreshing={refresh}
+          onRefresh={onRefresh}
         />
       </View>
-    </View>
+    </View >
   );
 };
 
@@ -183,8 +223,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     textAlign: 'left',
   },
-  dropdown1DropdownStyle: {borderRadius: 5, backgroundColor: '#E6E6E6'},
-  dropdown1RowStyle: {borderBottomColor: '#C5C5C5'},
+  dropdown1DropdownStyle: { borderRadius: 5, backgroundColor: '#E6E6E6' },
+  dropdown1RowStyle: { borderBottomColor: '#C5C5C5' },
   dropdown1RowTxtStyle: {
     color: '#223263',
     fontSize: 18,
@@ -194,19 +234,28 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     textAlign: 'left',
   },
-
+  headerLeft: {
+    borderWidth: 1,
+    padding: 5,
+    borderRadius: 5,
+    borderColor: '#e1dede',
+    alignItems: 'center',
+    flexDirection: 'row',
+    width: '70%',
+    height: '85%'
+  },
   product_Item: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   product: {
     width: '100%',
-    height: '90%',
+    height: '100%',
   },
   txtSale: {
     color: 'red',
-    fontSize: 17,
-    marginLeft: 20,
+    fontSize: 15,
+    marginLeft: 10,
     fontWeight: 'bold',
   },
   txtOldPrice: {
@@ -219,15 +268,18 @@ const styles = StyleSheet.create({
   sale: {
     width: '80%',
     flexDirection: 'row',
+    alignSelf: 'center',
+    justifyContent:'center',
+    
   },
   star: {
-    width: '65%',
+    width: '75%',
     marginTop: 5,
   },
 
   content: {
     width: '100%',
-    padding: 15,
+    padding: 5,
   },
   NamePD: {
     fontSize: 16,
@@ -236,15 +288,18 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     color: 'black',
     margin: 1,
+    textAlign: 'center',
+    paddingHorizontal: 10
   },
   PricePD: {
-    marginTop: 5,
     fontSize: 16,
     fontWeight: '700',
     fontStyle: 'normal',
     fontFamily: 'Helvetica Neue',
     lineHeight: 24,
     color: '#4464C4',
+    alignSelf: 'center',
+    paddingBottom: 10,
   },
   in4Text: {
     marginTop: 5,
@@ -265,10 +320,9 @@ const styles = StyleSheet.create({
   },
   containerItemPD: {
     borderWidth: 0.5,
-    width: 180,
-    height: 300,
+    width: '48%',
+    height: 270,
     backgroundColor: '#FFFFFF',
-    margin: 5,
     borderRadius: 5,
     shadowColor: '#C4C4C4',
     shadowOffset: {
@@ -278,11 +332,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    marginBottom: 10
   },
 
   TextSearch: {
+    width: WIDTH / 2,
     justifyContent: 'center',
-    marginLeft: 20,
+    marginLeft: 10,
+    paddingVertical: 2,
+
   },
   imageSearch: {
     width: 20,
@@ -290,7 +348,8 @@ const styles = StyleSheet.create({
   },
   left: {
     flexDirection: 'row',
-    marginLeft: 10,
+    marginLeft: 5,
+    gap: 10,
     width: '20%',
     height: '100%',
     alignItems: 'center',
@@ -308,58 +367,16 @@ const styles = StyleSheet.create({
   },
   group: {
     flexDirection: 'row',
-    width: '100%',
-    height: 50,
+    alignItems: 'center',
+    marginBottom: 5,
+    columnGap: 10
   },
   container: {
     height: '100%',
-    marginTop: 10,
-    padding: 15,
+    paddingTop: PADDING_TOP,
+    paddingHorizontal: PADDING_HORIZONTAL,
     backgroundColor: '#fff',
   },
 });
 
-const DataProduct: Product[] = [
-  {
-    id: 1,
-    img: require('../../asset/image/imgProduct.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 29999,
-    category: 'Man Shoes',
-  },
-  {
-    id: 2,
-    img: require('../../asset/image/imgProduct3.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2999,
-    category: 'Women Shoes',
-  },
-  {
-    id: 3,
-    img: require('../../asset/image/imgProduct1.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2998,
-    category: 'Man Shoes',
-  },
-  {
-    id: 4,
-    img: require('../../asset/image/imgProduct2.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2997,
-    category: 'Women Shoes',
-  },
-  {
-    id: 5,
-    img: require('../../asset/image/imgProduct3.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2995,
-    category: 'Man Shoes',
-  },
-  {
-    id: 6,
-    img: require('../../asset/image/imgProduct2.png'),
-    name: 'Nike Air Max 270 React ENG',
-    price: 2996,
-    category: 'Women Shoes',
-  },
-];
+

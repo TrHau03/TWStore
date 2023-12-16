@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Dimensions, } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Image, Pressable, FlatList, Dimensions, Alert, } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { InputItem, Stepper } from '@ant-design/react-native'
@@ -7,76 +7,152 @@ import ButtonBottom from '../../component/Button/Button'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, WIDTH } from '../../utilities/utility';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeItem, updateQuantity } from '../../redux/silces/CartSlices';
-interface Product {
-    id: number;
-    name: string;
-    image: string;
-    price: number;
-    size: string;
-    color: string;
-    evaluate: number;
-    description: string;
-    type: string;
-    quantity: number;
-}
-
-
+import { removeItem, updateQuantity } from '../../redux/silces/Silces'
+import AxiosInstance from '../../Axios/Axios'
+import { useNavigation } from '@react-navigation/native'
+import { NumericFormat } from 'react-number-format'
 
 
 const CartScreen = ({ navigation }: PropsCart) => {
+    const navigations = useNavigation<{
+        navigate: (screen: string, params?: { totalAfterShipping?: number; Level?: any; generalPriceAfterShipping: number }) => void;
+    }>();
 
-    const data = useSelector((state: any) => {
-        return state.CartReducer
+
+    const listData = useSelector((state: any) => {
+        return state.SlicesReducer.user.cartItem;
     });
-    const [listData, setListData] = useState<[]>(data ? data : []);
+    const user = useSelector((state: any) => {
+        return state.SlicesReducer.user;
+    });
 
+    const [voucher, setVoucher] = useState()
+    const [discountLevel, setDiscountLevel] = useState<number>(0);
+    const [discountedPrice, setDiscountedPrice] = useState<number>(0);
+    const [isVoucherApplied, setIsVoucherApplied] = useState(false);
+    const [inputBorderColor, setInputBorderColor] = useState('#9098B1');
     const [coupon, setCoupon] = useState<string>('');
+    const [isInvalidCoupon, setIsInvalidCoupon] = useState<boolean>(false);
+
+
+
+    const [checkRemoveItem, setCheckRemoveItem] = useState<boolean>(false);
 
     const dispatch = useDispatch();
 
     const totalItem = listData.reduce((total: any, item: { quantity: any }) => total + item.quantity, 0);
 
-    const generalPrice = listData.reduce((previousValue: number, currentItem: Product) => previousValue + currentItem.price * currentItem.quantity, 0);
+    const generalPrice = listData.reduce((previousValue: number, currentItem: any) => previousValue + currentItem.productID?.price * currentItem.quantity, 0);
 
-    console.log(listData);
+    const cart: { key: any, productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
+    const shipping = generalPrice < 3000000 ? generalPrice * 0.05 : generalPrice * 0.02
 
+    const generalPriceAfterShipping = generalPrice + (shipping);
 
     useEffect(() => {
-        setListData(data);
-    }, [data]);
+        const fetchVoucher = async () => {
+            try {
+                const response = await AxiosInstance().get('promotion/getAllPromotion');
+                setVoucher(response.data);
+            } catch (error) {
+                console.error('Error fetching voucher:', error);
+            }
+        };
 
-    const handleRemoveItem = (id: number) => {
-        dispatch(removeItem(id))
+        fetchVoucher();
+    }, []);
+
+    const handleApplyCoupon = async () => {
+        try {
+            const response = await AxiosInstance().get(`promotion/getAllPromotion`);
+            const appliedPromotion = response.data.find((promo: { discountCode: string }) => promo.discountCode === coupon);
+
+            if (appliedPromotion) {
+                const discountLevelValue = appliedPromotion.discountLevel;
+                const discountAmount = (generalPriceAfterShipping * discountLevelValue) / 100;
+                const discountedPriceValue = generalPriceAfterShipping - discountAmount;
+
+                // Cập nhật giá trị discountLevel và discountedPrice vào state
+                setDiscountLevel(discountLevelValue);
+                setDiscountedPrice(discountedPriceValue);
+                setIsVoucherApplied(true);
+                setIsInvalidCoupon(false); // Không có lỗi nữa
+                setInputBorderColor('#9098B1'); // Màu sắc khi có voucher
+                console.log(`Applied discount: ${discountLevelValue}%`);
+            } else {
+                console.log('Invalid coupon code');
+                setIsVoucherApplied(false);
+                setIsInvalidCoupon(true); // Có lỗi khi mã giảm giá không hợp lệ
+                setInputBorderColor('red'); // Màu sắc khi mã giảm giá không hợp lệ
+            }
+        } catch (error) {
+            console.error('Error applying coupon:', error);
+        }
+    };
+
+    const createTwoButtonAlert = () =>
+        Alert.alert('Thông báo', 'Không có sản phẩm trong giỏ hàng của bạn ! ', [
+            { text: 'OK' }
+        ]);
+
+
+    const handleRemoveItem = async (key: number) => {
+        dispatch(removeItem(key));
+        setCheckRemoveItem(true);
+
     }
-    const RenderItem = ({ item }: { item: Product }) => {
+    const handleRemoveData = async () => {
+        listData.map((item: any) => {
+            cart.push({ key: item.key, productID: item.productID._id, sizeProduct: item.sizeProduct._id, colorProduct: item.colorProduct._id, quantity: 1 })
+        }
+        )
+        await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: cart });
+        setCheckRemoveItem(false);
+    }
+    checkRemoveItem && handleRemoveData();
+
+
+    const RenderItem = ({ item }: { item: any }) => {
         const [quantity, setQuantity] = useState<number>(item.quantity);
 
         const changeQuantityUp = () => {
             const newQuantity = quantity < 10 ? quantity + 1 : 10;
             setQuantity(newQuantity);
-            dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+            dispatch(updateQuantity({ id: item.productID._id, quantity: newQuantity }));
         };
 
         const changeQuantityDown = () => {
             const newQuantity = quantity > 1 ? quantity - 1 : 1;
             setQuantity(newQuantity);
-            dispatch(updateQuantity({ id: item.id, quantity: newQuantity }));
+            dispatch(updateQuantity({ id: item.productID._id, quantity: newQuantity }));
         };
+
+
         return (
             <View style={styles.itemCart}>
                 <View>
-                    <Image source={{ uri: item.image }} style={{ width: 72, height: 72 }} />
+                    {item.productID.image[0] !== null && (
+                        <Image source={{ uri: item.productID.image[0] }} style={{ width: 72, height: 72 }} />
+                    )}
                 </View>
-                <View style={{ flexDirection: 'column', height: '100%', gap: 10 }}>
+                <View style={{ flexDirection: 'column', height: '100%' }}>
                     <View style={styles.topItem}>
-                        <Text style={styles.textTitleItem}>{item.name.length < 10 ? item.name : item.name.substring(0, 10) + "..."}</Text>
-                        <Pressable onPress={() => handleRemoveItem(item.id)}>
+                        <View style={{ width: '65%', gap: 10 }}>
+                            <Text style={styles.textTitleItem}>{item.productID.productName.length < 15 ? item.productID.productName : item.productID.productName.substring(0, 15) + "..."}</Text>
+                            <View style={{ flexDirection: 'row', columnGap: 20 }}>
+                                <Text style={styles.textTitleItem}>Size: {item.sizeProduct.name}</Text>
+                                <View style={{ flexDirection: 'row' }}>
+                                    <Text style={styles.textTitleItem}>Size: </Text>
+                                    <View style={{ width: 20, height: 20, backgroundColor: `${item.colorProduct.code}`, borderRadius: 50 }}></View>
+                                </View>
+                            </View>
+                        </View>
+                        <Pressable onPress={() => handleRemoveItem(item.key)}>
                             <Icon name='trash-outline' color='#9e9e9e' size={25} />
                         </Pressable>
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>${item.price}</Text>
+                        <NumericFormat displayType={'text'} value={Number(item.productID.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textPrice}>{formattedValue + 'đ'} </Text>} />
                         <View style={{ flexDirection: 'row', backgroundColor: 'white', borderRadius: 5, alignItems: 'center', justifyContent: 'space-between', width: 100, height: 30, paddingHorizontal: 2, position: 'absolute', right: 30 }}>
                             <Pressable onPress={() => changeQuantityDown()} style={quantity > 1 ? styles.btnNumberCountMinus : [styles.btnNumberCountMinus, { backgroundColor: '#E5E5E5' }]}><Icon name='remove-outline' size={25} /></Pressable>
                             <Text style={styles.textNumberCount}>{item.quantity}</Text>
@@ -91,52 +167,76 @@ const CartScreen = ({ navigation }: PropsCart) => {
     return (
         <SafeAreaView style={{ paddingHorizontal: PADDING_HORIZONTAL, width: WIDTH, backgroundColor: BG_COLOR }}  >
             <View style={{ marginTop: 17 }}>
-                <Text style={styles.txtTitlePage}>Your Cart</Text>
+                <Text style={styles.txtTitlePage}>Giỏ Hàng</Text>
             </View>
             <View style={styles.line}></View>
-            <View style={{ height: HEIGHT * 0.4, marginTop: '11%' }}>
+            <View style={{ height: HEIGHT * 0.35, marginTop: '11%' }}>
                 {listData.length > 0 ?
                     <FlatList
-                        showsVerticalScrollIndicator={false}
+                        scrollEnabled={false}
                         renderItem={(object) => <RenderItem item={object.item} />}
                         data={listData}
-                        onContentSizeChange={() => {
-                        }}
-                        keyExtractor={(item: Product) => item.id.toString()}
-                    /> : <Text style={{ fontSize: 20 }}>No data</Text>}
+                        keyExtractor={(item: any) => item?.key}
+                    /> : <Text style={{ fontSize: 20 }}>Chưa có sản phẩm</Text>}
             </View>
-            <View style={{ borderWidth: 1, borderColor: '#9098B1', borderRadius: 5, marginTop: 25 }}>
-                <InputItem
-                    style={{ fontSize: 16 }}
-                    value={coupon}
-                    onChange={(value: any) => {
-                        setCoupon(value)
-                    }}
-                    placeholder="Enter Cupon Code"
-                    extra={
-                        <Pressable style={styles.btnApply}>
-                            <Text style={styles.textApply}>Apply</Text>
+            <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+            >
+
+                <View style={{ height: HEIGHT * 0.8 }}>
+
+
+                    <View style={{ borderWidth: 1, borderColor: isInvalidCoupon ? 'red' : inputBorderColor, borderRadius: 5, marginTop: 25 }}>
+                        <InputItem
+                            style={{ fontSize: 16 }}
+                            value={coupon}
+                            onChange={(value: any) => {
+                                setCoupon(value);
+                                setIsVoucherApplied(false);
+                                setIsInvalidCoupon(false); // Ẩn lỗi khi người dùng bắt đầu nhập lại
+                            }}
+                            placeholder={isInvalidCoupon ? "Mã giảm giá không hợp lệ" : "Nhập mã giảm giá"}
+                            extra={
+                                <Pressable onPress={handleApplyCoupon} style={styles.btnApply}>
+                                    <Text style={styles.textApply}>Áp dụng</Text>
+                                </Pressable>
+                            }
+                        />
+                    </View>
+
+                    <View style={styles.itemTotalPrice}>
+                        <View style={styles.headerTotalPrice}>
+                            <Text style={styles.textHeaderTotalLeft}>Tổng giá sản phẩm ({totalItem})</Text>
+                            <NumericFormat displayType={'text'} value={Number(generalPrice)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textHeaderTotalRight}>{formattedValue + 'đ'} </Text>} />
+                        </View>
+                        <View style={styles.headerTotalPrice}>
+                            <Text style={styles.textHeaderTotalLeft}>Phí giao hàng</Text>
+                            <NumericFormat displayType={'text'} value={Number(shipping)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textHeaderTotalRight}>{formattedValue + 'đ'} </Text>} />
+                        </View>
+                        <View style={styles.headerTotalPrice}>
+                            <Text style={styles.textHeaderTotalLeft}>Giảm giá</Text>
+                            <Text style={styles.textHeaderTotalRight}>{isVoucherApplied ? `${discountLevel}%` : '0%'}</Text>
+                        </View>
+                        <View style={styles.bottomTotalPrice}>
+                            <Text style={styles.textBottomTotalLeft}>Tổng giá</Text>
+                            <NumericFormat displayType={'text'} value={Number(isVoucherApplied ? discountedPrice : generalPriceAfterShipping)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textBottomTotalRight}>{formattedValue + 'đ'} </Text>} />
+                        </View>
+
+                    </View>
+                    <View style={{ marginTop: 15 }}>
+                        <Pressable onPress={() => listData.length > 0 ? navigations.navigate('CartDetail', {
+                            Level: isVoucherApplied ? discountLevel : '0',
+                            totalAfterShipping: isVoucherApplied ? discountedPrice : generalPriceAfterShipping,
+                            generalPriceAfterShipping
+
+                        }) : createTwoButtonAlert()}>
+                            <ButtonBottom title='Xác Nhận' />
                         </Pressable>
-                    }
-                />
-            </View>
-            <View style={styles.itemTotalPrice}>
-                <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Items ({totalItem})</Text>
-                    <Text style={styles.textHeaderTotalRight}>${generalPrice}</Text>
+                    </View>
                 </View>
-                <View style={styles.headerTotalPrice}>
-                    <Text style={styles.textHeaderTotalLeft}>Shipping</Text>
-                    <Text style={styles.textHeaderTotalRight}>$0.0</Text>
-                </View>
-                <View style={styles.bottomTotalPrice}>
-                    <Text style={styles.textBottomTotalLeft}>Total Price</Text>
-                    <Text style={styles.textBottomTotalRight}>${generalPrice}</Text>
-                </View>
-            </View>
-            <View style={{ marginTop: 15 }}>
-                <ButtonBottom title='Check Out' />
-            </View>
+
+            </ScrollView>
         </SafeAreaView >
     )
 }
@@ -228,6 +328,7 @@ const styles = StyleSheet.create({
         letterSpacing: 0.50,
     },
     topItem: {
+        width: '100%',
         flexDirection: 'row',
         columnGap: 25,
         paddingLeft: 20,
@@ -266,7 +367,6 @@ const styles = StyleSheet.create({
         letterSpacing: 0.50,
     },
     textTitleItem: {
-        width: '65%',
         color: '#223263',
         fontSize: 15,
         fontFamily: 'Poppins',

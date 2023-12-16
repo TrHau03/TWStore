@@ -10,38 +10,57 @@ import {
     ScrollView,
     Alert,
     PermissionsAndroid,
+    FlatList,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { ImageLibraryOptions, ImagePickerResponse } from 'react-native-image-picker';
-import { CameraOptions } from 'react-native-image-picker';
-import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import AxiosInstance from '../../Axios/Axios';
+import { useSelector } from 'react-redux';
+import storage from '@react-native-firebase/storage';
+import uuid from 'react-native-uuid';
+import Header from '../../component/Header/Header'
+import { PropsExplore } from '../../component/Navigation/Props';
 
 const windowWidth = Dimensions.get('window').width;
+let image: any = [];
+let imageURL: any = [];
+const Addcomment = ({navigation, route} : any) => {
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+    const { id } = route.params as { id: string | undefined };
+    const [content, setContent] = useState<string>('');
+    const [star, setStar] = useState<number>(5)
 
-const Addcomment = () => {
-    const [text, onChangeText] = useState('');
-    const [selectedImages, setSelectedImages] = useState<string[]>([]);
-    const [defaultRating, setDefaultRating] = useState(5);
     const [maxRating] = useState([1, 2, 3, 4, 5]);
+    const [addImage, setAddImage] = useState<boolean>(false);
+    const renderItem = ({ item }: any) => {
+        return (
+            <View style={{ paddingVertical: 10 }}>
+                <Image style={{ height: 100, width: 100 }} source={{ uri: item.img }} />
+            </View>
+        )
+    }
+
     const starImgFilled =
         'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png';
     const starImgCorner =
         'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png';
+    console.log(star);
 
     const CustomRatingbar = () => {
         return (
             <View style={styles.customRatingbarStyle}>
                 {maxRating.map((item, key) => {
+
                     return (
                         <TouchableOpacity
                             activeOpacity={0.7}
                             key={item}
-                            onPress={() => setDefaultRating(item)}
+                            onPress={() => setStar(item)}
                         >
                             <Image
                                 style={styles.starImgStyle}
                                 source={
-                                    item <= defaultRating
+                                    item <= star
                                         ? { uri: starImgFilled }
                                         : { uri: starImgCorner }
                                 }
@@ -52,76 +71,69 @@ const Addcomment = () => {
             </View>
         );
     };
-
-    const AddImage = async () => {
-        if (selectedImages.length >= 6) {
-            // Alert the user that they've reached the media limit (6 in this case)
-            Alert.alert('Media Limit', 'You can select up to 6 images/videos.');
-            return;
+    const requestCameraPermission = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+            );
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                const result: any = await launchCamera({
+                    mediaType: 'photo',
+                    cameraType: 'front',
+                });
+                const object = { id: image.length + 1, img: result.assets[0].uri };
+                image.push(object);
+                setAddImage(!addImage);
+            } else {
+                console.log('Từ chối');
+            }
+        } catch (error) {
+            console.log(error);
         }
+    };
+    //Camera
+
+    const requestCameraPermissionPhoto = async () => {
+        try {
+            const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.CAMERA,
+            );
+            console.log('Camera permission granted:', granted);
+
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                const result: any = await launchImageLibrary({ mediaType: 'photo' });
+
+                if (result) {
+                    console.log('Selected image URI:', result.assets[0].uri);
+
+                    image.push({ id: image.length + 1, img: result.assets[0].uri });
+                    console.log("Image url", image);
+
+                    setAddImage(!addImage);
+                } else {
+                    console.log('No image selected');
+                }
+            } else {
+                console.log('Permission denied');
+            }
+        } catch (error) {
+            console.log('Error in requestCameraPermissionPhoto:', error);
+        }
+    };
+    const AddImage = async () => {
         Alert.alert(
             'Bạn muốn chọn ảnh từ đâu ?',
             '',
             [
                 {
                     text: 'Thư viện',
-                    onPress: async () => {
-                        const options: ImageLibraryOptions = {
-                            mediaType: 'photo',
-                            includeBase64: false,
-                        };
+                    onPress: async () => requestCameraPermissionPhoto()
 
-                        launchImageLibrary(options, (response: any) => {
-                            if (response.didCancel) {
-                                console.log('User cancelled image picker');
-                            } else {
-                                const newImages = [...selectedImages];
-                                const imageUri = response.uri || (response.assets && response.assets[0]?.uri);
-                                newImages.push(imageUri);
-                                setSelectedImages(newImages);
-                            }
-                        });
-                    }
+
                 },
                 {
                     text: 'Camera              ',
-                    onPress: async () => {
-                        const cameraOptions: CameraOptions = {
-                            mediaType: 'photo',
-                            includeBase64: false,
-                        };
-
-                        try {
-                            const granted = await PermissionsAndroid.request(
-                                PermissionsAndroid.PERMISSIONS.CAMERA,
-                                {
-                                    title: "App Camera Permission",
-                                    message: "App needs access to your camera ",
-                                    buttonNeutral: "Ask Me Later",
-                                    buttonNegative: "Cancel",
-                                    buttonPositive: "OK"
-                                }
-                            );
-
-                            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                                console.log("Camera permission given");
-                                launchCamera(cameraOptions, (response: any) => {
-                                    if (response.didCancel) {
-                                        console.log('User cancelled camera picker');
-                                    } else {
-                                        const newImages = [...selectedImages];
-                                        const imageUri = response.uri || (response.assets && response.assets[0]?.uri);
-                                        newImages.push(imageUri);
-                                        setSelectedImages(newImages);
-                                    }
-                                });
-                            } else {
-                                console.log("Camera permission denied");
-                            }
-                        } catch (err) {
-                            console.warn(err);
-                        }
-                    }
+                    onPress: async () => requestCameraPermission()
                 },
                 {
                     text: 'Hủy',
@@ -133,49 +145,66 @@ const Addcomment = () => {
         );
     };
 
-    const handleAddComment = () => {
-        console.log('hehehe');
+    const handleAddComment = async () => {
+        try {
+            const uploadImages = async () => {
+                await Promise.all(image.map(async (element: any) => {
+                    const uniqueFileName = `${uuid.v4()}.jpg`;
+                    const reference = storage().ref(`comments/${uniqueFileName}`);
+                    await reference.putFile(element.img);
+                    const url = await reference.getDownloadURL();
+                    imageURL.push(url);
+                }));
+            };
+            await uploadImages();
+            console.log(user._id, id, content, imageURL, star);
+            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id, productID: id, content: content, image: imageURL, star: star });
+            imageURL = [];
+            image = [];
+            setAddImage(!addImage);
+            //navigation.goBack();
+            console.log(result.data);
+
+        } catch (error) {
+            console.log('Error: ', error);
+        }
     };
 
     return (
-        <View>
-            <View style={styles.header}>
-                <Image style={styles.icon} source={require('../asset/image/back.png')} />
-                <Text style={styles.name}>Write Review</Text>
-            </View>
+        <View style={{marginTop: 20, paddingHorizontal: 20}}>
+            <Header title='Viết Đánh Giá' navigation={navigation} />
+            <View style={styles.line}></View>
             <ScrollView style={{ height: '100%' }}>
                 <View style={styles.bodycontainer}>
                     <Text style={styles.textstyles}>
-                        Please write Overall level of satisfaction with your shipping /
-                        Delivery Service
+                        Xin cho chúng tôi biết về mức độ hài lòng của bạn với dịch vụ và sản phẩm của chúng tôi.
                     </Text>
                     <View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 10 }}>
                         <CustomRatingbar />
-                        <Text style={[styles.textstyles, { lineHeight: 40, marginLeft: 20 }]}>
-                            {defaultRating + '/' + maxRating.length}
-                        </Text>
                     </View>
 
-                    <Text style={[styles.textstyles, { marginTop: 20 }]}>Write Your Review</Text>
+                    <Text style={[styles.textstyles, { marginTop: 20 }]}>Viết đánh giá của bạn</Text>
 
                     <TextInput
                         style={styles.input}
-                        onChangeText={onChangeText}
-                        value={text}
-                        placeholder="Let us know what you think about our products"
+                        onChangeText={setContent}
+                        value={content}
+                        placeholder="Hãy cho chúng tôi biết suy nghĩ của bạn về sản phẩm của chúng tôi"
                         multiline
                     />
-                    <Text style={[styles.textstyles, { marginTop: 20 }]}>Add Photo</Text>
-
+                    
                     <ScrollView
                         horizontal
                         contentContainerStyle={styles.selectedImagesContainer}
                         showsHorizontalScrollIndicator={false}
                     >
-                        {selectedImages.map((mediaUri, index) => (
-                            <Image key={index} source={{ uri: mediaUri }} style={styles.selectedImage} />
+                        {image.map((item: any) => (
+                            <View key={item?.id}>
+                                {item && item.img && <Image source={{ uri: item.img }} style={styles.selectedImage} />}
+                            </View>
                         ))}
-                        {selectedImages.length < 6 && (
+
+                        {image.length < 6 && (
                             <View style={styles.addimgButton}>
                                 <TouchableOpacity onPress={AddImage}>
                                     <LinearGradient
@@ -189,6 +218,7 @@ const Addcomment = () => {
                         )}
                     </ScrollView>
 
+
                     <View style={styles.addCommentButtonContainer}>
                         <TouchableOpacity
                             style={styles.addCommentButton}
@@ -198,7 +228,7 @@ const Addcomment = () => {
                                 colors={['#46CAF3', '#68B1D9']}
                                 style={{ borderRadius: 10 }}
                             >
-                                <Text style={styles.addCommentButtonText}>Write Review</Text>
+                                <Text style={styles.addCommentButtonText}>Đăng Bài</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>
@@ -212,6 +242,15 @@ export default Addcomment;
 
 
 const styles = StyleSheet.create({
+    line: {
+        height: 0.5,
+        backgroundColor: '#ADA8A8',
+        width: '120%',
+        marginTop: 10,
+        position: 'relative',
+        right: 20
+    },
+
     imgnew: {
         width: 100,
         height: 100,
@@ -228,7 +267,7 @@ const styles = StyleSheet.create({
         height: 100,
         borderRadius: 10,
         margin: 10,
-        borderColor: 'black',
+        borderColor: '#9098B1',
         borderWidth: 1,
         marginLeft: 1,
     },
@@ -265,7 +304,7 @@ const styles = StyleSheet.create({
     },
     addCommentButtonContainer: {
         alignSelf: 'center',
-        width: windowWidth - 20,
+        width: windowWidth - 15,
         borderRadius: 20,
     },
     addCommentButton: {
@@ -291,7 +330,7 @@ const styles = StyleSheet.create({
         resizeMode: 'cover',
     },
     input: {
-        margin: 12,
+        marginTop: 10,
         borderWidth: 1,
         padding: 16,
         fontSize: 16,
@@ -299,21 +338,22 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         height: 150,
     },
+
     textstyles: {
         fontWeight: '700',
-        fontSize: 20,
+        fontSize: 18,
         color: '#223263',
         textAlign: 'justify',
         lineHeight: 20,
     },
     bodycontainer: {
-        margin: 10,
+        marginVertical: 15,
     },
     header: {
         flexDirection: 'row',
         alignItems: 'center',
         paddingHorizontal: 16,
-        height: 80,
+        height: 50,
         backgroundColor: 'white',
     },
     icon: {

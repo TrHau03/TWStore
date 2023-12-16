@@ -1,32 +1,52 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, Alert, } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
 import Header from '../../component/Header/Header'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
+import { useDispatch, useSelector } from 'react-redux'
+import { updatePhone, updateUser } from '../../redux/silces/Silces'
+import AxiosInstance from '../../Axios/Axios'
 
-const Phone = () => {
-    const [phone, setPhone] = useState<string>();
-    console.log(phone);
+const Phone = (props: any) => {
+    const { setModalVisible } = props.action;
+    const [phone, setPhone] = useState<string>()
+    const dispatch = useDispatch();
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+
+    const isValidPhoneNumber = (number: string) => {
+        const phoneNumberRegex = /^\d{9,12}$/;
+        return phoneNumberRegex.test(number);
+    };
+
+    const handleSavephone = async () => {
+        if (phone?.trim() === '') {
+            Alert.alert('Thông báo', 'Vui lòng nhập số điện thoại hợp lệ');
+        } else {
+            setModalVisible(false)
+            dispatch(updatePhone(phone))
+            const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, phone: phone });
+        }
+    }
 
     return (
         <View style={styles.container}>
-            <Header hideBack title='PhoneNumber' />
+            <Header hideBack title='Số Điện Thoại' />
 
             <View style={styles.line}></View>
 
             <View style={styles.Email}>
-                <Text style={styles.txtEmail}>Phone Number</Text>
+                <Text style={styles.txtEmail}>Số điện thoại của bạn</Text>
                 <View style={styles.input}>
                     <Icon name='phone-portrait-outline' size={30} />
-                    <TextInput style={styles.txtInput} value={phone} onChangeText={(value) => setPhone(value)} keyboardType='numeric' placeholder="0372711935" maxLength={11} />
+                    <TextInput defaultValue={user.phone} style={styles.txtInput} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setPhone(e.nativeEvent.text) }} keyboardType='numeric' maxLength={11} />
                 </View>
             </View>
 
-            <View style={{ width: '100%', position: 'absolute', bottom: 15 }}>
-                <ButtonBottom title='Save' />
-            </View>
+            <Pressable onPress={handleSavephone} style={{ width: '100%', position: 'absolute', bottom: 15 }}>
+                <ButtonBottom title='Lưu' />
+            </Pressable>
         </View>
     )
 }

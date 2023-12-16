@@ -9,7 +9,7 @@ import {
   View,
   Pressable,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 import Header from '../../component/Header/Header'
@@ -17,14 +17,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import HomeScreenSlice from '../../redux/silces/HomeScreenSlice';
 import { COLORS } from '../../utilities';
 import Button from '../../component/Button/Button';
+import { useIsFocused } from '@react-navigation/native';
+import AxiosInstance from '../../Axios/Axios';
+import { HEIGHT } from '../../utilities/utility';
+import { NumericFormat } from 'react-number-format';
 
 interface Brand {
   _id: number;
   name: string;
+  linkIcon: string;
 }
 interface Color {
   _id: number;
   name: string;
+  code: string;
 }
 interface Size {
   _id: number;
@@ -32,12 +38,40 @@ interface Size {
 }
 
 const FilterScreen = (props: any) => {
-  const { visibleSize, visibleColor, visibleBrand, unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
-  const { dispatch, setVisibleBrand, setVisibleColor, setVisibleSize, setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
+  const isFocused = useIsFocused();
 
+  const [dataBrand, setDataBrand] = useState<Brand[]>([]);
+  const [dataColor, setDataColor] = useState<Color[]>([]);
+  const [dataSize, setDataSize] = useState<Color[]>([]);
 
+  useEffect(() => {
+    const fetchBrand = async () => {
+      const response = await AxiosInstance().get(`brand/getAllBrand`);
+      setDataBrand(response.data)
+    }
+    const fetchColor = async () => {
+      const response = await AxiosInstance().get(`color/getAllColor`);
+      setDataColor(response.data)
+    }
+    const fetchSize = async () => {
+      const response = await AxiosInstance().get(`Size/getAllSize`);
+      setDataSize(response.data)
+    }
+    if (isFocused) {
+      fetchBrand();
+      fetchColor();
+      fetchSize();
+    }
+  }, [isFocused])
 
+  const [visibleBrand, setVisibleBrand] = useState<boolean>(false);
+  const [visibleSize, setVisibleSize] = useState<boolean>(false);
+  const [visibleColor, setVisibleColor] = useState<boolean>(false);
 
+  const dispatch = useDispatch();
+
+  const { unEnableBrand, highLightBrand, unEnableColor, highLightColor, unEnableSize, highLightSize, brand, color, size, priceMin, priceMax } = props.state;
+  const { setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax } = props.action;
 
 
   const handleFilter = (brand: string, color: string, size: string, minPrice: string, maxPrice: string) => {
@@ -45,7 +79,6 @@ const FilterScreen = (props: any) => {
     dispatch(HomeScreenSlice.actions.filterColor(color));
     dispatch(HomeScreenSlice.actions.filterSize(size));
     dispatch(HomeScreenSlice.actions.filterPrice({ minPrice, maxPrice }))
-    console.log(brand, color, size, minPrice, maxPrice);
 
   }
 
@@ -60,10 +93,10 @@ const FilterScreen = (props: any) => {
     )
   }
   const renderItemColor = ({ item }: any) => {
-    const { _id, name } = item;
+    const { _id, name, code } = item;
     return (
       <TouchableOpacity style={{ width: '28%', borderWidth: 1, marginBottom: 10, justifyContent: 'center', alignItems: 'center', borderRadius: 5, backgroundColor: highLightColor == _id && unEnableColor ? COLORS.blue : COLORS.white }}
-        onPress={() => { !unEnableColor ? setColor(name) : setColor('All'); setHighLightColor(_id), setUnEnableColor(!unEnableColor) }}>
+        onPress={() => { !unEnableColor ? setColor(code) : setColor('All'); setHighLightColor(_id), setUnEnableColor(!unEnableColor) }}>
         <Text style={{ fontSize: 18 }}>{name}</Text>
       </TouchableOpacity>
     )
@@ -80,8 +113,8 @@ const FilterScreen = (props: any) => {
 
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
+    <View>
+      <View style={styles.container}>
         <View style={styles.filterPrice}>
           <Text
             style={{
@@ -91,14 +124,14 @@ const FilterScreen = (props: any) => {
               fontWeight: 'bold',
               color: 'black',
             }}>
-            Price Range
+            Lọc theo giá
           </Text>
           <View style={styles.input}>
             <View style={styles.Price}>
-              <Text style={styles.textPrice}>{priceMin}$</Text>
+              <NumericFormat displayType={'text'} value={Number(priceMin)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textPrice}>{formattedValue + 'đ'} </Text>} />
             </View>
             <View style={styles.Price}>
-              <Text style={styles.textPrice}>{priceMax}$</Text>
+              <NumericFormat displayType={'text'} value={Number(priceMax)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textPrice}>{formattedValue + 'đ'} </Text>} />
             </View>
           </View>
         </View>
@@ -110,11 +143,11 @@ const FilterScreen = (props: any) => {
 
           }}>
           <MultiSlider
-            values={[0, 5000]}
+            values={[0, 5000000]}
             sliderLength={300}
             min={0}
-            max={5000}
-            step={100}
+            max={5000000}
+            step={100000}
             allowOverlap={false}
             snapped
             onValuesChangeFinish={(e) => { setpriceMin(e[0].toString()); setpriceMax(e[1].toString()) }}
@@ -124,31 +157,33 @@ const FilterScreen = (props: any) => {
         <View style={styles.BuyingFormat}>
           {/*brand */}
           <View style={styles.Format}>
-            <Text style={styles.txtBuyingFormat}>Brand</Text>
-            <Pressable onPress={() => setVisibleBrand(!visibleBrand)}>
+            <Text style={styles.txtBuyingFormat}>Hãng</Text>
+            <Pressable onPress={() => { setVisibleBrand(!visibleBrand), setVisibleColor(false), setVisibleSize(false) }}>
               <Icon name={!visibleBrand ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
           {visibleBrand &&
             <FlatList
-              data={DataBrand}
+              scrollEnabled={false}
+              data={dataBrand}
               columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
               numColumns={3}
               renderItem={renderItemBrand}
-              keyExtractor={(item) => item._id.toString()}
+              keyExtractor={(item: any) => item._id.toString()}
               style={{ top: 10 }}
             />}
 
           {/*Color */}
           <View style={styles.Format}>
-            <Text style={styles.txtBuyingFormat}>Color</Text>
-            <Pressable onPress={() => setVisibleColor(!visibleColor)}>
+            <Text style={styles.txtBuyingFormat}>Màu</Text>
+            <Pressable onPress={() => { setVisibleColor(!visibleColor), setVisibleBrand(false), setVisibleSize(false) }}>
               <Icon name={!visibleColor ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
           {visibleColor &&
             <FlatList
-              data={DataColor}
+              scrollEnabled={false}
+              data={dataColor}
               columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
               numColumns={3}
               renderItem={renderItemColor}
@@ -158,14 +193,15 @@ const FilterScreen = (props: any) => {
 
           {/*Size */}
           <View style={styles.Format}>
-            <Text style={styles.txtBuyingFormat}>Size</Text>
-            <Pressable onPress={() => setVisibleSize(!visibleSize)}>
+            <Text style={styles.txtBuyingFormat}>Kích cỡ</Text>
+            <Pressable onPress={() => { setVisibleSize(!visibleSize), setVisibleBrand(false), setVisibleColor(false) }}>
               <Icon name={!visibleSize ? 'chevron-down-outline' : 'chevron-up-outline'} size={25} color={'#9098B1'} />
             </Pressable>
           </View>
           {visibleSize &&
             <FlatList
-              data={DataSize}
+              scrollEnabled={false}
+              data={dataSize}
               columnWrapperStyle={{ justifyContent: 'center', gap: 15 }}
               numColumns={3}
               renderItem={renderItemSize}
@@ -173,11 +209,10 @@ const FilterScreen = (props: any) => {
               style={{ top: 10 }}
             />}
         </View>
+        <Pressable style={{ position: 'absolute', width: '100%', bottom: 30, alignSelf: 'center' }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false), setVisibleBrand(false), setVisibleColor(false), setVisibleSize(false) }}>
+          <Button title='Áp Dụng' />
+        </Pressable>
       </View>
-
-      <Pressable style={{ bottom: 80, paddingHorizontal: 5 }} onPress={() => { handleFilter(brand, color, size, priceMin, priceMax); setModalVisible(false),setVisibleBrand(false), setVisibleColor(false),setVisibleSize(false) }}>
-        <Button title='Apply' />
-      </Pressable>
     </View>
   );
 };
@@ -187,7 +222,7 @@ export default FilterScreen;
 const styles = StyleSheet.create({
   Price: {
     borderWidth: 0.7,
-    width: 90,
+    width: 'auto',
     height: 40,
     alignItems: 'center',
     justifyContent: 'center',
@@ -253,50 +288,10 @@ const styles = StyleSheet.create({
   filterPrice: {
     width: '100%',
   },
-  content: {
-    width: '100%',
-    marginTop: 10,
-    height: '100%'
-  },
-  iconBack: {
-    width: '100%',
-    height: '5%',
-  },
   container: {
-    padding: 15,
     width: '100%',
-  },
+    marginTop: 20,
+    height: HEIGHT * 0.85,
+    paddingHorizontal: 20
+  }
 });
-
-const DataBrand: Brand[] =
-  [
-    { _id: 1, name: 'Nike' },
-    { _id: 2, name: 'Adidas' },
-    { _id: 3, name: 'Puma' },
-    { _id: 4, name: 'Gucci' },
-    { _id: 5, name: 'LV' },
-    { _id: 6, name: 'Bargana' },
-  ];
-const DataColor: Color[] =
-  [
-    { _id: 1, name: 'Black' },
-    { _id: 2, name: 'White' },
-    { _id: 3, name: 'Red' },
-    { _id: 4, name: 'Yellow' },
-    { _id: 5, name: 'Blue' },
-    { _id: 6, name: 'Purple' },
-  ];
-const DataSize: Size[] =
-  [
-    { _id: 1, name: '36' },
-    { _id: 2, name: '37' },
-    { _id: 3, name: '38' },
-    { _id: 4, name: '39' },
-    { _id: 5, name: '40' },
-    { _id: 6, name: '41' },
-    { _id: 7, name: '42' },
-    { _id: 8, name: '43' },
-    { _id: 9, name: '44' },
-    { _id: 10, name: '45' },
-    { _id: 10, name: '46' },
-  ];

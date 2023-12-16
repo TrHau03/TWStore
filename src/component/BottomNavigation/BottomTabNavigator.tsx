@@ -4,6 +4,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import { RootStackScreenEnumHome } from '../Root/RootStackHome';
 import { COLORS } from '../../utilities';
 import { MD3LightTheme } from 'react-native-paper';
+import Spinner from 'react-native-loading-spinner-overlay';
 const Tab = createMaterialBottomTabNavigator<RootTabParamList>();
 
 const BottomTab = () => {

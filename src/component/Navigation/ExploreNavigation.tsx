@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { configStack } from '../Root/RootStack';
 import { RootStackScreenExplore } from '../Root/RootStackExplore';
 import { Stack } from './Props';

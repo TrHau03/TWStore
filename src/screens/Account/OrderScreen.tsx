@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, TouchableOpacity, FlatList, Modal, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from '../../component/Header/Header'
 import { PropsAccount } from '../../component/Navigation/Props';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -10,34 +10,58 @@ import { listOrder } from '../../redux/silces/HomeSelector';
 import { HEIGHT, WIDTH } from '../../utilities/utility';
 import { RootStackScreenAccount, RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
 import StatusDeliver from './StatusDeliver';
+import AxiosInstance from '../../Axios/Axios';
+import { useIsFocused } from '@react-navigation/native';
+import Order_Detail from './Order_Detail';
+import { NumericFormat } from 'react-number-format';
 
 
 
-const OrderScreen = ({ navigation }: PropsAccount) => {
-    const [date, setDate] = useState<string>('');
+const OrderScreen = ({ navigation }: PropsAccount, props: any) => {
+    const isFocus = useIsFocused();
+    const [dateStatus, setDateStatus] = useState<string>('');
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const Order = useSelector(listOrder);
     const [status, setStatus] = useState<string>('');
+    const [_idOrder, set_idOrder] = useState<string>('');
+    const user = useSelector((state: any) => state.SlicesReducer.user);
+    const dispatch = useDispatch();
+    const [listOrder, setListOrder] = useState<[]>();
+    const [nameModal, setNameModal] = useState<string>('');
+    console.log(listOrder);
+    
+
+    useEffect(() => {
+        const fetchListCategory = async () => {
+            const response = await AxiosInstance().get(`order/getOrderByIdUser/${user._id}`);
+            setListOrder(response.data);
+        }
+
+        if (isFocus) {
+            fetchListCategory();
+        }
+    }, [isFocus])
+
 
     const RenderItem = (props: any) => {
         const { data } = props;
         const { item } = data;
+        const date = new Date(item.bookingDate);
 
-        return <TouchableOpacity style={styles.box} onPress={() => navigation?.navigate(RootStackScreenEnumAccount.Order_Detail)}>
+        return <TouchableOpacity style={styles.box} onPress={() => { setModalVisible(true), set_idOrder(item._id), setNameModal('Order_Detail') }}>
             <View>
-                <Text style={styles.MaCode}>{item.code}</Text>
-                <Text style={styles.title}>Order at Lafyuu : {item.date}</Text>
+                <Text style={styles.MaCode}>{item.orderCode}</Text>
+                <Text style={styles.title}>Ngày đặt hàng : {date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()}</Text>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Items</Text>
-                    <Text style={styles.content}>{item.items} Items purchased</Text>
+                    <Text style={styles.title}>Sản Phẩm : </Text>
+                    <Text style={styles.content}>{item?.listProduct.length} sản phẩm</Text>
                 </View>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Price</Text>
-                    <Text style={styles.price}>${item.price}</Text>
+                    <Text style={styles.title}>Giá : </Text>
+                    <NumericFormat displayType={'text'} value={Number(item.totalPrice )} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.price}>{formattedValue + 'đ'} </Text>} />
                 </View>
                 <View style={styles.boxBottom}>
-                    <Text style={styles.title}>Order Status</Text>
-                    <TouchableOpacity onPress={() => { setModalVisible(true); setDate(item.date); setStatus(item.status) }}>
+                    <Text style={styles.title}>Trạng thái giao hàng</Text>
+                    <TouchableOpacity onPress={() => { setModalVisible(true), setStatus(item.status), setDateStatus(date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()), setNameModal('StatusDeliver') }}>
                         <Icon name='chevron-forward-outline' size={25} color={'#525252'} />
                     </TouchableOpacity>
                 </View>
@@ -53,10 +77,14 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
                 animationType="slide"
                 onRequestClose={() => true} >
                 <View style={{ height: '100%' }}>
-                    <StatusDeliver action={{ setDate, setStatus }} state={{ date, status }} />
-                    <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
+                    {
+                        (nameModal == 'StatusDeliver') ?
+                            <StatusDeliver state={{ dateStatus, status }} /> :
+                            <Order_Detail state={{_idOrder}} />
+                    }
+                    <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 10 }}>
                         <Pressable onPress={() => { setModalVisible(false) }}>
-                            <ButtonBottom title='Cancel' />
+                            <ButtonBottom title='Thoát' />
                         </Pressable>
                     </Animatable.View>
                 </View>
@@ -66,7 +94,7 @@ const OrderScreen = ({ navigation }: PropsAccount) => {
             <FlatList
                 showsVerticalScrollIndicator={false}
                 style={{ marginBottom: 100 }}
-                data={Order}
+                data={listOrder?.reverse()}
                 renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
             />
         </View>
@@ -140,6 +168,6 @@ const styles = StyleSheet.create({
         width: WIDTH,
         height: HEIGHT,
         paddingTop: 20,
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
     }
 })
