@@ -24,9 +24,9 @@ import { PropsExplore } from '../../component/Navigation/Props';
 const windowWidth = Dimensions.get('window').width;
 let image: any = [];
 let imageURL: any = [];
-const Addcomment = ({navigation} : PropsExplore) => {
+const Addcomment = ({navigation, route} : any) => {
     const user = useSelector((state: any) => state.SlicesReducer.user);
-
+    const { id } = route.params as { id: string | undefined };
     const [content, setContent] = useState<string>('');
     const [star, setStar] = useState<number>(5)
 
@@ -157,8 +157,8 @@ const Addcomment = ({navigation} : PropsExplore) => {
                 }));
             };
             await uploadImages();
-            console.log(user._id, content, imageURL, star);
-            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id, productID: null, content: content, image: imageURL, star: star });
+            console.log(user._id, id, content, imageURL, star);
+            const result = await AxiosInstance().post('/comment/addComment', { userID: user._id, productID: id, content: content, image: imageURL, star: star });
             imageURL = [];
             image = [];
             setAddImage(!addImage);
