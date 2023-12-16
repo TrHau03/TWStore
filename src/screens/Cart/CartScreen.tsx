@@ -44,8 +44,9 @@ const CartScreen = ({ navigation }: PropsCart) => {
     const generalPrice = listData.reduce((previousValue: number, currentItem: any) => previousValue + currentItem.productID?.price * currentItem.quantity, 0);
 
     const cart: { key: any, productID: any; sizeProduct: any; colorProduct: any; quantity: number }[] = [];
+    const shipping = generalPrice < 3000000 ? generalPrice * 0.05 : generalPrice * 0.02
 
-    const generalPriceAfterShipping = generalPrice + generalPrice < 3000000 ? 0.05 : 0.02;
+    const generalPriceAfterShipping = generalPrice + (shipping);
 
     useEffect(() => {
         const fetchVoucher = async () => {
@@ -210,7 +211,7 @@ const CartScreen = ({ navigation }: PropsCart) => {
                         </View>
                         <View style={styles.headerTotalPrice}>
                             <Text style={styles.textHeaderTotalLeft}>Phí giao hàng</Text>
-                            <Text style={styles.textHeaderTotalRight}>{generalPrice * 0.05} VND</Text>
+                            <Text style={styles.textHeaderTotalRight}>{shipping} VND</Text>
                         </View>
                         <View style={styles.headerTotalPrice}>
                             <Text style={styles.textHeaderTotalLeft}>Giảm giá</Text>
