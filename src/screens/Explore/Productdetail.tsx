@@ -23,6 +23,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addItem } from '../../redux/silces/Silces';
 import { HEIGHT, WIDTH } from '../../utilities/utility';
 import { uid } from 'uid';
+import { NumericFormat } from 'react-number-format';
 
 
 
@@ -199,12 +200,12 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       return item.colorProduct._id;
     })
     if (sizeProduct == undefined || colorProduct == undefined) {
-      Alert.alert('Notification', 'Product has not been added yet!', [
+      Alert.alert('Thông báo', 'Sản phẩm chưa được thêm vào!', [
         { text: 'OK' }
       ]);
     } else {
       if (checkAddProductSize.includes(sizeProduct._id) && checkAddProductColor.includes(colorProduct._id)) {
-        Alert.alert('Notification', 'Product already in cart!', [
+        Alert.alert('Thông báo', 'Sản phẩm đã có trong giỏ hàng!', [
           { text: 'OK' }
         ]);
       } else {
@@ -225,7 +226,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   };
 
   const createTwoButtonAlert = () =>
-    Alert.alert('Notification', 'Add to cart successfully!', [
+    Alert.alert('Thông báo', 'Thêm vào giỏ hàng thành công!', [
       { text: 'OK', onPress: () => handleAddTocart() }
     ]);
 
@@ -331,7 +332,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
             <View>
               <CustomRatingBar numberOfRatings={commentCount} />
             </View>
-            <Text style={styles.price}>{product ? `${product.price - (product.price * (product.offer / 100))} VND` : ''}</Text>
+            <NumericFormat displayType={'text'} value={Number(product && product.price - (product.price * (product.offer / 100)))} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.price}>{formattedValue + 'đ'} </Text>} />
             <Text style={styles.textsize}>Chọn kích cỡ</Text>
             <View style={styles.sizeContainer}>
               <ScrollView
@@ -417,9 +418,9 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                       <Image source={{ uri: product.image[0] }} style={styles.productImage} />
                       <Text style={styles.productName}>{product.productName}</Text>
                       <View style={styles.sale}>
-                        <Text style={styles.productPrice}>{product.price - product.price * (product.offer / 100)} VND</Text>
+                      <NumericFormat displayType={'text'} value={Number(product.price - product.price * (product.offer / 100))} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.productPrice}>{formattedValue + 'đ'} </Text>} />
                         <View style={{ flexDirection: 'row' }}>
-                          <Text style={styles.productOldPrice}>{product.price} VND</Text>
+                        <NumericFormat displayType={'text'} value={Number(product.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.productOldPrice}>{formattedValue + 'đ'} </Text>} />
                           <Text style={styles.textsale}> Giảm {product.offer}%</Text>
                         </View>
                       </View>
@@ -728,7 +729,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: 'black',
     marginBottom: 8,
-
+    alignSelf: 'center',
   },
   productOldPrice: {
     fontSize: 14,

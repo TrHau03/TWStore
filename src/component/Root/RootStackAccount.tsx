@@ -22,7 +22,6 @@ export enum RootStackScreenEnumAccount {
     OrderScreen = 'OrderScreen',
     Order_Detail = 'Order_Detail',
     Add_Address = 'Add_Address'
-
 }
 
 export type RootStackParamListAccount = {

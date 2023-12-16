@@ -27,6 +27,7 @@ import { NativeStackHeaderProps } from '@react-navigation/native-stack';
 import Octicons from 'react-native-vector-icons/Octicons';
 import { fetchInitialListProductFilter } from '../../redux/silces/Silces';
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { NumericFormat } from 'react-number-format';
 interface Product {
   id: number;
   img: any;
@@ -103,15 +104,14 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
           </View>
           <View style={styles.in4PD}>
             <View style={styles.in4Text}>
-              <Text style={styles.NamePD}>{productName}</Text>
-              <View style={styles.star}>
-                <AirbnbRating count={5} size={15} showRating={false} />
-              </View>
+              <Text style={styles.NamePD}>{productName.length < 25 ? productName : productName.substring(0, 25) + "..."}</Text>
             </View>
-            {(offer > 0) ? <Text style={styles.PricePD}>${price - price * (offer / 100)}</Text> : <></>}
+            {(offer > 0) ?
+            <NumericFormat displayType={'text'} value={Number(price - price * (offer / 100))} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.PricePD}>{formattedValue + 'đ'} </Text>} />
+            : <></>}
             <View style={styles.sale}>
-              <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>${price}</Text>
-              <Text style={styles.txtSale}>{offer}% Off</Text>
+              <NumericFormat displayType={'text'} value={Number(price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>{formattedValue + 'đ'}</Text>} />
+              {offer > 0 && <Text style={styles.txtSale}>{offer}% Off</Text>}
             </View>
           </View>
         </View>
@@ -132,7 +132,7 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
         visible={modalVisible}
         animationType="slide"
         onRequestClose={() => true} >
-        <View style={{ height: '85%' }}>
+        <View style={{ height: '100%' }}>
           <FilterScreen action={{ setModalVisible, setHighLightBrand, setUnEnableBrand, setHighLightColor, setUnEnableColor, setHighLightSize, setUnEnableSize, setBrand, setColor, setSize, setpriceMin, setpriceMax }} state={{ highLightBrand, modalVisible, unEnableBrand, highLightColor, unEnableColor, highLightSize, unEnableSize, brand, color, size, priceMin, priceMax }} />
           <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: 20, position: 'relative', bottom: 20 }}>
             <Pressable onPress={() => { setModalVisible(false) }}>
@@ -191,7 +191,6 @@ const Category_Detail_Screen = (props: NativeStackHeaderProps) => {
           </View>
         </View>
         <FlatList
-          scrollEnabled={false}
           style={{ maxWidth: WIDTH, marginBottom: 45, marginTop: 10 }}
           showsVerticalScrollIndicator={false}
           data={dataFilter}
@@ -255,8 +254,8 @@ const styles = StyleSheet.create({
   },
   txtSale: {
     color: 'red',
-    fontSize: 17,
-    marginLeft: 20,
+    fontSize: 15,
+    marginLeft: 10,
     fontWeight: 'bold',
   },
   txtOldPrice: {
@@ -269,6 +268,9 @@ const styles = StyleSheet.create({
   sale: {
     width: '80%',
     flexDirection: 'row',
+    alignSelf: 'center',
+    justifyContent:'center',
+    
   },
   star: {
     width: '75%',
@@ -286,6 +288,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     color: 'black',
     margin: 1,
+    textAlign: 'center',
+    paddingHorizontal: 10
   },
   PricePD: {
     fontSize: 16,
@@ -294,6 +298,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     lineHeight: 24,
     color: '#4464C4',
+    alignSelf: 'center',
+    paddingBottom: 10,
   },
   in4Text: {
     marginTop: 5,

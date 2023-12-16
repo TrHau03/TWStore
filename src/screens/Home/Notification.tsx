@@ -1,8 +1,8 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Pressable, RefreshControl } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View, Image, FlatList, Pressable, RefreshControl, ScrollView } from 'react-native'
 import * as React from 'react';
 import Header from '../../component/Header/Header';
 import { PropsHome } from '../../component/Navigation/Props';
-import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
+import { BG_COLOR, HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { SceneMap, TabBar, TabView } from 'react-native-tab-view';
 import { useCallback, useEffect, useState } from 'react';
 import AxiosInstance from '../../Axios/Axios';
@@ -13,14 +13,13 @@ import { useIsFocused } from '@react-navigation/native';
 const Notification = () => {
   const user = useSelector((state: any) => state.SlicesReducer.user);
   const [refreshingNotifications, setRefreshingNotifications] = useState<boolean>(false);
-  const [notificaticon, setNotificaticon] = useState([]);
+  const [notificaticon, setNotificaticon] = useState<Array<{ title: string; content: string }>>([]);
   const isFocused = useIsFocused();
 
 
   const fetchNotifi = async () => {
     const userId = user._id
     const response = await AxiosInstance().get(`notifications/getAllNotification/${userId}`);
-    console.log(response, "notifi");
     setNotificaticon(response.data);
   };
 
@@ -30,7 +29,7 @@ const Notification = () => {
     }
   }, [isFocused]);
 
-  const onRefreshNotifications = useCallback(() => {
+  const onRefreshNotifications = React.useCallback(() => {
     setRefreshingNotifications(true);
     fetchNotifi();
     setTimeout(() => {
@@ -38,25 +37,21 @@ const Notification = () => {
     }, 2000);
   }, []);
 
-  const renderItemNotifi = ({ item }: { item: { title: string, content: string } }) => {
-    return (
-      <TouchableOpacity style={styles.containerItem}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.content}>{item.content}</Text>
-      </TouchableOpacity>
-    );
-  };
+
   return (
-    <View>
-      <FlatList
-        refreshControl={<RefreshControl refreshing={refreshingNotifications} onRefresh={onRefreshNotifications} />}
-        style={{ marginTop: 20 }}
-        data={notificaticon}
-        renderItem={renderItemNotifi}
-        numColumns={1}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+    <ScrollView
+      style={{ marginTop: 20 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshingNotifications} onRefresh={onRefreshNotifications} />
+      }
+    >
+      {notificaticon.map((item, index) => (
+        <TouchableOpacity key={index} style={styles.containerItem}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.content}>{item.content}</Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
   );
 
 };
@@ -65,7 +60,7 @@ const Notification = () => {
 
 const Voucher = () => {
   const [refreshingVoucher, setRefreshingVoucher] = useState<boolean>(false);
-  const [voucher, setVoucher] = useState<[]>([]);
+  const [voucher, setVoucher] = useState<Array<{ titleVoucher: string; contentVoucher: string; discountCode: string; discountLevel: number; startDay: string; endDay: string }>>([]);
   const isFocused = useIsFocused();
 
 
@@ -74,30 +69,40 @@ const Voucher = () => {
     setVoucher(response.data);
   };
   useEffect(() => {
-    if(isFocused){
+    if (isFocused) {
       fetchVoucher();
-
     }
-
   }, [isFocused]);
 
-  const onRefreshVoucher = useCallback(() => {
+  const onRefreshVoucher = React.useCallback(() => {
     setRefreshingVoucher(true);
     setTimeout(() => {
       setRefreshingVoucher(false);
     }, 2000);
   }, []);
   return (
-    <View>
-      <FlatList
-        refreshControl={<RefreshControl refreshing={refreshingVoucher} onRefresh={onRefreshVoucher} />}
-        style={{ marginTop: 20 }}
-        data={voucher}
-        renderItem={renderItemVoucher}
-        numColumns={1}
-        showsVerticalScrollIndicator={false}
-      />
-    </View>
+    <ScrollView
+      style={{ marginTop: 20 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshingVoucher} onRefresh={onRefreshVoucher} />
+      }
+    >
+      {voucher.map((item, index) => (
+        <TouchableOpacity
+          key={index}
+          style={styles.containerItem}
+          onPress={() => copyVoucher(item.discountCode)}
+        >
+          <Text style={styles.title}>{item.titleVoucher}</Text>
+          <Text style={styles.content}>{item.contentVoucher}</Text>
+
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={styles.textbottom}>Giảm lên đến {item.discountLevel}%</Text>
+            <Text style={styles.textbottom}>Mã giảm giá : {item.discountCode}</Text>
+          </View>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
   );
 
 };

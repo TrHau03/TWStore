@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ImageBackground, FlatList, Pressable } from 'react-native'
+import { StyleSheet, Text, View, ImageBackground, FlatList, Pressable, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AxiosInstance from '../../Axios/Axios'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
@@ -43,9 +43,12 @@ const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
   }
   return (
     <View style={styles.container}>
-      <View style={styles.cupon}>
-        <Text style={styles.textcupon}>Use “{couponHighest?.discountCode}” Coupon For Get {couponHighest?.discountLevel}%off</Text>
-      </View>
+      {couponHighest ? <View style={styles.cupon}>
+        <Text style={styles.textcupon}>Sử dụng “{couponHighest?.discountCode}” Mã cho phiếu giảm giá {couponHighest?.discountLevel}% off</Text>
+      </View> : (<View>
+        <Image style={{alignSelf: 'center', marginTop: '30%',width: 300, height: 300}} source={require('../../asset/image/nodata.png')} /> 
+        <Text style={{alignSelf: 'center', marginTop: 40, fontSize: 22, fontWeight: '500', color: '#1E4F5F', lineHeight: 24}}>Hiện không có phiếu giảm giá !!!</Text>
+      </View>)}
       <FlatList
         showsVerticalScrollIndicator={false}
         data={event}

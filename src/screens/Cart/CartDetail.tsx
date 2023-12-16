@@ -11,12 +11,14 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import AxiosInstance from '../../Axios/Axios'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack'
 import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount'
-import axios from 'axios';
+import axios from 'axios'
 import moment from 'moment';
 import crypto from 'crypto-js';
 import qs from 'qs'
 import { cartEmpty } from '../../redux/silces/Silces'
 import { RootStackScreenEnumHome } from '../../component/Root/RootStackHome'
+import { NumericFormat } from 'react-number-format'
+
 
 type CartDetailRouteParams = {
     CartDetail: {
@@ -86,12 +88,14 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán');
             return;
         }
-
-        console.log('Tên người nhận hàng:', receiverName);
-        console.log('Số điện thoại:', phoneNumber);
-        console.log('Địa chỉ nhận hàng:', selectedAddress);
-        console.log('Phương thức thanh toán được chọn:', selectedPaymentMethod);
-
+        console.log(selectedAddress);
+        
+        if(Number(selectedAddress) == 1){
+            Alert.alert('Thông báo', 'Vui lòng chọn địa chỉ giao hàng');
+            return;
+        }
+        
+        checkPaymentMethod();
         // Thêm các bước xử lý tiếp theo sau khi kiểm tra thành công
     };
 
@@ -235,8 +239,12 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const updateCart = async () => {
         dispatch(cartEmpty([]));
         await AxiosInstance().post('/users/updateInfoUser', { _id: user._idUser, cartItem: [] });
+        listProduct.map(async (item: any) => {
+            await AxiosInstance().put(`/product/updateQuantityProduct/${item.productID}`, { quantityOfOrder: item.quantityProduct });
+        })
         navigation.navigate('Home', { screen: RootStackScreenEnumHome.HomeScreen })
     }
+
     if (focusScreen === true) {
         getStatusPayment();
         setFocusScreen(false);
@@ -280,7 +288,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
                     </View>
                     <View style={styles.bottomItem}>
-                        <Text style={styles.textPrice}>${item.productID.price}</Text>
+                        <NumericFormat displayType={'text'} value={Number(item.productID.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textPrice}>{formattedValue + 'đ'} </Text>} />
                     </View>
                 </View>
             </View >
@@ -411,11 +419,11 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                 </View>
                 <View style={styles.itemTotalPrice}>
                     <Text style={styles.textBottomTotalLeft}>Tổng tiền (+ tiền giao hàng)</Text>
-                    <Text style={styles.textBottomTotalRight}>${totalAfterShipping}</Text>
+                    <NumericFormat displayType={'text'} value={Number(totalAfterShipping)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.textBottomTotalRight}>{formattedValue + 'đ'} </Text>} />
                 </View>
             </ScrollView>
             <View style={{ position: 'absolute', bottom: 0, width: '100%', alignSelf: 'center' }}>
-                <Pressable onPress={() => { handleOrderSubmit(); checkPaymentMethod() }}>
+                <Pressable onPress={() => handleOrderSubmit()}>
                     <ButtonBottom title='Thanh Toán' />
                 </Pressable>
             </View>

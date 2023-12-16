@@ -121,11 +121,5 @@ const data = [
     icon: 'location-sharp',
     screen: 'AddressScreen'
 
-  },
-  {
-    id: 4,
-    name: 'Thanh toán',
-    icon: 'wallet',
-    screen: 'PaymentScreen'
   }
 ]
