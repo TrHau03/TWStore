@@ -107,20 +107,6 @@ const Voucher = () => {
 
 };
 
-const renderItemVoucher = ({ item }: { item: { titleVoucher: string, contentVoucher: string, discountCode: string, discountLevel: string, startDay: string, endDay: string } }) => {
-  return (
-    <TouchableOpacity style={styles.containerItem} onPress={() => copyVoucher(item.discountCode)}>
-      <Text style={styles.title}>{item.titleVoucher}</Text>
-      <Text style={styles.content}>{item.contentVoucher}</Text>
-
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={styles.textbottom}>Giảm lên đến {item.discountLevel}%</Text>
-        <Text style={styles.textbottom}>Mã giảm giá : {item.discountCode}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
 const copyVoucher = (discountCode: string) => {
   Clipboard.setString(discountCode);
 
