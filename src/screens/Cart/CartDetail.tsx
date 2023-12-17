@@ -402,6 +402,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
                             dropdownTextStyles={{ fontSize: 16 }}
                             dropdownItemStyles={{ borderBottomWidth: 0.5, borderBottomColor: '#b0b0b0', marginBottom: 5 }}
                             dropdownStyles={{ height: 150, borderWidth: 0.5 }}
+                            notFoundText='Chưa có địa chỉ'
                         />
                         <View style={styles.addAdress}>
                             <Pressable onPress={() => navigation?.navigate('Account', { screen: RootStackScreenEnumAccount.AddressScreen })} >
