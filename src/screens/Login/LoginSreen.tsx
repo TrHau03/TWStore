@@ -43,7 +43,7 @@ const LoginScreen = (props: any) => {
   const [password, setPassword] = useState<string>('');
   const [pictureURL, setPictureURL] = useState<any>(null);
   const [checkBoxRemember, setCheckBoxRemember] = useState<boolean>(email && password ? true : false);
-
+  const isLoginState = useSelector((state: any) => state.SlicesReducer.isLogin);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -58,17 +58,12 @@ const LoginScreen = (props: any) => {
     }
     getDataStorage()
   }, [])
-  useEffect(() => {
-    const setData = async () => {
-      await AsyncStorage.setItem('checkSlide', 'true');
-    }
-    setData();
-  }, [])
+
 
   const handleSubmit = (data: User) => {
     console.log('check');
-    
-    dispatch(isLogin(true));
+
+    dispatch(isLogin(!isLoginState));
     dispatch(updateUser({ _id: data._id, _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address, phone: data.phone }))
   }
   const handlePass = () => {
@@ -232,6 +227,7 @@ const LoginScreen = (props: any) => {
   return (
     <KeyboardAwareScrollView>
       <Loading />
+
       <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, width: WIDTH, backgroundColor: BG_COLOR, height: HEIGHT }}>
         <View style={styles.header}>
           <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />

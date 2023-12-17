@@ -1,5 +1,5 @@
 import { Animated, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
 
@@ -8,6 +8,8 @@ import { useNavigation } from '@react-navigation/native';
 import LoginNavigation from '../../component/Navigation/LoginNavigation';
 import { RootStackParamListLogin, RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP } from '../../utilities/utility';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import BottomTab from '../../component/BottomNavigation/BottomTabNavigator';
 
 
 
@@ -17,10 +19,15 @@ const SlideScreen = (props: any) => {
     const navigation = useNavigation<navigationProps>();
     const [loadLoginScreen, setloadLoginScreen] = useState<boolean>(false)
     const [step, setStep] = useState<number>(1);
+    const setData = async () => {
+        await AsyncStorage.setItem('checkSlide', 'true');
+        setloadLoginScreen(true);
+
+    }
 
     return (
-        (!loadLoginScreen) ?
-            <View style={{paddingHorizontal: PADDING_HORIZONTAL, width: '100%', height: '100%', backgroundColor: BG_COLOR }}>
+        !loadLoginScreen ?
+            <View style={{ paddingHorizontal: PADDING_HORIZONTAL, width: '100%', height: '100%', backgroundColor: BG_COLOR }}>
                 <View style={{ marginTop: '40%' }}>
                     <Image style={styles.imageSlide1} source={step === 1 ? require('../../asset/image/IconSlide1.png') : step === 2 ? require('../../asset/image/IconSlide2.png') : require('../../asset/image/IconSlide3.png')} />
                 </View>
@@ -29,7 +36,7 @@ const SlideScreen = (props: any) => {
                     <Text style={styles.textDescription}>{step === 1 ? 'Theo mong muốn của bạn' : step === 2 ? 'Đến những nơi mới lạ' : 'Đến chuyến đi mơ ước của bạn'}</Text>
                 </View>
                 <View style={{ marginTop: 80 }}>
-                    <TouchableOpacity style={styles.nextBTN} onPress={() => { step < 3 ? setStep(step + 1) : setloadLoginScreen(true) }}>
+                    <TouchableOpacity style={styles.nextBTN} onPress={() => { step < 3 ? setStep(step + 1) : setData() }}>
                         <Image source={require('../../asset/image/NextButton.png')} />
                     </TouchableOpacity>
                 </View>
@@ -38,7 +45,7 @@ const SlideScreen = (props: any) => {
                     <View style={step === 2 ? styles.slideFocus : styles.slideUnfocus} />
                     <View style={step === 3 ? styles.slideFocus : styles.slideUnfocus} />
                 </View>
-            </View> : <LoginNavigation />
+            </View> : <BottomTab />
     )
 }
 

@@ -4,43 +4,39 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { PropsAccount } from '../../component/Navigation/Props'
 import { HEIGHT, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility'
 import ButtonBottom from '../../component/Button/Button'
-import { useDispatch } from 'react-redux'
-import { isLoading, isLogin } from '../../redux/silces/Silces'
+import { useDispatch, useSelector } from 'react-redux'
+import { cartEmpty, isLoading, isLogin, updateUser } from '../../redux/silces/Silces'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import { LoginManager } from 'react-native-fbsdk-next'
 import Loading from '../../component/Loading/Loading'
+import { RootStackScreenEnumLogin } from '../../component/Root/RootStackLogin'
 
 
 const AccountScreen = ({ navigation }: any) => {
+  const isUser = useSelector((state: any) => state.SlicesReducer.user._idUser);
+  const isLoginState = useSelector((state: any) => state.SlicesReducer.isLogin);
+
   const dispatch = useDispatch();
 
-  const handleLogin = async ({ navigation }: any) => {
+  const handleLogout = async ({ navigation }: any) => {
     dispatch(isLoading(true));
     await GoogleSignin.signOut();
     await LoginManager.logOut();
     navigation.navigate('Home', { screen: 'HomesScreen' });
     setTimeout(async () => {
-      dispatch(isLogin(false));
+      dispatch(updateUser(''));
+      dispatch(cartEmpty([]));
       dispatch(isLoading(false));
     }, 1000);
   }
-
+  const handleLogin = () => {
+    dispatch(isLogin(true));
+  }
   return (
     <View style={[styles.container,]}>
       <Loading />
       <Text style={styles.title}>Tài Khoản</Text>
       <View style={styles.line}></View>
-      {/* <Portal>
-        <Dialog visible={visible} onDismiss={hineDialog}>
-          <Dialog.Title>Alert</Dialog.Title>
-          <Dialog.Content>
-            <Text>This is simple dialog</Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hineDialog}>Done</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal> */}
 
       <View>
         {data.map((item) =>
@@ -51,9 +47,13 @@ const AccountScreen = ({ navigation }: any) => {
         )}
 
       </View>
-      <Pressable onPress={() => { handleLogin({ navigation }) }} style={{ width: '100%', position: 'absolute', bottom: 120, alignSelf: 'center' }}>
-        <ButtonBottom title='Đăng Xuất' />
-      </Pressable>
+      {isUser == '' ?
+        <Pressable onPress={() => handleLogin()} style={{ width: '100%', position: 'absolute', bottom: 120, alignSelf: 'center' }}>
+          <ButtonBottom title='Đăng nhập' />
+        </Pressable> :
+        <Pressable onPress={() => { handleLogout({ navigation }) }} style={{ width: '100%', position: 'absolute', bottom: 120, alignSelf: 'center' }}>
+          <ButtonBottom title='Đăng Xuất' />
+        </Pressable>}
     </View>
   )
 }

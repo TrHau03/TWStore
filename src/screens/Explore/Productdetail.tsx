@@ -25,6 +25,7 @@ import { addItem } from '../../redux/silces/Silces';
 import { HEIGHT, WIDTH } from '../../utilities/utility';
 import { uid } from 'uid';
 import { NumericFormat } from 'react-number-format';
+import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
 
 
 
@@ -81,6 +82,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const user = useSelector((state: any) => {
     return state.SlicesReducer.user;
   });
+  const isUser = useSelector((state: any) => state.SlicesReducer.user._idUser);
 
 
   const isFocus = useIsFocused();
@@ -441,14 +443,23 @@ const Productdetail = (props: NativeStackHeaderProps) => {
         </View>
       </ScrollView>
       <View style={styles.addtocartButtonContainer}>
-        <TouchableOpacity
-          style={styles.addtocartButton}
-          onPress={() => { handle({ productID: product, sizeProduct: selectedSize, colorProduct: selectedColor }); }}
-        >
-          <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
-            <Text style={styles.addtocartButtonText}>Thêm Vào Giỏ Hàng</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        {isUser == '' ?
+          <TouchableOpacity
+            style={styles.addtocartButton}
+            onPress={() => navigation.navigate(RootStackScreenEnumAccount.AccountScreen)}
+          >
+            <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
+              <Text style={styles.addtocartButtonText}>Vui lòng đăng nhập!</Text>
+            </LinearGradient>
+          </TouchableOpacity> :
+          <TouchableOpacity
+            style={styles.addtocartButton}
+            onPress={() => { handle({ productID: product, sizeProduct: selectedSize, colorProduct: selectedColor }); }}
+          >
+            <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
+              <Text style={styles.addtocartButtonText}>Thêm Vào Giỏ Hàng</Text>
+            </LinearGradient>
+          </TouchableOpacity>}
       </View>
     </View >
 
