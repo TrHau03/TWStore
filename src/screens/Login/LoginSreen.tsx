@@ -62,9 +62,8 @@ const LoginScreen = (props: any) => {
 
   const handleSubmit = (data: User) => {
     console.log('check');
-
-    dispatch(isLogin(!isLoginState));
     dispatch(updateUser({ _id: data._id, _idUser: data._idUser, email: data.email, userName: data.userName, cartItem: data.cartItem, avatar: data.avatar, gender: data.gender, birthDay: data.birthDay, address: data.address, phone: data.phone }))
+    dispatch(isLogin(!isLoginState));
   }
   const handlePass = () => {
     dispatch(updatePass(password))
@@ -118,7 +117,6 @@ const LoginScreen = (props: any) => {
       await GoogleSignin.hasPlayServices();
       const { idToken }: any = await GoogleSignin.signIn();
       const userGoogle = await GoogleSignin.signIn();
-      console.log(userGoogle);
 
       // use Google ID token to sign into Realm
       const credential = Realm.Credentials.google({ idToken });
@@ -127,6 +125,8 @@ const LoginScreen = (props: any) => {
       if (userRealm) {
         const response = await AxiosInstance().post(`/users/getUser/${userRealm.id}`, { name: userGoogle.user.name, email: userGoogle.user.email });
         const user = response.data.data;
+        console.log('user', user);
+
         await AsyncStorage.setItem('token', response?.data.access_token);
         user && dispatch(isLoading(false));
         if (user.active) {
