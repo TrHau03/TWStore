@@ -33,7 +33,6 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
     const [brand, setBrand] = useState<[]>([]);
     const [productFilter, setProductFilter] = useState<[]>([]);
     const listProduct = useSelector(listProductRecommend);
-    console.log(listProduct);
 
     const dispatch = useDispatch();
 
