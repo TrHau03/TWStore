@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -72,9 +72,16 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const [totalStars, setTotalStars] = useState<number>(0);
   const [handleAdd, setHandleAdd] = useState<boolean>(false);
   const dispatch = useDispatch();
-  const [idLike, setLike] = useState<string>('')
-  console.log(idLike);
-  
+
+  const scrollRef = useRef<any>();
+
+  const onRefreshProductLike = (id : string) => {
+    fetchProductByID(id);
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
+  }
 
   const data = useSelector((state: any) => {
     return state.SlicesReducer.user.cartItem;
@@ -126,7 +133,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       starCounts,
     };
   };
-  const fetchProductByID = async () => {
+  const fetchProductByID = async (id : string | undefined) => {
     const response = await AxiosInstance().get(`product/getProductById/${id}`);
     setProduct(response.data);
     response && fetchProductByBrand(response.data.brand._id);
@@ -153,7 +160,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   useFocusEffect(
     React.useCallback(() => {
       if (isFocus) {
-        fetchProductByID();
+        fetchProductByID(id);
         fetchCommentbyIdProduct();
       }
       return () => {
@@ -290,7 +297,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
   const onRefreshProductDetail = React.useCallback(() => {
     setRefreshingProductDetail(true);
-    fetchProductByID();
+    fetchProductByID(id);
     fetchCommentbyIdProduct();
     setTimeout(() => {
       setRefreshingProductDetail(false);
@@ -298,7 +305,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   }, []);
   return (
     <View style={{ height: '100%' }}>
-      <ScrollView       
+      <ScrollView ref={scrollRef}      
       refreshControl={
           <RefreshControl refreshing={refreshingProductDetail} onRefresh={onRefreshProductDetail} />
         }>
@@ -424,7 +431,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                   showsHorizontalScrollIndicator={false}
                 >
                   {listProductByBrand?.map((product: any) => (
-                    <TouchableOpacity onPress={() => setLike(product._id)} key={product._id} style={styles.productItem}>
+                    <TouchableOpacity onPress={() => {onRefreshProductLike(product._id)}} key={product._id} style={styles.productItem}>
                       <Image source={{ uri: product.image[0] }} style={styles.productImage} />
                       <Text style={styles.productName}>{product.productName}</Text>
                       <View style={styles.sale}>

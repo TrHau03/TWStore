@@ -102,7 +102,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
 
     const isValidPhoneNumber = (number: string) => {
-        const phoneNumberRegex = /^\d{9,12}$/;
+        const phoneNumberRegex = /((09|03|07|08|05)+([0-9]{8})\b)/;
         return phoneNumberRegex.test(number);
     };
 

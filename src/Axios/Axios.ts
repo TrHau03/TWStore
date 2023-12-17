@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const AxiosInstance = (contentType = 'application/json') => {
     const axiosInstance = axios.create({
-        baseURL: 'http://192.168.100.67:3000/'
+        baseURL: 'http://twstore.onrender.com/'
     });
     axiosInstance.interceptors.request.use(
         async (config: any) => {

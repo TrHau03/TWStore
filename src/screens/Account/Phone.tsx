@@ -14,14 +14,12 @@ const Phone = (props: any) => {
     const [phone, setPhone] = useState<string>('');
     const dispatch = useDispatch();
     const user = useSelector((state: any) => state.SlicesReducer.user);
-
-    const isValidPhoneNumber = (number: string) => {
-        const phoneNumberRegex = /^\d{10,11}$/;
-        return phoneNumberRegex.test(number);
-    };
     
     const handleSavephone = async () => {
-        if (phone?.trim() === '' || !isValidPhoneNumber(phone)) {
+        const phoneNumberRegex = /((09|03|07|08|05)+([0-9]{8})\b)/;
+        if (phone?.trim() === '') {
+            Alert.alert('Thông báo', 'Vui lòng nhập số điện thoại hợp lệ');
+        }else if (!phoneNumberRegex.test(phone)) {
             Alert.alert('Thông báo', 'Vui lòng nhập số điện thoại hợp lệ');
         } else {
             setModalVisible(false)
