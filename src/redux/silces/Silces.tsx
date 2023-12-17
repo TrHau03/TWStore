@@ -43,6 +43,10 @@ const Slice = createSlice({
   reducers: {
     updateUser: (state, action) => {
       const value = action.payload;
+      state.user = value;
+    },
+    updateUserID: (state, action) => {
+      const value = action.payload;
       state.user._idUser = value;
     },
     updateGender: (state, action) => {
