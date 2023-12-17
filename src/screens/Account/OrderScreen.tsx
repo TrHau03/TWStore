@@ -29,18 +29,18 @@ const OrderScreen = ({ navigation }: PropsAccount, props: any) => {
     const [refreshingOrder, setRefreshingOrder] = useState<boolean>(false);
 
     
-    const fetchListCategory = async () => {
+    const fetchListOrder = async () => {
         const response = await AxiosInstance().get(`order/getOrderByIdUser/${user._id}`);
         setListOrder(response.data);  
     }
     useEffect(() => {
         if (isFocus) {
-            fetchListCategory();
+            fetchListOrder();
         }
     }, [isFocus])
     const onRefreshOrder = React.useCallback(() => {
         setRefreshingOrder(true);
-        fetchListCategory();
+        fetchListOrder();
         setTimeout(() => {
             setRefreshingOrder(false);
         }, 2000);

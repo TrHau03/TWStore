@@ -72,8 +72,9 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const [totalStars, setTotalStars] = useState<number>(0);
   const [handleAdd, setHandleAdd] = useState<boolean>(false);
   const dispatch = useDispatch();
-
-
+  const [idLike, setLike] = useState<string>('')
+  console.log(idLike);
+  
 
   const data = useSelector((state: any) => {
     return state.SlicesReducer.user.cartItem;
@@ -423,7 +424,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                   showsHorizontalScrollIndicator={false}
                 >
                   {listProductByBrand?.map((product: any) => (
-                    <TouchableOpacity key={product._id} style={styles.productItem}>
+                    <TouchableOpacity onPress={() => setLike(product._id)} key={product._id} style={styles.productItem}>
                       <Image source={{ uri: product.image[0] }} style={styles.productImage} />
                       <Text style={styles.productName}>{product.productName}</Text>
                       <View style={styles.sale}>
@@ -541,7 +542,7 @@ const styles = StyleSheet.create({
 
   addtocartButtonContainer: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 5,
     alignSelf: 'center',
     width: windowWidth - 20,
   },
