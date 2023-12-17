@@ -32,8 +32,15 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
     const [images, setImages] = useState<[]>([]);
     const [brand, setBrand] = useState<[]>([]);
     const [productFilter, setProductFilter] = useState<[]>([]);
+    const [textInputSearchOnChange, setTextInputSearchOnChange] = useState<string>('');
+    const inputRef = useRef<any>(null);
     const listProduct = useSelector(listProductRecommend);
-    console.log(listProduct);
+
+    const unfocusInputSearch = () => {
+        if (inputRef.current) {
+            inputRef.current.blur();
+        }
+    }
 
     const dispatch = useDispatch();
 
@@ -78,9 +85,9 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
     );
 
     const renderItemSearch = ({ item }: any) => (
-        <TouchableOpacity onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })} style={{ marginVertical: 5, flexDirection: 'row', justifyContent: 'space-between', width: '100%', height: 'auto' }}>
-            <Text style={{ fontSize: 15, marginLeft: 15,alignSelf: 'center', color: 'black'}}>{item.productName}</Text>
-            <Image style={{width: 40, height: 40 , alignSelf: 'center'}} source={{uri: item.image[0]}}/>
+        <TouchableOpacity onPress={() => { setTextInputStatus(false), navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } }) }} style={{ marginVertical: 5, flexDirection: 'row', justifyContent: 'space-between', width: '100%', height: 'auto' }}>
+            <Text style={{ fontSize: 15, marginLeft: 15, alignSelf: 'center', color: 'black' }}>{item.productName}</Text>
+            <Image style={{ width: 40, height: 40, alignSelf: 'center' }} source={{ uri: item.image[0] }} />
         </TouchableOpacity>
     );
 
@@ -113,6 +120,7 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
             setRefreshing(false);
         }, 2000);
     }, []);
+
     return (
         <SafeAreaView style={{ width: WIDTH, paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, backgroundColor: BG_COLOR }}>
             <View style={styles.top}>
@@ -122,13 +130,14 @@ const HomeScreen = ({ navigation }: NativeStackHeaderProps) => {
                         placeholder="Tìm kiếm"
                         style={[styles.TextSearch]}
                         onFocus={() => setTextInputStatus(true)}
-                        onBlur={() => setTextInputStatus(false)}
-                        onChangeText={setTextInputSearch}
-                        value={textInputSearch}
+                        onSubmitEditing={e => setTextInputSearch(e.nativeEvent.text)}
+                        onChangeText={setTextInputSearchOnChange}
+                        value={textInputSearchOnChange}
+                        ref={inputRef}
                     />
-                    <Pressable onPress={() => { setTextInputSearch('') }} style={{ position: 'absolute', right: 10, borderRadius: 5 }}>
+                    {textInputStatus && <Pressable onPress={() => { setTextInputSearch(''), setTextInputStatus(false), setTextInputSearchOnChange(''), unfocusInputSearch() }} style={{ position: 'absolute', right: 10, borderRadius: 5 }}>
                         <Icon name='close' size={14} />
-                    </Pressable>
+                    </Pressable>}
 
                 </View>
 

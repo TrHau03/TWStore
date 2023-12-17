@@ -40,7 +40,7 @@ const AccountScreen = ({ navigation }: any) => {
 
       <View>
         {data.map((item) =>
-          <TouchableOpacity style={styles.button} key={item.id} onPress={() => navigation?.navigate(item.screen)}>
+          <TouchableOpacity disabled={isUser == '' ? true : false} style={styles.button} key={item.id} onPress={() => navigation?.navigate(item.screen)}>
             <Icon name={item.icon} size={25} color={'#525252'} />
             <Text style={styles.txtbtn}>{item.name}</Text>
           </TouchableOpacity>

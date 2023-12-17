@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList, Modal, Pressable } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, FlatList, Modal, Pressable, RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../component/Header/Header'
 import { PropsAccount } from '../../component/Navigation/Props';
@@ -24,22 +24,27 @@ const OrderScreen = ({ navigation }: PropsAccount, props: any) => {
     const [status, setStatus] = useState<string>('');
     const [_idOrder, set_idOrder] = useState<string>('');
     const user = useSelector((state: any) => state.SlicesReducer.user);
-    const dispatch = useDispatch();
     const [listOrder, setListOrder] = useState<[]>();
     const [nameModal, setNameModal] = useState<string>('');
-    console.log(listOrder);
+    const [refreshingOrder, setRefreshingOrder] = useState<boolean>(false);
+
     
-
+    const fetchListCategory = async () => {
+        const response = await AxiosInstance().get(`order/getOrderByIdUser/${user._id}`);
+        setListOrder(response.data);  
+    }
     useEffect(() => {
-        const fetchListCategory = async () => {
-            const response = await AxiosInstance().get(`order/getOrderByIdUser/${user._id}`);
-            setListOrder(response.data);
-        }
-
         if (isFocus) {
             fetchListCategory();
         }
     }, [isFocus])
+    const onRefreshOrder = React.useCallback(() => {
+        setRefreshingOrder(true);
+        fetchListCategory();
+        setTimeout(() => {
+            setRefreshingOrder(false);
+        }, 2000);
+      }, []);
 
 
     const RenderItem = (props: any) => {
@@ -96,6 +101,9 @@ const OrderScreen = ({ navigation }: PropsAccount, props: any) => {
                 style={{ marginBottom: 100 }}
                 data={listOrder?.reverse()}
                 renderItem={(item) => <RenderItem navigation={navigation} data={item}></RenderItem>}
+                refreshControl={
+                    <RefreshControl refreshing={refreshingOrder} onRefresh={onRefreshOrder} />
+                  }
             />
         </View>
     )
