@@ -1,9 +1,9 @@
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, Dimensions, FlatList, RefreshControl } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import { HEIGHT, WIDTH } from '../../utilities/utility';
 import routes from '../../component/constants/routes';
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import AxiosInstance from '../../Axios/Axios';
 import { PropsExplore } from '../../component/Navigation/Props';
@@ -42,16 +42,29 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
     { label: ' 2', star: 2 },
     { label: ' 1', star: 1 },
   ];
-
+  const fetchCommentbyIdProduct = async (id: string) => {
+    const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
+    setlistComment(response.data);
+    setCommentCount(response.data.length);
+    setFilteredComments(response.data);
+  };
+  
+  const isFocused = useIsFocused();
   useEffect(() => {
-    const fetchCommentbyIdProduct = async (id: string) => {
-      const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
-      setlistComment(response.data);
-      setCommentCount(response.data.length);
-      setFilteredComments(response.data);
-    };
+    if (isFocused) {
+      fetchCommentbyIdProduct(id);
+    }
+  }, [isFocused]);
+
+  const [refreshingProductReview, setRefreshingProductReview] = useState<boolean>(false);
+
+  const onRefreshProductReview = React.useCallback(() => {
+    setRefreshingProductReview(true);
     fetchCommentbyIdProduct(id);
-  }, [id]);
+    setTimeout(() => {
+      setRefreshingProductReview(false);
+    }, 2000);
+  }, []);
 
   useEffect(() => {
     const filtered = selectedStar !== null
@@ -60,17 +73,6 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
     setFilteredComments(filtered);
     setCommentCount(filtered.length);
   }, [selectedStar, listComment]);
-
-
-
-
-  const fetchCommentbyIdProduct = async (id: string) => {
-    const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
-    setlistComment(response.data);
-  }
-  const handleAddComment = async () => {
-
-  };
 
 
   const RenderItem = ({ item }: { item: any }) => {
@@ -164,6 +166,9 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
                 keyExtractor={(item: any) => item?._id.toString()}
                 initialNumToRender={5}
                 maxToRenderPerBatch={5}
+                refreshControl={
+                  <RefreshControl refreshing={refreshingProductReview} onRefresh={onRefreshProductReview} />
+                }
               />
             ) : (
               <Text style={{ fontSize: 20 }}>Chưa có đánh giá</Text>

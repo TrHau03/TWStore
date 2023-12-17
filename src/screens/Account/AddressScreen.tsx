@@ -53,7 +53,7 @@ const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
             <View>
                 <Text style={styles.txtName}>Địa chỉ số {item.position}</Text>
                 <Text style={styles.txtContent}>{address}</Text>
-                <View style={{ flexDirection: 'row', paddingVertical: 10 }}>
+                <View style={{ alignSelf:'flex-end' ,paddingVertical: 10 }}>
                     <TouchableOpacity onPress={() => handleRemove(item.position)} style={{ justifyContent: 'center' }}><Icon name='trash' size={25} /></TouchableOpacity>
                 </View>
             </View>

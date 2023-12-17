@@ -76,16 +76,16 @@ const Order_Detail = (props: any) => {
               <Text style={styles.txtName_Product}>{item.productID.productName}</Text>
               <NumericFormat displayType={'text'} value={Number(item.productID.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.txtPrice_Product}>{formattedValue + 'đ'} </Text>} />
 
-              <View style={{ flexDirection: 'row', gap: 15 }}>
+              <View style={{ flexDirection: 'row' , width: '90%', justifyContent: 'space-between'}}>
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={styles.txtPrice_Product}>Màu : </Text>
                   <Text style={styles.txtPrice_ProductName}>{item.colorID.name}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', gap: 5 }}>
+                <View style={{ flexDirection: 'row' }}>
                   <Text style={styles.txtPrice_Product}>Size : </Text>
                   <Text style={styles.txtPrice_ProductName}>{item.sizeID.name}</Text>
                 </View>
-                <View style={{ flexDirection: 'row', gap: 5 }}>
+                <View style={{ flexDirection: 'row'}}>
                   <Text style={styles.txtPrice_Product}>SL : </Text>
                   <Text style={styles.txtPrice_ProductName}>{item.quantityProduct}</Text>
                 </View>

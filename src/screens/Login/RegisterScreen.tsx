@@ -44,21 +44,33 @@ const RegisterScreen = (props: any) => {
 
 
     const register = async (user: Register) => {
+        const emailPattern = /^[a-zA-Z0-9._-]+@gmail.com$/;
+
         try {
             console.log('register', user);
-
-            if (user.password != user.passwordAgain) {
-                return Alert.alert('Notification', 'Password not same!', [
-                    { text: 'OK' }
-                ]);;
+            if (name == '') {
+                Alert.alert("Vui lòng tên không được để trống");
+            } else if (email == '') {
+                Alert.alert("Vui lòng email không được để trống");
+            } else if (!emailPattern.test(email)) {
+                Alert.alert("Email không hợp lệ");
+            } else if (password == '') {
+                Alert.alert("Vui lòng mật khẩu không được để trống");
+            } else if (passwordAgain == '') {
+                Alert.alert("Vui lòng nhập lại mật khẩu không được để trống");
+            } else {
+                if (user.password != user.passwordAgain) {
+                    return Alert.alert('Thông báo', 'Mật khẩu không trùng khớp!', [
+                        { text: 'OK' }
+                    ]);;
+                }
+                dispatch(isLoading(true));
+                const result = await AxiosInstance().post('/usersInfo/RegisterUser', { username: user.name, email: user.email, password: user.password });
+                if (result) {
+                    dispatch(isLoading(false));
+                    navigation.navigate(RootStackScreenEnumLogin.LoginScreen);
+                }
             }
-            dispatch(isLoading(true));
-            const result = await AxiosInstance().post('/usersInfo/RegisterUser', { username: user.name, email: user.email, password: user.password });
-            if (result) {
-                dispatch(isLoading(false));
-                navigation.navigate(RootStackScreenEnumLogin.LoginScreen);
-            }
-
         } catch (error) {
             console.log('getNews Error: ', error);
         }

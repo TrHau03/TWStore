@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, FlatList, ScrollView, Pressable } from 'react-native'
+import { StyleSheet, Text, View, TextInput, FlatList, ScrollView, Pressable, Alert } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Header from '../../component/Header/Header'
 import Button from '../../component/Button/Button'
@@ -36,7 +36,7 @@ const Add_Address = (props: any) => {
         return state.SlicesReducer.user.address;
     });
 
-    const {setModalVisible} = props.action;
+    const { setModalVisible } = props.action;
     const dispatch = useDispatch();
 
     const [tinhThanhs, setTinhThanhs] = useState<TinhThanh[]>([]);
@@ -60,23 +60,33 @@ const Add_Address = (props: any) => {
     const [tenPhuongSelected, setTenPhuongSelected] = useState<string>('');
     const [street, setStreet] = useState<string>('');
     const handleAddAddress = async () => {
-        const response = await AxiosInstance().post(`users/updateAddressUser`, {
-            _idUser: user._idUser,
-            typeUpdate: 'insert',
-            city: tenTinhThanhSelected,
-            district: tenQuanSelected,
-            ward: tenPhuongSelected,
-            street: street
-
-        });
-        dispatch(addAddress({
-            position: listAddress.length + 1,
-            city: tenTinhThanhSelected,
-            district: tenQuanSelected,
-            ward: tenPhuongSelected,
-            street: street
-        }));
-        setModalVisible(false);
+        if (!tinhThanhSelected) {
+            Alert.alert('Vui lòng chọn Tỉnh/Thành phố.');
+        } else if (!tenQuanSelected) {
+            Alert.alert('Vui lòng chọn Quận/Huyện.');
+        } else if (!tenPhuongSelected) {
+            Alert.alert('Vui lòng chọn Phường/xã.');
+        }
+        else if (!street) {
+            Alert.alert('Vui lòng nhập địa chỉ.');
+        } else {
+            const response = await AxiosInstance().post(`users/updateAddressUser`, {
+                _idUser: user._idUser,
+                typeUpdate: 'insert',
+                city: tenTinhThanhSelected,
+                district: tenQuanSelected,
+                ward: tenPhuongSelected,
+                street: street
+            });
+            dispatch(addAddress({
+                position: listAddress.length + 1,
+                city: tenTinhThanhSelected,
+                district: tenQuanSelected,
+                ward: tenPhuongSelected,
+                street: street
+            }));
+            setModalVisible(false);
+        }
     }
     useEffect(() => {
         const layDuLieu = async () => {

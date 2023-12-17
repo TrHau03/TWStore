@@ -11,17 +11,15 @@ import AxiosInstance from '../../Axios/Axios'
 
 const Phone = (props: any) => {
     const { setModalVisible } = props.action;
-    const [phone, setPhone] = useState<string>()
+    const [phone, setPhone] = useState<string>('');
     const dispatch = useDispatch();
     const user = useSelector((state: any) => state.SlicesReducer.user);
-
-    const isValidPhoneNumber = (number: string) => {
-        const phoneNumberRegex = /^\d{9,12}$/;
-        return phoneNumberRegex.test(number);
-    };
-
+    
     const handleSavephone = async () => {
+        const phoneNumberRegex = /((09|03|07|08|05)+([0-9]{8})\b)/;
         if (phone?.trim() === '') {
+            Alert.alert('Thông báo', 'Vui lòng nhập số điện thoại hợp lệ');
+        }else if (!phoneNumberRegex.test(phone)) {
             Alert.alert('Thông báo', 'Vui lòng nhập số điện thoại hợp lệ');
         } else {
             setModalVisible(false)

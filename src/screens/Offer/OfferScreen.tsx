@@ -1,11 +1,12 @@
-import { Animated, FlatList, Image, TextInput, ScrollView, StyleSheet, Text, Keyboard, View, Pressable, NativeSyntheticEvent, TextInputSubmitEditingEventData } from 'react-native'
+import { Animated, FlatList, Image, TextInput, ScrollView, StyleSheet, Text, Keyboard, View, Pressable, NativeSyntheticEvent, TextInputSubmitEditingEventData, TouchableOpacity } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Icon from 'react-native-vector-icons/Ionicons';
 import TimeCountDown from './TimeCountDown';
 import { BG_COLOR, PADDING_HORIZONTAL, PADDING_TOP, WIDTH } from '../../utilities/utility';
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
-
-
+import { NumericFormat } from 'react-number-format';
+import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import { useNavigation } from '@react-navigation/native';
 
 interface Product {
   _id: string;
@@ -15,24 +16,26 @@ interface Product {
 }
 
 
-
-const RenderItem = ({ item, offer }: { item: Product; offer: any }) => {
+const RenderItem = ({ item, offer, navigation }: { item: Product; offer: any, navigation: any }) => {
+  
   return (
-    <View style={styles.containerItemPD} >
+    <TouchableOpacity style={styles.containerItemPD} onPress={() => navigation.navigate('Explore', { screen: RootStackScreenEnumExplore.Productdetail, params: { id: item._id } })}>
       <View>
         <Image style={{ width: '100%', height: 120, borderRadius: 5 }} source={{ uri: item.image[0] }} />
       </View>
       <View style={{ width: '100%', height: 50, marginTop: 5 }}>
-        <Text style={styles.NamePD}>{item.productName}</Text>
+      <Text style={styles.NamePD}>{item.productName.length < 20 ? item.productName : item.productName.substring(0, 30) + "..."}</Text>
       </View>
       <View>
-        <Text style={styles.PricePD}>{item.price * (1 - (offer / 100))} VND</Text>
+        <NumericFormat displayType={'text'} value={Number(item.price * (1 - (offer / 100)))} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={styles.PricePD}>{formattedValue + 'đ'}</Text>} />
+
         <View style={styles.sale}>
-          <Text style={styles.txtOldPrice}>{item.price} VND</Text>
+          <NumericFormat displayType={'text'} value={Number(item.price)} allowLeadingZeros thousandSeparator="," renderText={(formattedValue: any) => <Text style={offer > 0 ? styles.txtOldPrice : styles.PricePD}>{formattedValue + 'đ'}</Text>} />
+          
           <Text style={styles.txtSale}>{offer}% Off</Text>
         </View>
       </View>
-    </View >
+    </TouchableOpacity >
   )
 }
 
@@ -112,14 +115,14 @@ const OfferScreen = (props: NativeStackHeaderProps) => {
           <Pressable onPress={() => navigation.goBack()}>
             <Icon name='chevron-back-outline' size={25} />
           </Pressable>
-          <Text style={styles.textTitlePage}>Super Flash Sale</Text>
+          <Text style={styles.textTitlePage}>Thông tin khuyến mãi</Text>
         </Animated.View>
         <TextInputAnimated onSubmitEditing={(e) => {
           animationNone();
           setTextSearch(e.nativeEvent.text);
         }}
           ref={refInput}
-          style={{ alignSelf: 'center', fontSize: 17, borderBottomWidth: 0.5, paddingVertical: 0, position: 'absolute', width: '80%', height: 35, marginLeft: 40, transform: [{ scaleX: animTextInput }], opacity: animTextInput }}
+          style={{ alignSelf: 'center', fontSize: 17, borderBottomWidth: 0.5, paddingVertical: 0, position: 'absolute', width: '80%', height: 35, marginLeft: '20%', transform: [{ scaleX: animTextInput }], opacity: animTextInput }}
           placeholder='Search'
         />
         <PressableAnimated style={{ position: 'absolute', right: 0, transform: [{ translateX: translateAnimSearch }] }} onPress={() => { animationFlex(); refInput?.current?.focus(); }} >
@@ -134,7 +137,7 @@ const OfferScreen = (props: NativeStackHeaderProps) => {
         </View>
         <FlatList
           scrollEnabled={false}
-          renderItem={(object) => <RenderItem item={object.item} offer={item.levelGiamgia} />}
+          renderItem={(object) => <RenderItem item={object.item} offer={item.levelGiamgia} navigation={navigation}/>}
           data={listProductSale}
           keyExtractor={(item: Product) => item._id}
           showsVerticalScrollIndicator={false}
@@ -161,7 +164,7 @@ const styles = StyleSheet.create({
   },
   txtSale: {
     color: 'red',
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: 'bold',
     position: 'absolute',
     right: 0,
@@ -200,6 +203,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica Neue',
     lineHeight: 24,
     color: '#4464C4',
+    alignSelf: 'center'
   },
   ImgContainerPD: {
     backgroundColor: '#FFFFFF',

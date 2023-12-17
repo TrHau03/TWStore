@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,7 +10,8 @@ import {
   Pressable,
   Alert,
   FlatList,
-  SectionList
+  SectionList,
+  RefreshControl
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
@@ -72,7 +73,15 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const [handleAdd, setHandleAdd] = useState<boolean>(false);
   const dispatch = useDispatch();
 
+  const scrollRef = useRef<any>();
 
+  const onRefreshProductLike = (id : string) => {
+    fetchProductByID(id);
+    scrollRef.current?.scrollTo({
+      y: 0,
+      animated: true,
+    });
+  }
 
   const data = useSelector((state: any) => {
     return state.SlicesReducer.user.cartItem;
@@ -124,39 +133,35 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       starCounts,
     };
   };
-
+  const fetchProductByID = async (id : string | undefined) => {
+    const response = await AxiosInstance().get(`product/getProductById/${id}`);
+    setProduct(response.data);
+    response && fetchProductByBrand(response.data.brand._id);
+  }
+  const fetchProductByBrand = async (id: string) => {
+    const response = await AxiosInstance().get(`product/getProductByIdBrand/${id}`);
+    setListProductByBrand(response.data);
+  }
+  const fetchCommentbyIdProduct = async () => {
+    try {
+      const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
+      if (response.data && Array.isArray(response.data)) {
+        const { averageStars, starCounts } = calculateAverageStars(response.data);
+        setListComment(response.data);
+        setTotalStars(averageStars);
+        setCommentCount(response.data.length);
+      } else {
+        console.error('Invalid data format:', response.data);
+      }
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  };
   useFocusEffect(
     React.useCallback(() => {
-      const fetchProductByID = async () => {
-        const response = await AxiosInstance().get(`product/getProductById/${id}`);
-        setProduct(response.data);
-        response && fetchProductByBrand(response.data.brand._id);
-      }
-      const fetchProductByBrand = async (id: string) => {
-        const response = await AxiosInstance().get(`product/getProductByIdBrand/${id}`);
-        setListProductByBrand(response.data);
-      }
-      const fetchCommentbyIdProduct = async () => {
-        try {
-          const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
-          if (response.data && Array.isArray(response.data)) {
-            const { averageStars, starCounts } = calculateAverageStars(response.data);
-            setListComment(response.data);
-            setTotalStars(averageStars);
-            setCommentCount(response.data.length);
-          } else {
-            console.error('Invalid data format:', response.data);
-          }
-        } catch (error) {
-          console.error('Error fetching comments:', error);
-        }
-      };
-
-
       if (isFocus) {
-        fetchProductByID();
+        fetchProductByID(id);
         fetchCommentbyIdProduct();
-
       }
       return () => {
         // Do something when the screen is unfocused
@@ -237,8 +242,6 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     setHandleAdd(false);
   }
 
-
-
   const RenderItem = ({ item }: { item: any }) => {
     return (
       <View style={styles.reviewContainer}>
@@ -289,11 +292,23 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       </View>
     );
   }
+  
+  const [refreshingProductDetail, setRefreshingProductDetail] = useState<boolean>(false);
 
-
+  const onRefreshProductDetail = React.useCallback(() => {
+    setRefreshingProductDetail(true);
+    fetchProductByID(id);
+    fetchCommentbyIdProduct();
+    setTimeout(() => {
+      setRefreshingProductDetail(false);
+    }, 2000);
+  }, []);
   return (
     <View style={{ height: '100%' }}>
-      <ScrollView>
+      <ScrollView ref={scrollRef}      
+      refreshControl={
+          <RefreshControl refreshing={refreshingProductDetail} onRefresh={onRefreshProductDetail} />
+        }>
         <View style={styles.header}>
           <Pressable style={{ position: 'absolute', left: 10 }} onPress={() => navigation.navigate(RootStackScreenEnumExplore.ExploreScreen)}>
             <Icon name='chevron-back-outline' size={26} />
@@ -416,7 +431,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                   showsHorizontalScrollIndicator={false}
                 >
                   {listProductByBrand?.map((product: any) => (
-                    <TouchableOpacity key={product._id} style={styles.productItem}>
+                    <TouchableOpacity onPress={() => {onRefreshProductLike(product._id)}} key={product._id} style={styles.productItem}>
                       <Image source={{ uri: product.image[0] }} style={styles.productImage} />
                       <Text style={styles.productName}>{product.productName}</Text>
                       <View style={styles.sale}>
@@ -534,7 +549,7 @@ const styles = StyleSheet.create({
 
   addtocartButtonContainer: {
     position: 'absolute',
-    bottom: 10,
+    bottom: 5,
     alignSelf: 'center',
     width: windowWidth - 20,
   },

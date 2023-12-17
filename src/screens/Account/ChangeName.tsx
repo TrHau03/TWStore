@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, Alert, } from 'react-native'
 import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import Header from '../../component/Header/Header'
@@ -10,15 +10,19 @@ import AxiosInstance from '../../Axios/Axios'
 
 const ChangeName = (props: any) => {
     const { setModalVisible } = props.action;
-    const [name, setName] = useState<string>()
+    const [name, setName] = useState<string>('')
     const dispatch = useDispatch();
     const user = useSelector((state: any) => state.SlicesReducer.user);
-    
+
     const handleSaveName = async () => {
+        if (name?.trim() === '' ||  name.length > 30) {
+            Alert.alert('Thông báo', 'Vui lòng không để trống tên và để tên quá dài');
+        } else {
         setModalVisible(false)
         dispatch(updateName(name))
         const responseUser = await AxiosInstance().post(`/users/updateInfoUser`, { _id: user._idUser, name: name });
         const responseUserInfor = await AxiosInstance().post(`/usersInfo/updateInfoUser`, { _id: user._idUser, username: name });
+        }
     }
 
     return (

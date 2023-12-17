@@ -21,9 +21,9 @@ const Birthday = (props: any) => {
     const dispatch = useDispatch();
 
     const handleSaveBirthDay = async () => {
-        dispatch(updateBirthDay(birthDay));
         const response = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, birthDay: birthDay });
         setModalVisible(false)
+        dispatch(updateBirthDay(birthDay));
     }
     
     return (
