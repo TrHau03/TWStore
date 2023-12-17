@@ -1,13 +1,23 @@
-import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity, Dimensions, FlatList, RefreshControl } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  ScrollView,
+  TouchableOpacity,
+  Dimensions,
+  FlatList,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-import { HEIGHT, WIDTH } from '../../utilities/utility';
+import {HEIGHT, WIDTH} from '../../utilities/utility';
 import routes from '../../component/constants/routes';
-import { RouteProp, useIsFocused, useRoute } from '@react-navigation/native';
-import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {RootStackScreenEnumExplore} from '../../component/Root/RootStackExplore';
 import AxiosInstance from '../../Axios/Axios';
-import { PropsExplore } from '../../component/Navigation/Props';
-import { NativeStackHeaderProps } from '@react-navigation/native-stack';
+import {PropsExplore} from '../../component/Navigation/Props';
+import {NativeStackHeaderProps} from '@react-navigation/native-stack';
+import {useSelector} from 'react-redux';
 
 // Định nghĩa kiểu dữ liệu cho đánh giá (Review)
 interface Comment {
@@ -19,68 +29,79 @@ interface Comment {
 const windowWidth = Dimensions.get('window').width;
 
 export default function ProductReviews(props: NativeStackHeaderProps) {
-
-  const { navigation } = props
-
+  const {navigation} = props;
+  const user = useSelector((state: any) => state.SlicesReducer.user);
   const route = useRoute();
   const [listComment, setlistComment] = useState<Comment[]>([]);
   const [commentCount, setCommentCount] = useState<number>(0);
-  const { id } = route.params as { id: any };
+  const {id} = route.params as {id: any};
   const [selectedStar, setSelectedStar] = useState<number | null>(null);
   const [filteredComments, setFilteredComments] = useState<Comment[]>([]);
-
-
+  const [isComment, setIsComment] = useState<boolean>(false);
   const handleStarFilter = (star: number | null) => {
     setSelectedStar(star);
   };
-
   const starFilterButtons = [
-    { label: 'Tất cả đánh giá', star: null },
-    { label: ' 5', star: 5 },
-    { label: ' 4', star: 4 },
-    { label: ' 3', star: 3 },
-    { label: ' 2', star: 2 },
-    { label: ' 1', star: 1 },
+    {label: 'Tất cả đánh giá', star: null},
+    {label: ' 5', star: 5},
+    {label: ' 4', star: 4},
+    {label: ' 3', star: 3},
+    {label: ' 2', star: 2},
+    {label: ' 1', star: 1},
   ];
-  const fetchCommentbyIdProduct = async (id: string) => {
-    const response = await AxiosInstance().get(`comment/getCommentbyIdProduct/${id}`);
-    setlistComment(response.data);
-    setCommentCount(response.data.length);
-    setFilteredComments(response.data);
-  };
-  
-  const isFocused = useIsFocused();
+
   useEffect(() => {
-    if (isFocused) {
-      fetchCommentbyIdProduct(id);
-    }
-  }, [isFocused]);
-
-  const [refreshingProductReview, setRefreshingProductReview] = useState<boolean>(false);
-
-  const onRefreshProductReview = React.useCallback(() => {
-    setRefreshingProductReview(true);
+    const fetchCommentbyIdProduct = async (id: string) => {
+      const response = await AxiosInstance().get(
+        `comment/getCommentbyIdProduct/${id}`,
+      );
+      setlistComment(response.data);
+      setCommentCount(response.data.length);
+      setFilteredComments(response.data);
+    };
     fetchCommentbyIdProduct(id);
-    setTimeout(() => {
-      setRefreshingProductReview(false);
-    }, 2000);
-  }, []);
+  }, [id]);
 
   useEffect(() => {
-    const filtered = selectedStar !== null
-      ? listComment.filter(comment => comment.star === selectedStar)
-      : listComment;
+    const filtered =
+      selectedStar !== null
+        ? listComment.filter(comment => comment.star === selectedStar)
+        : listComment;
     setFilteredComments(filtered);
     setCommentCount(filtered.length);
   }, [selectedStar, listComment]);
-
-
-  const RenderItem = ({ item }: { item: any }) => {
+  useEffect(() => {
+    checkProductidInUser(user._id);
+  });
+  const fetchCommentbyIdProduct = async (id: string) => {
+    const response = await AxiosInstance().get(
+      `comment/getCommentbyIdProduct/${id}`,
+    );
+    setlistComment(response.data);
+  };
+  const checkProductidInUser = async (_id: string) => {
+    const listOrder = await AxiosInstance().get(
+      `order/getOrderByIdUser/${_id}`,
+    );
+    const listIDProductOrder: any = [];
+    listOrder.data.map((item: any) => {
+      item.listProduct.map((product: any) => {
+        listIDProductOrder.push(product.productID._id);
+      });
+    });
+    setIsComment(listIDProductOrder.includes(id) ? true : false);
+    return;
+  };
+  const RenderItem = ({item}: {item: any}) => {
     return (
       <View style={styles.reviewContainer}>
         <View style={styles.reviewHeader}>
           <Image
-            source={{ uri: item.avatar ? item.avatar : 'https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg' }}
+            source={{
+              uri: item.avatar
+                ? item.avatar
+                : 'https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg',
+            }}
             style={styles.userImage}
           />
           <View style={styles.userInfo}>
@@ -91,26 +112,31 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
             )}
 
             <View style={styles.starRating}>
-              {Array.from({ length: item.star }, (_, index) => (
+              {Array.from({length: item.star}, (_, index) => (
                 <Image
                   key={index}
-                  source={{ uri: 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png' }}
+                  source={{
+                    uri: 'https://raw.githubusercontent.com/tranhonghan/images/main/star_filled.png',
+                  }}
                   style={styles.starImaStyle}
                 />
               ))}
             </View>
           </View>
         </View>
-        {item.content && <Text style={styles.reviewComment}>{item.content}</Text>}
+        {item.content && (
+          <Text style={styles.reviewComment}>{item.content}</Text>
+        )}
         {item.image && (
           <View style={styles.commentImagesContainer}>
-            {Array.isArray(item.image) && item.image.map((imageURL: string, index: any) => (
-              <Image
-                key={index}
-                source={{ uri: imageURL }}
-                style={styles.CommentImage}
-              />
-            ))}
+            {Array.isArray(item.image) &&
+              item.image.map((imageURL: string, index: any) => (
+                <Image
+                  key={index}
+                  source={{uri: imageURL}}
+                  style={styles.CommentImage}
+                />
+              ))}
           </View>
         )}
         <View style={styles.reviewFooter}>
@@ -118,35 +144,31 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
         </View>
       </View>
     );
-  }
+  };
 
   return (
-    <View style={{ height: '100%' }}>
-
-      <View style={{ }}>
-
+    <View style={{height: '100%'}}>
+      <View style={{}}>
         <View>
           <View style={styles.header}>
             <Text style={styles.name}>{commentCount} Đánh giá</Text>
           </View>
 
           <ScrollView
-            style={{ height: '20%' }}
+            style={{height: '20%'}}
             horizontal
             contentContainerStyle={styles.starfilter}
-            showsHorizontalScrollIndicator={false}
-          >
-            {starFilterButtons.map((button) => (
+            showsHorizontalScrollIndicator={false}>
+            {starFilterButtons.map(button => (
               <TouchableOpacity
                 key={button.label}
                 style={[
                   styles.starButton,
                   selectedStar === button.star && styles.selectedStarButton,
                 ]}
-                onPress={() => handleStarFilter(button.star)}
-              >
+                onPress={() => handleStarFilter(button.star)}>
                 <Image
-                  source={{ uri: starImages[button.star || 0] }}
+                  source={{uri: starImages[button.star || 0]}}
                   style={styles.starImage}
                 />
                 <Text style={styles.starButtonText}>{button.label}</Text>
@@ -154,48 +176,40 @@ export default function ProductReviews(props: NativeStackHeaderProps) {
             ))}
           </ScrollView>
 
-
-
-          <View style={{ height: '80%', alignItems: 'center' }}>
+          <View style={{height: '80%', alignItems: 'center'}}>
             {listComment && listComment.length > 0 ? (
               <FlatList
-                style={{ height: 'auto' , marginBottom: HEIGHT * 0.3 }}
+                style={{height: 'auto', marginBottom: HEIGHT * 0.3}}
                 showsVerticalScrollIndicator={false}
-                renderItem={(object) => <RenderItem item={object.item} />}
+                renderItem={object => <RenderItem item={object.item} />}
                 data={filteredComments}
                 keyExtractor={(item: any) => item?._id.toString()}
                 initialNumToRender={5}
                 maxToRenderPerBatch={5}
-                refreshControl={
-                  <RefreshControl refreshing={refreshingProductReview} onRefresh={onRefreshProductReview} />
-                }
               />
             ) : (
-              <Text style={{ fontSize: 20 }}>Chưa có đánh giá</Text>
+              <Text style={{fontSize: 20}}>Chưa có đánh giá</Text>
             )}
           </View>
         </View>
       </View>
 
-
-
       <View style={styles.addCommentButtonContainer}>
-        <TouchableOpacity
-          style={styles.addCommentButton}
-          onPress={() => navigation.navigate('AddComment', { id: id })}
-
-        >
-          <LinearGradient
-            colors={['#46CAF3', '#68B1D9']}
-            style={{ borderRadius: 10 }}
-          >
-            <Text style={styles.addCommentButtonText}>Viết Đánh Giá</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        {isComment && (
+          <TouchableOpacity
+            style={styles.addCommentButton}
+            onPress={() => {
+              navigation.navigate('AddComment', {id: id});
+            }}>
+            <LinearGradient
+              colors={['#46CAF3', '#68B1D9']}
+              style={{borderRadius: 10}}>
+              <Text style={styles.addCommentButtonText}>Viết Đánh Giá</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
       </View>
-
     </View>
-
   );
 }
 
@@ -203,7 +217,7 @@ const styles = StyleSheet.create({
   starImaStyle: {
     width: 25,
     height: 25,
-    resizeMode: 'cover'
+    resizeMode: 'cover',
   },
   addCommentButtonContainer: {
     position: 'absolute',
@@ -221,12 +235,11 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontSize: 20,
-    fontFamily: "poppins",
+    fontFamily: 'poppins',
     fontWeight: '800',
     height: 60,
     lineHeight: 60,
   },
-
 
   header: {
     flexDirection: 'row',
@@ -306,7 +319,6 @@ const styles = StyleSheet.create({
   starfilter: {
     flexDirection: 'row',
     alignItems: 'center',
-
   },
   starButton: {
     flexDirection: 'row',
@@ -356,8 +368,6 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
-
-
 
 const starImages = [
   'https://raw.githubusercontent.com/tranhonghan/images/main/star_corner.png', // 0 Stars
