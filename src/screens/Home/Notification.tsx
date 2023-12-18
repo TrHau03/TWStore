@@ -66,6 +66,7 @@ const Voucher = () => {
 
   const fetchVoucher = async () => {
     const response = await AxiosInstance().get(`promotion/getAllPromotion`);
+    
     setVoucher(response.data);
   };
   useEffect(() => {
