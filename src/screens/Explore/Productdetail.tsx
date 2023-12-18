@@ -21,11 +21,12 @@ import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import AxiosInstance from '../../Axios/Axios';
 import { RootStackScreenEnumExplore } from '../../component/Root/RootStackExplore';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem } from '../../redux/silces/Silces';
+import { addItem, isLoading } from '../../redux/silces/Silces';
 import { HEIGHT, WIDTH } from '../../utilities/utility';
 import { uid } from 'uid';
 import { NumericFormat } from 'react-number-format';
 import { RootStackScreenEnumAccount } from '../../component/Root/RootStackAccount';
+import Loading from '../../component/Loading/Loading';
 
 
 
@@ -75,7 +76,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
 
   const scrollRef = useRef<any>();
 
-  const onRefreshProductLike = (id : string) => {
+  const onRefreshProductLike = (id: string) => {
     fetchProductByID(id);
     scrollRef.current?.scrollTo({
       y: 0,
@@ -133,7 +134,8 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       starCounts,
     };
   };
-  const fetchProductByID = async (id : string | undefined) => {
+  const fetchProductByID = async (id: string | undefined) => {
+    dispatch(isLoading(true));
     const response = await AxiosInstance().get(`product/getProductById/${id}`);
     setProduct(response.data);
     response && fetchProductByBrand(response.data.brand._id);
@@ -141,6 +143,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   const fetchProductByBrand = async (id: string) => {
     const response = await AxiosInstance().get(`product/getProductByIdBrand/${id}`);
     setListProductByBrand(response.data);
+    dispatch(isLoading(false));
   }
   const fetchCommentbyIdProduct = async () => {
     try {
@@ -241,10 +244,12 @@ const Productdetail = (props: NativeStackHeaderProps) => {
     createTwoButtonAlert();
     setHandleAdd(false);
   }
+  console.log('render');
 
   const RenderItem = ({ item }: { item: any }) => {
     return (
       <View style={styles.reviewContainer}>
+        <Loading />
         <View style={styles.reviewHeader}>
           <Image
             source={{ uri: item.avatar ? item.avatar : 'https://cdn.sforum.vn/sforum/wp-content/uploads/2023/10/avatar-trang-4.jpg' }}
@@ -292,7 +297,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
       </View>
     );
   }
-  
+
   const [refreshingProductDetail, setRefreshingProductDetail] = useState<boolean>(false);
 
   const onRefreshProductDetail = React.useCallback(() => {
@@ -305,8 +310,8 @@ const Productdetail = (props: NativeStackHeaderProps) => {
   }, []);
   return (
     <View style={{ height: '100%' }}>
-      <ScrollView ref={scrollRef}      
-      refreshControl={
+      <ScrollView ref={scrollRef}
+        refreshControl={
           <RefreshControl refreshing={refreshingProductDetail} onRefresh={onRefreshProductDetail} />
         }>
         <View style={styles.header}>
@@ -431,7 +436,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
                   showsHorizontalScrollIndicator={false}
                 >
                   {listProductByBrand?.map((product: any) => (
-                    <TouchableOpacity onPress={() => {onRefreshProductLike(product._id)}} key={product._id} style={styles.productItem}>
+                    <TouchableOpacity onPress={() => { onRefreshProductLike(product._id) }} key={product._id} style={styles.productItem}>
                       <Image source={{ uri: product.image[0] }} style={styles.productImage} />
                       <Text style={styles.productName}>{product.productName}</Text>
                       <View style={styles.sale}>
@@ -454,7 +459,7 @@ const Productdetail = (props: NativeStackHeaderProps) => {
         {isUser == '' ?
           <TouchableOpacity
             style={styles.addtocartButton}
-            onPress={() => navigation.navigate(RootStackScreenEnumAccount.AccountScreen)}
+            onPress={() => navigation.navigate('Account', { screen: RootStackScreenEnumAccount.AccountScreen })}
           >
             <LinearGradient colors={['#46CAF3', '#68B1D9']} style={{ borderRadius: 10 }}>
               <Text style={styles.addtocartButtonText}>Vui lòng đăng nhập!</Text>

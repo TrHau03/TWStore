@@ -24,8 +24,7 @@ const AccountScreen = ({ navigation }: any) => {
     await LoginManager.logOut();
     navigation.navigate('Home', { screen: 'HomesScreen' });
     setTimeout(async () => {
-      dispatch(updateUser({ _id: '', _idUser: '', email: '', userName: '', cartItem: '', avatar: '', gender: '', birthDay: '', address: null, phone: '' }));
-      dispatch(cartEmpty([]));
+      dispatch(updateUser({ _id: '', _idUser: '', email: '', userName: '', cartItem: [], avatar: '', gender: '', birthDay: '', address: null, phone: '' }));
       dispatch(isLoading(false));
     }, 1000);
   }

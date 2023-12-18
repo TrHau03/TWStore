@@ -33,7 +33,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const listDataCart = useSelector((state: any) => {
         return state.SlicesReducer.user.cartItem;
     });
-    const listProduct = listDataCart.map((item: any) => {
+    const listProduct = listDataCart?.map((item: any) => {
         return {
             quantityProduct: item.quantity,
             productID: item.productID._id,
@@ -89,12 +89,12 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             return;
         }
         console.log(selectedAddress);
-        
-        if(Number(selectedAddress) == 1){
+
+        if (Number(selectedAddress) == 1) {
             Alert.alert('Thông báo', 'Vui lòng chọn địa chỉ giao hàng');
             return;
         }
-        
+
         checkPaymentMethod();
         // Thêm các bước xử lý tiếp theo sau khi kiểm tra thành công
     };

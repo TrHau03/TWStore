@@ -30,7 +30,7 @@ interface Category {
   name: string;
 }
 type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
-const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
+const ExploreScreen = ({ navigation }: NativeStackHeaderProps | any) => {
   const isFocused = useIsFocused();
 
   const navigationBottom = useNavigation<BottomNavigationProp>();
