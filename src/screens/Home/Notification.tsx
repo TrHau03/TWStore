@@ -66,6 +66,7 @@ const Voucher = () => {
 
   const fetchVoucher = async () => {
     const response = await AxiosInstance().get(`promotion/getAllPromotion`);
+    
     setVoucher(response.data);
   };
   useEffect(() => {
@@ -76,6 +77,7 @@ const Voucher = () => {
 
   const onRefreshVoucher = React.useCallback(() => {
     setRefreshingVoucher(true);
+    fetchVoucher();
     setTimeout(() => {
       setRefreshingVoucher(false);
     }, 2000);

@@ -3,6 +3,7 @@ import {
   Image,
   ImageBackground,
   Pressable,
+  RefreshControl,
   StyleSheet,
   Text,
   TextInput,
@@ -29,7 +30,7 @@ interface Category {
   name: string;
 }
 type BottomNavigationProp = CompositeNavigationProp<NavigationProp<RootTabParamList>, StackNavigationProp<RootStackParamListHome, RootStackScreenEnumHome>>;
-const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
+const ExploreScreen = ({ navigation }: NativeStackHeaderProps | any) => {
   const isFocused = useIsFocused();
 
   const navigationBottom = useNavigation<BottomNavigationProp>();
@@ -40,16 +41,25 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
 
   const [listCategory, setListCategory] = useState<[]>([]);
 
-  
+  const fetchListCategory = async () => {
+    const response = await AxiosInstance().get('category/getAllCategory');
+    setListCategory(response.data);
+  }
   useEffect(() => {
-    const fetchListCategory = async () => {
-      const response = await AxiosInstance().get('category/getAllCategory');
-      setListCategory(response.data);
-    }
     if (isFocused) {
       fetchListCategory();
     }
   }, [isFocused])
+
+  const [refreshingCategory, setRefreshingCategory] = useState<boolean>(false);
+
+  const onRefreshCategory = React.useCallback(() => {
+    setRefreshingCategory(true);
+    fetchListCategory();
+    setTimeout(() => {
+      setRefreshingCategory(false);
+    }, 2000);
+  }, []);
 
   const renderItem = ({ item }: any): React.JSX.Element => {
     return (
@@ -84,11 +94,11 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
             onChangeText={setTextInputSearch}
             value={textInputSearch}
           />
-          {(textInputStatus) ?(
+          {(textInputStatus) ? (
             <Pressable style={{ position: 'absolute', right: 5, backgroundColor: '#dbd9d9', borderRadius: 5 }}
               onPress={() => setTextInputSearch('')}
             >
-              <Icon name='close' size={14}/>
+              <Icon name='close' size={14} />
             </Pressable>
           )
             : null}
@@ -101,6 +111,9 @@ const ExploreScreen = ({ navigation }: NativeStackHeaderProps) => {
         </View>
       </View>
       <FlatList
+        refreshControl={
+          <RefreshControl refreshing={refreshingCategory} onRefresh={onRefreshCategory} />
+        }
         data={listCategory.filter((item: any) => item.name.toLowerCase().includes(textInputSearch.toLowerCase()))}
         renderItem={renderItem}
         numColumns={2}

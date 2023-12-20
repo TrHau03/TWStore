@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View, Button, Pressable, ScrollView, useWindowDimensions } from 'react-native'
+import { Image, StyleSheet, Text, View, Button, Pressable, ScrollView, useWindowDimensions, Alert } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import React, { useEffect, useState } from 'react'
@@ -68,33 +68,47 @@ const LoginScreen = (props: any) => {
   const handlePass = () => {
     dispatch(updatePass(password))
   }
+  const handleLogin = () => {
+    dispatch(isLogin(false));
+  }
   const login = async (info: Login) => {
-    try {
-      const result = await AxiosInstance().post('/auth/login', { email: info.email, password: info.password });
-      const userInfo = result?.data.user;
-      userInfo && dispatch(isLoading(true));
-      if (result.data.status) {
-        const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
-        const user = response.data.data;
-        await AsyncStorage.setItem('token', response?.data.access_token);
-        user && dispatch(isLoading(false));
-        if (user.active) {
-          if (userInfo.role === 'user') {
-            if (checkBoxRemember) {
-              await AsyncStorage.setItem('email', email);
-              await AsyncStorage.setItem('password', password);
-            }
-            handleSubmit({ _id: user._id, _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
-            handlePass()
-          } else {
-            console.warn("Tài khoản không có quyền đăng nhập !");
-          }
-        } else {
-          console.warn("Tài khoản đã bị khóa !");
-        }
+    const emailPattern = /^[a-zA-Z0-9._-]+@gmail.com$/;
 
+    try {
+      if (email == '') {
+        Alert.alert('Vui lòng email không được để trống')
+      } else if (!emailPattern.test(email)) {
+        Alert.alert('Email không hợp lệ')
+      } else if (password == '') {
+        Alert.alert('Vui lòng nhập mật khẩu')
       } else {
-        console.log(result.data.message);
+        const result = await AxiosInstance().post('/auth/login', { email: info.email, password: info.password });
+        const userInfo = result?.data.user;
+        userInfo && dispatch(isLoading(true));
+        console.log(userInfo);
+        if (result.data.status) {
+          const response = await AxiosInstance().post(`/users/getUser/${userInfo._id}`, { name: userInfo.username, email: userInfo.email });
+          const user = response.data.data;
+          await AsyncStorage.setItem('token', response?.data.access_token);
+          user && dispatch(isLoading(false));
+          if (user.active) {
+            if (userInfo.role === 'user') {
+              if (checkBoxRemember) {
+                await AsyncStorage.setItem('email', email);
+                await AsyncStorage.setItem('password', password);
+              }
+              handleSubmit({ _id: user._id, _idUser: userInfo._id, email: userInfo.email, userName: userInfo.username, cartItem: user.cartItem, avatar: user.avatar, gender: user.gender, birthDay: user.birthDay, address: user.address, phone: user.phone })
+              handlePass()
+            } else {
+              console.warn("Tài khoản không có quyền đăng nhập !");
+            }
+          } else {
+            console.warn("Tài khoản đã bị khóa !");
+          }
+
+        } else {
+          console.log(result.data.message);
+        }
       }
     } catch (error) {
       console.log('Error: ', error);
@@ -228,6 +242,9 @@ const LoginScreen = (props: any) => {
       <Loading />
 
       <View style={{ paddingHorizontal: PADDING_HORIZONTAL, paddingTop: PADDING_TOP, width: WIDTH, backgroundColor: BG_COLOR, height: HEIGHT }}>
+        <Pressable style={{ position: 'absolute', left: 10, top: 10 }} onPress={handleLogin}>
+          <Icon name='chevron-back-outline' size={28} />
+        </Pressable>
         <View style={styles.header}>
           <Image style={{ width: 130, height: 130 }} source={require('../../asset/image/logoTW.png')} />
           <Text style={styles.textHeader}>The Wonder</Text>
@@ -298,7 +315,7 @@ const LoginScreen = (props: any) => {
           </Pressable>
         </View>
       </View>
-    </KeyboardAwareScrollView>
+    </KeyboardAwareScrollView >
   )
 }
 

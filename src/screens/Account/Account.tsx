@@ -24,8 +24,7 @@ const AccountScreen = ({ navigation }: any) => {
     await LoginManager.logOut();
     navigation.navigate('Home', { screen: 'HomesScreen' });
     setTimeout(async () => {
-      dispatch(updateUser({ _id: '', _idUser: '', email: '', userName: '', cartItem: '', avatar: '', gender: '', birthDay: '', address: null, phone: '' }));
-      dispatch(cartEmpty([]));
+      dispatch(updateUser({ _id: '', _idUser: '', email: '', userName: '', cartItem: [], avatar: '', gender: '', birthDay: '', address: null, phone: '' }));
       dispatch(isLoading(false));
     }, 1000);
   }
@@ -40,7 +39,7 @@ const AccountScreen = ({ navigation }: any) => {
 
       <View>
         {data.map((item) =>
-          <TouchableOpacity style={styles.button} key={item.id} onPress={() => navigation?.navigate(item.screen)}>
+          <TouchableOpacity disabled={isUser == '' ? true : false} style={styles.button} key={item.id} onPress={() => navigation?.navigate(item.screen)}>
             <Icon name={item.icon} size={25} color={'#525252'} />
             <Text style={styles.txtbtn}>{item.name}</Text>
           </TouchableOpacity>

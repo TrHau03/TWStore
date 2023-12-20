@@ -96,12 +96,10 @@ const Slice = createSlice({
       state.user.address = state.user.address.filter((item: any) => item.position !== action.payload);
     },
     isLogin: (state, action) => {
-      console.log('login', action.payload);
       const value = action.payload;
       state.isLogin = value;
     },
     isLoading: (state, action) => {
-      console.log('login', action.payload);
       const value = action.payload;
       state.isLoading = value;
     },

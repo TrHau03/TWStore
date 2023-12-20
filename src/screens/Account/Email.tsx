@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, } from 'react-native'
+import { StyleSheet, Text, View, Pressable, Image, TextInput, NativeSyntheticEvent, TextInputEndEditingEventData, Alert, } from 'react-native'
 import React, { useState } from 'react'
 import LinearGradient from 'react-native-linear-gradient'
 import ButtonBottom from '../../component/Button/Button'
@@ -14,11 +14,20 @@ const Email = (props: any) => {
     const user = useSelector((state: any) => state.SlicesReducer.user);
     const [email, setEmail] = useState<string>('');
     const dispatch = useDispatch();
+
     const handleSaveEmail = async () => {
-        setModalVisible(false)
-        dispatch(updateEmail(email))
-        const responseUser = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, email: email });
-        const responseUserInfor = await AxiosInstance().post(`/usersInfo/updateInfoUser`, { _id: user._idUser, email: email });
+        const emailPattern = /^[a-zA-Z0-9._-]+@gmail.com$/;
+
+        if (email.trim() == '' ) {
+            Alert.alert('Vui lòng không để trống gmail')
+        } else if (!emailPattern.test(email)){
+            Alert.alert('Vui lòng nhập đúng định dạng gmail')
+        } else {
+            setModalVisible(false)
+            dispatch(updateEmail(email))
+            const responseUser = await AxiosInstance().post(`/users/UpdateInfoUser/`, { _id: user._idUser, email: email });
+            const responseUserInfor = await AxiosInstance().post(`/usersInfo/updateInfoUser`, { _id: user._idUser, email: email });
+        }
     }
     return (
         <View style={styles.container}>
@@ -32,7 +41,6 @@ const Email = (props: any) => {
                     <Icon name='mail' size={30} />
                     <TextInput defaultValue={user.email} onEndEditing={(e: NativeSyntheticEvent<TextInputEndEditingEventData>) => { setEmail(e.nativeEvent.text) }} style={styles.txtInput} keyboardType='email-address' />
                 </View>
-                <Text style={styles.verifi}>Chúng tôi sẽ gửi xác minh đến Email mới của bạn</Text>
             </View>
 
             <Pressable onPress={handleSaveEmail} style={{ width: '100%', position: 'absolute', bottom: 15 }}>

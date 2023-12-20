@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ImageBackground, FlatList, Pressable, Image } from 'react-native'
+import { StyleSheet, Text, View, ImageBackground, FlatList, Pressable, Image, RefreshControl } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import AxiosInstance from '../../Axios/Axios'
 import { NativeStackHeaderProps } from '@react-navigation/native-stack';
@@ -7,28 +7,35 @@ import { useIsFocused } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 
-const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
+const OfferHome = ({ navigation }: NativeStackHeaderProps | any) => {
 
   const [event, setEvent] = useState<[]>([]);
   const [couponHighest, setCouponHighest] = useState<any>();
+  const [refreshingOffer, setRefreshingOffer] = useState<boolean>(false);
 
   const isFocused = useIsFocused();
 
-
+  const fetchEvent = async () => {
+    const response = await AxiosInstance().get(`event/getAllEvent`);
+    const coupon = await AxiosInstance().get(`promotion/getCouponHighest`);
+    setCouponHighest(coupon.data);
+    setEvent(response.data.filter((item: any) => {
+      return new Date(item.soNgayGiamgia).getTime() > new Date().getTime();
+    }));
+  }
   useEffect(() => {
-    const fetchEvent = async () => {
-      const response = await AxiosInstance().get(`event/getAllEvent`);
-      const coupon = await AxiosInstance().get(`promotion/getCouponHighest`);
-      setCouponHighest(coupon.data);
-      setEvent(response.data.filter((item: any) => {
-        return new Date(item.soNgayGiamgia).getTime() > new Date().getTime();
-      }));
-    }
     if (isFocused) {
       fetchEvent();
     }
   }, [isFocused])
 
+  const onRefreshOffer = React.useCallback(() => {
+    setRefreshingOffer(true);
+    fetchEvent();
+    setTimeout(() => {
+      setRefreshingOffer(false);
+    }, 2000);
+  }, []);
 
   const renderItem = ({ item }: any) => {
     return (
@@ -46,14 +53,17 @@ const OfferHome = ({ navigation }: NativeStackHeaderProps) => {
       {couponHighest ? <View style={styles.cupon}>
         <Text style={styles.textcupon}>Sử dụng “{couponHighest?.discountCode}” Mã cho phiếu giảm giá {couponHighest?.discountLevel}% off</Text>
       </View> : (<View>
-        <Image style={{alignSelf: 'center', marginTop: '30%',width: 300, height: 300}} source={require('../../asset/image/nodata.png')} /> 
-        <Text style={{alignSelf: 'center', marginTop: 40, fontSize: 22, fontWeight: '500', color: '#1E4F5F', lineHeight: 24}}>Hiện không có phiếu giảm giá !!!</Text>
+        <Image style={{ alignSelf: 'center', marginTop: '30%', width: 300, height: 300 }} source={require('../../asset/image/nodata.png')} />
+        <Text style={{ alignSelf: 'center', marginTop: 40, fontSize: 22, fontWeight: '500', color: '#1E4F5F', lineHeight: 24 }}>Hiện không có phiếu giảm giá !!!</Text>
       </View>)}
       <FlatList
         showsVerticalScrollIndicator={false}
         data={event}
         keyExtractor={(item: any) => item._id.toString()}
-        renderItem={renderItem} />
+        renderItem={renderItem}
+        refreshControl={
+          <RefreshControl refreshing={refreshingOffer} onRefresh={onRefreshOffer} />
+        } />
     </View>
   )
 }

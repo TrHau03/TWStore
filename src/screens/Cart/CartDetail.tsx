@@ -33,7 +33,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
     const listDataCart = useSelector((state: any) => {
         return state.SlicesReducer.user.cartItem;
     });
-    const listProduct = listDataCart.map((item: any) => {
+    const listProduct = listDataCart?.map((item: any) => {
         return {
             quantityProduct: item.quantity,
             productID: item.productID._id,
@@ -88,12 +88,13 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
             Alert.alert('Thông báo', 'Vui lòng chọn phương thức thanh toán');
             return;
         }
-        
-        if(Number(selectedAddress) == 1 || selectedAddress == null){
+        console.log(selectedAddress);
+
+        if (Number(selectedAddress) == 1) {
             Alert.alert('Thông báo', 'Vui lòng chọn địa chỉ giao hàng');
             return;
         }
-        
+
         checkPaymentMethod();
         // Thêm các bước xử lý tiếp theo sau khi kiểm tra thành công
     };
@@ -101,7 +102,7 @@ const CartDetail = ({ navigation }: NativeStackHeaderProps) => {
 
 
     const isValidPhoneNumber = (number: string) => {
-        const phoneNumberRegex = /^\d{9,12}$/;
+        const phoneNumberRegex = /((09|03|07|08|05)+([0-9]{8})\b)/;
         return phoneNumberRegex.test(number);
     };
 
