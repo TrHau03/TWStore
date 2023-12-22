@@ -53,7 +53,7 @@ const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
             <View>
                 <Text style={styles.txtName}>Địa chỉ số {item.position}</Text>
                 <Text style={styles.txtContent}>{address}</Text>
-                <View style={{ alignSelf:'flex-end' ,paddingVertical: 10 }}>
+                <View style={{ alignSelf: 'flex-end', paddingVertical: 10 }}>
                     <TouchableOpacity onPress={() => handleRemove(item.position)} style={{ justifyContent: 'center' }}><Icon name='trash' size={25} /></TouchableOpacity>
                 </View>
             </View>
@@ -69,7 +69,7 @@ const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
                     onRequestClose={() => true}
                 >
                     <View style={{ height: '100%' }}>
-                        <Add_Address action={{setModalVisible}} />
+                        <Add_Address action={{ setModalVisible }} />
                         <Animatable.View animation={'bounceIn'} style={{ paddingHorizontal: PADDING_HORIZONTAL, position: 'relative', bottom: 10 }}>
                             <Pressable onPress={() => { setModalVisible(false) }}>
                                 <ButtonBottom title='Hủy' />
@@ -77,7 +77,19 @@ const AddressScreen = ({ navigation }: NativeStackHeaderProps) => {
                         </Animatable.View>
                     </View>
                 </Modal>
-                <Header title='Địa Chỉ' navigation={navigation} />
+                <View style={{ flexDirection: 'row' }}>
+                    <Pressable onPress={() => navigation.navigate(RootStackScreenEnumAccount.AccountScreen)}>
+                        <Icon name='chevron-back-outline' size={25} color={'#9098B1'} />
+                    </Pressable>
+                    <Text style={{
+                        color: '#223263',
+                        fontSize: 19,
+                        fontFamily: 'Poppins',
+                        fontWeight: '700',
+                        lineHeight: 24,
+                        letterSpacing: 0.50,
+                    }}>Địa chỉ</Text>
+                </View>
                 <View style={styles.line}></View>
                 <FlatList
                     style={{ maxHeight: '80%' }}
